@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" width="800" height="600">
+  <style>
+    text { font-family: sans-serif; font-size: 11px; fill: #000000; }
+    .ref { font-size: 13px; font-weight: bold; }
+    .title { font-size: 10px; }
+    .block { stroke: #000000; stroke-width: 1.5; fill: none; }
+    .dashed { stroke: #000000; stroke-width: 1.5; fill: none; stroke-dasharray: 6,3; }
+    .group { stroke: #000000; stroke-width: 1; fill: none; stroke-dasharray: 4,2; }
+    .arrow { stroke: #000000; stroke-width: 1.2; fill: none; marker-end: url(#arrowhead); }
+  </style>
+  <defs>
+    <marker id="arrowhead" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6 Z" fill="#000000"/>
+    </marker>
+  </defs>
+
+  <!-- Title -->
+  <text x="400" y="25" text-anchor="middle" font-size="14" font-weight="bold">[도면 1]</text>
+
+  <!-- ========== 100: 데이터 수집부 ========== -->
+  <rect x="50" y="45" width="700" height="155" class="group"/>
+  <text x="60" y="62" class="ref">100</text>
+  <text x="100" y="62" class="title">데이터 수집부</text>
+
+  <!-- 101: IoT 센서 -->
+  <rect x="80" y="75" width="180" height="50" class="block"/>
+  <text x="90" y="95" class="ref">101</text>
+  <text x="125" y="95">IoT 센서</text>
+  <text x="125" y="112" font-size="9">(Temperature, Smoke, CCTV)</text>
+
+  <!-- 102: WiFi 비콘 -->
+  <rect x="310" y="75" width="160" height="50" class="block"/>
+  <text x="320" y="95" class="ref">102</text>
+  <text x="355" y="95">WiFi 비콘</text>
+
+  <!-- 110: 표준 장치 -->
+  <rect x="180" y="145" width="150" height="42" class="block"/>
+  <text x="190" y="165" class="ref">110</text>
+  <text x="225" y="165">표준 장치</text>
+  <text x="225" y="180" font-size="9">(Standard Device)</text>
+
+  <!-- 120: 우선구조 장치 (dashed) -->
+  <rect x="420" y="145" width="180" height="42" class="dashed"/>
+  <text x="430" y="165" class="ref">120</text>
+  <text x="470" y="165">우선구조 장치</text>
+  <text x="470" y="180" font-size="9">(Priority Rescue Device)</text>
+
+  <!-- Arrows from sensors to devices -->
+  <line x1="170" y1="125" x2="230" y2="145" class="arrow"/>
+  <line x1="390" y1="125" x2="350" y2="145" class="arrow"/>
+  <line x1="390" y1="125" x2="480" y2="145" class="arrow"/>
+
+  <!-- ========== 200: AI 엔진부 ========== -->
+  <rect x="50" y="225" width="700" height="110" class="group"/>
+  <text x="60" y="242" class="ref">200</text>
+  <text x="100" y="242" class="title">AI 엔진부</text>
+
+  <!-- 210: Prediction Engine -->
+  <rect x="80" y="255" width="180" height="45" class="block"/>
+  <text x="90" y="275" class="ref">210</text>
+  <text x="125" y="275">Prediction Engine</text>
+  <text x="125" y="290" font-size="9">(화재/연기 예측)</text>
+
+  <!-- 220: Behavior Engine -->
+  <rect x="310" y="255" width="170" height="45" class="block"/>
+  <text x="320" y="275" class="ref">220</text>
+  <text x="355" y="275">Behavior Engine</text>
+  <text x="355" y="290" font-size="9">(군중 행동 분석)</text>
+
+  <!-- 230: Decision Engine -->
+  <rect x="530" y="255" width="180" height="45" class="block"/>
+  <text x="540" y="275" class="ref">230</text>
+  <text x="580" y="275">Decision Engine</text>
+  <text x="580" y="290" font-size="9">(의사결정 엔진)</text>
+
+  <!-- Arrow 100 → 200 -->
+  <line x1="400" y1="200" x2="400" y2="225" class="arrow"/>
+
+  <!-- ========== 300: 동적 리스크맵 생성부 ========== -->
+  <rect x="200" y="365" width="400" height="50" class="block"/>
+  <text x="210" y="388" class="ref">300</text>
+  <text x="250" y="388">동적 리스크맵 생성부</text>
+  <text x="250" y="403" font-size="9">R(x,y,t) = w1*F + w2*S + w3*D + w4*C</text>
+
+  <!-- Arrow 200 → 300 -->
+  <line x1="400" y1="335" x2="400" y2="365" class="arrow"/>
+
+  <!-- ========== 400: 플랫폼 모드 관리부 ========== -->
+  <rect x="50" y="445" width="340" height="110" class="group"/>
+  <text x="60" y="462" class="ref">400</text>
+  <text x="100" y="462" class="title">플랫폼 모드 관리부</text>
+
+  <!-- 410: Normal Mode -->
+  <rect x="70" y="475" width="140" height="40" class="block"/>
+  <text x="80" y="495" class="ref">410</text>
+  <text x="115" y="495">Normal Mode</text>
+  <text x="115" y="508" font-size="9">(평상시)</text>
+
+  <!-- 420: Emergency Mode -->
+  <rect x="230" y="475" width="145" height="40" class="block"/>
+  <text x="240" y="495" class="ref">420</text>
+  <text x="275" y="495">Emergency Mode</text>
+  <text x="275" y="508" font-size="9">(비상시)</text>
+
+  <!-- Arrow 300 → 400 -->
+  <line x1="320" y1="415" x2="220" y2="445" class="arrow"/>
+
+  <!-- ========== 500: 시각화 및 안내부 ========== -->
+  <rect x="470" y="455" width="280" height="90" class="block"/>
+  <text x="480" y="478" class="ref">500</text>
+  <text x="520" y="478">시각화 및 안내부</text>
+  <text x="490" y="500" font-size="9">- 대피 경로 시각화</text>
+  <text x="490" y="515" font-size="9">- 우선구조 경로 안내</text>
+  <text x="490" y="530" font-size="9">- 상황 통계/보고</text>
+
+  <!-- Arrow 300 → 500 -->
+  <line x1="480" y1="415" x2="580" y2="455" class="arrow"/>
+
+  <!-- Arrow 400 ↔ 500 -->
+  <line x1="390" y1="500" x2="470" y2="500" class="arrow"/>
+
+</svg>

@@ -1,0 +1,1249 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FireNavi Manual - AI 기반 실시간 생존 의사결정 플랫폼</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --primary: #E53E3E;
+  --primary-dark: #C53030;
+  --accent: #ED8936;
+  --gradient: linear-gradient(135deg, #E53E3E, #ED8936);
+  --gradient-soft: linear-gradient(135deg, rgba(229,62,62,0.08), rgba(237,137,54,0.08));
+  --bg: #FFFFFF;
+  --bg-alt: #F7F8FA;
+  --bg-card: #FFFFFF;
+  --text: #1A202C;
+  --text-secondary: #4A5568;
+  --text-muted: #A0AEC0;
+  --border: #E2E8F0;
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.06);
+  --shadow-md: 0 4px 16px rgba(0,0,0,0.08);
+  --shadow-lg: 0 12px 40px rgba(0,0,0,0.12);
+  --shadow-xl: 0 20px 60px rgba(0,0,0,0.15);
+  --radius: 12px;
+  --radius-lg: 20px;
+  --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  --nav-height: 64px;
+}
+
+[data-theme="dark"] {
+  --bg: #0F1117;
+  --bg-alt: #1A1D2B;
+  --bg-card: #1E2233;
+  --text: #E2E8F0;
+  --text-secondary: #A0AEC0;
+  --text-muted: #718096;
+  --border: #2D3748;
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.3);
+  --shadow-md: 0 4px 16px rgba(0,0,0,0.4);
+  --shadow-lg: 0 12px 40px rgba(0,0,0,0.5);
+  --shadow-xl: 0 20px 60px rgba(0,0,0,0.6);
+}
+
+html { scroll-behavior: smooth; scroll-padding-top: 80px; }
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.7;
+  transition: background var(--transition), color var(--transition);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── Navigation ── */
+.nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+  height: var(--nav-height);
+  background: rgba(255,255,255,0.85);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+  transition: background var(--transition), box-shadow var(--transition);
+}
+[data-theme="dark"] .nav { background: rgba(15,17,23,0.9); }
+.nav.scrolled { box-shadow: var(--shadow-md); }
+
+.nav-inner {
+  max-width: 1200px; margin: 0 auto; height: 100%;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 24px;
+}
+
+.nav-logo {
+  display: flex; align-items: center; gap: 10px;
+  font-weight: 800; font-size: 1.15rem; color: var(--text);
+  text-decoration: none;
+}
+.nav-logo-icon {
+  width: 32px; height: 32px; border-radius: 8px;
+  background: var(--gradient);
+  display: flex; align-items: center; justify-content: center;
+}
+.nav-logo-icon svg { width: 18px; height: 18px; }
+
+.nav-links { display: flex; align-items: center; gap: 6px; }
+.nav-links a {
+  padding: 6px 14px; border-radius: 8px;
+  font-size: 0.875rem; font-weight: 500;
+  color: var(--text-secondary); text-decoration: none;
+  transition: all var(--transition);
+}
+.nav-links a:hover { color: var(--primary); background: var(--gradient-soft); }
+
+.nav-actions { display: flex; align-items: center; gap: 8px; }
+
+.theme-toggle {
+  width: 40px; height: 40px; border-radius: 10px;
+  border: 1px solid var(--border); background: var(--bg-card);
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  transition: all var(--transition);
+  color: var(--text-secondary);
+}
+.theme-toggle:hover { border-color: var(--primary); color: var(--primary); }
+.theme-toggle svg { width: 18px; height: 18px; }
+
+.version-badge {
+  padding: 4px 10px; border-radius: 20px;
+  font-size: 0.75rem; font-weight: 600;
+  background: var(--gradient-soft); color: var(--primary);
+}
+
+.mobile-menu-btn {
+  display: none; width: 40px; height: 40px;
+  border: none; background: none; cursor: pointer;
+  color: var(--text);
+}
+
+/* ── Hero ── */
+.hero {
+  padding: calc(var(--nav-height) + 80px) 24px 100px;
+  text-align: center; position: relative; overflow: hidden;
+}
+.hero::before {
+  content: ''; position: absolute; top: -200px; right: -200px;
+  width: 600px; height: 600px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(229,62,62,0.06) 0%, transparent 70%);
+  pointer-events: none;
+}
+.hero::after {
+  content: ''; position: absolute; bottom: -150px; left: -150px;
+  width: 500px; height: 500px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(237,137,54,0.05) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.hero-pre {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 6px 16px; border-radius: 24px;
+  background: var(--gradient-soft);
+  font-size: 0.85rem; font-weight: 600; color: var(--primary);
+  margin-bottom: 24px;
+}
+
+.hero h1 {
+  font-size: clamp(2.5rem, 6vw, 4.2rem);
+  font-weight: 900; letter-spacing: -0.03em;
+  line-height: 1.15; margin-bottom: 8px;
+}
+.hero h1 .gradient-text {
+  background: var(--gradient);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.hero-subtitle {
+  font-size: clamp(1rem, 2vw, 1.25rem);
+  color: var(--text-secondary); margin-bottom: 12px;
+  font-weight: 400;
+}
+
+.hero-slogan {
+  font-size: clamp(1.1rem, 2.5vw, 1.5rem);
+  font-weight: 700; margin-bottom: 40px;
+  background: var(--gradient);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.hero-badges {
+  display: flex; flex-wrap: wrap; justify-content: center; gap: 12px;
+  margin-bottom: 48px;
+}
+.hero-badge {
+  display: flex; align-items: center; gap: 8px;
+  padding: 10px 20px; border-radius: 40px;
+  background: var(--bg-card); border: 1px solid var(--border);
+  box-shadow: var(--shadow-sm);
+  font-size: 0.875rem; font-weight: 600; color: var(--text);
+  transition: all var(--transition);
+}
+.hero-badge:hover {
+  transform: translateY(-2px); box-shadow: var(--shadow-md);
+  border-color: var(--primary);
+}
+.hero-badge .badge-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--gradient);
+}
+
+.hero-actions { display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; }
+.btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 12px 28px; border-radius: 10px;
+  font-size: 0.95rem; font-weight: 600;
+  text-decoration: none; cursor: pointer; border: none;
+  transition: all var(--transition);
+}
+.btn-primary {
+  background: var(--gradient); color: #fff;
+  box-shadow: 0 4px 16px rgba(229,62,62,0.3);
+}
+.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(229,62,62,0.4); }
+.btn-secondary {
+  background: var(--bg-card); color: var(--text);
+  border: 1px solid var(--border);
+}
+.btn-secondary:hover { border-color: var(--primary); color: var(--primary); }
+.btn svg { width: 18px; height: 18px; }
+
+/* ── Sections ── */
+.section {
+  padding: 80px 24px; max-width: 1200px; margin: 0 auto;
+}
+.section-alt { background: var(--bg-alt); }
+.section-alt .section { padding: 80px 24px; }
+
+.section-header {
+  text-align: center; margin-bottom: 56px;
+}
+.section-label {
+  display: inline-block; padding: 4px 14px; border-radius: 20px;
+  background: var(--gradient-soft); color: var(--primary);
+  font-size: 0.8rem; font-weight: 700; letter-spacing: 0.05em;
+  text-transform: uppercase; margin-bottom: 12px;
+}
+.section-title {
+  font-size: clamp(1.75rem, 4vw, 2.5rem);
+  font-weight: 800; letter-spacing: -0.02em;
+  margin-bottom: 12px;
+}
+.section-desc {
+  font-size: 1.05rem; color: var(--text-secondary);
+  max-width: 640px; margin: 0 auto;
+}
+
+/* ── Quick Start ── */
+.steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+.step {
+  padding: 32px; border-radius: var(--radius-lg);
+  background: var(--bg-card); border: 1px solid var(--border);
+  box-shadow: var(--shadow-sm);
+  transition: all var(--transition); position: relative;
+}
+.step:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); }
+.step-number {
+  width: 48px; height: 48px; border-radius: 14px;
+  background: var(--gradient); color: #fff;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.25rem; font-weight: 800; margin-bottom: 20px;
+}
+.step h3 { font-size: 1.15rem; font-weight: 700; margin-bottom: 8px; }
+.step p { color: var(--text-secondary); font-size: 0.95rem; }
+
+.code-block {
+  margin-top: 16px; padding: 14px 18px;
+  border-radius: 10px; background: #1A202C;
+  font-family: 'SF Mono', 'Fira Code', monospace;
+  font-size: 0.85rem; color: #E2E8F0;
+  position: relative; overflow-x: auto;
+}
+[data-theme="dark"] .code-block { background: #0D1117; }
+
+.copy-btn {
+  position: absolute; top: 8px; right: 8px;
+  padding: 4px 10px; border-radius: 6px;
+  border: 1px solid rgba(255,255,255,0.15);
+  background: rgba(255,255,255,0.08);
+  color: #A0AEC0; font-size: 0.75rem; cursor: pointer;
+  transition: all var(--transition);
+}
+.copy-btn:hover { background: rgba(255,255,255,0.15); color: #fff; }
+.copy-btn.copied { color: #68D391; border-color: #68D391; }
+
+/* ── Features Grid ── */
+.features-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;
+}
+.feature-card {
+  padding: 28px; border-radius: var(--radius-lg);
+  background: var(--bg-card); border: 1px solid var(--border);
+  box-shadow: var(--shadow-sm);
+  transition: all var(--transition);
+}
+.feature-card:hover {
+  transform: translateY(-4px); box-shadow: var(--shadow-lg);
+  border-color: rgba(229,62,62,0.3);
+}
+.feature-icon {
+  width: 44px; height: 44px; border-radius: 12px;
+  background: var(--gradient-soft);
+  display: flex; align-items: center; justify-content: center;
+  margin-bottom: 16px;
+}
+.feature-icon svg { width: 22px; height: 22px; color: var(--primary); }
+.feature-card h3 { font-size: 1rem; font-weight: 700; margin-bottom: 8px; }
+.feature-card p { color: var(--text-secondary); font-size: 0.9rem; line-height: 1.6; }
+.feature-tag {
+  display: inline-block; margin-top: 12px; padding: 3px 10px;
+  border-radius: 6px; font-size: 0.75rem; font-weight: 600;
+  background: var(--gradient-soft); color: var(--primary);
+}
+
+/* ── Accordion ── */
+.accordion { max-width: 800px; margin: 0 auto; }
+.accordion-item {
+  border: 1px solid var(--border); border-radius: var(--radius);
+  margin-bottom: 8px; overflow: hidden;
+  background: var(--bg-card); transition: all var(--transition);
+}
+.accordion-item:hover { border-color: rgba(229,62,62,0.3); }
+.accordion-header {
+  width: 100%; padding: 18px 24px;
+  display: flex; align-items: center; justify-content: space-between;
+  background: none; border: none; cursor: pointer;
+  font-size: 0.95rem; font-weight: 600; color: var(--text);
+  text-align: left; transition: all var(--transition);
+}
+.accordion-header:hover { color: var(--primary); }
+.accordion-arrow {
+  width: 20px; height: 20px; transition: transform var(--transition);
+  color: var(--text-muted); flex-shrink: 0;
+}
+.accordion-item.open .accordion-arrow { transform: rotate(180deg); color: var(--primary); }
+.accordion-body {
+  max-height: 0; overflow: hidden;
+  transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.accordion-body-inner {
+  padding: 0 24px 20px;
+  color: var(--text-secondary); font-size: 0.9rem; line-height: 1.8;
+}
+
+/* ── Tech Stack ── */
+.tech-badges {
+  display: flex; flex-wrap: wrap; justify-content: center; gap: 10px;
+}
+.tech-badge {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 10px 20px; border-radius: 10px;
+  background: var(--bg-card); border: 1px solid var(--border);
+  font-size: 0.875rem; font-weight: 600; color: var(--text);
+  box-shadow: var(--shadow-sm);
+  transition: all var(--transition);
+}
+.tech-badge:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); border-color: var(--primary); }
+.tech-dot { width: 8px; height: 8px; border-radius: 50%; }
+
+/* ── Pages ── */
+.pages-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+.page-card {
+  display: flex; align-items: center; gap: 16px;
+  padding: 20px 24px; border-radius: var(--radius);
+  background: var(--bg-card); border: 1px solid var(--border);
+  text-decoration: none; color: var(--text);
+  transition: all var(--transition);
+}
+.page-card:hover {
+  transform: translateX(4px); border-color: var(--primary);
+  box-shadow: var(--shadow-md);
+}
+.page-card-icon {
+  width: 40px; height: 40px; border-radius: 10px;
+  background: var(--gradient-soft);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.page-card-icon svg { width: 20px; height: 20px; color: var(--primary); }
+.page-card h4 { font-size: 0.95rem; font-weight: 700; margin-bottom: 2px; }
+.page-card p { font-size: 0.8rem; color: var(--text-muted); }
+
+/* ── FAQ ── */
+.faq-grid { max-width: 800px; margin: 0 auto; }
+.faq-item {
+  padding: 24px; border-radius: var(--radius);
+  background: var(--bg-card); border: 1px solid var(--border);
+  margin-bottom: 12px; transition: all var(--transition);
+}
+.faq-item:hover { border-color: rgba(229,62,62,0.3); box-shadow: var(--shadow-sm); }
+.faq-q {
+  font-size: 0.95rem; font-weight: 700; margin-bottom: 10px;
+  display: flex; gap: 10px; align-items: flex-start;
+}
+.faq-q span { color: var(--primary); font-weight: 800; flex-shrink: 0; }
+.faq-a {
+  font-size: 0.9rem; color: var(--text-secondary); line-height: 1.7;
+  padding-left: 26px;
+}
+
+/* ── Contact ── */
+.contact-card {
+  max-width: 600px; margin: 0 auto;
+  padding: 48px; border-radius: var(--radius-lg);
+  background: var(--gradient-soft); border: 1px solid var(--border);
+  text-align: center;
+}
+.contact-card h3 { font-size: 1.25rem; font-weight: 700; margin-bottom: 8px; }
+.contact-card p { color: var(--text-secondary); margin-bottom: 24px; }
+.contact-email {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 12px 28px; border-radius: 10px;
+  background: var(--gradient); color: #fff;
+  text-decoration: none; font-weight: 600;
+  transition: all var(--transition);
+}
+.contact-email:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(229,62,62,0.3); }
+.contact-info { margin-top: 20px; font-size: 0.85rem; color: var(--text-muted); }
+
+/* ── Footer ── */
+.footer {
+  padding: 40px 24px;
+  border-top: 1px solid var(--border);
+  text-align: center;
+}
+.footer-inner {
+  max-width: 1200px; margin: 0 auto;
+  display: flex; flex-direction: column; align-items: center; gap: 12px;
+}
+.footer-logo {
+  display: flex; align-items: center; gap: 8px;
+  font-weight: 800; font-size: 1rem; color: var(--text);
+}
+.footer-text { font-size: 0.8rem; color: var(--text-muted); }
+.footer-links { display: flex; gap: 16px; }
+.footer-links a {
+  font-size: 0.8rem; color: var(--text-muted);
+  text-decoration: none; transition: color var(--transition);
+}
+.footer-links a:hover { color: var(--primary); }
+
+/* ── Back to Top ── */
+.back-top {
+  position: fixed; bottom: 24px; right: 24px; z-index: 999;
+  width: 44px; height: 44px; border-radius: 12px;
+  background: var(--gradient); color: #fff;
+  border: none; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 4px 16px rgba(229,62,62,0.3);
+  opacity: 0; visibility: hidden;
+  transition: all var(--transition); transform: translateY(10px);
+}
+.back-top.visible { opacity: 1; visibility: visible; transform: translateY(0); }
+.back-top:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(229,62,62,0.4); }
+.back-top svg { width: 20px; height: 20px; }
+
+/* ── Animations ── */
+.reveal {
+  opacity: 0; transform: translateY(24px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+.reveal.visible { opacity: 1; transform: translateY(0); }
+.reveal-delay-1 { transition-delay: 0.1s; }
+.reveal-delay-2 { transition-delay: 0.2s; }
+.reveal-delay-3 { transition-delay: 0.3s; }
+
+/* ── Responsive ── */
+@media (max-width: 900px) {
+  .features-grid { grid-template-columns: repeat(2, 1fr); }
+  .steps { grid-template-columns: 1fr; }
+  .pages-grid { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 680px) {
+  .nav-links { display: none; }
+  .mobile-menu-btn { display: flex; align-items: center; justify-content: center; }
+  .nav-links.open {
+    display: flex; flex-direction: column;
+    position: absolute; top: var(--nav-height); left: 0; right: 0;
+    background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 16px; gap: 4px; box-shadow: var(--shadow-md);
+  }
+  .features-grid { grid-template-columns: 1fr; }
+  .hero { padding-top: calc(var(--nav-height) + 48px); padding-bottom: 60px; }
+  .section { padding: 56px 16px; }
+  .section-alt .section { padding: 56px 16px; }
+  .hero-badges { gap: 8px; }
+  .hero-badge { padding: 8px 14px; font-size: 0.8rem; }
+  .contact-card { padding: 32px 20px; }
+}
+</style>
+</head>
+<body>
+
+<!-- Navigation -->
+<nav class="nav" id="nav">
+  <div class="nav-inner">
+    <a href="#" class="nav-logo">
+      <div class="nav-logo-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10"/>
+          <path d="M13 2.05A10 10 0 0 1 22 12"/>
+          <path d="M12 8v4l3 3"/>
+        </svg>
+      </div>
+      FireNavi
+    </a>
+    <div class="nav-links" id="navLinks">
+      <a href="#quickstart">시작하기</a>
+      <a href="#features">기능</a>
+      <a href="#tech">기술</a>
+      <a href="#pages">페이지</a>
+      <a href="#faq">FAQ</a>
+      <a href="#contact">연락처</a>
+    </div>
+    <div class="nav-actions">
+      <span class="version-badge">v1.0</span>
+      <button class="theme-toggle" id="themeToggle" aria-label="테마 변경">
+        <svg id="sunIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+          <circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/>
+          <line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+          <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/>
+          <line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+          <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+        </svg>
+        <svg id="moonIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="display:none">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+        </svg>
+      </button>
+      <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="메뉴">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+          <line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<!-- Hero -->
+<section class="hero" id="hero">
+  <div class="hero-pre">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+    AI 기반 실시간 생존 의사결정 플랫폼
+  </div>
+  <h1>
+    <span class="gradient-text">FireNavi</span><br>
+    화이어내비
+  </h1>
+  <p class="hero-subtitle">화재보다 빠르게 판단하는 AI</p>
+  <p class="hero-slogan">길을 안내하는 것이 아니라 생존을 설계합니다</p>
+
+  <div class="hero-badges">
+    <div class="hero-badge"><span class="badge-dot"></span>3 AI Engines</div>
+    <div class="hero-badge"><span class="badge-dot"></span>15 Core Features</div>
+    <div class="hero-badge"><span class="badge-dot"></span>6,000+ Agents</div>
+    <div class="hero-badge"><span class="badge-dot"></span>WiFi Positioning</div>
+  </div>
+
+  <div class="hero-actions">
+    <a href="#quickstart" class="btn btn-primary">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+      시작하기
+    </a>
+    <a href="#features" class="btn btn-secondary">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="9" y1="3" x2="9" y2="21"/></svg>
+      기능 보기
+    </a>
+  </div>
+</section>
+
+<!-- Quick Start -->
+<div class="section-alt" id="quickstart">
+  <section class="section">
+    <div class="section-header reveal">
+      <span class="section-label">Quick Start</span>
+      <h2 class="section-title">3단계로 시작하기</h2>
+      <p class="section-desc">설치 없이, 브라우저만으로 즉시 시뮬레이션을 실행할 수 있습니다.</p>
+    </div>
+
+    <div class="steps">
+      <div class="step reveal reveal-delay-1">
+        <div class="step-number">1</div>
+        <h3>다운로드</h3>
+        <p>Git clone 또는 ZIP 파일로 프로젝트를 다운로드합니다.</p>
+        <div class="code-block">
+          <button class="copy-btn" data-copy="git clone [repository-url]">복사</button>
+          <code>git clone [repository-url]</code>
+        </div>
+      </div>
+      <div class="step reveal reveal-delay-2">
+        <div class="step-number">2</div>
+        <h3>열기</h3>
+        <p>브라우저에서 index.html을 엽니다. Chrome 브라우저를 권장합니다.</p>
+        <div class="code-block">
+          <button class="copy-btn" data-copy="open index.html">복사</button>
+          <code>open index.html</code>
+        </div>
+      </div>
+      <div class="step reveal reveal-delay-3">
+        <div class="step-number">3</div>
+        <h3>시뮬레이션</h3>
+        <p>Simulation 페이지에서 화재를 배치하고 대피 시뮬레이션을 시작합니다.</p>
+        <div class="code-block">
+          <button class="copy-btn" data-copy="Simulation → 화재 배치 → 시작">복사</button>
+          <code>Simulation -> 화재 배치 -> 시작</code>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- Features Grid -->
+<section class="section" id="features">
+  <div class="section-header reveal">
+    <span class="section-label">Features</span>
+    <h2 class="section-title">핵심 기능 15가지</h2>
+    <p class="section-desc">3개 AI 엔진이 동시 작동하여 6,000명의 생존을 실시간으로 결정합니다.</p>
+  </div>
+
+  <div class="features-grid">
+    <div class="feature-card reveal">
+      <div class="feature-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+      </div>
+      <h3>실시간 화재 확산 예측</h3>
+      <p>Navier-Stokes 유체역학과 LSTM 딥러닝을 결합하여 화재 확산 경로를 실시간으로 예측합니다.</p>
+      <span class="feature-tag">Prediction Engine</span>
+    </div>
+
+    <div class="feature-card reveal">
+      <div class="feature-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/></svg>
+      </div>
+      <h3>연기 확산 모델링</h3>
+      <p>이류-확산 방정식(Advection-Diffusion)으로 연기 이동 경로와 농도를 시뮬레이션합니다.</p>
+      <span class="feature-tag">Prediction Engine</span>
+    </div>
+
+    <div class="feature-card reveal">
+      <div class="feature-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      </div>
+      <h3>군중 밀도 예측</h3>
+      <p>Social Force Model과 KDE를 결합하여 군중 밀집도를 분석하고 병목 구간을 예측합니다.</p>
+      <span class="feature-tag">Behavior Engine</span>
+    </div>
+
+    <div class="feature-card reveal">
+      <div class="feature-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>
+      </div>
+      <h3>동적 위험도 매핑</h3>
+      <p>화재(0.35), 연기(0.30), 밀도(0.20), 구조(0.15) 4가지 요소의 가중 합산으로 위험도를 산출합니다.</p>
+      <span class="feature-tag">R = 0.35F + 0.30S + 0.20D + 0.15C</span>
+    </div>
+
+    <div class="feature-card reveal">
+      <div class="feature-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>
+      </div>
+      <h3>건강 맞춤형 경로 안내</h3>
+      <p>6가지 승객 유형(어린이, 노약자, 장애인 등)에 따른 개인화된 대피 경로를 제공합니다.</p>
+      <span class="feature-tag">Decision Engine</span>
+    </div>
+
+    <div class="feature-card reveal">
+      <div class="feature-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+      </div>
+      <h3>멀티 에이전트 경로 최적화</h3>
+      <p>A* 알고리즘과 CBS(Conflict-Based Search)로 6,000명 이상의 동시 경로를 최적화합니다.</p>
+      <span class="feature-tag">Decision Engine</span>
+    </div>
+
+    <div class="feature-card reveal">
+      <div class="feature-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12.55a11 11 0 0 1 14.08 0"/><path d="M1.42 9a16 16 0 0 1 21.16 0"/><path d="M8.53 16.11a6 6 0 0 1 6.95 0"/><circle cx="12" cy="20" r="1"/></svg>
+      </div>
+      <h3>WiFi 실내 측위</h3>
+      <p>WiFi 기반 삼변측량으로 GPS 없이도 실내에서 2~3m 정확도의 위치 추적이 가능합니다.</p>
+      <span class="feature-tag">WiFi Positioning</span>
+    </div>
+
+    <div class="feature-card reveal">
+      <div class="feature-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+      </div>
+      <h3>이중 모드 플랫폼</h3>
+      <p>평상시 Security 모드(보안/동선분석)와 비상시 Safety 모드(대피/구조)를 전환하여 운영합니다.</p>
+      <span class="feature-tag">Dual Mode</span>
+    </div>
+
+    <div class="feature-card reveal">
+      <div class="feature-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12" y2="18"/></svg>
+      </div>
+      <h3>디바이스 전략</h3>
+      <p>객실 키나 건물 출입증에 WiFi 모듈을 내장하여 별도 장치 없이 자연스럽게 위치를 추적합니다.</p>
+      <span class="feature-tag">Room Key + Access Card</span>
+    </div>
+
+    <div class="feature-card reveal">
+      <div class="feature-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 3h18v18H3z"/><path d="M3 9h18"/><path d="M3 15h18"/><path d="M9 3v18"/><path d="M15 3v18"/></svg>
+      </div>
+      <h3>인터랙티브 캔버스 시뮬레이션</h3>
+      <p>Canvas 2D API 기반의 5개 데크 레벨 실시간 시뮬레이션을 직접 체험할 수 있습니다.</p>
+      <span class="feature-tag">5 Deck Levels</span>
+    </div>
+
+    <div class="feature-card reveal">
+      <div class="feature-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      </div>
+      <h3>소방관 AI 배치 시스템</h3>
+      <p>AI가 화재 상황을 분석하여 소방관의 최적 진입 경로와 배치 위치를 자동으로 결정합니다.</p>
+      <span class="feature-tag">Firefighter AI</span>
+    </div>
+
+    <div class="feature-card reveal">
+      <div class="feature-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+      </div>
+      <h3>Beer-Lambert 가시성 모델</h3>
+      <p>연기 농도에 따른 시야 거리를 Beer-Lambert 법칙으로 정밀하게 계산합니다.</p>
+      <span class="feature-tag">Visibility Model</span>
+    </div>
+
+    <div class="feature-card reveal">
+      <div class="feature-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      </div>
+      <h3>AI 출구 분산 최적화</h3>
+      <p>CrowdPenalty = N_assigned x 40으로 출구별 혼잡도를 계산하여 병목 현상을 방지합니다. Score = Distance + FirePenalty + SmokePenalty + CrowdPenalty 공식으로 최적 출구를 분산 배정합니다.</p>
+      <span class="feature-tag">Crowd Balancing</span>
+    </div>
+
+    <div class="feature-card reveal">
+      <div class="feature-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>
+      </div>
+      <h3>취약 계층 우선 경로</h3>
+      <p>고령자, 장애인, 어린이, 임산부, 부상자에게 Priority Rescue Device를 부여하고 연기 패널티 배율 α=2.0을 적용하여 가장 안전한 출구를 우선 배정합니다.</p>
+      <span class="feature-tag">Priority Rescue α=2.0</span>
+    </div>
+
+    <div class="feature-card reveal">
+      <div class="feature-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M2 12L12 2l10 10"/><path d="M12 2v20"/><path d="M2 12h20"/></svg>
+      </div>
+      <h3>유형별 컬러 경로 안내</h3>
+      <p>6가지 승객 유형별로 고유한 색상과 대시 패턴으로 경로를 시각화합니다. 취약 계층은 전체 경로가 표시되며 유형 라벨이 경로 위에 표기됩니다.</p>
+      <span class="feature-tag">AI Route Guide</span>
+    </div>
+  </div>
+</section>
+
+<!-- Feature Accordion -->
+<div class="section-alt">
+  <section class="section" id="details">
+    <div class="section-header reveal">
+      <span class="section-label">Details</span>
+      <h2 class="section-title">상세 기능 설명</h2>
+      <p class="section-desc">각 기능의 기술적 배경과 작동 원리를 자세히 알아보세요.</p>
+    </div>
+
+    <div class="accordion reveal">
+      <div class="accordion-item">
+        <button class="accordion-header">
+          Prediction Engine - 화재/연기 예측 엔진
+          <svg class="accordion-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="accordion-body">
+          <div class="accordion-body-inner">
+            Navier-Stokes 유체역학 방정식과 LSTM 딥러닝 네트워크를 결합하여 화재 확산 경로를 실시간으로 예측합니다. 이류-확산(Advection-Diffusion) 방정식으로 연기의 이동 경로와 농도 변화를 시뮬레이션하며, Beer-Lambert 법칙을 적용하여 연기 농도에 따른 가시 거리를 정밀하게 산출합니다. 이 세 가지 모델이 통합되어 화재 발생 후 수 초 이내에 위험 영역을 예측할 수 있습니다.
+          </div>
+        </div>
+      </div>
+
+      <div class="accordion-item">
+        <button class="accordion-header">
+          Behavior Engine - 군중 행동 분석 엔진
+          <svg class="accordion-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="accordion-body">
+          <div class="accordion-body-inner">
+            Social Force Model을 기반으로 개별 승객의 이동 행동을 시뮬레이션합니다. KDE(Kernel Density Estimation)로 실시간 군중 밀집도를 분석하고, 병목 구간과 혼잡 위험 지점을 예측합니다. 6가지 승객 유형(일반 성인, 어린이, 노약자, 장애인, 부상자, 승무원)별로 이동 속도와 행동 패턴이 차별화되어 있어 현실적인 시뮬레이션이 가능합니다.
+          </div>
+        </div>
+      </div>
+
+      <div class="accordion-item">
+        <button class="accordion-header">
+          Decision Engine - 경로 최적화 엔진
+          <svg class="accordion-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="accordion-body">
+          <div class="accordion-body-inner">
+            A* 경로탐색 알고리즘과 CBS(Conflict-Based Search) 다중 에이전트 최적화를 결합합니다. MinHeap과 Spatial Grid를 활용한 성능 최적화로 6,000명 이상의 승객에 대한 동시 경로 계산이 가능합니다. 동적 위험도 맵(R = 0.35F + 0.30S + 0.20D + 0.15C)을 실시간으로 반영하여 가장 안전한 대피 경로를 지속적으로 업데이트합니다.
+          </div>
+        </div>
+      </div>
+
+      <div class="accordion-item">
+        <button class="accordion-header">
+          WiFi 기반 실내 측위 시스템
+          <svg class="accordion-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="accordion-body">
+          <div class="accordion-body-inner">
+            GPS가 작동하지 않는 실내 환경에서 WiFi 신호 기반 삼변측량 기술로 2~3m 정확도의 위치 추적을 구현합니다. 크루즈 객실 키나 건물 출입증에 WiFi 위치 모듈을 내장하는 디바이스 전략으로, 승객에게 별도 장치를 요구하지 않으면서도 전수 위치 파악이 가능합니다. 3D 층간 이동 추적까지 지원합니다.
+          </div>
+        </div>
+      </div>
+
+      <div class="accordion-item">
+        <button class="accordion-header">
+          이중 모드 운영 체계
+          <svg class="accordion-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="accordion-body">
+          <div class="accordion-body-inner">
+            평상시에는 Security & Operation 모드로 보안구역 접근 통제, 동선 분석, 공간 활용 최적화 등을 수행합니다. 화재 등 비상 상황 발생 시 Safety 모드로 즉시 전환되어 전체 인원의 실시간 위치 파악, 최적 대피 경로 안내, 구조대 배치를 자동으로 실행합니다. 365일 24시간 투자 대비 가치를 극대화하는 운영 체계입니다.
+          </div>
+        </div>
+      </div>
+
+      <div class="accordion-item">
+        <button class="accordion-header">
+          AI 출구 분산 + 취약 계층 우선 경로
+          <svg class="accordion-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="accordion-body">
+          <div class="accordion-body-inner">
+            세 가지 알고리즘이 통합되어 최적의 대피 경로를 결정합니다. <strong>1) AI 출구 분산 최적화(Crowd Balancing)</strong>: 각 출구에 배정된 인원 수(N_assigned)에 패널티 가중치 40을 곱한 CrowdPenalty를 산출합니다. 최종 출구 점수는 Score = Distance + FirePenalty + SmokePenalty + CrowdPenalty로 계산되어 특정 출구에 인원이 집중되는 병목 현상을 자동으로 방지합니다. <strong>2) 취약 계층 우선 구조(Priority Rescue)</strong>: 고령자(E), 어린이(C), 휠체어(W), 임산부(P), 부상자(I) 등 취약 계층에게 Priority Rescue Device를 부여하며, 연기 패널티 배율 α=2.0(일반인 α=1.0)을 적용하여 연기 위험 구간을 더 강하게 회피합니다. 보호자에게도 쌍을 이루는 디바이스가 제공됩니다. <strong>3) 개인화 AI 출구 배정(Personalized Exit)</strong>: findNearestSafeExit(x, y, passenger) 함수가 승객 유형 정보를 반영하여 같은 위치에서도 유형별로 다른 최적 출구를 배정합니다. 시뮬레이션 캔버스에서 취약 계층은 분홍색 펄스 링과 유형 이니셜(E/C/W/P/I)로 표시됩니다.
+          </div>
+        </div>
+      </div>
+
+      <div class="accordion-item">
+        <button class="accordion-header">
+          보안구역 침입 감지 시스템
+          <svg class="accordion-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="accordion-body">
+          <div class="accordion-body-inner">
+            엔진룸 등 보안구역은 RESTRICTED 표시와 함께 주황색 점선 테두리로 캔버스에 명확히 구분됩니다. 승객이 보안구역에 진입하면 실시간으로 침입 경고(Intrusion Alert)가 발생하며, AI Engine Status Bar에서 현재 보안 상태를 모니터링할 수 있습니다. 평상시 Normal Mode에서는 보안구역 접근 통제에 집중하고, 비상시 Emergency Mode에서는 WiFi Tracking Active 상태와 함께 3개 AI 엔진(Prediction/Behavior/Decision)의 작동 상태를 실시간으로 표시합니다.
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- Tech Stack -->
+<section class="section" id="tech">
+  <div class="section-header reveal">
+    <span class="section-label">Tech Stack</span>
+    <h2 class="section-title">기술 스택</h2>
+    <p class="section-desc">검증된 웹 기술과 고급 수리 모델의 조합으로 구축되었습니다.</p>
+  </div>
+
+  <div class="tech-badges reveal">
+    <div class="tech-badge"><span class="tech-dot" style="background:#E44D26"></span>HTML5</div>
+    <div class="tech-badge"><span class="tech-dot" style="background:#264DE4"></span>CSS3</div>
+    <div class="tech-badge"><span class="tech-dot" style="background:#F7DF1E"></span>Vanilla JavaScript (ES6+)</div>
+    <div class="tech-badge"><span class="tech-dot" style="background:#E53E3E"></span>Canvas 2D API</div>
+    <div class="tech-badge"><span class="tech-dot" style="background:#4285F4"></span>Google Fonts (Inter)</div>
+    <div class="tech-badge"><span class="tech-dot" style="background:#38A169"></span>Static Deployment</div>
+    <div class="tech-badge"><span class="tech-dot" style="background:#805AD5"></span>9 Mathematical Models</div>
+    <div class="tech-badge"><span class="tech-dot" style="background:#DD6B20"></span>29 Equations</div>
+  </div>
+
+  <div style="max-width:640px;margin:40px auto 0;text-align:center" class="reveal">
+    <div style="padding:24px;border-radius:var(--radius);background:var(--gradient-soft);border:1px solid var(--border)">
+      <p style="font-size:0.9rem;color:var(--text-secondary);line-height:1.8">
+        <strong style="color:var(--text)">No Backend Required</strong><br>
+        모든 계산이 브라우저 내에서 실행됩니다. 서버 설치 없이 HTML 파일만 열면 바로 시뮬레이션을 시작할 수 있습니다. Navier-Stokes, Social Force, A* Pathfinding, Beer-Lambert 등 9가지 수리 모델과 29개 방정식이 클라이언트 사이드에서 실시간으로 연산됩니다.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- Pages -->
+<div class="section-alt" id="pages">
+  <section class="section">
+    <div class="section-header reveal">
+      <span class="section-label">Pages</span>
+      <h2 class="section-title">페이지 구성</h2>
+      <p class="section-desc">8개의 전문 모듈로 구성된 통합 플랫폼입니다.</p>
+    </div>
+
+    <div class="pages-grid reveal">
+      <a href="index.html" class="page-card">
+        <div class="page-card-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+        </div>
+        <div>
+          <h4>Dashboard</h4>
+          <p>메인 랜딩 페이지 - 전체 시스템 개요</p>
+        </div>
+      </a>
+
+      <a href="#" class="page-card">
+        <div class="page-card-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+        </div>
+        <div>
+          <h4>Module A: Technical Formulation</h4>
+          <p>29개 수학 방정식 기술 정의서</p>
+        </div>
+      </a>
+
+      <a href="#" class="page-card">
+        <div class="page-card-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M2 20h20"/><rect x="4" y="8" width="4" height="12"/><rect x="10" y="4" width="4" height="16"/><rect x="16" y="10" width="4" height="10"/></svg>
+        </div>
+        <div>
+          <h4>Module B: Industrial Architecture</h4>
+          <p>3-Tier 산업 아키텍처 설계</p>
+        </div>
+      </a>
+
+      <a href="#" class="page-card">
+        <div class="page-card-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M2 12L12 2l10 10"/><path d="M12 2v20"/><path d="M2 12h20"/></svg>
+        </div>
+        <div>
+          <h4>Module C: Shipyard Proposal</h4>
+          <p>IMO SOLAS 규정 기반 조선소 제안서</p>
+        </div>
+      </a>
+
+      <a href="#" class="page-card">
+        <div class="page-card-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+        </div>
+        <div>
+          <h4>Module D: Insurance Risk Model</h4>
+          <p>Monte Carlo 기반 보험 리스크 모델</p>
+        </div>
+      </a>
+
+      <a href="#" class="page-card">
+        <div class="page-card-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+        </div>
+        <div>
+          <h4>Simulation</h4>
+          <p>인터랙티브 화재 대피 시뮬레이션</p>
+        </div>
+      </a>
+
+      <a href="#" class="page-card">
+        <div class="page-card-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 3h18v18H3z"/><path d="M3 9h18"/><path d="M9 3v18"/></svg>
+        </div>
+        <div>
+          <h4>Risk Map</h4>
+          <p>동적 위험도 히트맵</p>
+        </div>
+      </a>
+
+      <a href="#" class="page-card">
+        <div class="page-card-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+        </div>
+        <div>
+          <h4>Route Optimizer</h4>
+          <p>멀티 에이전트 경로 탐색기</p>
+        </div>
+      </a>
+    </div>
+  </section>
+</div>
+
+<!-- FAQ -->
+<section class="section" id="faq">
+  <div class="section-header reveal">
+    <span class="section-label">FAQ</span>
+    <h2 class="section-title">자주 묻는 질문</h2>
+    <p class="section-desc">FireNavi에 대해 가장 많이 궁금해하시는 내용을 정리했습니다.</p>
+  </div>
+
+  <div class="faq-grid">
+    <div class="faq-item reveal">
+      <div class="faq-q"><span>Q.</span> GPS가 작동하지 않는 실내에서 위치 추적이 가능한가요?</div>
+      <div class="faq-a">WiFi 기반 위치추적 기술로 실내에서도 2~3m 정확도의 위치 파악이 가능합니다. 층간 이동도 3D로 추적됩니다.</div>
+    </div>
+
+    <div class="faq-item reveal">
+      <div class="faq-q"><span>Q.</span> 별도의 장치가 필요한가요?</div>
+      <div class="faq-a">아닙니다. 크루즈 객실 키나 건물 출입증에 WiFi 위치 모듈을 내장하는 방식으로, 별도 장치 없이 자연스럽게 위치 추적이 가능합니다.</div>
+    </div>
+
+    <div class="faq-item reveal">
+      <div class="faq-q"><span>Q.</span> 화재가 발생하지 않을 때도 유용한가요?</div>
+      <div class="faq-a">네. 평상시에는 보안구역 접근 통제, 동선 분석, 공간 활용 최적화 등 Security & Operation 모드로 운영됩니다.</div>
+    </div>
+
+    <div class="faq-item reveal">
+      <div class="faq-q"><span>Q.</span> 몇 명까지 동시 대피 시뮬레이션이 가능한가요?</div>
+      <div class="faq-a">Multi-Agent 최적화 알고리즘으로 6,000명 이상의 승객을 동시에 처리할 수 있습니다.</div>
+    </div>
+
+    <div class="faq-item reveal">
+      <div class="faq-q"><span>Q.</span> AI 엔진은 어떤 종류가 있나요?</div>
+      <div class="faq-a">Prediction Engine(화재/연기 예측), Behavior Engine(군중 행동 분석), Decision Engine(경로 최적화) 3개가 동시에 작동합니다.</div>
+    </div>
+
+    <div class="faq-item reveal">
+      <div class="faq-q"><span>Q.</span> 대피 시간이 얼마나 단축되나요?</div>
+      <div class="faq-a">WiFi 위치추적과 결합 시 기존 대비 약 55% 대피 시간을 단축할 수 있습니다.</div>
+    </div>
+
+    <div class="faq-item reveal">
+      <div class="faq-q"><span>Q.</span> 어떤 수학 모델이 사용되나요?</div>
+      <div class="faq-a">Navier-Stokes, Social Force, A* Pathfinding, Beer-Lambert 등 9가지 수리 모델과 29개 방정식이 통합 적용됩니다.</div>
+    </div>
+
+    <div class="faq-item reveal">
+      <div class="faq-q"><span>Q.</span> 건물에도 적용 가능한가요?</div>
+      <div class="faq-a">네. 크루즈선 외에도 고층 빌딩, 공항, 지하철, 쇼핑몰 등 모든 대형 시설에 적용 가능합니다.</div>
+    </div>
+
+    <div class="faq-item reveal">
+      <div class="faq-q"><span>Q.</span> 출구에 사람이 몰리면 어떻게 되나요?</div>
+      <div class="faq-a">AI가 실시간으로 각 출구 배정 인원을 추적하여 혼잡도 패널티를 부과합니다. 승객은 자동으로 덜 혼잡한 출구로 분산됩니다.</div>
+    </div>
+
+    <div class="faq-item reveal">
+      <div class="faq-q"><span>Q.</span> 취약 계층은 어떻게 다른 경로를 받나요?</div>
+      <div class="faq-a">고령자, 휠체어 등 취약 계층에게는 화재/연기 패널티가 2배(α=2.0)로 적용됩니다. 같은 위치에서도 일반인보다 더 안전한 출구가 자동 배정됩니다.</div>
+    </div>
+  </div>
+</section>
+
+<!-- Contact -->
+<div class="section-alt" id="contact">
+  <section class="section">
+    <div class="section-header reveal">
+      <span class="section-label">Contact</span>
+      <h2 class="section-title">문의 및 지원</h2>
+      <p class="section-desc">FireNavi에 대한 기술 문의나 도입 상담을 환영합니다.</p>
+    </div>
+
+    <div class="contact-card reveal">
+      <h3>기술 문의 / 도입 상담</h3>
+      <p>프로젝트에 대한 질문이나 협업 제안은 아래 이메일로 연락해 주세요.</p>
+      <a href="mailto:jaiwshim@gmail.com" class="contact-email">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+        jaiwshim@gmail.com
+      </a>
+      <div class="contact-info">
+        <p>개발자: 심재우 | 라이선스: Patented Technology</p>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- Footer -->
+<footer style="background:linear-gradient(180deg,#0F172A,#1E293B);color:#94A3B8;position:relative;overflow:hidden;">
+  <div style="position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,#E53E3E,#ED8936,#ECC94B,#3B82F6,#7C3AED);"></div>
+  <div style="max-width:1200px;margin:0 auto;padding:0 32px;">
+    <div style="display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:48px;padding:56px 0 40px;">
+      <div>
+        <div style="font-size:1.5rem;font-weight:800;color:#F1F5F9;margin-bottom:12px;">&#x1F525; FireNavi</div>
+        <p style="font-size:0.82rem;font-weight:600;color:#64748B;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:12px;">AI 기반 실시간 생존 의사결정 플랫폼</p>
+        <p style="font-size:0.88rem;color:#94A3B8;line-height:1.7;margin-bottom:20px;">화재보다 빠르게 판단하는 AI.<br>길을 안내하는 것이 아니라 생존을 설계합니다.</p>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;">
+          <span style="font-size:0.7rem;font-weight:600;padding:4px 12px;border-radius:10px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);color:#CBD5E1;">Safety</span>
+          <span style="font-size:0.7rem;font-weight:600;padding:4px 12px;border-radius:10px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);color:#CBD5E1;">Security</span>
+          <span style="font-size:0.7rem;font-weight:600;padding:4px 12px;border-radius:10px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);color:#CBD5E1;">Operation</span>
+        </div>
+      </div>
+      <div>
+        <h4 style="font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:2px;color:#64748B;margin-bottom:16px;">Core Modules</h4>
+        <ul style="list-style:none;padding:0;margin:0;">
+          <li style="margin-bottom:10px;"><a href="pages/a-technical-formulation.html" style="font-size:0.85rem;color:#94A3B8;text-decoration:none;">A. 기술 수식화</a></li>
+          <li style="margin-bottom:10px;"><a href="pages/b-industrial-architecture.html" style="font-size:0.85rem;color:#94A3B8;text-decoration:none;">B. 산업 아키텍처</a></li>
+          <li style="margin-bottom:10px;"><a href="pages/c-shipyard-proposal.html" style="font-size:0.85rem;color:#94A3B8;text-decoration:none;">C. 조선소 제안</a></li>
+          <li style="margin-bottom:10px;"><a href="pages/d-insurance-risk-model.html" style="font-size:0.85rem;color:#94A3B8;text-decoration:none;">D. 보험 리스크</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4 style="font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:2px;color:#64748B;margin-bottom:16px;">Interactive</h4>
+        <ul style="list-style:none;padding:0;margin:0;">
+          <li style="margin-bottom:10px;"><a href="pages/simulation.html" style="font-size:0.85rem;color:#94A3B8;text-decoration:none;">실시간 시뮬레이션</a></li>
+          <li style="margin-bottom:10px;"><a href="pages/risk-map.html" style="font-size:0.85rem;color:#94A3B8;text-decoration:none;">동적 위험지도</a></li>
+          <li style="margin-bottom:10px;"><a href="pages/route-optimizer.html" style="font-size:0.85rem;color:#94A3B8;text-decoration:none;">경로 최적화</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4 style="font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:2px;color:#64748B;margin-bottom:16px;">Resources</h4>
+        <ul style="list-style:none;padding:0;margin:0;">
+          <li style="margin-bottom:10px;"><a href="manual.html" style="font-size:0.85rem;color:#94A3B8;text-decoration:none;">매뉴얼 페이지</a></li>
+          <li style="margin-bottom:10px;"><a href="docs/diagrams/architecture.svg" style="font-size:0.85rem;color:#94A3B8;text-decoration:none;">아키텍처 구조도</a></li>
+        </ul>
+        <h4 style="font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:2px;color:#64748B;margin-top:20px;margin-bottom:16px;">Contact</h4>
+        <ul style="list-style:none;padding:0;margin:0;">
+          <li><a href="mailto:jaiwshim@gmail.com" style="font-size:0.85rem;color:#94A3B8;text-decoration:none;">jaiwshim@gmail.com</a></li>
+        </ul>
+      </div>
+    </div>
+    <div style="display:flex;justify-content:center;gap:24px;flex-wrap:wrap;padding:24px 0;border-top:1px solid rgba(255,255,255,0.06);border-bottom:1px solid rgba(255,255,255,0.06);">
+      <div style="display:flex;align-items:center;gap:8px;font-size:0.78rem;color:#64748B;"><span style="width:8px;height:8px;border-radius:50%;background:#EF4444;box-shadow:0 0 6px #EF4444;"></span>Prediction Engine</div>
+      <div style="display:flex;align-items:center;gap:8px;font-size:0.78rem;color:#64748B;"><span style="width:8px;height:8px;border-radius:50%;background:#3B82F6;box-shadow:0 0 6px #3B82F6;"></span>Behavior Engine</div>
+      <div style="display:flex;align-items:center;gap:8px;font-size:0.78rem;color:#64748B;"><span style="width:8px;height:8px;border-radius:50%;background:#7C3AED;box-shadow:0 0 6px #7C3AED;"></span>Decision Engine</div>
+      <div style="display:flex;align-items:center;gap:8px;font-size:0.78rem;color:#64748B;"><span style="width:8px;height:8px;border-radius:50%;background:#EC4899;box-shadow:0 0 6px #EC4899;"></span>Priority Rescue AI</div>
+      <div style="display:flex;align-items:center;gap:8px;font-size:0.78rem;color:#64748B;"><span style="width:8px;height:8px;border-radius:50%;background:#06B6D4;box-shadow:0 0 6px #06B6D4;"></span>WiFi Positioning</div>
+    </div>
+    <div style="padding:24px 0;text-align:center;">
+      <p style="font-size:0.78rem;color:#475569;">&copy; 2026 FireNavi. Patented Technology. All Rights Reserved.</p>
+      <p style="font-size:0.72rem;color:#334155;">9 Mathematical Models &middot; 29 Equations &middot; 5 Patents &middot; 3 AI Engines</p>
+    </div>
+  </div>
+</footer>
+
+<!-- Back to Top -->
+<button class="back-top" id="backTop" aria-label="맨 위로">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="18 15 12 9 6 15"/></svg>
+</button>
+
+<script>
+(function() {
+  'use strict';
+
+  // ── Theme Toggle ──
+  const root = document.documentElement;
+  const themeToggle = document.getElementById('themeToggle');
+  const sunIcon = document.getElementById('sunIcon');
+  const moonIcon = document.getElementById('moonIcon');
+
+  function setTheme(dark) {
+    root.setAttribute('data-theme', dark ? 'dark' : 'light');
+    sunIcon.style.display = dark ? 'none' : 'block';
+    moonIcon.style.display = dark ? 'block' : 'none';
+    localStorage.setItem('firenavi-theme', dark ? 'dark' : 'light');
+  }
+
+  const saved = localStorage.getItem('firenavi-theme');
+  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  setTheme(saved ? saved === 'dark' : prefersDark);
+
+  themeToggle.addEventListener('click', function() {
+    const isDark = root.getAttribute('data-theme') === 'dark';
+    setTheme(!isDark);
+  });
+
+  // ── Nav Scroll ──
+  const nav = document.getElementById('nav');
+  let lastScroll = 0;
+
+  window.addEventListener('scroll', function() {
+    const y = window.scrollY;
+    nav.classList.toggle('scrolled', y > 20);
+    lastScroll = y;
+  }, { passive: true });
+
+  // ── Mobile Menu ──
+  const mobileBtn = document.getElementById('mobileMenuBtn');
+  const navLinks = document.getElementById('navLinks');
+
+  mobileBtn.addEventListener('click', function() {
+    navLinks.classList.toggle('open');
+  });
+
+  navLinks.querySelectorAll('a').forEach(function(a) {
+    a.addEventListener('click', function() {
+      navLinks.classList.remove('open');
+    });
+  });
+
+  // ── Back to Top ──
+  const backTop = document.getElementById('backTop');
+
+  window.addEventListener('scroll', function() {
+    backTop.classList.toggle('visible', window.scrollY > 400);
+  }, { passive: true });
+
+  backTop.addEventListener('click', function() {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+
+  // ── Accordion ──
+  document.querySelectorAll('.accordion-header').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      var item = this.parentElement;
+      var body = item.querySelector('.accordion-body');
+      var inner = body.querySelector('.accordion-body-inner');
+      var isOpen = item.classList.contains('open');
+
+      // Close all
+      document.querySelectorAll('.accordion-item.open').forEach(function(openItem) {
+        openItem.classList.remove('open');
+        openItem.querySelector('.accordion-body').style.maxHeight = '0';
+      });
+
+      // Open clicked if was closed
+      if (!isOpen) {
+        item.classList.add('open');
+        body.style.maxHeight = inner.scrollHeight + 20 + 'px';
+      }
+    });
+  });
+
+  // ── Copy Buttons ──
+  document.querySelectorAll('.copy-btn').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      var text = this.getAttribute('data-copy');
+      navigator.clipboard.writeText(text).then(function() {
+        btn.textContent = '완료';
+        btn.classList.add('copied');
+        setTimeout(function() {
+          btn.textContent = '복사';
+          btn.classList.remove('copied');
+        }, 2000);
+      });
+    });
+  });
+
+  // ── Scroll Reveal ──
+  var reveals = document.querySelectorAll('.reveal');
+
+  var observer = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, {
+    threshold: 0.1,
+    rootMargin: '0px 0px -40px 0px'
+  });
+
+  reveals.forEach(function(el) { observer.observe(el); });
+
+  // ── Smooth scroll for nav links ──
+  document.querySelectorAll('a[href^="#"]').forEach(function(a) {
+    a.addEventListener('click', function(e) {
+      var id = this.getAttribute('href');
+      if (id === '#') return;
+      var target = document.querySelector(id);
+      if (target) {
+        e.preventDefault();
+        target.scrollIntoView({ behavior: 'smooth' });
+      }
+    });
+  });
+
+})();
+</script>
+
+</body>
+</html>

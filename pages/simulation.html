@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>FireNavi - 화이어내비 | 실시간 대피 시뮬레이션</title>
+  <title>FireNavi - 화이어내비 | AI 기반 실시간 대피 시뮬레이션</title>
   <link rel="stylesheet" href="../css/style.css">
   <style>
     /* ===== AI Recommend Panel Scrollbar ===== */
@@ -295,10 +295,15 @@
     /* --- Algorithm Section --- */
     .algo-grid {
       display: grid;
-      grid-auto-flow: column;
-      grid-auto-columns: 1fr;
+      grid-template-columns: repeat(2, 1fr);
       gap: var(--space-lg);
       margin-top: var(--space-lg);
+    }
+
+    @media (max-width: 768px) {
+      .algo-grid {
+        grid-template-columns: 1fr;
+      }
     }
 
     .algo-card {
@@ -380,7 +385,7 @@
         <a href="../index.html" class="nav-brand">
           <span class="fire-icon">&#x1F525;</span>
           <span>FireNavi</span>
-          <span class="nav-tagline">호화유람선 화재 대피 AI 내비게이션</span>
+          <span class="nav-tagline">AI 기반 실시간 생존 의사결정 플랫폼</span>
         </a>
         <ul class="nav-links">
           <li><a href="../index.html">Dashboard</a></li>
@@ -391,6 +396,8 @@
           <li><a href="simulation.html" class="active">시뮬레이션</a></li>
           <li><a href="risk-map.html">위험지도</a></li>
           <li><a href="route-optimizer.html">경로최적화</a></li>
+          <li><a href="../manual.html" style="color:#DB2777;">매뉴얼</a></li>
+          <li><a href="../docs/diagrams/architecture.svg" style="color:#7C3AED;">구조도</a></li>
         </ul>
         <button class="nav-mobile-toggle">&#9776;</button>
       </div>
@@ -404,10 +411,11 @@
           <span>/</span>
           <span>실시간 대피 시뮬레이션</span>
         </div>
-        <h1 class="page-title">실시간 화재 대피 시뮬레이션</h1>
+        <h1 class="page-title">AI 기반 실시간 생존 시뮬레이션</h1>
         <p class="page-desc">
-          크루즈선 각 층(5~9층) 데크 평면도를 선택하여 화재를 배치하고, 승객 에이전트들의 대피 과정을 실시간으로 관찰합니다.
-          A* 경로탐색, Social Force Model, Beer-Lambert 가시성, Advection-Diffusion 연기 확산, 다중 위험 리스크 맵, 건강 상태 인지 대피 등 <b>9가지 수리 모델</b>이 통합 적용됩니다.
+          화재 발생 순간, 공간은 데이터로 변하고 사람은 에이전트가 되며 AI는 지휘관이 됩니다.
+          <b>3개 AI 엔진</b>(Prediction, Behavior, Decision)이 동시에 작동하여 <b>9가지 수리 모델</b>로 수천 명의 생존을 실시간으로 결정합니다.
+          WiFi 기반 정밀 위치추적으로 2~3m 수준의 개인별 위치를 파악합니다.
         </p>
       </div>
     </div>
@@ -417,14 +425,39 @@
       <div class="sim-layout">
         <!-- LEFT: Canvas + Controls -->
         <div class="sim-main">
+          <!-- AI Engine Status Bar -->
+          <div class="ai-status-bar" id="aiStatusBar">
+            <div class="ai-status-item" id="aiPrediction">
+              <span class="ai-status-dot"></span>
+              <span>Prediction AI</span>
+            </div>
+            <div class="ai-status-item" id="aiBehavior">
+              <span class="ai-status-dot"></span>
+              <span>Behavior AI</span>
+            </div>
+            <div class="ai-status-item" id="aiDecision">
+              <span class="ai-status-dot"></span>
+              <span>Decision AI</span>
+            </div>
+            <div style="flex:1;"></div>
+            <div class="ai-status-item" id="aiMode" style="background:rgba(6,182,212,0.1);border-color:rgba(6,182,212,0.2);color:#06B6D4;">
+              <span class="ai-status-dot" style="background:#06B6D4;"></span>
+              <span>Normal Mode</span>
+            </div>
+            <div class="ai-status-item" id="wifiStatus" style="background:rgba(16,185,129,0.1);border-color:rgba(16,185,129,0.2);color:#10B981;">
+              <span class="ai-status-dot" style="background:#10B981;box-shadow:0 0 8px rgba(16,185,129,0.5);animation:statusPulse 2s ease-in-out infinite;"></span>
+              <span>WiFi Tracking Active</span>
+            </div>
+          </div>
+
           <!-- Deck Selector Buttons -->
           <div id="deckSelector" style="display:flex; gap:6px; margin-bottom:10px;">
             <span style="font-size:0.82rem; font-weight:600; color:var(--text-muted); display:flex; align-items:center; margin-right:4px;">층 선택:</span>
-            <button class="deck-btn active" data-deck="5" onclick="selectDeck(5)">5층</button>
-            <button class="deck-btn" data-deck="6" onclick="selectDeck(6)">6층</button>
-            <button class="deck-btn" data-deck="7" onclick="selectDeck(7)">7층</button>
-            <button class="deck-btn" data-deck="8" onclick="selectDeck(8)">8층</button>
-            <button class="deck-btn" data-deck="9" onclick="selectDeck(9)">9층</button>
+            <button class="deck-btn active" data-deck="5" onclick="selectDeck(5)">5층 객실</button>
+            <button class="deck-btn" data-deck="6" onclick="selectDeck(6)">6층 VIP객실</button>
+            <button class="deck-btn" data-deck="7" onclick="selectDeck(7)">7층 레스토랑</button>
+            <button class="deck-btn" data-deck="8" onclick="selectDeck(8)">8층 극장</button>
+            <button class="deck-btn" data-deck="9" onclick="selectDeck(9)">9층 수영장</button>
           </div>
           <div class="canvas-wrap" id="canvasWrap">
             <canvas id="simCanvas" width="900" height="500"></canvas>
@@ -576,6 +609,12 @@
               <div class="legend-item">
                 <span class="legend-dot" style="background:transparent;border:2px solid #EF4444;width:8px;height:8px;border-radius:50%;"></span> 경로탐색 중
               </div>
+              <div class="legend-item">
+                <span class="legend-rect" style="background:rgba(245,158,11,0.15);border:1.5px dashed #F59E0B;"></span> 보안구역
+              </div>
+              <div class="legend-item">
+                <span class="legend-dot" style="background:transparent;border:2px solid #DC2626;width:8px;height:8px;border-radius:50%;"></span> 침입 감지
+              </div>
             </div>
           </div>
 
@@ -615,6 +654,64 @@
               <span class="value green" id="statFFDone">0건</span>
             </div>
           </div>
+
+          <!-- WiFi Tracking -->
+          <div class="stats-card" style="background: linear-gradient(180deg, rgba(207,250,254,0.2) 0%, #FFFFFF 40%);">
+            <div style="position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,#0891B2,#06B6D4);"></div>
+            <h3 style="color:#0891B2;">WiFi 위치추적</h3>
+            <div class="stat-row">
+              <span class="label">추적 중 인원</span>
+              <span class="value" style="color:#0891B2;" id="statWifiTracked">0</span>
+            </div>
+            <div class="stat-row">
+              <span class="label">위치 정확도</span>
+              <span class="value" style="color:#059669;">2.3m</span>
+            </div>
+            <div class="stat-row">
+              <span class="label">WiFi AP 연결</span>
+              <span class="value" style="color:#0891B2;">12/12</span>
+            </div>
+            <div class="stat-row">
+              <span class="label">신호 품질</span>
+              <span class="value" style="color:#059669;">98%</span>
+            </div>
+            <div class="stat-row" style="border-top:1px solid var(--border);padding-top:6px;margin-top:4px;">
+              <span class="label" style="color:#DB2777;font-weight:600;">우선구조 대상</span>
+              <span class="value" style="color:#DB2777;font-size:0.85rem;" id="statPriorityCount">0</span>
+            </div>
+            <div class="stat-row">
+              <span class="label">우선구조 대피완료</span>
+              <span class="value" style="color:#059669;font-size:0.85rem;" id="statPriorityEvac">0</span>
+            </div>
+            <div class="stat-row" style="border-top:1px solid var(--border);padding-top:6px;margin-top:4px;">
+              <span class="label">보안구역 알림</span>
+              <span class="value" style="color:#059669;font-size:0.85rem;" id="statSecurityAlert">정상</span>
+            </div>
+          </div>
+
+          <!-- AI Engine Status -->
+          <div class="stats-card" style="background: linear-gradient(180deg, rgba(237,233,254,0.2) 0%, #FFFFFF 40%);">
+            <div style="position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,#7C3AED,#A78BFA);"></div>
+            <h3 style="color:#7C3AED;">AI 엔진 상태</h3>
+            <div class="stat-row">
+              <span class="label" style="display:flex;align-items:center;gap:6px;">
+                <span style="width:8px;height:8px;border-radius:50%;background:#EF4444;display:inline-block;"></span> Prediction
+              </span>
+              <span class="value" style="font-size:0.82rem;color:#64748B;" id="statAIPrediction">대기</span>
+            </div>
+            <div class="stat-row">
+              <span class="label" style="display:flex;align-items:center;gap:6px;">
+                <span style="width:8px;height:8px;border-radius:50%;background:#3B82F6;display:inline-block;"></span> Behavior
+              </span>
+              <span class="value" style="font-size:0.82rem;color:#64748B;" id="statAIBehavior">대기</span>
+            </div>
+            <div class="stat-row">
+              <span class="label" style="display:flex;align-items:center;gap:6px;">
+                <span style="width:8px;height:8px;border-radius:50%;background:#7C3AED;display:inline-block;"></span> Decision
+              </span>
+              <span class="value" style="font-size:0.82rem;color:#64748B;" id="statAIDecision">대기</span>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -622,14 +719,14 @@
       <div id="ffRecommendPanel" style="display:none; position:fixed; bottom:20px; right:20px; width:420px; max-height:70vh; overflow-y:auto; background:linear-gradient(135deg, rgba(219,234,254,0.95), rgba(239,246,255,0.98)); border:2px solid #3B82F6; border-radius:16px; padding:20px; box-shadow:0 20px 60px rgba(0,0,0,0.3), 0 0 20px rgba(59,130,246,0.2); z-index:1000; backdrop-filter:blur(10px);">
         <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:12px;">
           <h3 style="margin:0; font-size:1.05rem; color:#1D4ED8; display:flex; align-items:center; gap:8px;">
-            <span style="font-size:1.3rem;">🤖</span> AI 추천
+            <span style="font-size:1.3rem;">&#x1F9E0;</span> AI Decision Engine
           </h3>
           <div style="display:flex; align-items:center; gap:8px;">
-            <span style="font-size:0.7rem; font-weight:500; color:#64748B;">FireNavi AI Engine</span>
-            <button onclick="document.getElementById('ffRecommendPanel').style.display='none'" style="background:none; border:1px solid #CBD5E1; border-radius:6px; cursor:pointer; font-size:1rem; padding:2px 8px; color:#64748B; line-height:1;">&times;</button>
+            <span style="font-size:0.7rem; font-weight:500; color:var(--text-muted);">FireNavi AI Engine</span>
+            <button onclick="document.getElementById('ffRecommendPanel').style.display='none'" style="background:none; border:1px solid #CBD5E1; border-radius:6px; cursor:pointer; font-size:1rem; padding:2px 8px; color:var(--text-muted); line-height:1;">&times;</button>
           </div>
         </div>
-        <div id="ffRecommendContent" style="font-size:0.83rem; color:#1E293B; line-height:1.7;"></div>
+        <div id="ffRecommendContent" style="font-size:0.83rem; color:var(--text-primary); line-height:1.7;"></div>
       </div>
 
       <!-- Algorithm Info -->
@@ -794,6 +891,101 @@
               소화기 1개당 1회 사용 (사용 후 회색 표시)
             </span>
           </div>
+
+          <!-- ★ AI 출구 분산 최적화 -->
+          <div class="algo-card" style="margin-top:16px; background:linear-gradient(160deg, rgba(236,72,153,0.08) 0%, #FFFFFF 30%); border-color:rgba(236,72,153,0.15);">
+            <div style="position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,#EC4899,#EF4444,#F59E0B);border-radius:4px 4px 0 0;"></div>
+            <h4 style="color:#DB2777;"><span>&#x1F6E1;&#xFE0F;</span> AI 출구 분산 최적화 (Exit Crowd Balancing)</h4>
+            <p>
+              기존 대피 시스템은 모든 승객에게 <b>가장 가까운 출구</b>만 안내합니다.
+              이 방식은 특정 출구에 수백 명이 몰리는 <b>병목 현상</b>을 유발하여 대피 시간이 급격히 증가합니다.
+            </p>
+            <p>
+              FireNavi는 <b>각 출구의 실시간 배정 인원</b>을 추적하여, 이미 많은 승객이 향하는 출구에
+              <b>혼잡도 패널티</b>를 부과합니다. 이를 통해 승객이 자연스럽게 여러 출구와 계단으로 분산됩니다.
+            </p>
+            <span class="formula-inline">
+              Score(exit) = Distance + FirePenalty + SmokePenalty + <b style="color:#DB2777;">CrowdPenalty</b><br>
+              CrowdPenalty = N_assigned &times; 40<br>
+              (N_assigned = 해당 출구에 현재 배정된 승객 수)
+            </span>
+            <p>
+              예: 출구 A에 이미 15명이 배정되었다면, 패널티 = 15 &times; 40 = 600이 추가됩니다.
+              결과적으로 더 먼 출구 B(거리 500 + 패널티 0 = 500)가 혼잡한 출구 A(거리 300 + 패널티 600 = 900)보다
+              <b>더 나은 선택</b>이 됩니다. AI가 전체 최적을 자동으로 계산합니다.
+            </p>
+          </div>
+
+          <!-- ★ 우선구조 대상 연기 회피 강화 -->
+          <div class="algo-card" style="margin-top:16px; background:linear-gradient(160deg, rgba(239,68,68,0.08) 0%, #FFFFFF 30%); border-color:rgba(239,68,68,0.15);">
+            <div style="position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,#EF4444,#EC4899);border-radius:4px 4px 0 0;"></div>
+            <h4 style="color:#DC2626;"><span>&#x2695;&#xFE0F;</span> 취약 계층 우선 경로 AI (Priority Rescue Routing)</h4>
+            <p>
+              고령자, 장애인(휠체어), 어린이, 임산부, 부상자 등 이동 취약 계층과 동반 보호자에게는
+              일반 승객과 <b>완전히 다른 경로 계산 기준</b>이 적용됩니다.
+            </p>
+            <span class="formula-inline">
+              Score_priority(exit) = Distance + FirePenalty &times; <b style="color:#DC2626;">&alpha;</b> + SmokePenalty &times; <b style="color:#DC2626;">&alpha;</b> + CrowdPenalty<br>
+              <b style="color:#DC2626;">&alpha; = 2.0</b> (우선구조 대상), &alpha; = 1.0 (일반 승객)
+            </span>
+            <p>
+              <b>핵심 차별점:</b> 화재/연기 패널티가 <b>2배</b>로 적용되므로,
+              취약 계층은 조금 멀더라도 <b>연기가 없는 더 안전한 출구</b>를 자동으로 선택합니다.
+              일반 성인이 연기 속을 빠르게 통과하는 경로를 선택할 때,
+              고령자나 휠체어 사용자는 연기 없는 우회 경로를 배정받습니다.
+            </p>
+            <div style="margin-top:12px;display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+              <div style="background:rgba(59,130,246,0.06);border:1px solid rgba(59,130,246,0.15);border-radius:8px;padding:14px;">
+                <div style="font-size:0.82rem;font-weight:700;color:#2563EB;margin-bottom:6px;">Standard Route (일반 성인)</div>
+                <div style="font-size:0.8rem;color:var(--text-tertiary);line-height:1.7;">
+                  거리 우선 + 화재 회피 기본<br>
+                  연기 구간 통과 허용 (속도 감소)<br>
+                  가장 가까운 출구 배정
+                </div>
+              </div>
+              <div style="background:rgba(236,72,153,0.06);border:1px solid rgba(236,72,153,0.2);border-radius:8px;padding:14px;">
+                <div style="font-size:0.82rem;font-weight:700;color:#DB2777;margin-bottom:6px;">Priority Route (취약 계층)</div>
+                <div style="font-size:0.8rem;color:var(--text-tertiary);line-height:1.7;">
+                  안전 우선 + 화재/연기 패널티 2배<br>
+                  연기 구간 원천 회피<br>
+                  가장 안전한 출구 배정
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ★ 개인화된 AI 출구 선택 -->
+          <div class="algo-card" style="margin-top:16px; background:linear-gradient(160deg, rgba(124,58,237,0.08) 0%, #FFFFFF 30%); border-color:rgba(124,58,237,0.15);">
+            <div style="position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,#7C3AED,#A78BFA);border-radius:4px 4px 0 0;"></div>
+            <h4 style="color:#6D28D9;"><span>&#x1F9E0;</span> 개인화 AI 출구 배정 (Personalized Exit Assignment)</h4>
+            <p>
+              FireNavi의 출구 선택 함수는 <b>승객 개인의 건강 상태, 이동 능력, 유형 정보</b>를 입력받아
+              각 개인에게 최적화된 출구를 배정합니다. 같은 위치에 있더라도
+              건강한 성인과 휠체어 사용자는 <b>서로 다른 출구</b>를 안내받을 수 있습니다.
+            </p>
+            <span class="formula-inline">
+              findNearestSafeExit(x, y, <b style="color:#7C3AED;">passenger</b>)<br><br>
+              passenger = { typeKey, isPriority, speed, mu, ... }<br>
+              &rarr; isPriority ? smokeMultiplier = 2.0 : smokeMultiplier = 1.0<br>
+              &rarr; 6가지 유형별 차별화된 출구 스코어링
+            </span>
+            <p>
+              이 함수는 매 경로 재계산 시(1~2.5초 간격) 호출되어,
+              화재 확산에 따라 <b>실시간으로 출구를 재배정</b>합니다.
+              멈춘 승객은 더 자주(0.2초 간격) 재탐색하여 대안 출구를 찾습니다.
+            </p>
+            <div style="margin-top:12px;background:rgba(124,58,237,0.05);border:1px solid rgba(124,58,237,0.12);border-radius:8px;padding:14px;">
+              <div style="font-size:0.82rem;font-weight:700;color:#6D28D9;margin-bottom:8px;">AI 출구 배정 5단계 의사결정</div>
+              <div style="font-size:0.8rem;color:var(--text-tertiary);line-height:2;">
+                1. 모든 출구/계단의 안전 여부 판정 (화재 내부 제외)<br>
+                2. 승객~출구 거리 계산 + 근접 보너스 (50px/100px)<br>
+                3. 출구 주변 화재/연기 패널티 산정 (&times; &alpha;)<br>
+                4. 경로상 화재 장애물 체크 (직선 샘플링)<br>
+                5. <b>출구별 혼잡도 패널티</b> + <b>유형별 가중치</b> 합산 → 최저 스코어 출구 배정
+              </div>
+            </div>
+          </div>
+
         </div>
       </div>
     </div>
@@ -844,6 +1036,17 @@
     const COLS = W / CELL;
     const ROWS = H / CELL;
 
+    // ───── AI Status DOM refs ─────
+    const aiPrediction = document.getElementById('aiPrediction');
+    const aiBehavior = document.getElementById('aiBehavior');
+    const aiDecision = document.getElementById('aiDecision');
+    const aiModeEl = document.getElementById('aiMode');
+    const statWifiTracked = document.getElementById('statWifiTracked');
+    const statSecurityAlert = document.getElementById('statSecurityAlert');
+    const statAIPrediction = document.getElementById('statAIPrediction');
+    const statAIBehavior = document.getElementById('statAIBehavior');
+    const statAIDecision = document.getElementById('statAIDecision');
+
     // ───── State ─────
     let currentDeck = 5; // 현재 선택된 층 (5~9층)
     let mode = 'idle'; // idle | placing | evacuating | done
@@ -862,6 +1065,11 @@
     let animId = null;
     let lastFrameTime = 0;
     let grid = []; // 0=wall, 1=walkable, 3=restaurant, 4=engine, 5=muster, 6=stairway, 7=exit, 8=cabin interior
+
+    // ───── Security Zone (보안구역 침입 감지) ─────
+    let securityAlerts = [];       // 현재 보안구역 침입 중인 승객 목록
+    let securityAlertHistory = []; // 침입 이력 (시각, 위치, 승객ID)
+    let securityFlashTimer = 0;    // 경고 깜박임 타이머
 
     // ───── Wind / Advection-Diffusion (Eq. 5-7) ─────
     // 해상 바람 방향 (라디안, 0=오른쪽, PI/2=아래), 속도
@@ -890,11 +1098,11 @@
 
     // ───── Deck layout descriptions (층별 이름) ─────
     const deckInfo = {
-      5: { name: '5층 - Passenger Cabins (일반 객실)', label: '5F Passenger Cabins / 일반 객실' },
-      6: { name: '6층 - Deluxe Cabins & Spa (디럭스 객실 & 스파)', label: '6F Deluxe Cabins & Spa / 디럭스 & 스파' },
-      7: { name: '7층 - Restaurant & Lounge (레스토랑 & 라운지)', label: '7F Restaurant & Lounge / 레스토랑 & 라운지' },
-      8: { name: '8층 - Suite & Theater (스위트 & 극장)', label: '8F Suite & Theater / 스위트 & 극장' },
-      9: { name: '9층 - Pool & Sky Deck (풀 & 스카이 데크)', label: '9F Pool & Sky Deck / 풀 & 스카이' }
+      5: { name: '5층 - 객실 (Passenger Cabins)', label: '5F 객실 / Passenger Cabins' },
+      6: { name: '6층 - VIP 객실 (VIP Suites)', label: '6F VIP 객실 / VIP Suites' },
+      7: { name: '7층 - 레스토랑 & 카페 (Restaurant & Cafe)', label: '7F 레스토랑 & 카페 / Restaurant & Cafe' },
+      8: { name: '8층 - 극장 & 카지노 (Theater & Casino)', label: '8F 극장 & 카지노 / Theater & Casino' },
+      9: { name: '9층 - 수영장 & 스카이바 (Pool & Sky Bar)', label: '9F 수영장 & 스카이바 / Pool & Sky Bar' }
     };
 
     // ───── Build Ship Layout (grid-based) ─────
@@ -1069,7 +1277,7 @@
     }
 
     // ══════════════════════════════════════════════
-    // 5층 - 일반 객실 (Passenger Cabins)
+    // 5층 - 객실 (Passenger Cabins)
     //   양쪽에 객실이 밀집, 중앙 긴 복도, 하단 기관실
     // ══════════════════════════════════════════════
     function buildDeck5() {
@@ -1144,7 +1352,7 @@
     }
 
     // ══════════════════════════════════════════════
-    // 6층 - 디럭스 객실 & 스파 (Deluxe Cabins & Spa)
+    // 6층 - VIP 객실 (VIP Suites)
     //   더 넓은 객실(5칸), 중앙에 스파/사우나, 좌측에 피트니스
     // ══════════════════════════════════════════════
     function buildDeck6() {
@@ -1210,7 +1418,7 @@
     }
 
     // ══════════════════════════════════════════════
-    // 7층 - 레스토랑 & 라운지 (Restaurant & Lounge)
+    // 7층 - 레스토랑 & 카페 (Restaurant & Cafe)
     //   대형 레스토랑 2개, 바/라운지, 객실 적음
     // ══════════════════════════════════════════════
     function buildDeck7() {
@@ -1273,7 +1481,7 @@
     }
 
     // ══════════════════════════════════════════════
-    // 8층 - 스위트 & 극장 (Suite & Theater)
+    // 8층 - 극장 & 카지노 (Theater & Casino)
     //   VIP 대형 스위트 객실, 중앙 극장/공연장
     // ══════════════════════════════════════════════
     function buildDeck8() {
@@ -1337,7 +1545,7 @@
     }
 
     // ══════════════════════════════════════════════
-    // 9층 - 풀 & 스카이 데크 (Pool & Sky Deck)
+    // 9층 - 수영장 & 스카이바 (Pool & Sky Bar)
     //   대형 수영장 2개, 선데크, 소수 프리미엄 객실
     // ══════════════════════════════════════════════
     function buildDeck9() {
@@ -1532,6 +1740,101 @@
       return v === 1 || v === 3 || v === 5 || v === 6 || v === 7 || v === 8;
     }
 
+    // ───── Security Zone Detection (보안구역 침입 감지) ─────
+    function isInSecurityZone(px, py) {
+      // 기관실(engineRooms)은 승객 출입 금지 보안구역
+      for (const er of engineRooms) {
+        const erPxX = er.x * CELL;
+        const erPxY = er.y * CELL;
+        const erPxW = er.w * CELL;
+        const erPxH = er.h * CELL;
+        if (px >= erPxX && px <= erPxX + erPxW && py >= erPxY && py <= erPxY + erPxH) {
+          return er;
+        }
+      }
+      return null;
+    }
+
+    function checkSecurityZones() {
+      securityAlerts = [];
+      for (const p of passengers) {
+        if (p.evacuated) continue;
+        const zone = isInSecurityZone(p.x, p.y);
+        if (zone) {
+          securityAlerts.push({ passenger: p, zone: zone });
+          // 이력에 중복 없이 추가 (같은 승객이 계속 같은 구역에 있으면 1회만)
+          const exists = securityAlertHistory.find(h => h.passengerId === p.id && h.zoneX === zone.x && h.zoneY === zone.y);
+          if (!exists) {
+            securityAlertHistory.push({
+              passengerId: p.id,
+              passengerType: p.typeKey,
+              zoneX: zone.x,
+              zoneY: zone.y,
+              time: elapsedTime,
+              deck: currentDeck
+            });
+          }
+        }
+      }
+      // UI 업데이트
+      if (statSecurityAlert) {
+        if (securityAlerts.length > 0) {
+          statSecurityAlert.textContent = securityAlerts.length + '명 침입';
+          statSecurityAlert.style.color = '#DC2626';
+        } else if (securityAlertHistory.length > 0) {
+          statSecurityAlert.textContent = '이력 ' + securityAlertHistory.length + '건';
+          statSecurityAlert.style.color = '#D97706';
+        } else {
+          statSecurityAlert.textContent = '정상';
+          statSecurityAlert.style.color = '#059669';
+        }
+      }
+    }
+
+    function drawSecurityZones() {
+      securityFlashTimer += 0.05;
+      const flashOn = Math.sin(securityFlashTimer * 6) > 0;
+
+      // 보안구역 표시 (기관실 주변 빨간 점선 테두리)
+      for (const er of engineRooms) {
+        const erPxX = er.x * CELL;
+        const erPxY = er.y * CELL;
+        const erPxW = er.w * CELL;
+        const erPxH = er.h * CELL;
+
+        // 보안구역 마크
+        ctx.save();
+        ctx.strokeStyle = 'rgba(245, 158, 11, 0.5)';
+        ctx.lineWidth = 1.5;
+        ctx.setLineDash([4, 3]);
+        ctx.strokeRect(erPxX - 2, erPxY - 2, erPxW + 4, erPxH + 4);
+        ctx.setLineDash([]);
+
+        // "RESTRICTED" 라벨
+        ctx.fillStyle = 'rgba(245, 158, 11, 0.7)';
+        ctx.font = 'bold 7px sans-serif';
+        ctx.fillText('RESTRICTED', erPxX + 2, erPxY + erPxH - 3);
+        ctx.restore();
+      }
+
+      // 침입 경고 표시
+      if (securityAlerts.length > 0 && flashOn) {
+        for (const alert of securityAlerts) {
+          const p = alert.passenger;
+          // 경고 원 (빨간 깜박임)
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, 12, 0, Math.PI * 2);
+          ctx.strokeStyle = 'rgba(220, 38, 38, 0.8)';
+          ctx.lineWidth = 2;
+          ctx.stroke();
+          // 경고 삼각형 아이콘
+          ctx.fillStyle = 'rgba(220, 38, 38, 0.9)';
+          ctx.font = 'bold 10px sans-serif';
+          ctx.fillText('⚠', p.x - 5, p.y - 14);
+        }
+      }
+    }
+
     // ───── Spawn Passengers ─────
     // ───── Health-Aware Passenger Types (Eq. 20-22) ─────
     // Eq.20: 이동성 지수 μ_i ∈ [0,1] (0=immobile, 1=fully mobile)
@@ -1607,12 +1910,20 @@
              RISK_WEIGHTS.wStruct * rStruct + RISK_WEIGHTS.wCrowd * rCrowd;
     }
 
+    function isInEngineRoomArea(r, c) {
+      for (const er of engineRooms) {
+        if (c >= er.x && c < er.x + er.w && r >= er.y && r < er.y + er.h) return true;
+      }
+      return false;
+    }
+
     function spawnPassengers() {
       passengers = [];
       const walkableCells = [];
       for (let r = 0; r < ROWS; r++) {
         for (let c = 0; c < COLS; c++) {
-          if (isWalkable(r, c) && grid[r][c] !== 7) {
+          // 보안구역(기관실)에는 승객 스폰 금지
+          if (isWalkable(r, c) && grid[r][c] !== 7 && !isInEngineRoomArea(r, c)) {
             walkableCells.push({ r, c });
           }
         }
@@ -1630,12 +1941,14 @@
         const px = cell.c * CELL + CELL / 2;
         const py = cell.r * CELL + CELL / 2;
         passengers.push({
+          id: i,
           x: px,
           y: py,
           speed: speedFactor * (0.8 + Math.random() * 0.5),
           isSlow: isSlow,
           typeKey: typeKey,
           typeColor: typeInfo.color,
+          isPriority: (typeKey !== 'normal'),
           mu: mu,
           evacuated: false,
           evacuatedTime: 0,
@@ -1863,11 +2176,26 @@
       return Math.abs(r1 - r2) + Math.abs(c1 - c2);
     }
 
-    function findNearestSafeExit(px, py) {
+    // ───── 출구별 현재 배정 승객 수 (혼잡도 분산용) ─────
+    function getExitCrowdCount(ex) {
+      let count = 0;
+      for (const p of passengers) {
+        if (p.evacuated) continue;
+        if (p.targetExit === ex) count++;
+      }
+      return count;
+    }
+
+    function findNearestSafeExit(px, py, passenger) {
       let best = null;
       let bestScore = Infinity;
       // 출구 + 계단 모두 대피 목적지로 포함 (계단 도달 = 다른 층 이동 = 대피 완료)
       const allTargets = exits.concat(stairways);
+
+      // 승객 유형별 가중치 (우선구조 대상은 연기/화재 패널티 2배)
+      const isPriority = passenger && passenger.isPriority;
+      const smokeMultiplier = isPriority ? 2.0 : 1.0;
+
       for (const ex of allTargets) {
         const ecx = ex.x * CELL + ex.w * CELL / 2;
         const ecy = ex.y * CELL + ex.h * CELL / 2;
@@ -1879,7 +2207,7 @@
 
         // ★ 근접 우선: 매우 가까운 출구/계단(50px 이내)은 무조건 최우선
         if (dist < 50) {
-          const score = dist * 0.1; // 거리만 고려, 화재 패널티 무시
+          const score = dist * 0.1;
           if (score < bestScore) { bestScore = score; best = ex; }
           continue;
         }
@@ -1887,19 +2215,19 @@
         // ★ 근접 보너스: 가까울수록 큰 할인 (100px 이내 = 50% 할인)
         const proximityBonus = dist < 100 ? dist * 0.5 : dist;
 
-        // 출구 자체의 화재 근접 패널티 (출구가 화재/연기 안에 있는지)
+        // 출구 자체의 화재 근접 패널티 (우선구조 대상은 2배)
         let exitFirePenalty = 0;
         for (const f of fires) {
           const fdx = ecx - f.x, fdy = ecy - f.y;
           const fdist = Math.sqrt(fdx * fdx + fdy * fdy);
           if (fdist < f.radius * 1.5) {
-            exitFirePenalty += 8000; // 화재 바로 옆 출구
+            exitFirePenalty += 8000 * smokeMultiplier;
           } else if (fdist < f.smokeRadius) {
-            exitFirePenalty += 1500 * (1 - fdist / f.smokeRadius);
+            exitFirePenalty += 1500 * (1 - fdist / f.smokeRadius) * smokeMultiplier;
           }
         }
 
-        // 승객→출구 직선 경로상 화재 체크 (가까운 출구는 샘플 수 줄임)
+        // 승객→출구 직선 경로상 화재 체크
         let pathFirePenalty = 0;
         const samples = dist < 150 ? 3 : 6;
         for (let i = 1; i <= samples; i++) {
@@ -1910,14 +2238,18 @@
             const fdx = sx - f.x, fdy = sy - f.y;
             const fdist = Math.sqrt(fdx * fdx + fdy * fdy);
             if (fdist < f.radius * 1.5) {
-              pathFirePenalty += 5000;
+              pathFirePenalty += 5000 * smokeMultiplier;
             } else if (fdist < f.smokeRadius) {
-              pathFirePenalty += 300 * (1 - fdist / f.smokeRadius);
+              pathFirePenalty += 300 * (1 - fdist / f.smokeRadius) * smokeMultiplier;
             }
           }
         }
 
-        const score = proximityBonus + pathFirePenalty + exitFirePenalty;
+        // ★ 혼잡도 패널티: 이미 많은 승객이 향하는 출구에 추가 비용
+        const crowdCount = getExitCrowdCount(ex);
+        const crowdPenalty = crowdCount * 40; // 배정 인원 1명당 40 추가 비용
+
+        const score = proximityBonus + pathFirePenalty + exitFirePenalty + crowdPenalty;
         if (score < bestScore) {
           bestScore = score;
           best = ex;
@@ -1972,7 +2304,7 @@
 
       // 1) 출구 방향 벡터 (최우선)
       let exitDx = 0, exitDy = 0;
-      const safeExit = findNearestSafeExit(p.x, p.y);
+      const safeExit = findNearestSafeExit(p.x, p.y, p);
       if (safeExit) {
         const ecx = safeExit.x * CELL + safeExit.w * CELL / 2;
         const ecy = safeExit.y * CELL + safeExit.h * CELL / 2;
@@ -2187,7 +2519,7 @@
           if (!keepTarget) {
             // 멈춰있을 때: 모든 출구 시도 (가장 안전한 것부터)
             if (isStuck) {
-              p.targetExit = findNearestSafeExit(p.x, p.y);
+              p.targetExit = findNearestSafeExit(p.x, p.y, p);
               p.path = findPath(p.x, p.y, p.targetExit);
 
               // 첫 번째 출구로 경로 못 찾으면 다른 출구/계단도 시도
@@ -2204,7 +2536,7 @@
                 }
               }
             } else {
-              p.targetExit = findNearestSafeExit(p.x, p.y);
+              p.targetExit = findNearestSafeExit(p.x, p.y, p);
               p.path = findPath(p.x, p.y, p.targetExit);
             }
           } else {
@@ -2515,10 +2847,10 @@
       // Engine rooms / Utility areas
       const erLabels = {
         5: 'ENGINE ROOM / 기관실',
-        6: 'FITNESS CENTER / 피트니스',
+        6: 'VIP LOUNGE / VIP 라운지',
         7: 'KITCHEN / 주방',
-        8: 'UTILITY / 장비실',
-        9: 'MAINTENANCE / 관리실'
+        8: 'BACKSTAGE / 무대 뒤',
+        9: 'MACHINE ROOM / 기계실'
       };
       const erLabel = erLabels[currentDeck] || 'ENGINE ROOM';
       for (const er of engineRooms) {
@@ -2584,7 +2916,7 @@
       // Restaurant / 공용 공간
       const facilityNames = {
         5: ['RESTAURANT / 레스토랑'],
-        6: ['SPA & WELLNESS / 스파', 'FITNESS / 피트니스'],
+        6: ['VIP SUITE / VIP 객실', 'VIP SUITE / VIP 객실'],
         7: ['MAIN DINING / 메인 다이닝', 'BUFFET / 뷔페', 'BAR & LOUNGE / 바', 'CAFE / 카페'],
         8: ['THEATER / 극장', 'VIP LOUNGE / VIP 라운지', 'CASINO / 카지노'],
         9: ['POOL / 수영장', 'POOL / 수영장', 'POOLSIDE BAR / 풀바', 'SUN DECK LOUNGE / 선데크', 'SKY BAR / 스카이바', 'SKY BAR / 스카이바']
@@ -2763,42 +3095,89 @@
       ctx.fillText('RISK MAP ON', W - 95, 18);
     }
 
+    // hex→rgba 유틸
+    function hexToRgba(hex, a) {
+      const r = parseInt(hex.slice(1,3),16), g = parseInt(hex.slice(3,5),16), b = parseInt(hex.slice(5,7),16);
+      return 'rgba('+r+','+g+','+b+','+a+')';
+    }
+
+    // 유형별 경로 스타일 설정
+    const PATH_STYLES = {
+      normal:     { width: 1.5, opacity: 0.35, dash: [],      label: '' },
+      elderly:    { width: 2.0, opacity: 0.50, dash: [6,3],   label: '고령' },
+      child:      { width: 2.0, opacity: 0.50, dash: [4,2],   label: '아동' },
+      wheelchair: { width: 2.5, opacity: 0.60, dash: [8,4],   label: '휠체어' },
+      pregnant:   { width: 2.0, opacity: 0.50, dash: [5,3],   label: '임산' },
+      injured:    { width: 2.5, opacity: 0.60, dash: [3,3],   label: '부상' }
+    };
+
     function drawPassengers() {
+      // ──── Phase 1: 경로를 먼저 그린다 (승객 아래 레이어) ────
+      if (mode === 'evacuating') {
+        for (const p of passengers) {
+          if (p.evacuated || p.path.length < 2) continue;
+          const style = PATH_STYLES[p.typeKey] || PATH_STYLES.normal;
+          const color = p.typeColor || '#4A90D9';
+          const maxNodes = p.isPriority ? p.path.length : Math.min(p.path.length, 15);
+
+          ctx.save();
+          ctx.beginPath();
+          ctx.moveTo(p.x, p.y);
+          for (let i = 0; i < maxNodes; i++) {
+            ctx.lineTo(p.path[i].x, p.path[i].y);
+          }
+          ctx.strokeStyle = hexToRgba(color, style.opacity);
+          ctx.lineWidth = style.width;
+          ctx.setLineDash(style.dash);
+          ctx.stroke();
+          ctx.setLineDash([]);
+
+          // 경로 끝 화살촉 (진행 방향 표시)
+          if (p.path.length >= 2) {
+            const endIdx = Math.min(maxNodes - 1, p.path.length - 1);
+            const prevIdx = Math.max(0, endIdx - 1);
+            const dx = p.path[endIdx].x - p.path[prevIdx].x;
+            const dy = p.path[endIdx].y - p.path[prevIdx].y;
+            const angle = Math.atan2(dy, dx);
+            const ax = p.path[endIdx].x;
+            const ay = p.path[endIdx].y;
+            ctx.beginPath();
+            ctx.moveTo(ax, ay);
+            ctx.lineTo(ax - 6 * Math.cos(angle - 0.5), ay - 6 * Math.sin(angle - 0.5));
+            ctx.lineTo(ax - 6 * Math.cos(angle + 0.5), ay - 6 * Math.sin(angle + 0.5));
+            ctx.closePath();
+            ctx.fillStyle = hexToRgba(color, style.opacity + 0.1);
+            ctx.fill();
+          }
+
+          // 우선구조 대상: 경로 중간에 유형 라벨 표시
+          if (p.isPriority && style.label && p.path.length > 4) {
+            const midIdx = Math.floor(Math.min(maxNodes, p.path.length) / 2);
+            const lx = p.path[midIdx].x;
+            const ly = p.path[midIdx].y;
+            ctx.fillStyle = hexToRgba(color, 0.85);
+            ctx.font = 'bold 7px sans-serif';
+            ctx.fillText(style.label, lx + 3, ly - 3);
+          }
+          ctx.restore();
+        }
+      }
+
+      // ──── Phase 2: 승객 점 (경로 위에 그린다) ────
       for (const p of passengers) {
         if (p.evacuated) continue;
 
         const radius = 4;
-
-        // Draw path (faint) - 승객 유형별 색상 적용
-        if (p.path.length > 0 && mode === 'evacuating') {
-          ctx.beginPath();
-          ctx.moveTo(p.x, p.y);
-          for (let i = 0; i < Math.min(p.path.length, 8); i++) {
-            ctx.lineTo(p.path[i].x, p.path[i].y);
-          }
-          const pathColor = p.typeColor || '#4A90D9';
-          ctx.strokeStyle = pathColor.replace(')', ',0.15)').replace('rgb', 'rgba').replace('#', '');
-          // hex to rgba for path
-          const hexToRgba = (hex, a) => {
-            const r = parseInt(hex.slice(1,3),16), g = parseInt(hex.slice(3,5),16), b = parseInt(hex.slice(5,7),16);
-            return 'rgba('+r+','+g+','+b+','+a+')';
-          };
-          ctx.strokeStyle = hexToRgba(p.typeColor || '#4A90D9', 0.2);
-          ctx.lineWidth = 1;
-          ctx.stroke();
-        }
 
         // Dot — 승객 유형별 색상 (Eq. 20-22 Health-Aware)
         ctx.beginPath();
         ctx.arc(p.x, p.y, radius, 0, Math.PI * 2);
 
         if (p.usingExtinguisher) {
-          // 소화기 사용 중: 주황색 + 깜박임
           ctx.fillStyle = p.extPhase === 'extinguish'
             ? (Math.sin(elapsedTime * 8) > 0 ? '#F97316' : '#DC2626')
             : '#F97316';
           ctx.fill();
-          // 소화기 아이콘 표시
           ctx.fillStyle = '#FFFFFF';
           ctx.font = 'bold 7px sans-serif';
           ctx.fillText('FE', p.x - 6, p.y - 7);
@@ -2810,12 +3189,36 @@
           ctx.fill();
         }
 
-        // Outline
-        ctx.strokeStyle = 'rgba(255,255,255,0.3)';
-        ctx.lineWidth = 0.5;
+        // 외곽선 — 우선구조는 더 밝게
+        ctx.strokeStyle = p.isPriority ? 'rgba(255,255,255,0.6)' : 'rgba(255,255,255,0.3)';
+        ctx.lineWidth = p.isPriority ? 1 : 0.5;
         ctx.stroke();
 
-        // ★ 멈춤 경고 표시 (3초 이상 멈춘 승객)
+        // 유형 이니셜 표시 (우선구조 대상만)
+        if (p.isPriority && mode === 'evacuating') {
+          const initials = { elderly: 'E', child: 'C', wheelchair: 'W', pregnant: 'P', injured: 'I' };
+          const ini = initials[p.typeKey];
+          if (ini) {
+            ctx.fillStyle = '#FFFFFF';
+            ctx.font = 'bold 6px sans-serif';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText(ini, p.x, p.y + 0.5);
+            ctx.textAlign = 'start';
+            ctx.textBaseline = 'alphabetic';
+          }
+        }
+
+        // Priority rescue indicator — pulsing ring
+        if (p.isPriority && !p.evacuated && mode === 'evacuating') {
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, radius + 4 + Math.sin(elapsedTime * 4) * 1.5, 0, Math.PI * 2);
+          ctx.strokeStyle = 'rgba(236, 72, 153, 0.6)';
+          ctx.lineWidth = 1.5;
+          ctx.stroke();
+        }
+
+        // 멈춤 경고 (3초+)
         if (p.stuckTimer > 3 && mode === 'evacuating' && !p.usingExtinguisher) {
           const pulseR = 7 + 3 * Math.sin(elapsedTime * 5);
           ctx.beginPath();
@@ -2823,11 +3226,65 @@
           ctx.strokeStyle = 'rgba(239, 68, 68, ' + (0.4 + 0.3 * Math.sin(elapsedTime * 5)) + ')';
           ctx.lineWidth = 1.5;
           ctx.stroke();
-          // SOS 텍스트
           ctx.fillStyle = '#EF4444';
           ctx.font = 'bold 6px sans-serif';
           ctx.fillText('!', p.x - 2, p.y - 9);
         }
+      }
+
+      // ──── Phase 3: AI 경로 안내 범례 (대피 중일 때 캔버스 좌상단) ────
+      if (mode === 'evacuating') {
+        const lx = 12, ly = 22;
+        ctx.save();
+        ctx.fillStyle = 'rgba(15,23,42,0.75)';
+        ctx.beginPath();
+        // 둥근 사각형 배경
+        const bw = 135, bh = 108, br = 6;
+        ctx.moveTo(lx + br, ly);
+        ctx.lineTo(lx + bw - br, ly);
+        ctx.quadraticCurveTo(lx + bw, ly, lx + bw, ly + br);
+        ctx.lineTo(lx + bw, ly + bh - br);
+        ctx.quadraticCurveTo(lx + bw, ly + bh, lx + bw - br, ly + bh);
+        ctx.lineTo(lx + br, ly + bh);
+        ctx.quadraticCurveTo(lx, ly + bh, lx, ly + bh - br);
+        ctx.lineTo(lx, ly + br);
+        ctx.quadraticCurveTo(lx, ly, lx + br, ly);
+        ctx.fill();
+
+        ctx.fillStyle = '#F1F5F9';
+        ctx.font = 'bold 8px sans-serif';
+        ctx.fillText('AI Route Guide', lx + 8, ly + 14);
+
+        const types = [
+          { key: 'normal', label: '성인 (기본)', color: '#4A90D9', dash: false },
+          { key: 'elderly', label: '고령자', color: '#F59E0B', dash: true },
+          { key: 'child', label: '어린이', color: '#8B5CF6', dash: true },
+          { key: 'wheelchair', label: '휠체어', color: '#EC4899', dash: true },
+          { key: 'pregnant', label: '임산부', color: '#14B8A6', dash: true },
+          { key: 'injured', label: '부상자', color: '#EF4444', dash: true },
+        ];
+        types.forEach((t, i) => {
+          const ry = ly + 24 + i * 13;
+          // 경로 라인 샘플
+          ctx.beginPath();
+          ctx.moveTo(lx + 8, ry);
+          ctx.lineTo(lx + 30, ry);
+          ctx.strokeStyle = t.color;
+          ctx.lineWidth = t.dash ? 2 : 1.5;
+          ctx.setLineDash(t.dash ? [4, 2] : []);
+          ctx.stroke();
+          ctx.setLineDash([]);
+          // 점
+          ctx.beginPath();
+          ctx.arc(lx + 35, ry, 3, 0, Math.PI * 2);
+          ctx.fillStyle = t.color;
+          ctx.fill();
+          // 라벨
+          ctx.fillStyle = '#CBD5E1';
+          ctx.font = '7px sans-serif';
+          ctx.fillText(t.label, lx + 42, ry + 2.5);
+        });
+        ctx.restore();
       }
     }
 
@@ -3189,6 +3646,24 @@
 
       html += '</div>';
 
+      // Priority rescue info
+      const priorityPassengers = passengers.filter(p => p.isPriority && !p.evacuated);
+      if (priorityPassengers.length > 0) {
+        html += '<div style="margin-top:12px;padding:12px;background:rgba(236,72,153,0.08);border:1px solid rgba(236,72,153,0.2);border-radius:8px;">';
+        html += '<div style="font-weight:700;color:#DB2777;margin-bottom:6px;">Priority Rescue AI</div>';
+        html += '<div style="font-size:0.8rem;color:#1E293B;">';
+        const typeCounts = {};
+        for (const p of priorityPassengers) {
+          typeCounts[p.typeKey] = (typeCounts[p.typeKey] || 0) + 1;
+        }
+        const labels = {elderly:'고령자',child:'어린이',wheelchair:'휠체어',pregnant:'임산부',injured:'부상자'};
+        for (const [k, v] of Object.entries(typeCounts)) {
+          html += (labels[k]||k) + ' ' + v + '명 ';
+        }
+        html += ' - 우선 대피 경로 적용 중</div>';
+        html += '</div>';
+      }
+
       // 투입 안내
       html += '<div style="margin-top:12px; padding:10px; background:rgba(37,99,235,0.08); border-radius:8px; font-size:0.8rem; color:#1D4ED8; text-align:center;">';
       html += '💡 캔버스에서 진압할 화재 근처를 클릭하면 소방관 4명이 투입됩니다. 여러 화재에 반복 투입 가능합니다.';
@@ -3272,6 +3747,23 @@
       document.getElementById('statFF').textContent = firefighters.length + '명 (' + activeFF + '활동)';
       document.getElementById('statFFDone').textContent = ffSuppressCount + '건';
 
+      // WiFi tracking stats
+      if (statWifiTracked) statWifiTracked.textContent = passengers.filter(p => !p.evacuated).length;
+
+      // Priority rescue stats
+      const priorityEl = document.getElementById('statPriorityCount');
+      const priorityEvacEl = document.getElementById('statPriorityEvac');
+      if (priorityEl) {
+        const priorityActive = passengers.filter(p => p.isPriority && !p.evacuated).length;
+        priorityEl.textContent = priorityActive + '명';
+        priorityEl.style.color = priorityActive > 0 && mode === 'evacuating' ? '#DC2626' : '#DB2777';
+      }
+      if (priorityEvacEl) {
+        const priorityDone = passengers.filter(p => p.isPriority && p.evacuated).length;
+        const priorityTotal = passengers.filter(p => p.isPriority).length;
+        priorityEvacEl.textContent = priorityDone + '/' + priorityTotal;
+      }
+
       // Check done
       if (mode === 'evacuating' && activePassengers.length === 0) {
         mode = 'done';
@@ -3320,6 +3812,7 @@
       if (paused) {
         ctx.clearRect(0, 0, W, H);
         drawShip();
+        drawSecurityZones();
         drawFires();
         drawRiskMapOverlay();
         drawFirefighters();
@@ -3340,9 +3833,13 @@
       const atRisk = updatePassengers(dt);
       updateFirefighters(dt);
 
+      // Security check
+      checkSecurityZones();
+
       // Draw
       ctx.clearRect(0, 0, W, H);
       drawShip();
+      drawSecurityZones();
       drawFires();
       drawRiskMapOverlay();
       drawFirefighters();
@@ -3440,6 +3937,26 @@
       fireCountBadge.style.background = '#FEF3C7';
       fireCountBadge.style.color = '#D97706';
       fireCountBadge.style.borderColor = '#FDE68A';
+
+      // Activate AI engines
+      if (aiPrediction) { aiPrediction.className = 'ai-status-item active active--prediction'; }
+      if (aiBehavior) { aiBehavior.className = 'ai-status-item active active--behavior'; }
+      if (aiDecision) { aiDecision.className = 'ai-status-item active active--decision'; }
+      if (aiModeEl) {
+        aiModeEl.style.background = 'rgba(220,38,38,0.15)';
+        aiModeEl.style.borderColor = 'rgba(220,38,38,0.3)';
+        aiModeEl.style.color = '#FCA5A5';
+        aiModeEl.querySelector('span:last-child').textContent = 'Emergency Mode';
+        aiModeEl.querySelector('.ai-status-dot').style.background = '#EF4444';
+        aiModeEl.querySelector('.ai-status-dot').style.boxShadow = '0 0 8px rgba(239,68,68,0.5)';
+        aiModeEl.querySelector('.ai-status-dot').style.animation = 'statusPulse 1s ease-in-out infinite';
+      }
+      if (statAIPrediction) statAIPrediction.textContent = '가동 중';
+      if (statAIPrediction) statAIPrediction.style.color = '#EF4444';
+      if (statAIBehavior) statAIBehavior.textContent = '가동 중';
+      if (statAIBehavior) statAIBehavior.style.color = '#3B82F6';
+      if (statAIDecision) statAIDecision.textContent = '가동 중';
+      if (statAIDecision) statAIDecision.style.color = '#7C3AED';
     });
 
     btnFirefighter.addEventListener('click', function () {
@@ -3544,6 +4061,32 @@
       progPercent.textContent = '0%';
       statAvgTime.textContent = '--';
 
+      // Reset AI engines
+      if (aiPrediction) aiPrediction.className = 'ai-status-item';
+      if (aiBehavior) aiBehavior.className = 'ai-status-item';
+      if (aiDecision) aiDecision.className = 'ai-status-item';
+      if (aiModeEl) {
+        aiModeEl.style.background = 'rgba(6,182,212,0.1)';
+        aiModeEl.style.borderColor = 'rgba(6,182,212,0.2)';
+        aiModeEl.style.color = '#06B6D4';
+        aiModeEl.querySelector('span:last-child').textContent = 'Normal Mode';
+        aiModeEl.querySelector('.ai-status-dot').style.background = '#06B6D4';
+        aiModeEl.querySelector('.ai-status-dot').style.boxShadow = '';
+        aiModeEl.querySelector('.ai-status-dot').style.animation = '';
+      }
+      securityAlerts = [];
+      securityAlertHistory = [];
+      securityFlashTimer = 0;
+      if (statWifiTracked) statWifiTracked.textContent = '0';
+      const priorityEl2 = document.getElementById('statPriorityCount');
+      const priorityEvacEl2 = document.getElementById('statPriorityEvac');
+      if (priorityEl2) { priorityEl2.textContent = '0'; priorityEl2.style.color = '#DB2777'; }
+      if (priorityEvacEl2) priorityEvacEl2.textContent = '0';
+      if (statSecurityAlert) { statSecurityAlert.textContent = '정상'; statSecurityAlert.style.color = '#059669'; }
+      if (statAIPrediction) { statAIPrediction.textContent = '대기'; statAIPrediction.style.color = '#64748B'; }
+      if (statAIBehavior) { statAIBehavior.textContent = '대기'; statAIBehavior.style.color = '#64748B'; }
+      if (statAIDecision) { statAIDecision.textContent = '대기'; statAIDecision.style.color = '#64748B'; }
+
       buildShipLayout();
       spawnPassengers();
     }
@@ -3570,10 +4113,60 @@
   </script>
 
     <!-- FOOTER -->
-    <footer class="footer">
-      <div class="footer-brand">FireNavi &#x1F525; 화이어내비</div>
-      <p>호화유람선 화재 대피 AI 내비게이션 솔루션 &copy; 2026</p>
-      <p style="margin-top:4px;">Patented Technology &middot; All Rights Reserved</p>
+    <footer class="footer-premium">
+      <div class="footer-premium-inner">
+        <div class="footer-grid">
+          <div class="footer-col footer-col--brand">
+            <div class="footer-logo">&#x1F525; FireNavi</div>
+            <p class="footer-tagline">AI 기반 실시간 생존 의사결정 플랫폼</p>
+            <p class="footer-desc">화재보다 빠르게 판단하는 AI.<br>길을 안내하는 것이 아니라 생존을 설계합니다.</p>
+            <div class="footer-badges">
+              <span class="footer-badge">Safety</span>
+              <span class="footer-badge">Security</span>
+              <span class="footer-badge">Operation</span>
+            </div>
+          </div>
+          <div class="footer-col">
+            <h4 class="footer-col-title">Core Modules</h4>
+            <ul class="footer-links">
+              <li><a href="a-technical-formulation.html">A. 기술 수식화</a></li>
+              <li><a href="b-industrial-architecture.html">B. 산업 아키텍처</a></li>
+              <li><a href="c-shipyard-proposal.html">C. 조선소 제안</a></li>
+              <li><a href="d-insurance-risk-model.html">D. 보험 리스크</a></li>
+            </ul>
+          </div>
+          <div class="footer-col">
+            <h4 class="footer-col-title">Interactive</h4>
+            <ul class="footer-links">
+              <li><a href="simulation.html">실시간 시뮬레이션</a></li>
+              <li><a href="risk-map.html">동적 위험지도</a></li>
+              <li><a href="route-optimizer.html">경로 최적화</a></li>
+            </ul>
+          </div>
+          <div class="footer-col">
+            <h4 class="footer-col-title">Resources</h4>
+            <ul class="footer-links">
+              <li><a href="../manual.html">매뉴얼 페이지</a></li>
+              <li><a href="../docs/diagrams/architecture.svg">아키텍처 구조도</a></li>
+            </ul>
+            <h4 class="footer-col-title" style="margin-top:20px;">Contact</h4>
+            <ul class="footer-links">
+              <li><a href="mailto:jaiwshim@gmail.com">jaiwshim@gmail.com</a></li>
+            </ul>
+          </div>
+        </div>
+        <div class="footer-engines">
+          <div class="footer-engine"><span class="footer-engine-dot" style="background:#EF4444;"></span><span>Prediction Engine</span></div>
+          <div class="footer-engine"><span class="footer-engine-dot" style="background:#3B82F6;"></span><span>Behavior Engine</span></div>
+          <div class="footer-engine"><span class="footer-engine-dot" style="background:#7C3AED;"></span><span>Decision Engine</span></div>
+          <div class="footer-engine"><span class="footer-engine-dot" style="background:#EC4899;"></span><span>Priority Rescue AI</span></div>
+          <div class="footer-engine"><span class="footer-engine-dot" style="background:#06B6D4;"></span><span>WiFi Positioning</span></div>
+        </div>
+        <div class="footer-bottom">
+          <p>&copy; 2026 FireNavi. Patented Technology. All Rights Reserved.</p>
+          <p>9 Mathematical Models &middot; 29 Equations &middot; 5 Patents &middot; 3 AI Engines</p>
+        </div>
+      </div>
     </footer>
   </div>
 
