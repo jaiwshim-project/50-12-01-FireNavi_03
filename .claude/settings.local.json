@@ -1,0 +1,37 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git init:*)",
+      "Bash(git remote add:*)",
+      "Bash(git add:*)",
+      "Bash(git commit -m \"$\\(cat <<''EOF''\nInitial commit: FireNavi 화이어내비 - AI 기반 크루즈 화재 대피 내비게이션\n\n승객 수 제한 제거 \\(슬라이더 → 숫자 입력 필드, 상한 없음\\)\n\nCo-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>\nEOF\n\\)\")",
+      "Bash(git branch:*)",
+      "Bash(git push:*)",
+      "Bash(git commit -m \"$\\(cat <<''EOF''\n모든 페이지를 독립적 HTML로 완성\n\n- simulation.html: footer, main.js, page-wrapper 닫기 추가\n- risk-map.html: footer, page-wrapper 닫기 추가\n- route-optimizer.html: footer, main.js, page-wrapper 닫기 추가\n- 승객 수 슬라이더를 숫자 입력 필드로 변경 \\(제한 제거\\)\n\nCo-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>\nEOF\n\\)\")",
+      "Bash(git commit:*)",
+      "Bash(ls:*)",
+      "Bash(sort:*)",
+      "Bash(git rm:*)",
+      "Bash(node test-simulation.js:*)",
+      "WebFetch(domain:jaiwshim-project.github.io)",
+      "Bash(vercel --version)",
+      "Bash(wc -l \"/c/01 클로드코드/50-12 화이어 내비\"/*.html \"/c/01 클로드코드/50-12 화이어 내비\"/js/*.js \"/c/01 클로드코드/50-12 화이어 내비\"/css/*.css \"/c/01 클로드코드/50-12 화이어 내비\"/pages/*.html)",
+      "Bash(powershell -Command \"Start-Process 'index.html'\")",
+      "Bash(powershell -Command ':*)",
+      "Bash(node -e ':*)",
+      "Bash(npm root:*)",
+      "Bash(grep -oP 'color:\\\\s*#[0-9a-fA-F]{3,8}')",
+      "Bash(grep -roh \"color:[[:space:]]*#[0-9a-fA-F]\\\\{3,8\\\\}\" css/ index.html pages/)",
+      "Bash(grep -roh \"color:[[:space:]]*#[0-9a-fA-F]\\\\{3,8\\\\}\" css/style.css)",
+      "Bash(grep -l \"경로최적화</a>\" pages/*.html)",
+      "WebSearch",
+      "Bash(wc:*)",
+      "Bash(cat /tmp/footer_sub.txt)",
+      "Bash(rm footer_template.txt)",
+      "Bash(cat)",
+      "Bash(grep -rn \"호화유람선 화재 대피 AI 내비게이션\" index.html pages/*.html manual.html)",
+      "Bash(grep -rn \"호화유람선\" index.html pages/*.html manual.html css/style.css)",
+      "Bash(grep \"<title>\" index.html pages/*.html manual.html)"
+    ]
+  }
+}
