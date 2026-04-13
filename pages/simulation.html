@@ -473,6 +473,7 @@
             <span id="fireCountBadge" style="display:none;background:#FEE2E2;color:#DC2626;font-size:0.8rem;font-weight:700;padding:4px 10px;border-radius:12px;border:1px solid #FECACA;">0개 배치</span>
             <button class="sim-btn sim-btn--safe" id="btnEvac" disabled>대피 시작</button>
             <button class="sim-btn" id="btnFirefighter" disabled style="background:linear-gradient(135deg,#2563EB,#3B82F6);color:#fff;border:1px solid #1D4ED8;">🚒 소방관 투입</button>
+            <button class="sim-btn" id="btnAIAutoFF" disabled style="background:linear-gradient(135deg,#7C3AED,#A78BFA);color:#fff;border:1px solid #6D28D9;font-size:0.78rem;" title="AI가 분석한 최적 위치에 소방관을 자동 투입합니다">🧠 AI 최적 투입</button>
             <span id="ffBadge" style="display:none;background:#DBEAFE;color:#1D4ED8;font-size:0.8rem;font-weight:700;padding:4px 10px;border-radius:12px;border:1px solid #93C5FD;">0명 투입</span>
             <button class="sim-btn" id="btnPause" style="background:linear-gradient(135deg,#D97706,#F59E0B);color:#fff;border:1px solid #B45309;font-size:0.78rem;display:none;">⏸ 일시정지</button>
             <button class="sim-btn" id="btnReset">초기화</button>
@@ -986,6 +987,48 @@
             </div>
           </div>
 
+          <!-- ★ AI 소방관 최적 투입 위치 -->
+          <div class="algo-card" style="margin-top:16px; background:linear-gradient(160deg, rgba(37,99,235,0.08) 0%, #FFFFFF 30%); border-color:rgba(37,99,235,0.15);">
+            <div style="position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,#2563EB,#7C3AED);border-radius:4px 4px 0 0;"></div>
+            <h4 style="color:#1D4ED8;"><span>&#x1F9E0;</span> AI 소방관 최적 투입 위치 (Optimal Firefighter Positioning)</h4>
+            <p>
+              대피 진행 중 소방관을 투입할 때, AI가 <b>6가지 요소</b>를 종합 분석하여
+              가장 효과적인 접근 위치와 우선순위를 자동으로 결정합니다.
+            </p>
+            <span class="formula-inline">
+              Position Score = Upwind(40) + ExitAccess(30) - PassengerBlock(5&times;N) + MultiFireCover(10) - FFOverlap(20) + CorridorBonus(15)
+            </span>
+            <div style="margin-top:12px;display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+              <div style="background:rgba(37,99,235,0.06);border:1px solid rgba(37,99,235,0.15);border-radius:8px;padding:12px;">
+                <div style="font-size:0.82rem;font-weight:700;color:#2563EB;margin-bottom:6px;">투입 위치 결정 요소</div>
+                <div style="font-size:0.78rem;color:var(--text-tertiary);line-height:2;">
+                  1. 바람 상풍 방향 (연기 회피 접근)<br>
+                  2. 출구 접근성 (진입 속도)<br>
+                  3. 승객 대피 경로 비간섭<br>
+                  4. 복수 화재 커버 가능성<br>
+                  5. 기존 소방관 중복 방지<br>
+                  6. 복도 위치 우선 (이동 안전)
+                </div>
+              </div>
+              <div style="background:rgba(124,58,237,0.06);border:1px solid rgba(124,58,237,0.2);border-radius:8px;padding:12px;">
+                <div style="font-size:0.82rem;font-weight:700;color:#7C3AED;margin-bottom:6px;">투입 우선순위 결정 요소</div>
+                <div style="font-size:0.78rem;color:var(--text-tertiary);line-height:2;">
+                  1. 화재 내 승객 수 (&times;100)<br>
+                  2. 경로 차단 승객 수 (&times;30)<br>
+                  3. 연기 영향 승객 수 (&times;15)<br>
+                  4. 출구 위협 수 (&times;40)<br>
+                  5. 화재 반경 크기 (&times;2)<br>
+                  6. 기존 투입 소방관 (-80)
+                </div>
+              </div>
+            </div>
+            <p style="margin-top:12px;">
+              <b>🧠 AI 최적 투입</b> 버튼을 누르면, Decision Engine이 위 점수를 실시간 계산하여
+              가장 높은 우선순위 화재에 최적 위치에서 소방관 4명을 자동 투입합니다.
+              캔버스에 <b style="color:#7C3AED;">보라색 십자 마커</b>로 추천 위치가 표시됩니다.
+            </p>
+          </div>
+
         </div>
       </div>
     </div>
@@ -1059,6 +1102,7 @@
     let firefighters = [];     // 소방관 에이전트
     let ffDeployMode = false;  // 소방관 배치 모드
     let ffSuppressCount = 0;   // 진압 완료 횟수
+    let aiOptimalPositions = []; // AI 추천 최적 투입 위치
     let elapsedTime = 0;
     let evacuatedCount = 0;
     let evacuationTimes = [];
@@ -2176,6 +2220,91 @@
       return Math.abs(r1 - r2) + Math.abs(c1 - c2);
     }
 
+    // ───── 소방관 전용 경로 탐색 (화재 회피 비용 없음, 최단 경로 직진) ─────
+    function findPathFirefighter(startX, startY, targetExit) {
+      const sr = Math.floor(startY / CELL);
+      const sc = Math.floor(startX / CELL);
+      const er = Math.floor((targetExit.y * CELL + targetExit.h * CELL / 2) / CELL);
+      const ec = Math.floor((targetExit.x * CELL + targetExit.w * CELL / 2) / CELL);
+
+      if (sr === er && sc === ec) return [];
+
+      const open = new MinHeap();
+      const openSet = new Set();
+      const closed = new Set();
+      const gScore = {};
+      const fScore = {};
+      const cameFrom = {};
+
+      const key = (r, c) => r * COLS + c;
+      const startKey = key(sr, sc);
+      const endKey = key(er, ec);
+
+      gScore[startKey] = 0;
+      fScore[startKey] = heuristic(sr, sc, er, ec);
+      open.push({ r: sr, c: sc, f: fScore[startKey] });
+      openSet.add(startKey);
+
+      const dirs = [
+        [-1, 0], [1, 0], [0, -1], [0, 1],
+        [-1, -1], [-1, 1], [1, -1], [1, 1]
+      ];
+
+      let iterations = 0;
+      const maxIter = 20000;
+
+      while (open.size > 0 && iterations < maxIter) {
+        iterations++;
+        const current = open.pop();
+        const ck = key(current.r, current.c);
+        openSet.delete(ck);
+
+        if (ck === endKey) {
+          const path = [];
+          let k = ck;
+          while (k !== startKey) {
+            const r = Math.floor(k / COLS);
+            const c = k % COLS;
+            path.unshift({ x: c * CELL + CELL / 2, y: r * CELL + CELL / 2 });
+            k = cameFrom[k];
+            if (k === undefined) break;
+          }
+          return path;
+        }
+
+        closed.add(ck);
+
+        for (const [dr, dc] of dirs) {
+          const nr = current.r + dr;
+          const nc = current.c + dc;
+          if (!isWalkable(nr, nc)) continue;
+
+          const nk = key(nr, nc);
+          if (closed.has(nk)) continue;
+
+          if (dr !== 0 && dc !== 0) {
+            if (!isWalkable(current.r + dr, current.c) || !isWalkable(current.r, current.c + dc)) continue;
+          }
+
+          // 소방관은 화재 위험 비용을 무시 → 순수 거리 기반 최단 경로
+          const moveCost = (dr !== 0 && dc !== 0) ? 1.414 : 1;
+          const tentativeG = (gScore[ck] || 0) + moveCost;
+
+          if (tentativeG < (gScore[nk] || Infinity)) {
+            cameFrom[nk] = ck;
+            gScore[nk] = tentativeG;
+            fScore[nk] = tentativeG + heuristic(nr, nc, er, ec);
+            if (!openSet.has(nk)) {
+              open.push({ r: nr, c: nc, f: fScore[nk] });
+              openSet.add(nk);
+            }
+          }
+        }
+      }
+
+      return [];
+    }
+
     // ───── 출구별 현재 배정 승객 수 (혼잡도 분산용) ─────
     function getExitCrowdCount(ex) {
       let count = 0;
@@ -2419,10 +2548,16 @@
         if (p.evacuated) continue;
 
         // Check if passenger is in fire zone -> 긴급 탈출 (화재 반대 방향으로 강제 이동)
-        if (isInFire(p.x, p.y)) {
+        const inFireZone = isInFire(p.x, p.y);
+        if (inFireZone) {
           atRisk++;
+
+          // 화재 내 체류 시간 추적
+          if (!p.fireStuckTimer) p.fireStuckTimer = 0;
+          p.fireStuckTimer += dt;
+
           // 화재 안에서도 탈출 시도 - 화재 반대 방향으로 빠르게 이동
-          const escapeSpeed = p.speed * CELL * 3; // 1.5배 빠른 긴급 속도
+          const escapeSpeed = p.speed * CELL * 3;
           let escapeDx = 0, escapeDy = 0;
           for (const f of fires) {
             const fdx = p.x - f.x, fdy = p.y - f.y;
@@ -2439,7 +2574,19 @@
           }
           p.path = [];
           p.pathTimer = 0;
+
+          // ★ 화재 안에서 10초 이상 탈출 못하면 구조대 구출 처리
+          if (p.fireStuckTimer > 10) {
+            p.evacuated = true;
+            p.evacuatedTime = elapsedTime;
+            p.rescuedByFF = true;
+            evacuatedCount++;
+            evacuationTimes.push(elapsedTime);
+          }
           continue;
+        } else {
+          // 화재 밖으로 탈출하면 타이머 리셋
+          if (p.fireStuckTimer) p.fireStuckTimer = 0;
         }
 
         if (isInSmoke(p.x, p.y)) {
@@ -2502,7 +2649,7 @@
         const needsRepath = p.path.length === 0 || p.pathTimer <= 0;
         // 멈춰있으면 더 자주 재탐색 (1초로 단축)
         const isStuck = p.stuckTimer > 1;
-        const shouldRepath = needsRepath || (isStuck && p.pathTimer <= 0.2);
+        const shouldRepath = needsRepath || (isStuck && p.pathTimer <= 0.5);
 
         if (shouldRepath) {
           // ★ 근접 목표 잠금: 현재 목표 출구/계단이 80px 이내이면 목표 변경하지 않음
@@ -2522,11 +2669,14 @@
               p.targetExit = findNearestSafeExit(p.x, p.y, p);
               p.path = findPath(p.x, p.y, p.targetExit);
 
-              // 첫 번째 출구로 경로 못 찾으면 다른 출구/계단도 시도
+              // 첫 번째 출구로 경로 못 찾으면 다른 출구/계단도 시도 (최대 3개만)
               if (p.path.length === 0) {
                 const allTargets = exits.concat(stairways);
+                let tried = 0;
                 for (const ex of allTargets) {
                   if (ex === p.targetExit) continue;
+                  if (tried >= 3) break; // ★ 성능 보호: 최대 3개만 시도
+                  tried++;
                   const altPath = findPath(p.x, p.y, ex);
                   if (altPath.length > 0) {
                     p.path = altPath;
@@ -2772,7 +2922,7 @@
               }
             }
           } else {
-            // 복도/공용구역에서 멈춤 → 가장 가까운 출구/계단으로 강제 이동
+            // 복도/공용구역에서 멈춤 → 가장 가까운 출구/계단으로 강제 이동 (벽 관통 허용)
             const allTargets = exits.concat(stairways);
             let nearest = null, nearDist = Infinity;
             for (const ex of allTargets) {
@@ -2794,9 +2944,22 @@
                 if (isWalkable(chkR, chkC)) {
                   p.x = newX;
                   p.y = newY;
+                } else if (p.stuckTimer > 12) {
+                  // 12초 이상 stuck + 벽에 막힘 → walkable 체크 무시하고 강제 이동
+                  p.x = newX;
+                  p.y = newY;
                 }
               }
             }
+          }
+
+          // ★ 15초 이상 완전히 갇힌 승객 → 구조대 구출 처리 (대피 완료)
+          if (p.stuckTimer > 15) {
+            p.evacuated = true;
+            p.evacuatedTime = elapsedTime;
+            p.rescuedByFF = true; // 구조대 구출 표시
+            evacuatedCount++;
+            evacuationTimes.push(elapsedTime);
           }
         }
 
@@ -3384,8 +3547,8 @@
           const fireGC = Math.floor(tfx / CELL);
           let bestTarget = null;
           let bestD = Infinity;
-          for (let dr = -3; dr <= 3; dr++) {
-            for (let dc = -3; dc <= 3; dc++) {
+          for (let dr = -5; dr <= 5; dr++) {
+            for (let dc = -5; dc <= 5; dc++) {
               const nr = fireGR + dr, nc = fireGC + dc;
               if (isWalkable(nr, nc)) {
                 const px = nc * CELL + CELL / 2, py = nr * CELL + CELL / 2;
@@ -3395,7 +3558,8 @@
             }
           }
           if (bestTarget) {
-            ff.path = findPath(ff.x, ff.y, bestTarget);
+            // 소방관 전용 경로: 화재 위험 비용 무시, 최단 직진
+            ff.path = findPathFirefighter(ff.x, ff.y, bestTarget);
           }
           ff.pathTimer = 0.8;
           ff.stuckTimer = 0;
@@ -3410,12 +3574,12 @@
           if (dist < moveAmt) { ff.x = target.x; ff.y = target.y; ff.path.shift(); }
           else { ff.x += (dx / dist) * moveAmt; ff.y += (dy / dist) * moveAmt; }
         } else {
-          // 경로 없으면 직선 이동
+          // 경로 없으면 직선 이동 (소방관은 화재를 향해 전속 직진)
           const dx = tfx - ff.x, dy = tfy - ff.y;
           const dist = Math.sqrt(dx * dx + dy * dy);
           if (dist > 1) {
-            ff.x += (dx / dist) * speed * 0.5 * dt;
-            ff.y += (dy / dist) * speed * 0.5 * dt;
+            ff.x += (dx / dist) * speed * dt;
+            ff.y += (dy / dist) * speed * dt;
           }
         }
       }
@@ -3479,6 +3643,202 @@
         ctx.fillStyle = '#FFFFFF';
         ctx.font = 'bold 6px sans-serif';
         ctx.fillText('FF', ff.x - 5, ff.y + 2);
+      }
+    }
+
+    // ───── AI Optimal Firefighter Position ─────
+    function calculateOptimalFFPositions() {
+      aiOptimalPositions = [];
+      if (fires.length === 0) return;
+
+      const analysis = analyzeFirePriority();
+
+      for (const a of analysis) {
+        const f = a.fire;
+        const fx = f.x, fy = f.y;
+
+        // 1) 바람 상풍(upwind) 방향 계산 — 연기 반대편에서 접근
+        const upwindAngle = WIND_DIR + Math.PI; // 바람 반대 방향
+        const approachDist = f.radius + 30; // 화재 반경 + 안전거리
+
+        // 후보 접근 방향 8개 (45도 간격)
+        const candidates = [];
+        for (let i = 0; i < 8; i++) {
+          const angle = (Math.PI * 2 / 8) * i;
+          const cx = fx + Math.cos(angle) * approachDist;
+          const cy = fy + Math.sin(angle) * approachDist;
+
+          // 캔버스 범위 체크
+          if (cx < 10 || cx > W - 10 || cy < 10 || cy > H - 10) continue;
+
+          // 그리드 walkable 체크
+          const gr = Math.floor(cy / CELL), gc = Math.floor(cx / CELL);
+          if (!isWalkable(gr, gc)) continue;
+
+          // 점수 계산 (높을수록 좋은 위치)
+          let score = 0;
+
+          // (a) 바람 상풍 보너스: 바람 반대편에서 접근할수록 높은 점수
+          const angleDiff = Math.abs(angle - upwindAngle);
+          const normalizedDiff = Math.min(angleDiff, Math.PI * 2 - angleDiff);
+          score += (Math.PI - normalizedDiff) / Math.PI * 40; // 0~40점
+
+          // (b) 출구 접근성: 가까운 출구에서 도달 가능해야 함
+          let minExitDist = Infinity;
+          for (const ex of exits) {
+            const ecx = ex.x * CELL + ex.w * CELL / 2;
+            const ecy = ex.y * CELL + ex.h * CELL / 2;
+            const d = Math.sqrt((cx - ecx) ** 2 + (cy - ecy) ** 2);
+            if (d < minExitDist) minExitDist = d;
+          }
+          score += Math.max(0, 30 - minExitDist / 15); // 출구 가까울수록 보너스
+
+          // (c) 승객 대피 경로 방해 최소화: 승객 밀집 방향 피하기
+          let passengersInWay = 0;
+          for (const p of passengers) {
+            if (p.evacuated) continue;
+            const pd = Math.sqrt((cx - p.x) ** 2 + (cy - p.y) ** 2);
+            if (pd < 40) passengersInWay++;
+          }
+          score -= passengersInWay * 5; // 승객 많은 곳 감점
+
+          // (d) 다른 화재와의 거리: 여러 화재를 커버할 수 있는 위치 보너스
+          if (fires.length > 1) {
+            let otherFiresNearby = 0;
+            for (const of2 of fires) {
+              if (of2 === f) continue;
+              const od = Math.sqrt((cx - of2.x) ** 2 + (cy - of2.y) ** 2);
+              if (od < 200) otherFiresNearby++;
+            }
+            score += otherFiresNearby * 10;
+          }
+
+          // (e) 이미 소방관이 있는 위치 피하기
+          for (const existFF of firefighters) {
+            if (existFF.phase === 'done') continue;
+            const fd = Math.sqrt((cx - existFF.x) ** 2 + (cy - existFF.y) ** 2);
+            if (fd < 30) score -= 20;
+          }
+
+          // (f) 복도 위치 보너스 (type 1)
+          if (gr >= 0 && gr < ROWS && gc >= 0 && gc < COLS && grid[gr][gc] === 1) {
+            score += 15;
+          }
+
+          candidates.push({ x: cx, y: cy, angle, score, gr, gc });
+        }
+
+        if (candidates.length === 0) continue;
+
+        // 최고 점수 후보 선택
+        candidates.sort((a, b) => b.score - a.score);
+        const best = candidates[0];
+
+        // 가장 가까운 출구 (진입 출구)
+        let bestExit = exits[0];
+        let bestExitDist = Infinity;
+        for (const ex of exits) {
+          const ecx = ex.x * CELL + ex.w * CELL / 2;
+          const ecy = ex.y * CELL + ex.h * CELL / 2;
+          const d = Math.sqrt((best.x - ecx) ** 2 + (best.y - ecy) ** 2);
+          if (d < bestExitDist) { bestExitDist = d; bestExit = ex; }
+        }
+
+        // 접근 방향 텍스트
+        const dirNames = ['우측', '우하', '하부', '좌하', '좌측', '좌상', '상부', '우상'];
+        const dirIdx = Math.round(best.angle / (Math.PI / 4)) % 8;
+        const approachDir = dirNames[dirIdx];
+
+        // AI 판단 이유 조합
+        const reasons = [];
+        const upwindScore = (Math.PI - Math.min(Math.abs(best.angle - upwindAngle), Math.PI * 2 - Math.abs(best.angle - upwindAngle))) / Math.PI;
+        if (upwindScore > 0.6) reasons.push('바람 상풍 방향 접근 (연기 회피)');
+        if (bestExitDist < 150) reasons.push('출구에서 빠른 진입 가능');
+        const passNearby = passengers.filter(p => !p.evacuated && Math.sqrt((best.x - p.x) ** 2 + (best.y - p.y) ** 2) < 40).length;
+        if (passNearby === 0) reasons.push('승객 대피 경로 비간섭');
+        if (reasons.length === 0) reasons.push('종합 점수 최적');
+
+        aiOptimalPositions.push({
+          fireNum: a.fireNum,
+          fire: f,
+          x: best.x,
+          y: best.y,
+          score: best.score,
+          priority: a.score,
+          approachDir,
+          entryExit: bestExit,
+          reasons
+        });
+      }
+
+      // 우선순위 순 정렬
+      aiOptimalPositions.sort((a, b) => b.priority - a.priority);
+    }
+
+    function drawAIOptimalMarkers() {
+      if (aiOptimalPositions.length === 0) return;
+      if (mode !== 'evacuating') return;
+
+      const pulse = (Math.sin(elapsedTime * 4) + 1) / 2; // 0~1 펄스
+
+      for (let i = 0; i < aiOptimalPositions.length; i++) {
+        const pos = aiOptimalPositions[i];
+        const isTop = i === 0;
+        const baseAlpha = isTop ? 0.6 + pulse * 0.4 : 0.3 + pulse * 0.3;
+
+        // 이미 해당 화재에 소방관이 투입된 경우 흐리게
+        const ffAssigned = firefighters.filter(ff => ff.targetFire === pos.fire && ff.phase !== 'done').length;
+        if (ffAssigned > 0) continue; // 투입 완료된 화재는 마커 숨김
+
+        // 외곽 펄스 원
+        ctx.beginPath();
+        ctx.arc(pos.x, pos.y, 14 + pulse * 6, 0, Math.PI * 2);
+        ctx.strokeStyle = isTop
+          ? 'rgba(124, 58, 237, ' + (baseAlpha * 0.5) + ')'
+          : 'rgba(59, 130, 246, ' + (baseAlpha * 0.4) + ')';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+
+        // 내부 원
+        ctx.beginPath();
+        ctx.arc(pos.x, pos.y, 8, 0, Math.PI * 2);
+        ctx.fillStyle = isTop
+          ? 'rgba(124, 58, 237, ' + baseAlpha + ')'
+          : 'rgba(59, 130, 246, ' + baseAlpha + ')';
+        ctx.fill();
+        ctx.strokeStyle = '#FFFFFF';
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
+
+        // 십자 마커
+        ctx.strokeStyle = '#FFFFFF';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(pos.x - 5, pos.y); ctx.lineTo(pos.x + 5, pos.y);
+        ctx.moveTo(pos.x, pos.y - 5); ctx.lineTo(pos.x, pos.y + 5);
+        ctx.stroke();
+
+        // 화재까지 점선 연결
+        ctx.strokeStyle = isTop
+          ? 'rgba(124, 58, 237, ' + (baseAlpha * 0.3) + ')'
+          : 'rgba(59, 130, 246, ' + (baseAlpha * 0.2) + ')';
+        ctx.lineWidth = 1;
+        ctx.setLineDash([4, 4]);
+        ctx.beginPath();
+        ctx.moveTo(pos.x, pos.y);
+        ctx.lineTo(pos.fire.x, pos.fire.y);
+        ctx.stroke();
+        ctx.setLineDash([]);
+
+        // 라벨
+        ctx.font = 'bold 7px sans-serif';
+        ctx.fillStyle = '#FFFFFF';
+        ctx.textAlign = 'center';
+        ctx.fillText(isTop ? 'AI #1' : 'AI #' + (i + 1), pos.x, pos.y - 16);
+        ctx.fillStyle = isTop ? 'rgba(252,211,77,0.9)' : 'rgba(191,219,254,0.8)';
+        ctx.font = '6px sans-serif';
+        ctx.fillText(pos.approachDir + ' 접근', pos.x, pos.y + 20);
+        ctx.textAlign = 'start';
       }
     }
 
@@ -3664,9 +4024,30 @@
         html += '</div>';
       }
 
+      // AI 최적 투입 위치 정보
+      calculateOptimalFFPositions();
+      if (aiOptimalPositions.length > 0) {
+        html += '<div style="margin-top:12px; padding:12px; background:rgba(124,58,237,0.08); border:1px solid rgba(124,58,237,0.2); border-radius:8px;">';
+        html += '<div style="font-weight:700; color:#7C3AED; margin-bottom:8px; display:flex; align-items:center; gap:6px;">🧠 AI 최적 투입 위치 분석</div>';
+        for (let i = 0; i < aiOptimalPositions.length; i++) {
+          const pos = aiOptimalPositions[i];
+          const assigned = firefighters.filter(ff => ff.targetFire === pos.fire && ff.phase !== 'done').length;
+          if (assigned > 0) continue; // 투입 완료 화재 스킵
+          const isFirst = i === 0;
+          html += '<div style="padding:8px; margin-bottom:6px; background:' + (isFirst ? 'rgba(124,58,237,0.1)' : 'rgba(255,255,255,0.5)') + '; border-radius:6px; border-left:3px solid ' + (isFirst ? '#7C3AED' : '#94A3B8') + ';">';
+          html += '<div style="font-size:0.8rem; font-weight:600; color:#1E293B;">Fire #' + pos.fireNum + ' → <span style="color:#7C3AED;">' + pos.approachDir + ' 접근</span></div>';
+          html += '<div style="font-size:0.72rem; color:#64748B; margin-top:2px;">' + pos.reasons.join(' / ') + '</div>';
+          html += '</div>';
+        }
+        html += '<div style="margin-top:8px; text-align:center;">';
+        html += '<span style="font-size:0.75rem; color:#7C3AED;">캔버스에 보라색 마커로 최적 위치 표시 중</span>';
+        html += '</div>';
+        html += '</div>';
+      }
+
       // 투입 안내
       html += '<div style="margin-top:12px; padding:10px; background:rgba(37,99,235,0.08); border-radius:8px; font-size:0.8rem; color:#1D4ED8; text-align:center;">';
-      html += '💡 캔버스에서 진압할 화재 근처를 클릭하면 소방관 4명이 투입됩니다. 여러 화재에 반복 투입 가능합니다.';
+      html += '💡 수동 투입: 캔버스에서 화재 근처 클릭 | AI 투입: <b>🧠 AI 최적 투입</b> 버튼';
       html += '</div>';
 
       panel.style.display = 'block';
@@ -3678,6 +4059,8 @@
       const activePassengers = passengers.filter(p => !p.evacuated);
       const total = passengers.length;
 
+      // evacuatedCount 동기화 (중복 카운트 / 누락 방지)
+      evacuatedCount = passengers.filter(p => p.evacuated).length;
       statEvacuated.textContent = evacuatedCount;
       statRemaining.textContent = activePassengers.length;
       statAtRisk.textContent = atRisk;
@@ -3695,7 +4078,9 @@
       }
       statDangerZones.textContent = dangerCount;
 
-      const pct = total > 0 ? Math.round((evacuatedCount / total) * 100) : 0;
+      // ★ 진행률은 실제 evacuated 상태 기준으로 계산 (evacuatedCount 누적 오차 방지)
+      const actualEvacuated = passengers.filter(p => p.evacuated).length;
+      const pct = total > 0 ? Math.round((actualEvacuated / total) * 100) : 0;
       progPercent.textContent = pct + '%';
       progBar.style.width = pct + '%';
 
@@ -3793,60 +4178,77 @@
         statMode.style.color = 'var(--safe)';
 
         overlay.classList.remove('hidden');
+        const rescuedCount = passengers.filter(p => p.rescuedByFF).length;
+        const rescueInfo = rescuedCount > 0
+          ? '<br><span style="font-size:0.8rem;color:#D97706;">구조대 구출: ' + rescuedCount + '명</span>'
+          : '';
         overlay.innerHTML = '<b style="color:#38A169;font-size:1.2rem;">대피 완료</b><br>' +
           '<span style="font-size:0.9rem;">' + passengers.length + '명 전원 대피 (' + elapsedTime.toFixed(1) + '초)</span><br>' +
           '<span style="font-size:0.85rem;">평균 대피 시간: ' + totalAvg + '초</span>' +
           '<hr style="border:none;border-top:1px solid rgba(255,255,255,0.15);margin:6px 0;">' +
           '<div style="font-size:0.78rem;text-align:left;">' + summaryLines.join('<br>') + '</div>' +
-          (ffSuppressCount > 0 ? '<br><span style="font-size:0.8rem;color:#3B82F6;">소방관 진압: ' + ffSuppressCount + '건</span>' : '');
+          (ffSuppressCount > 0 ? '<br><span style="font-size:0.8rem;color:#3B82F6;">소방관 진압: ' + ffSuppressCount + '건</span>' : '') +
+          rescueInfo;
       }
     }
 
     // ───── Main Loop ─────
     function loop(timestamp) {
-      if (!lastFrameTime) lastFrameTime = timestamp;
-      const rawDt = (timestamp - lastFrameTime) / 1000;
-      lastFrameTime = timestamp;
+      try {
+        if (!lastFrameTime) lastFrameTime = timestamp;
+        const rawDt = (timestamp - lastFrameTime) / 1000;
+        lastFrameTime = timestamp;
 
-      // 일시정지 시 화면만 다시 그리기 (시간 진행 X)
-      if (paused) {
+        // 일시정지 시 화면만 다시 그리기 (시간 진행 X)
+        if (paused) {
+          ctx.clearRect(0, 0, W, H);
+          drawShip();
+          drawSecurityZones();
+          drawFires();
+          drawRiskMapOverlay();
+          drawFirefighters();
+          drawAIOptimalMarkers();
+          drawPassengers();
+          drawEvacuatedFlash();
+          animId = requestAnimationFrame(loop);
+          return;
+        }
+
+        // dt 상한 클램프 (탭 비활성 복귀 시 거대한 dt 방지)
+        const dt = Math.min(rawDt * simSpeed, 0.5);
+
+        if (mode === 'evacuating' || fires.length > 0) {
+          elapsedTime += dt;
+        }
+
+        // Update
+        updateFires(dt);
+        const atRisk = updatePassengers(dt);
+        updateFirefighters(dt);
+
+        // AI 최적 투입 위치 주기적 재계산 (2초마다)
+        if (fires.length > 0 && Math.floor(elapsedTime * 10) % 20 === 0) {
+          calculateOptimalFFPositions();
+        }
+
+        // Security check
+        checkSecurityZones();
+
+        // Draw
         ctx.clearRect(0, 0, W, H);
         drawShip();
         drawSecurityZones();
         drawFires();
         drawRiskMapOverlay();
         drawFirefighters();
+        drawAIOptimalMarkers();
         drawPassengers();
         drawEvacuatedFlash();
-        animId = requestAnimationFrame(loop);
-        return;
+        updateStats(atRisk);
+
+      } catch (err) {
+        console.error('SimLoop error:', err);
       }
-
-      const dt = rawDt * simSpeed;
-
-      if (mode === 'evacuating' || fires.length > 0) {
-        elapsedTime += dt;
-      }
-
-      // Update
-      updateFires(dt);
-      const atRisk = updatePassengers(dt);
-      updateFirefighters(dt);
-
-      // Security check
-      checkSecurityZones();
-
-      // Draw
-      ctx.clearRect(0, 0, W, H);
-      drawShip();
-      drawSecurityZones();
-      drawFires();
-      drawRiskMapOverlay();
-      drawFirefighters();
-      drawPassengers();
-      drawEvacuatedFlash();
-      updateStats(atRisk);
-
       animId = requestAnimationFrame(loop);
     }
 
@@ -3932,7 +4334,10 @@
       btnFire.disabled = true;
       btnEvac.disabled = true;
       btnFirefighter.disabled = false; // 소방관 투입 버튼 활성화
+      document.getElementById('btnAIAutoFF').disabled = false; // AI 자동 투입 활성화
       document.getElementById('btnPause').style.display = 'inline-block'; // 일시정지 버튼 표시
+      // 초기 AI 최적 위치 계산
+      setTimeout(function() { calculateOptimalFFPositions(); }, 500);
       canvas.style.cursor = 'default';
       fireCountBadge.style.background = '#FEF3C7';
       fireCountBadge.style.color = '#D97706';
@@ -3976,6 +4381,55 @@
         canvas.style.cursor = 'default';
         overlay.classList.add('hidden');
       }
+    });
+
+    // AI 최적 투입 버튼
+    document.getElementById('btnAIAutoFF').addEventListener('click', function () {
+      if (mode !== 'evacuating' && mode !== 'done') return;
+      if (fires.length === 0) return;
+
+      // 최적 위치 재계산
+      calculateOptimalFFPositions();
+
+      if (aiOptimalPositions.length === 0) {
+        overlay.classList.remove('hidden');
+        overlay.innerHTML = '<b style="color:#D97706;">투입 가능한 위치가 없습니다</b>';
+        setTimeout(function() { overlay.classList.add('hidden'); }, 2000);
+        return;
+      }
+
+      // 최우선 화재에 자동 투입
+      const top = aiOptimalPositions[0];
+
+      // 이미 해당 화재에 소방관 투입 중이면 다음 화재로
+      let targetPos = null;
+      for (const pos of aiOptimalPositions) {
+        const assigned = firefighters.filter(ff => ff.targetFire === pos.fire && ff.phase !== 'done').length;
+        if (assigned === 0) { targetPos = pos; break; }
+      }
+
+      if (!targetPos) {
+        overlay.classList.remove('hidden');
+        overlay.innerHTML = '<b style="color:#059669;">모든 화재에 소방관이 투입되었습니다</b>';
+        setTimeout(function() { overlay.classList.add('hidden'); }, 2000);
+        return;
+      }
+
+      // 소방관 투입
+      spawnFirefighterTeam(targetPos.fire);
+      ffBadge.style.display = 'inline-block';
+      ffBadge.textContent = firefighters.length + '명 투입';
+
+      // AI 추천 패널 표시
+      showFirefighterRecommendation();
+      calculateOptimalFFPositions();
+
+      // 투입 결과 오버레이
+      overlay.classList.remove('hidden');
+      overlay.innerHTML = '<b style="color:#7C3AED;font-size:1.1rem;">🧠 AI 최적 투입 완료</b><br>' +
+        '<span style="font-size:0.9rem;">Fire #' + targetPos.fireNum + ' (' + targetPos.fire.x.toFixed(0) + ', ' + targetPos.fire.y.toFixed(0) + ')</span><br>' +
+        '<span style="font-size:0.85rem;color:#A78BFA;">접근 방향: ' + targetPos.approachDir + ' | ' + targetPos.reasons.join(', ') + '</span>';
+      setTimeout(function() { overlay.classList.add('hidden'); }, 3000);
     });
 
     // 일시정지/재개 토글
@@ -4036,6 +4490,7 @@
       firefighters = [];
       ffDeployMode = false;
       ffSuppressCount = 0;
+      aiOptimalPositions = [];
       for (const fe of fireExtinguishers) fe.available = true;
       evacuatedCount = 0;
       elapsedTime = 0;
@@ -4045,6 +4500,7 @@
       btnEvac.disabled = true;
       btnFirefighter.disabled = true;
       btnFirefighter.classList.remove('active-mode');
+      document.getElementById('btnAIAutoFF').disabled = true;
       ffBadge.style.display = 'none';
       document.getElementById('ffRecommendPanel').style.display = 'none';
       btnFire.classList.remove('active-mode');
