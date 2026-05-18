@@ -20,7 +20,13 @@
           <li><a href="${pre}pages/b-industrial-architecture.html"${act('b-industrial-architecture.html')}>B. 산업 아키텍처</a></li>
           <li><a href="${pre}pages/c-shipyard-proposal.html"${act('c-shipyard-proposal.html')}>C. 조선소 제안</a></li>
           <li><a href="${pre}pages/d-insurance-risk-model.html"${act('d-insurance-risk-model.html')}>D. 보험 리스크</a></li>
-          <li><a href="${pre}pages/simulation.html"${act('simulation.html')}>시뮬레이션</a></li>
+          <li class="nav-dropdown">
+            <a href="#" class="nav-dropdown-toggle" onclick="event.preventDefault();this.parentElement.classList.toggle('open')">시뮬레이션 ▾</a>
+            <ul class="nav-sub">
+              <li><a href="${pre}pages/simulation.html"${act('simulation.html')}>🚢 크루즈</a></li>
+              <li><a href="${pre}pages/simulation-building.html"${act('simulation-building.html')}>🏙️ 초고층 빌딩</a></li>
+            </ul>
+          </li>
           <li><a href="${pre}pages/risk-map.html"${act('risk-map.html')}>위험지도</a></li>
           <li><a href="${pre}pages/route-optimizer.html"${act('route-optimizer.html')}>경로최적화</a></li>
           <li><a href="${pre}manual.html" style="color:#B91C1C;"${act('manual.html')}>매뉴얼</a></li>
@@ -73,6 +79,21 @@
               <li><a href="mailto:jaiwshim@gmail.com">jaiwshim@gmail.com</a></li>
             </ul>
           </div>
+        </div>
+
+        <div class="footer-cta-row" style="display:flex;justify-content:center;gap:14px;flex-wrap:wrap;margin:32px 0 20px;">
+          <a href="${pre}pitch-deck.html" class="footer-cta footer-cta--primary"
+             style="display:inline-flex;align-items:center;gap:10px;padding:14px 28px;border-radius:999px;background:linear-gradient(135deg,#B91C1C,#C2410C);color:#fff;font-size:14px;font-weight:700;text-decoration:none;box-shadow:0 8px 28px rgba(185,28,28,0.35),0 2px 8px rgba(127,29,29,0.25);border:1px solid rgba(201,169,97,0.35);transition:transform .2s,box-shadow .2s;"
+             onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 12px 36px rgba(185,28,28,0.5),0 4px 12px rgba(127,29,29,0.3)'"
+             onmouseout="this.style.transform='translateY(0)';this.style.boxShadow='0 8px 28px rgba(185,28,28,0.35),0 2px 8px rgba(127,29,29,0.25)'">
+            🎯 20장 풀 피치 덱 보기
+          </a>
+          <a href="${pre}manual.html" class="footer-cta footer-cta--secondary"
+             style="display:inline-flex;align-items:center;gap:10px;padding:14px 28px;border-radius:999px;background:rgba(255,255,255,0.06);color:#F8FAFC;font-size:14px;font-weight:700;text-decoration:none;border:1px solid rgba(201,169,97,0.4);transition:background .2s,border-color .2s;"
+             onmouseover="this.style.background='rgba(201,169,97,0.18)';this.style.borderColor='rgba(201,169,97,0.7)'"
+             onmouseout="this.style.background='rgba(255,255,255,0.06)';this.style.borderColor='rgba(201,169,97,0.4)'">
+            📖 매뉴얼 보기
+          </a>
         </div>
         <div class="footer-engines">
           <div class="footer-engine"><span class="footer-engine-dot" style="background:#B91C1C;"></span><span>Prediction Engine</span></div>

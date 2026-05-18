@@ -274,6 +274,62 @@ img {
   border-radius: 1px;
 }
 
+/* ============ NAV DROPDOWN (시뮬레이션 서브메뉴) ============ */
+.nav-dropdown {
+  position: relative;
+}
+.nav-dropdown > a.nav-dropdown-toggle {
+  cursor: pointer;
+  user-select: none;
+}
+.nav-sub {
+  display: none;
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  background: var(--bg-card);
+  border: 1px solid var(--border-gold);
+  border-radius: 14px;
+  padding: 8px;
+  min-width: 220px;
+  list-style: none;
+  box-shadow: 0 18px 50px rgba(15,30,61,0.18), 0 6px 16px rgba(15,30,61,0.08);
+  z-index: 100;
+  margin: 0;
+}
+.nav-dropdown:hover .nav-sub,
+.nav-dropdown.open .nav-sub {
+  display: block;
+  animation: navSubFade .18s ease;
+}
+@keyframes navSubFade {
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.nav-sub li {
+  display: block;
+  list-style: none;
+}
+.nav-sub a {
+  display: block;
+  padding: 11px 18px;
+  border-radius: 10px;
+  font-size: 0.88rem;
+  font-weight: 500;
+  color: var(--text-primary);
+  text-decoration: none;
+  transition: background .15s, color .15s;
+}
+.nav-sub a:hover {
+  background: linear-gradient(135deg, rgba(201,169,97,0.14), rgba(185,28,28,0.06));
+  color: var(--fire-red);
+}
+.nav-sub a.active {
+  background: linear-gradient(135deg, rgba(185,28,28,0.12), rgba(201,169,97,0.10));
+  color: var(--fire-red);
+  font-weight: 700;
+}
+
 .nav-mobile-toggle {
   display: none;
   background: none;
