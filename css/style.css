@@ -282,11 +282,27 @@ img {
   cursor: pointer;
   user-select: none;
 }
+/* invisible hover bridge — 마우스가 toggle → sub 이동 중 끊김 방지 */
+.nav-dropdown::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  height: 12px;
+  background: transparent;
+  pointer-events: none;
+}
+.nav-dropdown:hover::after,
+.nav-dropdown.open::after {
+  pointer-events: auto;
+}
 .nav-sub {
   display: none;
   position: absolute;
-  top: calc(100% + 8px);
+  top: 100%;          /* 갭 제거 — 바로 붙음 */
   left: 0;
+  margin-top: 2px;    /* 시각적 살짝 분리 */
   background: var(--bg-card);
   border: 1px solid var(--border-gold);
   border-radius: 14px;
@@ -295,7 +311,6 @@ img {
   list-style: none;
   box-shadow: 0 18px 50px rgba(15,30,61,0.18), 0 6px 16px rgba(15,30,61,0.08);
   z-index: 100;
-  margin: 0;
 }
 .nav-dropdown:hover .nav-sub,
 .nav-dropdown.open .nav-sub {
