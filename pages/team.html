@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Team — FireNavi 팀 소개</title>
+<link rel="stylesheet" href="../css/style.css">
+<style>
+  .team-wrap { max-width: 1240px; margin: 0 auto; padding: 48px 24px 80px; }
+  .team-hero {
+    text-align: center; margin-bottom: 56px; padding: 56px 32px;
+    background: linear-gradient(135deg, #0F1E3D 0%, #1E3A8A 50%, #6D28D9 100%);
+    border-radius: 28px; position: relative; overflow: hidden;
+    border: 1px solid rgba(201,169,97,0.35);
+    box-shadow: 0 28px 80px rgba(15,30,61,0.18);
+  }
+  .team-hero::before {
+    content:''; position:absolute; top:-80px; right:-80px;
+    width: 280px; height: 280px;
+    background: radial-gradient(circle, rgba(201,169,97,0.3), transparent 70%);
+    border-radius: 50%;
+  }
+  .team-hero::after {
+    content:''; position:absolute; bottom:-60px; left:-60px;
+    width: 220px; height: 220px;
+    background: radial-gradient(circle, rgba(185,28,28,0.25), transparent 70%);
+    border-radius: 50%;
+  }
+  .team-hero .badge {
+    display:inline-block; padding: 6px 18px; border-radius: 999px;
+    background: rgba(201,169,97,0.18); border: 1px solid rgba(201,169,97,0.5);
+    color: #FDE68A; font-size: 0.72rem; font-weight: 800; letter-spacing: 2px;
+    margin-bottom: 18px; position: relative;
+  }
+  .team-hero h1 {
+    color: #fff; font-size: clamp(2.2rem, 4vw, 3.4rem); font-weight: 900;
+    line-height: 1.2; margin-bottom: 16px; position: relative;
+  }
+  .team-hero h1 .accent {
+    background: linear-gradient(135deg, #FDE68A, #C9A961);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .team-hero p {
+    color: #CBD5E1; font-size: clamp(0.95rem, 1.4vw, 1.1rem);
+    line-height: 1.75; max-width: 760px; margin: 0 auto; position: relative;
+  }
+
+  .team-section-title {
+    text-align: center; margin-bottom: 36px;
+  }
+  .team-section-title .label {
+    display:inline-block; font-size: 0.72rem; font-weight: 800; letter-spacing: 2px;
+    color: var(--gold-deep); margin-bottom: 10px; text-transform: uppercase;
+  }
+  .team-section-title h2 {
+    font-size: clamp(1.6rem, 2.4vw, 2.2rem); font-weight: 800;
+    color: var(--text-primary); line-height: 1.3;
+  }
+  .team-section-title h2 .accent {
+    background: linear-gradient(135deg, var(--fire-red), var(--gold-deep));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .leaders-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px;
+    margin-bottom: 64px;
+  }
+  @media (max-width: 900px) { .leaders-grid { grid-template-columns: 1fr; } }
+
+  .leader-card {
+    background: var(--bg-card); border-radius: 22px; padding: 36px 28px;
+    border: 1px solid var(--border); position: relative; overflow: hidden;
+    transition: transform .25s, box-shadow .25s, border-color .25s;
+    box-shadow: var(--shadow-md);
+  }
+  .leader-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-card-hover);
+    border-color: var(--border-gold);
+  }
+  .leader-card::before {
+    content:''; position:absolute; top:0; left:0; right:0; height: 4px;
+    background: var(--accent-gradient, linear-gradient(90deg, var(--fire-red), var(--gold)));
+  }
+  .leader-card.ceo::before { background: linear-gradient(90deg, #B91C1C, #C2410C, #C9A961); }
+  .leader-card.cto::before { background: linear-gradient(90deg, #0F1E3D, #1E40AF, #06B6D4); }
+  .leader-card.cbo::before { background: linear-gradient(90deg, #6D28D9, #B76E79, #C9A961); }
+
+  .leader-avatar {
+    width: 90px; height: 90px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 2.4rem; margin-bottom: 18px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+    border: 3px solid #fff;
+  }
+  .leader-card.ceo .leader-avatar { background: linear-gradient(135deg, #B91C1C, #C2410C); }
+  .leader-card.cto .leader-avatar { background: linear-gradient(135deg, #0F1E3D, #1E40AF); }
+  .leader-card.cbo .leader-avatar { background: linear-gradient(135deg, #6D28D9, #B76E79); }
+
+  .leader-role {
+    font-size: 0.7rem; font-weight: 800; letter-spacing: 1.5px;
+    color: var(--gold-deep); margin-bottom: 6px; text-transform: uppercase;
+  }
+  .leader-name {
+    font-size: 1.4rem; font-weight: 800; color: var(--text-primary); margin-bottom: 8px;
+  }
+  .leader-name .status {
+    display:inline-block; margin-left: 8px; padding: 2px 10px; border-radius: 999px;
+    font-size: 0.65rem; font-weight: 700; letter-spacing: 0.5px;
+    background: rgba(201,169,97,0.18); color: var(--gold-deep);
+    border: 1px solid var(--border-gold); vertical-align: middle;
+  }
+  .leader-name .status.hiring { background: rgba(185,28,28,0.1); color: var(--fire-red); border-color: rgba(185,28,28,0.3); }
+  .leader-tag {
+    font-size: 0.78rem; font-weight: 600; color: var(--text-muted); margin-bottom: 18px;
+    padding-bottom: 18px; border-bottom: 1px dashed var(--border);
+  }
+  .leader-desc {
+    font-size: 0.88rem; line-height: 1.75; color: var(--text-secondary);
+    margin-bottom: 16px;
+  }
+  .leader-skills {
+    display: flex; flex-wrap: wrap; gap: 6px;
+  }
+  .skill-tag {
+    font-size: 0.7rem; font-weight: 600;
+    padding: 5px 12px; border-radius: 999px;
+    background: rgba(201,169,97,0.1); color: var(--gold-deep);
+    border: 1px solid rgba(201,169,97,0.25);
+  }
+
+  /* Partners / Advisory */
+  .partners-section {
+    background: linear-gradient(135deg, rgba(255,253,247,0.95), rgba(239,230,208,0.4));
+    border-radius: 22px; padding: 40px 36px; margin-bottom: 56px;
+    border: 1px solid var(--border-gold);
+  }
+  .partners-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 18px; margin-top: 24px;
+  }
+  .partner-card {
+    background: rgba(255,255,255,0.7); border-radius: 14px;
+    padding: 20px 22px; border: 1px solid rgba(201,169,97,0.2);
+    display: flex; align-items: center; gap: 14px;
+    transition: background .2s, border-color .2s;
+  }
+  .partner-card:hover { background: #fff; border-color: rgba(201,169,97,0.5); }
+  .partner-icon {
+    width: 48px; height: 48px; border-radius: 12px; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.3rem; background: linear-gradient(135deg, #FDE68A, #C9A961);
+    box-shadow: 0 4px 12px rgba(201,169,97,0.3);
+  }
+  .partner-info .name {
+    font-size: 0.92rem; font-weight: 800; color: var(--text-primary); margin-bottom: 3px;
+  }
+  .partner-info .desc { font-size: 0.74rem; color: var(--text-muted); line-height: 1.5; }
+
+  /* Values */
+  .values-grid {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px;
+    margin-bottom: 56px;
+  }
+  @media (max-width: 900px) { .values-grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 600px) { .values-grid { grid-template-columns: 1fr; } }
+
+  .value-card {
+    background: var(--bg-card); border-radius: 18px; padding: 28px 24px;
+    border: 1px solid var(--border); text-align: left;
+    transition: transform .2s, border-color .2s;
+  }
+  .value-card:hover { transform: translateY(-3px); border-color: var(--border-gold); }
+  .value-card .num {
+    font-size: 2.6rem; font-weight: 900; line-height: 1; margin-bottom: 12px;
+    background: linear-gradient(135deg, var(--fire-red), var(--gold-deep));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .value-card h4 {
+    font-size: 1.05rem; font-weight: 800; color: var(--text-primary); margin-bottom: 8px;
+  }
+  .value-card p { font-size: 0.82rem; line-height: 1.65; color: var(--text-muted); }
+
+  /* Hiring CTA */
+  .hiring-cta {
+    background: linear-gradient(135deg, #0F1E3D 0%, #1E3A8A 60%, #6D28D9 100%);
+    border-radius: 24px; padding: 48px 40px; text-align: center;
+    border: 1px solid rgba(201,169,97,0.4); color: #fff;
+    position: relative; overflow: hidden;
+  }
+  .hiring-cta::before {
+    content:''; position:absolute; top:-50px; right:-50px;
+    width: 200px; height: 200px;
+    background: radial-gradient(circle, rgba(201,169,97,0.3), transparent 70%);
+    border-radius: 50%;
+  }
+  .hiring-cta h3 {
+    font-size: clamp(1.4rem, 2.2vw, 2rem); font-weight: 900;
+    margin-bottom: 14px; position: relative; line-height: 1.3;
+  }
+  .hiring-cta h3 .accent {
+    background: linear-gradient(135deg, #FDE68A, #C9A961);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .hiring-cta p {
+    color: #CBD5E1; font-size: 0.95rem; line-height: 1.75;
+    max-width: 680px; margin: 0 auto 28px; position: relative;
+  }
+  .hiring-positions {
+    display: flex; flex-wrap: wrap; justify-content: center; gap: 10px;
+    margin-bottom: 28px; position: relative;
+  }
+  .position-tag {
+    padding: 8px 16px; border-radius: 999px;
+    background: rgba(255,255,255,0.08); border: 1px solid rgba(201,169,97,0.4);
+    color: #FDE68A; font-size: 0.78rem; font-weight: 600;
+  }
+  .cta-btn {
+    display: inline-flex; align-items: center; gap: 10px;
+    padding: 16px 36px; border-radius: 999px;
+    background: linear-gradient(135deg, #B91C1C, #C2410C);
+    color: #fff; font-size: 0.95rem; font-weight: 700; text-decoration: none;
+    box-shadow: 0 8px 28px rgba(185,28,28,0.35);
+    transition: transform .2s, box-shadow .2s;
+    border: 1px solid rgba(201,169,97,0.35);
+    position: relative;
+  }
+  .cta-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 36px rgba(185,28,28,0.5);
+  }
+</style>
+</head>
+<body>
+<div class="page-wrapper">
+
+  <nav class="top-nav"></nav>
+
+  <main class="team-wrap">
+    <!-- HERO -->
+    <div class="team-hero">
+      <span class="badge">OUR TEAM</span>
+      <h1>AI 기술 · 안전공학 · 산업현장<br><span class="accent">3각 합주팀이 만듭니다</span></h1>
+      <p>
+        FireNavi는 자체 개발 3개 AI 엔진과 5건의 특허를 보유한 기술 핵심에,<br>
+        해양·건축 안전공학과 글로벌 산업 네트워크를 결합한 균형 잡힌 합주팀입니다.
+      </p>
+    </div>
+
+    <!-- LEADERSHIP -->
+    <div class="team-section-title">
+      <div class="label">Leadership Team</div>
+      <h2>플랫폼을 이끄는 <span class="accent">핵심 리더십</span></h2>
+    </div>
+
+    <div class="leaders-grid">
+      <!-- CEO -->
+      <div class="leader-card ceo">
+        <div class="leader-avatar">🧠</div>
+        <div class="leader-role">CEO · Founder · AI Architect</div>
+        <div class="leader-name">심재우 <span class="status">Active</span></div>
+        <div class="leader-tag">Jaiwoo Shim · jaiwshim@gmail.com</div>
+        <div class="leader-desc">
+          FireNavi의 창업자이자 3개 AI 엔진(Prediction · Behavior · Decision)의 핵심 설계자입니다.
+          5건의 특허(KIPO 출원)와 4건의 저작권 등록을 주도하였으며,
+          다수의 AI/소프트웨어 플랫폼 구축 경험을 바탕으로 기술 비전과 제품 로드맵을 이끕니다.
+        </div>
+        <div class="leader-skills">
+          <span class="skill-tag">AI Architecture</span>
+          <span class="skill-tag">Patent Author</span>
+          <span class="skill-tag">3 AI Engines</span>
+          <span class="skill-tag">Product Vision</span>
+          <span class="skill-tag">Python · PyTorch</span>
+        </div>
+      </div>
+
+      <!-- CTO -->
+      <div class="leader-card cto">
+        <div class="leader-avatar">🚢</div>
+        <div class="leader-role">CTO · Safety Engineering</div>
+        <div class="leader-name">채용 진행 중 <span class="status hiring">Hiring</span></div>
+        <div class="leader-tag">15년+ 해양·건축 안전 분야</div>
+        <div class="leader-desc">
+          해양·건축 안전 분야에서 15년 이상의 실무 경력을 가진 전문가를 채용 중입니다.
+          소방기술사 자격 보유자, IMO·SOLAS 컨설팅 또는 한국선급(KR)·DNV·ABS 인증 경험자를 우선합니다.
+          엔지니어링 팀을 이끌며 실제 시설 도입과 인증을 책임집니다.
+        </div>
+        <div class="leader-skills">
+          <span class="skill-tag">Safety Engineering</span>
+          <span class="skill-tag">소방기술사</span>
+          <span class="skill-tag">IMO · SOLAS</span>
+          <span class="skill-tag">BIM · IFC</span>
+          <span class="skill-tag">선급 인증</span>
+        </div>
+      </div>
+
+      <!-- CBO -->
+      <div class="leader-card cbo">
+        <div class="leader-avatar">🤝</div>
+        <div class="leader-role">CBO · Business Development</div>
+        <div class="leader-name">협업 파트너 <span class="status hiring">Open</span></div>
+        <div class="leader-tag">크루즈·호텔·시공사·보험사 네트워크</div>
+        <div class="leader-desc">
+          크루즈·호텔·건설사·보험사·재보험사 네트워크와 영업 경험을 가진 BD 리더를 모집합니다.
+          대형 선사·디벨로퍼 직판, 채널 파트너십, 보험사 번들 상품, 공공 입찰 채널을 총괄하며
+          단계적 사업 확장을 책임집니다.
+        </div>
+        <div class="leader-skills">
+          <span class="skill-tag">B2B Sales</span>
+          <span class="skill-tag">Cruise Industry</span>
+          <span class="skill-tag">Insurance Partnership</span>
+          <span class="skill-tag">Real Estate</span>
+          <span class="skill-tag">Public RFP</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- PARTNERS -->
+    <div class="partners-section">
+      <div class="team-section-title" style="margin-bottom: 14px;">
+        <div class="label">Partners · Advisory</div>
+        <h2>협력 파트너와 <span class="accent">자문 네트워크</span></h2>
+      </div>
+      <p style="text-align:center; font-size:0.92rem; color:var(--text-muted); max-width:720px; margin: 0 auto;">
+        기술 검증·인증·영업 채널·보험상품 개발을 위한 산업 파트너십을 구축하고 있습니다.
+      </p>
+      <div class="partners-grid">
+        <div class="partner-card">
+          <div class="partner-icon">⚓</div>
+          <div class="partner-info">
+            <div class="name">한국선급 (KR)</div>
+            <div class="desc">크루즈 선급 인증 · 자문 검토 진행</div>
+          </div>
+        </div>
+        <div class="partner-card">
+          <div class="partner-icon">🛡️</div>
+          <div class="partner-info">
+            <div class="name">NFPA 한국지부</div>
+            <div class="desc">화재방지 표준 · 기술 자문</div>
+          </div>
+        </div>
+        <div class="partner-card">
+          <div class="partner-icon">🏛️</div>
+          <div class="partner-info">
+            <div class="name">국내 대형 보험사</div>
+            <div class="desc">화재보험 상품 공동개발 협의</div>
+          </div>
+        </div>
+        <div class="partner-card">
+          <div class="partner-icon">🏗️</div>
+          <div class="partner-info">
+            <div class="name">건설·조선사 협력</div>
+            <div class="desc">BIM 통합 · 신축·리트로핏 도입</div>
+          </div>
+        </div>
+        <div class="partner-card">
+          <div class="partner-icon">🏥</div>
+          <div class="partner-info">
+            <div class="name">종합병원 자문단</div>
+            <div class="desc">취약계층 대피 시나리오 검증</div>
+          </div>
+        </div>
+        <div class="partner-card">
+          <div class="partner-icon">🎓</div>
+          <div class="partner-info">
+            <div class="name">학계 자문</div>
+            <div class="desc">군중 동역학·CFD 시뮬레이션 자문</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- VALUES / METRICS -->
+    <div class="team-section-title">
+      <div class="label">Our Numbers</div>
+      <h2>팀의 성과를 <span class="accent">숫자로 증명합니다</span></h2>
+    </div>
+
+    <div class="values-grid">
+      <div class="value-card">
+        <div class="num">3</div>
+        <h4>자체 개발 AI 엔진</h4>
+        <p>Prediction · Behavior · Decision Engine을 모두 자체 개발하고 0.5초 동기화 아키텍처로 통합 운영합니다.</p>
+      </div>
+      <div class="value-card">
+        <div class="num">5</div>
+        <h4>특허 출원 (KIPO)</h4>
+        <p>삼중 엔진 동기화 · 이원 경로 · 취약계층 안전 마진 · 동적 출구 재배정 · 이중 경로 예측 보정 5건 출원 완료.</p>
+      </div>
+      <div class="value-card">
+        <div class="num">4</div>
+        <h4>저작권 등록</h4>
+        <p>소스코드 · AI 알고리즘 · UI 디자인 · 사용자 매뉴얼 4종을 한국저작권위원회에 일괄 등록 완료.</p>
+      </div>
+      <div class="value-card">
+        <div class="num">6,000+</div>
+        <h4>동시 처리 인원</h4>
+        <p>WiFi 정밀 위치추적 + 강화학습 기반 경로 분산으로 6,000명 이상을 실시간 개인 맞춤 경로로 안내합니다.</p>
+      </div>
+    </div>
+
+    <!-- HIRING CTA -->
+    <div class="hiring-cta">
+      <h3>FireNavi와 함께 <span class="accent">생존을 설계할 동료</span>를 찾습니다</h3>
+      <p>
+        기술과 안전공학, 산업 현장 경험이 만나는 곳에서 우리는 화재로부터 사람의 생명을 지키는 플랫폼을 만듭니다.
+        다음 화재가 발생하기 전에 행동하고 싶은 분의 지원을 기다립니다.
+      </p>
+      <div class="hiring-positions">
+        <span class="position-tag">🚢 CTO · Safety Engineering</span>
+        <span class="position-tag">🤝 CBO · Business Development</span>
+        <span class="position-tag">🧠 ML Engineer (RL · CFD)</span>
+        <span class="position-tag">📡 Edge System Engineer</span>
+        <span class="position-tag">🎨 UI/UX Designer</span>
+        <span class="position-tag">📊 Customer Success</span>
+      </div>
+      <a href="mailto:jaiwshim@gmail.com?subject=FireNavi%20채용%20문의" class="cta-btn">
+        ✉ jaiwshim@gmail.com 으로 지원하기
+      </a>
+    </div>
+  </main>
+
+  <footer class="footer-premium"></footer>
+</div>
+
+<script src="../js/common-nav-footer.js"></script>
+</body>
+</html>

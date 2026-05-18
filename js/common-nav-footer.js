@@ -29,8 +29,7 @@
           </li>
           <li><a href="${pre}pages/risk-map.html"${act('risk-map.html')}>위험지도</a></li>
           <li><a href="${pre}pages/route-optimizer.html"${act('route-optimizer.html')}>경로최적화</a></li>
-          <li><a href="${pre}manual.html" style="color:#B91C1C;"${act('manual.html')}>매뉴얼</a></li>
-          <li><a href="${pre}docs/diagrams/architecture.svg" style="color:#6D28D9;">구조도</a></li>
+          <li><a href="${pre}pages/team.html" style="color:#C9A961;font-weight:700;"${act('team.html')}>팀</a></li>
         </ul>
         <button class="nav-mobile-toggle" type="button" aria-label="Menu">&#9776;</button>
       </div>
@@ -63,9 +62,11 @@
           <div class="footer-col">
             <h4 class="footer-col-title">Interactive</h4>
             <ul class="footer-links">
-              <li><a href="${pre}pages/simulation.html">실시간 시뮬레이션</a></li>
+              <li><a href="${pre}pages/simulation.html">🚢 크루즈 시뮬레이션</a></li>
+              <li><a href="${pre}pages/simulation-building.html">🏙️ 빌딩 시뮬레이션</a></li>
               <li><a href="${pre}pages/risk-map.html">동적 위험지도</a></li>
               <li><a href="${pre}pages/route-optimizer.html">경로 최적화</a></li>
+              <li><a href="${pre}pages/team.html">👥 팀 소개</a></li>
             </ul>
           </div>
           <div class="footer-col">
