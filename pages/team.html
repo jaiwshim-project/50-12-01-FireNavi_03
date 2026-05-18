@@ -107,16 +107,20 @@
   .leader-card.cdo::before { background: linear-gradient(90deg, #15803D, #C9A961, #B76E79); }
 
   .leader-avatar {
-    width: 90px; height: 90px; border-radius: 50%;
+    width: 96px; height: 96px; border-radius: 50%;
     display: flex; align-items: center; justify-content: center;
-    font-size: 2.4rem; margin-bottom: 18px;
-    box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+    margin-bottom: 18px; padding: 8px;
+    box-shadow: 0 10px 28px rgba(0,0,0,0.14);
     border: 3px solid #fff;
+    position: relative;
   }
-  .leader-card.ceo .leader-avatar { background: linear-gradient(135deg, #B91C1C, #C2410C); }
-  .leader-card.cto .leader-avatar { background: linear-gradient(135deg, #0F1E3D, #1E40AF); }
-  .leader-card.cbo .leader-avatar { background: linear-gradient(135deg, #6D28D9, #B76E79); }
-  .leader-card.cdo .leader-avatar { background: linear-gradient(135deg, #15803D, #C9A961); }
+  .leader-avatar img { width: 100%; height: 100%; object-fit: contain; display: block; }
+  .leader-card.ceo .leader-avatar { background: linear-gradient(135deg, #B91C1C, #C2410C, #FDE68A); }
+  .leader-card.cto .leader-avatar { background: linear-gradient(135deg, #0F1E3D, #1E40AF, #06B6D4); }
+  .leader-card.cbo .leader-avatar { background: linear-gradient(135deg, #6D28D9, #B76E79, #C9A961); }
+  .leader-card.cdo .leader-avatar { background: linear-gradient(135deg, #15803D, #10B981, #C9A961); }
+
+  .partner-icon img { width: 32px; height: 32px; object-fit: contain; }
 
   .leader-role {
     font-size: 0.7rem; font-weight: 800; letter-spacing: 1.5px;
@@ -279,7 +283,7 @@
     <div class="leaders-grid">
       <!-- CEO -->
       <div class="leader-card ceo">
-        <div class="leader-avatar">👔</div>
+        <div class="leader-avatar"><img src="https://cdn.jsdelivr.net/gh/microsoft/fluentui-emoji@main/assets/Man%20technologist/3D/man_technologist_3d.png" alt="CEO" onerror="this.outerHTML='<span style=&quot;font-size:2.4rem&quot;>👔</span>'"></div>
         <div class="leader-role">CEO · Founder · Chief Visionary</div>
         <div class="leader-name">심재우 (Jaiwoo Shim) <span class="status">Active</span></div>
         <div class="leader-tag">📧 jaiwshim@gmail.com · 📞 010-2397-5734 · 마르퀴즈 후즈후 2016·2020 등재</div>
@@ -338,7 +342,7 @@
 
       <!-- CTO -->
       <div class="leader-card cto">
-        <div class="leader-avatar">🚒</div>
+        <div class="leader-avatar"><img src="https://cdn.jsdelivr.net/gh/microsoft/fluentui-emoji@main/assets/Fire%20engine/3D/fire_engine_3d.png" alt="CTO" onerror="this.outerHTML='<span style=&quot;font-size:2.4rem&quot;>🚒</span>'"></div>
         <div class="leader-role">CTO · Disaster Science · Fire Safety</div>
         <div class="leader-name">서병근 <span class="status">Active</span></div>
         <div class="leader-tag">재난과학박사 (Ph.D., Disaster Science) · 존슨콘트롤즈(Johnson Controls)</div>
@@ -361,7 +365,7 @@
 
       <!-- CBO (3인 체제) -->
       <div class="leader-card cbo">
-        <div class="leader-avatar">🤝</div>
+        <div class="leader-avatar"><img src="https://cdn.jsdelivr.net/gh/microsoft/fluentui-emoji@main/assets/Handshake/3D/handshake_3d.png" alt="CBO" onerror="this.outerHTML='<span style=&quot;font-size:2.4rem&quot;>🤝</span>'"></div>
         <div class="leader-role">CBO · Business Development (3인 체제)</div>
         <div class="leader-name">서한균 · 선웅규 · 정필완 <span class="status">Active</span></div>
         <div class="leader-tag">크루즈·호텔·시공사·보험사 네트워크 BD 트라이앵글</div>
@@ -386,7 +390,7 @@
 
       <!-- CDO -->
       <div class="leader-card cdo">
-        <div class="leader-avatar">🎨</div>
+        <div class="leader-avatar"><img src="https://cdn.jsdelivr.net/gh/microsoft/fluentui-emoji@main/assets/Artist%20palette/3D/artist_palette_3d.png" alt="CDO" onerror="this.outerHTML='<span style=&quot;font-size:2.4rem&quot;>🎨</span>'"></div>
         <div class="leader-role">CDO · Design · Brand Experience</div>
         <div class="leader-name">이강수 <span class="status">Active</span></div>
         <div class="leader-tag">UI·UX · 시각 디자인 · 브랜드 경험 총괄</div>
@@ -417,42 +421,42 @@
       </p>
       <div class="partners-grid">
         <div class="partner-card">
-          <div class="partner-icon">⚓</div>
+          <div class="partner-icon"><img src="https://cdn.jsdelivr.net/gh/microsoft/fluentui-emoji@main/assets/Anchor/3D/anchor_3d.png" alt="KR" onerror="this.outerHTML='⚓'"></div>
           <div class="partner-info">
             <div class="name">한국선급 (KR)</div>
             <div class="desc">크루즈 선급 인증 · 자문 검토 진행</div>
           </div>
         </div>
         <div class="partner-card">
-          <div class="partner-icon">🛡️</div>
+          <div class="partner-icon"><img src="https://cdn.jsdelivr.net/gh/microsoft/fluentui-emoji@main/assets/Shield/3D/shield_3d.png" alt="NFPA" onerror="this.outerHTML='🛡️'"></div>
           <div class="partner-info">
             <div class="name">NFPA 한국지부</div>
             <div class="desc">화재방지 표준 · 기술 자문</div>
           </div>
         </div>
         <div class="partner-card">
-          <div class="partner-icon">🏛️</div>
+          <div class="partner-icon"><img src="https://cdn.jsdelivr.net/gh/microsoft/fluentui-emoji@main/assets/Classical%20building/3D/classical_building_3d.png" alt="Insurance" onerror="this.outerHTML='🏛️'"></div>
           <div class="partner-info">
             <div class="name">국내 대형 보험사</div>
             <div class="desc">화재보험 상품 공동개발 협의</div>
           </div>
         </div>
         <div class="partner-card">
-          <div class="partner-icon">🏗️</div>
+          <div class="partner-icon"><img src="https://cdn.jsdelivr.net/gh/microsoft/fluentui-emoji@main/assets/Building%20construction/3D/building_construction_3d.png" alt="Construction" onerror="this.outerHTML='🏗️'"></div>
           <div class="partner-info">
             <div class="name">건설·조선사 협력</div>
             <div class="desc">BIM 통합 · 신축·리트로핏 도입</div>
           </div>
         </div>
         <div class="partner-card">
-          <div class="partner-icon">🏥</div>
+          <div class="partner-icon"><img src="https://cdn.jsdelivr.net/gh/microsoft/fluentui-emoji@main/assets/Hospital/3D/hospital_3d.png" alt="Hospital" onerror="this.outerHTML='🏥'"></div>
           <div class="partner-info">
             <div class="name">종합병원 자문단</div>
             <div class="desc">취약계층 대피 시나리오 검증</div>
           </div>
         </div>
         <div class="partner-card">
-          <div class="partner-icon">🎓</div>
+          <div class="partner-icon"><img src="https://cdn.jsdelivr.net/gh/microsoft/fluentui-emoji@main/assets/Graduation%20cap/3D/graduation_cap_3d.png" alt="Academia" onerror="this.outerHTML='🎓'"></div>
           <div class="partner-info">
             <div class="name">학계 자문</div>
             <div class="desc">군중 동역학·CFD 시뮬레이션 자문</div>
