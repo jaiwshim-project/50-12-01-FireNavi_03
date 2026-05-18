@@ -233,14 +233,41 @@
           <h2 style="color:#F1F5F9; font-size:1.4rem; margin:8px 0 4px 0;">FireNavi — AI가 생존을 설계합니다</h2>
           <p style="color:#94A3B8; font-size:0.9rem; margin:0;">3분 영상으로 보는 FireNavi 플랫폼</p>
         </div>
-        <div style="position:relative;border-radius:12px;overflow:hidden;box-shadow:0 10px 40px rgba(0,0,0,0.4);background:#000;">
-          <video controls preload="metadata" playsinline
-                 poster="copyright/FireNavi_시뮬레이션_화면.png"
-                 style="display:block;width:100%;height:auto;border-radius:12px;outline:none;">
-            <source src="pptx_images/FireNavi__생존을_설계하는_AI.mp4" type="video/mp4">
-            영상을 재생할 수 없습니다.
-            <a href="pptx_images/FireNavi__생존을_설계하는_AI.mp4" style="color:#fbbf24;">영상 다운로드</a>
-          </video>
+        <div style="display:grid;grid-template-columns:1fr;gap:20px;">
+          <!-- 1) 사이트 내 재생 (HTML5) -->
+          <div>
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
+              <span style="display:inline-block;padding:4px 12px;background:rgba(59,130,246,0.18);border:1px solid rgba(59,130,246,0.4);border-radius:20px;color:#93C5FD;font-size:0.7rem;font-weight:700;letter-spacing:1px;">🎬 SITE PLAYER</span>
+              <span style="font-size:0.78rem;color:#94A3B8;">사이트 내 재생 — HTML5</span>
+            </div>
+            <div style="position:relative;border-radius:12px;overflow:hidden;box-shadow:0 10px 40px rgba(0,0,0,0.4);background:#000;">
+              <video controls preload="metadata" playsinline
+                     poster="copyright/FireNavi_시뮬레이션_화면.png"
+                     style="display:block;width:100%;height:auto;border-radius:12px;outline:none;">
+                <source src="pptx_images/FireNavi__생존을_설계하는_AI.mp4" type="video/mp4">
+                영상을 재생할 수 없습니다.
+                <a href="pptx_images/FireNavi__생존을_설계하는_AI.mp4" style="color:#fbbf24;">영상 다운로드</a>
+              </video>
+            </div>
+          </div>
+
+          <!-- 2) YouTube iframe -->
+          <div>
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
+              <span style="display:inline-block;padding:4px 12px;background:rgba(220,38,38,0.18);border:1px solid rgba(220,38,38,0.4);border-radius:20px;color:#FCA5A5;font-size:0.7rem;font-weight:700;letter-spacing:1px;">▶ YOUTUBE</span>
+              <span style="font-size:0.78rem;color:#94A3B8;">YouTube 원본 영상</span>
+            </div>
+            <div style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;border-radius:12px;box-shadow:0 10px 40px rgba(0,0,0,0.4);background:#000;">
+              <iframe
+                src="https://www.youtube.com/embed/DRqr6JlSFbA?rel=0&modestbranding=1"
+                title="FireNavi YouTube Intro"
+                frameborder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                referrerpolicy="strict-origin-when-cross-origin"
+                allowfullscreen
+                style="position:absolute;top:0;left:0;width:100%;height:100%;border:0;"></iframe>
+            </div>
+          </div>
         </div>
       </div>
     </section>
@@ -1109,5 +1136,6 @@
   })();
   </script>
   <script src="js/main.js"></script>
+<script src="js/common-nav-footer.js"></script>
 </body>
 </html>
