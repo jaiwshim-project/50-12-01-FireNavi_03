@@ -7,6 +7,8 @@ pdf_base64.txt
 *.mp4
 *.mov
 *.pptx
+# Exception: intro video for landing page (under 100MB GitHub limit)
+!pptx_images/FireNavi__생존을_설계하는_AI.mp4
 
 # OS
 .DS_Store

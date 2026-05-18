@@ -182,7 +182,7 @@
     <nav class="top-nav">
       <div class="nav-inner">
         <a href="index.html" class="nav-brand">
-          <img src="image-removebg-preview.png" alt="FireNavi" class="nav-logo-img" style="height:36px;vertical-align:middle;margin-right:6px;">
+          <img src="firenavi-logo.svg" alt="FireNavi" class="nav-logo-img" style="height:36px;vertical-align:middle;margin-right:6px;">
           <span class="nav-tagline">AI 기반 실시간 생존 의사결정 플랫폼</span>
         </a>
         <ul class="nav-links">
@@ -233,15 +233,14 @@
           <h2 style="color:#F1F5F9; font-size:1.4rem; margin:8px 0 4px 0;">FireNavi — AI가 생존을 설계합니다</h2>
           <p style="color:#94A3B8; font-size:0.9rem; margin:0;">3분 영상으로 보는 FireNavi 플랫폼</p>
         </div>
-        <div style="position:relative; padding-bottom:56.25%; height:0; overflow:hidden; border-radius:12px; box-shadow:0 10px 40px rgba(0,0,0,0.4);">
-          <iframe
-            src="https://www.youtube.com/embed/DRqr6JlSFbA"
-            title="FireNavi Intro Video"
-            frameborder="0"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-            referrerpolicy="strict-origin-when-cross-origin"
-            allowfullscreen
-            style="position:absolute; top:0; left:0; width:100%; height:100%; border:0;"></iframe>
+        <div style="position:relative;border-radius:12px;overflow:hidden;box-shadow:0 10px 40px rgba(0,0,0,0.4);background:#000;">
+          <video controls preload="metadata" playsinline
+                 poster="copyright/FireNavi_시뮬레이션_화면.png"
+                 style="display:block;width:100%;height:auto;border-radius:12px;outline:none;">
+            <source src="pptx_images/FireNavi__생존을_설계하는_AI.mp4" type="video/mp4">
+            영상을 재생할 수 없습니다.
+            <a href="pptx_images/FireNavi__생존을_설계하는_AI.mp4" style="color:#fbbf24;">영상 다운로드</a>
+          </video>
         </div>
       </div>
     </section>
@@ -534,22 +533,34 @@
             FireNavi는 개인의 이동 능력을 실시간으로 판단하여<br>
             <span style="color:#EC4899;font-weight:700;">가장 취약한 사람을 가장 먼저, 가장 안전하게</span> 대피시킵니다
           </div>
-          <div style="display:flex;justify-content:center;gap:24px;margin-top:20px;flex-wrap:wrap;">
-            <div style="background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:16px 24px;text-align:center;">
-              <div style="font-size:1.6rem;font-weight:800;color:#EC4899;">6</div>
-              <div style="font-size:0.75rem;color:#94A3B8;">취약 유형 분류</div>
+          <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:24px;">
+            <div style="background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);border-radius:12px;padding:20px 22px;text-align:left;">
+              <div style="display:flex;align-items:baseline;gap:10px;margin-bottom:8px;">
+                <div style="font-size:1.6rem;font-weight:800;color:#EC4899;">6</div>
+                <div style="font-size:0.75rem;color:#94A3B8;font-weight:600;">취약 유형 분류</div>
+              </div>
+              <div style="font-size:0.78rem;color:#CBD5E1;line-height:1.65;">고령자·장애인·어린이·임산부·환자·동반보호자 6개 유형으로 자동 분류합니다. 각 유형별 이동 능력, 인지 능력, 의료 상태를 별도 프로파일로 관리하여 위기 상황에서 즉시 최적화된 대피 전략과 구조 우선순위가 결정됩니다.</div>
             </div>
-            <div style="background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:16px 24px;text-align:center;">
-              <div style="font-size:1.6rem;font-weight:800;color:#F59E0B;">Eq.20-22</div>
-              <div style="font-size:0.75rem;color:#94A3B8;">개인별 이동능력 수식</div>
+            <div style="background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);border-radius:12px;padding:20px 22px;text-align:left;">
+              <div style="display:flex;align-items:baseline;gap:10px;margin-bottom:8px;">
+                <div style="font-size:1.6rem;font-weight:800;color:#F59E0B;">Eq.20-22</div>
+                <div style="font-size:0.75rem;color:#94A3B8;font-weight:600;">개인별 이동능력 수식</div>
+              </div>
+              <div style="font-size:0.78rem;color:#CBD5E1;line-height:1.65;">3개 핵심 수식(보행 속도, 계단 통과 시간, 회피 반응 시간)으로 개인별 이동 능력을 정량화합니다. 나이, 체력, 장애, 동반자 유무를 입력값으로 받아 실시간 경로 가중치를 산출하며 AI 알고리즘에 직접 반영됩니다.</div>
             </div>
-            <div style="background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:16px 24px;text-align:center;">
-              <div style="font-size:1.6rem;font-weight:800;color:#38A169;">2x</div>
-              <div style="font-size:0.75rem;color:#94A3B8;">연기 회피 안전 마진</div>
+            <div style="background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);border-radius:12px;padding:20px 22px;text-align:left;">
+              <div style="display:flex;align-items:baseline;gap:10px;margin-bottom:8px;">
+                <div style="font-size:1.6rem;font-weight:800;color:#38A169;">2x</div>
+                <div style="font-size:0.75rem;color:#94A3B8;font-weight:600;">연기 회피 안전 마진</div>
+              </div>
+              <div style="font-size:0.78rem;color:#CBD5E1;line-height:1.65;">취약계층 경로 계산 시 일반인 대비 2배의 연기 회피 안전 마진을 적용합니다. 가시거리, 농도, 일산화탄소 임계값을 보수적으로 설정하여 호흡기 약자와 거동 불편자가 안전한 환경에서만 이동하도록 보장합니다.</div>
             </div>
-            <div style="background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:16px 24px;text-align:center;">
-              <div style="font-size:1.6rem;font-weight:800;color:#3B82F6;">#1</div>
-              <div style="font-size:0.75rem;color:#94A3B8;">소방관 구조 우선순위</div>
+            <div style="background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);border-radius:12px;padding:20px 22px;text-align:left;">
+              <div style="display:flex;align-items:baseline;gap:10px;margin-bottom:8px;">
+                <div style="font-size:1.6rem;font-weight:800;color:#3B82F6;">#1</div>
+                <div style="font-size:0.75rem;color:#94A3B8;font-weight:600;">소방관 구조 우선순위</div>
+              </div>
+              <div style="font-size:0.78rem;color:#CBD5E1;line-height:1.65;">소방관 진입 시 취약계층을 최우선 구조 대상으로 자동 등록합니다. 위치, 상태, 동반자 정보가 구조대 단말에 실시간 표시되며, AI가 최단 접근 경로와 최적 구조 순서를 제안하여 골든타임 내 전원 구조를 목표로 합니다.</div>
             </div>
           </div>
         </div>
@@ -599,7 +610,7 @@
 
     <!-- CRUISE SHIP IMAGE -->
     <section class="container" style="text-align:center; padding: var(--space-xl) 0; background: linear-gradient(135deg, rgba(254,226,226,0.35) 0%, rgba(255,245,245,0.6) 100%); border-radius: var(--radius-lg); margin-bottom: var(--space-lg);">
-      <img src="유람선.jpg" alt="Celestial Sovereign 호화유람선" style="width:100%; max-width:1200px; border-radius:var(--radius-lg); box-shadow:var(--shadow-xl);">
+      <img src="유람선.jpg" alt="Celestial Sovereign 호화유람선" style="width:80%; max-width:960px; border-radius:var(--radius-lg); box-shadow:var(--shadow-xl);">
     </section>
 
     <!-- CORE STATS -->
@@ -826,42 +837,66 @@
         <div class="feature-item">
           <div class="icon">&#x1F465;</div>
           <div class="name">군중 밀집도 예측</div>
-          <div class="desc">실시간 CCTV + IoT 센서 기반 구역별 밀집도 예측</div>
+          <div class="desc">실시간 CCTV 영상 분석과 IoT 센서 데이터를 융합하여 구역별 인구 밀도를 0.5초 단위로 예측합니다. Kernel Density Estimation 알고리즘으로 군중 흐름을 시각화하고, 0.5m²/인 이하 위험 밀도 구간을 사전에 감지하여 압사 사고와 병목 정체를 원천 차단합니다.</div>
         </div>
         <div class="feature-item">
           <div class="icon">&#x1F32B;&#xFE0F;</div>
           <div class="name">연기 확산 예측</div>
-          <div class="desc">AI + CFD 기반 연기 확산 경로 및 시간 예측</div>
+          <div class="desc">Navier-Stokes 방정식 기반 CFD 시뮬레이션과 LSTM 신경망을 결합하여 화재 발생 후 60초 단위로 연기의 확산 경로와 농도를 예측합니다. Beer-Lambert 법칙으로 가시거리를 정량화해 안전한 대피 경로 계산에 즉시 반영하여 시야 확보를 보장합니다.</div>
         </div>
         <div class="feature-item">
           <div class="icon">&#x1F5FA;&#xFE0F;</div>
           <div class="name">동적 위험지도</div>
-          <div class="desc">화재 &middot; 연기 &middot; 구조 &middot; 밀집도 가중합 위험 매핑</div>
+          <div class="desc">화재 강도, 연기 농도, 구조적 약점, 군중 밀집도를 실시간 가중합산하여 시설 전체의 위험도를 색상으로 매핑합니다. Risk Map은 0.5초마다 갱신되며 AI 경로 알고리즘의 입력값이 되어 모든 개인에게 가장 안전한 경로를 즉시 제공합니다.</div>
         </div>
         <div class="feature-item">
           <div class="icon">&#x23F1;&#xFE0F;</div>
           <div class="name">대피시간 최소화</div>
-          <div class="desc">출구 분산 + 경로 분배 기반 전체 대피시간 최적화</div>
+          <div class="desc">A* Dynamic 알고리즘과 강화학습으로 출구별 부하를 자동 분산시켜 전체 대피 시간을 최소화합니다. 6,000명 동시 최적화 시 12개 출구로 자동 균형 배분되며, 단일 출구 병목과 압사를 원천 차단하여 평균 대피 시간을 3배 단축합니다.</div>
         </div>
         <div class="feature-item">
           <div class="icon">&#x2764;&#xFE0F;</div>
           <div class="name">건강상태 반영</div>
-          <div class="desc">거동 불편, 노약자, 아동 등 개인 맞춤 경로 설계</div>
+          <div class="desc">개인별 이동 능력(나이, 거동, 임신, 휠체어 사용)을 실시간 평가하여 맞춤 경로를 생성합니다. 취약계층에게는 엘리베이터와 완만한 경사로를 우선 배정하고, 연기 회피 안전 마진을 2배로 확대하며 소방관 구조 우선순위 1순위로 자동 등록됩니다.</div>
         </div>
       </div>
 
       <div class="section-header text-center" style="margin-top:32px;">
         <div class="section-label text-muted">TECHNOLOGY STACK</div>
       </div>
-      <div class="tech-stack">
-        <div class="tech-item"><span class="tech-dot" style="background:#3776AB;"></span> Python</div>
-        <div class="tech-item"><span class="tech-dot" style="background:#FF6F00;"></span> PyTorch / RL</div>
-        <div class="tech-item"><span class="tech-dot" style="background:#1976D2;"></span> OpenFOAM CFD</div>
-        <div class="tech-item"><span class="tech-dot" style="background:#000;"></span> Unity 3D</div>
-        <div class="tech-item"><span class="tech-dot" style="background:#38A169;"></span> BIM / IFC</div>
-        <div class="tech-item"><span class="tech-dot" style="background:#E53E3E;"></span> Edge Computing</div>
-        <div class="tech-item"><span class="tech-dot" style="background:#805AD5;"></span> WebSocket</div>
-        <div class="tech-item"><span class="tech-dot" style="background:#ED8936;"></span> Monte Carlo</div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px;margin-top:16px;">
+        <div style="background:rgba(255,255,255,0.5);border:1px solid rgba(226,232,240,0.6);border-radius:12px;padding:18px 20px;">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;"><span style="width:10px;height:10px;border-radius:50%;background:#3776AB;flex-shrink:0;"></span><span style="font-size:0.95rem;font-weight:700;color:#0F172A;">Python</span></div>
+          <div style="font-size:0.78rem;color:#475569;line-height:1.65;">FireNavi 백엔드 AI 엔진 전체를 구동하는 메인 언어입니다. NumPy·SciPy 기반 고성능 수치 계산과 풍부한 ML 생태계를 활용하며, 3개 AI 엔진의 핵심 알고리즘이 모두 Python으로 구현되어 빠른 프로토타이핑과 안정적 프로덕션 운영을 동시에 만족시킵니다.</div>
+        </div>
+        <div style="background:rgba(255,255,255,0.5);border:1px solid rgba(226,232,240,0.6);border-radius:12px;padding:18px 20px;">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;"><span style="width:10px;height:10px;border-radius:50%;background:#FF6F00;flex-shrink:0;"></span><span style="font-size:0.95rem;font-weight:700;color:#0F172A;">PyTorch / RL</span></div>
+          <div style="font-size:0.78rem;color:#475569;line-height:1.65;">Decision Engine의 강화학습 모델 학습과 추론을 담당합니다. PyTorch 동적 계산 그래프로 6,000명 군중의 행동 패턴을 학습하고, PPO와 DQN 알고리즘으로 시뮬레이션 환경에서 최적 대피 정책을 자동 도출하여 실제 위기 상황에 즉시 적용합니다.</div>
+        </div>
+        <div style="background:rgba(255,255,255,0.5);border:1px solid rgba(226,232,240,0.6);border-radius:12px;padding:18px 20px;">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;"><span style="width:10px;height:10px;border-radius:50%;background:#1976D2;flex-shrink:0;"></span><span style="font-size:0.95rem;font-weight:700;color:#0F172A;">OpenFOAM CFD</span></div>
+          <div style="font-size:0.78rem;color:#475569;line-height:1.65;">Prediction Engine의 화재 확산 시뮬레이션을 담당하는 오픈소스 전산유체역학 라이브러리입니다. Navier-Stokes 방정식을 GPU 병렬 처리하여 실시간 연기 흐름을 계산하고, 시설 도면을 입력받아 화재 발생 후 60초까지의 연기 도달 영역을 정밀 예측합니다.</div>
+        </div>
+        <div style="background:rgba(255,255,255,0.5);border:1px solid rgba(226,232,240,0.6);border-radius:12px;padding:18px 20px;">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;"><span style="width:10px;height:10px;border-radius:50%;background:#000;flex-shrink:0;"></span><span style="font-size:0.95rem;font-weight:700;color:#0F172A;">Unity 3D</span></div>
+          <div style="font-size:0.78rem;color:#475569;line-height:1.65;">시뮬레이션 결과를 3D로 시각화하여 시설 운영자와 소방관에게 직관적인 상황 인식을 제공합니다. 실시간 대피 경로, 군중 흐름, 화재 확산을 3D 공간에서 자유롭게 회전하며 관찰할 수 있고 사전 훈련과 사후 사고 분석에도 동일하게 활용됩니다.</div>
+        </div>
+        <div style="background:rgba(255,255,255,0.5);border:1px solid rgba(226,232,240,0.6);border-radius:12px;padding:18px 20px;">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;"><span style="width:10px;height:10px;border-radius:50%;background:#38A169;flex-shrink:0;"></span><span style="font-size:0.95rem;font-weight:700;color:#0F172A;">BIM / IFC</span></div>
+          <div style="font-size:0.78rem;color:#475569;line-height:1.65;">건축물 정보 모델링 국제 표준으로 시설의 3D 도면, 자재, 구조 정보를 통합 관리합니다. FireNavi는 BIM 데이터를 직접 입력받아 시뮬레이션 환경을 자동 구성하고, 신축 건물과 기존 시설 모두에 도면 변환 없이 즉시 도입 가능한 표준 호환성을 확보했습니다.</div>
+        </div>
+        <div style="background:rgba(255,255,255,0.5);border:1px solid rgba(226,232,240,0.6);border-radius:12px;padding:18px 20px;">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;"><span style="width:10px;height:10px;border-radius:50%;background:#E53E3E;flex-shrink:0;"></span><span style="font-size:0.95rem;font-weight:700;color:#0F172A;">Edge Computing</span></div>
+          <div style="font-size:0.78rem;color:#475569;line-height:1.65;">클라우드 의존 없이 시설 내부 엣지 서버에서 모든 AI 추론을 수행합니다. 네트워크 장애나 정전 시에도 디바이스 자체 캐시 경로로 30초간 대피 가이드가 지속되며, 평균 응답 지연을 50ms 이하로 유지하여 0.5초 단위 실시간 의사결정을 보장합니다.</div>
+        </div>
+        <div style="background:rgba(255,255,255,0.5);border:1px solid rgba(226,232,240,0.6);border-radius:12px;padding:18px 20px;">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;"><span style="width:10px;height:10px;border-radius:50%;background:#805AD5;flex-shrink:0;"></span><span style="font-size:0.95rem;font-weight:700;color:#0F172A;">WebSocket</span></div>
+          <div style="font-size:0.78rem;color:#475569;line-height:1.65;">6,000명 개인 디바이스와 중앙 서버 간 실시간 양방향 통신 채널입니다. HTTP 폴링 대비 지연을 1/10 수준으로 줄이고 동시 연결을 수만 건까지 안정적으로 처리하여, 화재 발생 즉시 모든 디바이스에 맞춤 경로를 0.5초 안에 전송합니다.</div>
+        </div>
+        <div style="background:rgba(255,255,255,0.5);border:1px solid rgba(226,232,240,0.6);border-radius:12px;padding:18px 20px;">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;"><span style="width:10px;height:10px;border-radius:50%;background:#ED8936;flex-shrink:0;"></span><span style="font-size:0.95rem;font-weight:700;color:#0F172A;">Monte Carlo</span></div>
+          <div style="font-size:0.78rem;color:#475569;line-height:1.65;">불확실한 화재 시나리오를 1만 회 이상 무작위 샘플링하여 가능한 모든 확산 패턴의 확률 분포를 계산합니다. Behavior Engine의 군중 행동 변이성도 동일 방법으로 모델링하여 최악 시나리오에 대비한 강건한 대피 전략을 사전에 학습합니다.</div>
+        </div>
       </div>
     </section>
 
@@ -872,7 +907,7 @@
         <div class="footer-grid">
           <!-- Brand -->
           <div class="footer-col footer-col--brand">
-            <div class="footer-logo"><img src="image-removebg-preview.png" alt="FireNavi" style="height:40px;vertical-align:middle;"></div>
+            <div class="footer-logo"><img src="firenavi-logo.svg" alt="FireNavi" style="height:40px;vertical-align:middle;"></div>
             <p class="footer-tagline">AI 기반 실시간 생존 의사결정 플랫폼</p>
             <p class="footer-desc">화재보다 빠르게 판단하는 AI.<br>길을 안내하는 것이 아니라 생존을 설계합니다.</p>
             <div class="footer-badges">

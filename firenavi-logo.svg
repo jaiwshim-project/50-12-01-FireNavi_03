@@ -1,0 +1,133 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 380 110" role="img" aria-label="FireNavi">
+  <defs>
+    <linearGradient id="fnShield" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#3b5fa8"/>
+      <stop offset="45%" stop-color="#1e3a8a"/>
+      <stop offset="100%" stop-color="#0b1530"/>
+    </linearGradient>
+    <linearGradient id="fnShieldEdge" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#60a5fa" stop-opacity=".7"/>
+      <stop offset="100%" stop-color="#1e3a8a" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="fnFire" x1="50%" y1="0%" x2="50%" y2="100%">
+      <stop offset="0%" stop-color="#fde047"/>
+      <stop offset="35%" stop-color="#fb923c"/>
+      <stop offset="75%" stop-color="#dc2626"/>
+      <stop offset="100%" stop-color="#7f1d1d"/>
+    </linearGradient>
+    <linearGradient id="fnArrow" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="55%" stop-color="#e0ecff"/>
+      <stop offset="100%" stop-color="#93c5fd"/>
+    </linearGradient>
+    <linearGradient id="fnArrowDark" x1="50%" y1="0%" x2="50%" y2="100%">
+      <stop offset="0%" stop-color="#dbeafe"/>
+      <stop offset="100%" stop-color="#3b82f6"/>
+    </linearGradient>
+    <radialGradient id="fnPin" cx="35%" cy="30%">
+      <stop offset="0%" stop-color="#fecaca"/>
+      <stop offset="55%" stop-color="#ef4444"/>
+      <stop offset="100%" stop-color="#991b1b"/>
+    </radialGradient>
+    <linearGradient id="fnTextFire" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#ef4444"/>
+      <stop offset="100%" stop-color="#b91c1c"/>
+    </linearGradient>
+    <linearGradient id="fnTextNavi" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#2563eb"/>
+      <stop offset="100%" stop-color="#1e3a8a"/>
+    </linearGradient>
+    <filter id="fnDrop" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="2.5" stdDeviation="2.2" flood-color="#000" flood-opacity=".28"/>
+    </filter>
+    <filter id="fnGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="2" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <!-- 불꽃 (방패 상단) -->
+  <g filter="url(#fnGlow)" transform="translate(0,0)">
+    <path d="M 60 8
+             C 56 18 48 22 44 30
+             C 42 36 46 40 50 41
+             C 47 33 53 28 58 32
+             C 56 22 64 18 66 28
+             C 70 22 76 26 74 34
+             C 78 30 84 34 82 42
+             C 86 38 92 44 88 52
+             C 84 48 78 50 76 56
+             L 92 56
+             C 100 50 102 38 96 28
+             C 92 22 86 22 84 16
+             C 80 22 74 20 76 12
+             C 70 18 64 12 60 8 Z"
+          fill="url(#fnFire)"/>
+    <path d="M 64 18 C 60 26 56 30 60 36 C 62 30 66 28 68 32 C 66 24 72 22 70 18 Z"
+          fill="#fde047" opacity=".55"/>
+  </g>
+
+  <!-- 방패 -->
+  <g filter="url(#fnDrop)">
+    <path d="M 35 38
+             L 35 65
+             C 35 82 50 94 67 100
+             L 75 103
+             L 83 100
+             C 100 94 115 82 115 65
+             L 115 38
+             C 95 36 80 36 75 36
+             C 70 36 55 36 35 38 Z"
+          fill="url(#fnShield)" stroke="#0b1530" stroke-width="2"/>
+    <path d="M 35 38
+             C 55 36 70 36 75 36
+             C 80 36 95 36 115 38
+             L 115 50
+             C 95 48 80 48 75 48
+             C 70 48 55 48 35 50 Z"
+          fill="url(#fnShieldEdge)" opacity=".5"/>
+
+    <!-- 격자 (지도) -->
+    <g stroke="#60a5fa" stroke-width=".8" opacity=".28" fill="none">
+      <line x1="42" y1="48" x2="108" y2="48"/>
+      <line x1="38" y1="60" x2="112" y2="60"/>
+      <line x1="38" y1="72" x2="112" y2="72"/>
+      <line x1="42" y1="84" x2="108" y2="84"/>
+      <line x1="50" y1="42" x2="50" y2="92"/>
+      <line x1="65" y1="40" x2="65" y2="96"/>
+      <line x1="85" y1="40" x2="85" y2="96"/>
+      <line x1="100" y1="42" x2="100" y2="92"/>
+    </g>
+
+    <!-- 네비게이션 화살표 (3D) -->
+    <g filter="url(#fnDrop)">
+      <!-- 왼쪽 어두운 면 -->
+      <path d="M 75 48 L 60 88 L 75 80 Z" fill="url(#fnArrowDark)"/>
+      <!-- 오른쪽 밝은 면 -->
+      <path d="M 75 48 L 90 88 L 75 80 Z" fill="url(#fnArrow)"/>
+      <!-- 중앙 라인 -->
+      <line x1="75" y1="48" x2="75" y2="80" stroke="#1e3a8a" stroke-width=".8" opacity=".5"/>
+    </g>
+
+    <!-- 빨간 핀 -->
+    <g filter="url(#fnDrop)">
+      <path d="M 98 50
+               C 98 44 103 41 107 41
+               C 111 41 116 44 116 50
+               C 116 55 110 62 107 66
+               C 104 62 98 55 98 50 Z"
+            fill="url(#fnPin)" stroke="#7f1d1d" stroke-width=".8"/>
+      <circle cx="107" cy="49" r="2.8" fill="#fff"/>
+      <circle cx="106" cy="48" r="1" fill="#fecaca" opacity=".8"/>
+    </g>
+  </g>
+
+  <!-- 텍스트 Fire -->
+  <text x="140" y="76" font-family="Inter, 'Noto Sans KR', system-ui, sans-serif"
+        font-size="50" font-weight="900" font-style="italic"
+        fill="url(#fnTextFire)" letter-spacing="-1">Fire</text>
+  <!-- 텍스트 Navi -->
+  <text x="228" y="76" font-family="Inter, 'Noto Sans KR', system-ui, sans-serif"
+        font-size="50" font-weight="900" font-style="italic"
+        fill="url(#fnTextNavi)" letter-spacing="-1">Navi</text>
+</svg>
