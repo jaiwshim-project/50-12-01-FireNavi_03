@@ -50,8 +50,8 @@
   <rect width="1400" height="1135" fill="#ffffff"/>
 
   <!-- Title -->
-  <text x="700" y="38" text-anchor="middle" font-size="28" font-weight="700" fill="#1E293B">FireNavi Architecture</text>
-  <text x="700" y="60" text-anchor="middle" font-size="14" fill="#64748B">AI Giban Silsigan Saengjon Uisagyeoljeong Platform</text>
+  <text x="700" y="38" text-anchor="middle" font-size="28" font-weight="700" fill="#1E293B">FireNavi Architecture · 화이어내비 아키텍처</text>
+  <text x="700" y="60" text-anchor="middle" font-size="14" fill="#64748B">AI 기반 실시간 생존 의사결정 플랫폼</text>
 
   <!-- ============================================================ -->
   <!-- LAYER 1: DATA ACQUISITION -->
@@ -59,167 +59,167 @@
   <rect x="40" y="78" width="1320" height="105" rx="14" fill="#F0FDFA" stroke="#A5F3FC" stroke-width="1" filter="url(#shadow)"/>
   <rect x="40" y="78" width="1320" height="28" rx="14" fill="url(#gradCyan)"/>
   <rect x="40" y="92" width="1320" height="14" fill="url(#gradCyan)"/>
-  <text x="700" y="96" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">LAYER 1 : DATA ACQUISITION</text>
+  <text x="700" y="96" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">LAYER 1 · DATA ACQUISITION · 데이터 수집</text>
 
   <!-- Sensor boxes -->
   <rect x="70" y="115" width="290" height="56" rx="10" fill="#fff" stroke="#A5F3FC" stroke-width="1" filter="url(#shadow)"/>
   <circle cx="92" cy="143" r="12" fill="#ECFEFF"/>
   <text x="92" y="147" text-anchor="middle" font-size="14" fill="#0891B2">&#x26A0;</text>
-  <text x="112" y="138" font-size="12" font-weight="600" fill="#0E7490">IoT Sensors</text>
-  <text x="112" y="155" font-size="10" fill="#64748B">Temperature / Smoke / CCTV</text>
+  <text x="112" y="138" font-size="12" font-weight="600" fill="#0E7490">IoT Sensors · IoT 센서</text>
+  <text x="112" y="155" font-size="10" fill="#64748B">온도·연기·CCTV</text>
 
   <rect x="390" y="115" width="280" height="56" rx="10" fill="#fff" stroke="#A5F3FC" stroke-width="1" filter="url(#shadow)"/>
   <circle cx="412" cy="143" r="12" fill="#ECFEFF"/>
   <text x="412" y="148" text-anchor="middle" font-size="12" fill="#0891B2">W</text>
-  <text x="432" y="138" font-size="12" font-weight="600" fill="#0E7490">WiFi Beacons</text>
-  <text x="432" y="155" font-size="10" fill="#64748B">BLE Indoor Positioning</text>
+  <text x="432" y="138" font-size="12" font-weight="600" fill="#0E7490">WiFi Beacons · WiFi 비콘</text>
+  <text x="432" y="155" font-size="10" fill="#64748B">BLE · 실내 위치추적</text>
 
   <rect x="700" y="115" width="290" height="56" rx="10" fill="#fff" stroke="#A5F3FC" stroke-width="1" filter="url(#shadow)"/>
   <circle cx="722" cy="143" r="12" fill="#ECFEFF"/>
   <text x="722" y="148" text-anchor="middle" font-size="12" fill="#0891B2">3D</text>
-  <text x="742" y="138" font-size="12" font-weight="600" fill="#0E7490">Ship BIM / IFC Model</text>
-  <text x="742" y="155" font-size="10" fill="#64748B">Deck Layout / Room Geometry</text>
+  <text x="742" y="138" font-size="12" font-weight="600" fill="#0E7490">BIM / IFC Model · 건축 모델</text>
+  <text x="742" y="155" font-size="10" fill="#64748B">Deck·Room · 도면·룸 형상</text>
 
   <rect x="1020" y="115" width="310" height="56" rx="10" fill="#fff" stroke="#A5F3FC" stroke-width="1" filter="url(#shadow)"/>
   <circle cx="1042" cy="143" r="12" fill="#ECFEFF"/>
   <text x="1042" y="148" text-anchor="middle" font-size="12" fill="#0891B2">ID</text>
-  <text x="1062" y="138" font-size="12" font-weight="600" fill="#0E7490">Device Tracking</text>
-  <text x="1062" y="155" font-size="10" fill="#64748B">Room Key / Access Card</text>
+  <text x="1062" y="138" font-size="12" font-weight="600" fill="#0E7490">Device Tracking · 디바이스 추적</text>
+  <text x="1062" y="155" font-size="10" fill="#64748B">Room Key·Access Card · 룸키·출입카드</text>
 
   <!-- Arrow: Layer 1 to Layer 2 -->
   <line x1="700" y1="186" x2="700" y2="210" stroke="#94A3B8" stroke-width="2" marker-end="url(#arrowGray)"/>
-  <text x="740" y="203" font-size="10" fill="#94A3B8">Sensor Data</text>
+  <text x="740" y="203" font-size="10" fill="#94A3B8">Sensor Data · 센서 데이터</text>
 
   <!-- ============================================================ -->
   <!-- LAYER 2: THREE AI ENGINES (most prominent) -->
   <!-- ============================================================ -->
   <rect x="40" y="215" width="1320" height="452" rx="14" fill="#FAFAFA" stroke="#E2E8F0" stroke-width="1" filter="url(#shadowLg)"/>
-  <text x="700" y="238" text-anchor="middle" font-size="14" font-weight="700" fill="#475569">LAYER 2 : THREE AI ENGINES</text>
-  <text x="700" y="253" text-anchor="middle" font-size="10" fill="#94A3B8">11 Mathematical Models Integrated</text>
+  <text x="700" y="238" text-anchor="middle" font-size="14" font-weight="700" fill="#475569">LAYER 2 · THREE AI ENGINES · 3개 AI 엔진</text>
+  <text x="700" y="253" text-anchor="middle" font-size="10" fill="#94A3B8">11 Mathematical Models · 11개 수학 모델</text>
 
   <!-- PREDICTION ENGINE (RED) -->
   <rect x="60" y="265" width="400" height="275" rx="12" fill="#FEF2F2" stroke="#FECACA" stroke-width="1.5" filter="url(#shadowLg)"/>
   <rect x="60" y="265" width="400" height="36" rx="12" fill="url(#gradRed)"/>
   <rect x="60" y="289" width="400" height="12" fill="url(#gradRed)"/>
-  <text x="260" y="289" text-anchor="middle" font-size="14" font-weight="700" fill="#fff">PREDICTION ENGINE</text>
+  <text x="260" y="289" text-anchor="middle" font-size="14" font-weight="700" fill="#fff">PREDICTION ENGINE · 예측 엔진</text>
 
   <rect x="78" y="312" width="364" height="48" rx="8" fill="#fff" stroke="#FCA5A5" stroke-width="1"/>
-  <text x="96" y="331" font-size="11" font-weight="600" fill="#DC2626">Fire Spread Model</text>
-  <text x="96" y="348" font-size="10" fill="#6B7280">Navier-Stokes Equations</text>
+  <text x="96" y="331" font-size="11" font-weight="600" fill="#DC2626">Fire Spread · 화재 확산 모델</text>
+  <text x="96" y="348" font-size="10" fill="#6B7280">Navier-Stokes · 나비에-스토크스</text>
 
   <rect x="78" y="368" width="364" height="48" rx="8" fill="#fff" stroke="#FCA5A5" stroke-width="1"/>
-  <text x="96" y="387" font-size="11" font-weight="600" fill="#DC2626">Smoke Diffusion</text>
-  <text x="96" y="404" font-size="10" fill="#6B7280">Advection-Diffusion Equation</text>
+  <text x="96" y="387" font-size="11" font-weight="600" fill="#DC2626">Smoke Diffusion · 연기 확산</text>
+  <text x="96" y="404" font-size="10" fill="#6B7280">Advection-Diffusion · 이류-확산</text>
 
   <rect x="78" y="424" width="364" height="48" rx="8" fill="#fff" stroke="#FCA5A5" stroke-width="1"/>
-  <text x="96" y="443" font-size="11" font-weight="600" fill="#DC2626">LSTM Forecasting</text>
-  <text x="96" y="460" font-size="10" fill="#6B7280">Time-Series Fire Prediction</text>
+  <text x="96" y="443" font-size="11" font-weight="600" fill="#DC2626">LSTM Forecasting · LSTM 예측</text>
+  <text x="96" y="460" font-size="10" fill="#6B7280">Time-Series · 시계열 화재 예측</text>
 
   <rect x="78" y="480" width="364" height="48" rx="8" fill="#fff" stroke="#FCA5A5" stroke-width="1"/>
-  <text x="96" y="499" font-size="11" font-weight="600" fill="#DC2626">Beer-Lambert Visibility</text>
-  <text x="96" y="516" font-size="10" fill="#6B7280">Optical Density Estimation</text>
+  <text x="96" y="499" font-size="11" font-weight="600" fill="#DC2626">Beer-Lambert · 가시거리 산출</text>
+  <text x="96" y="516" font-size="10" fill="#6B7280">Optical Density · 광학 밀도</text>
 
   <!-- BEHAVIOR ENGINE (BLUE) -->
   <rect x="500" y="265" width="400" height="275" rx="12" fill="#EFF6FF" stroke="#BFDBFE" stroke-width="1.5" filter="url(#shadowLg)"/>
   <rect x="500" y="265" width="400" height="36" rx="12" fill="url(#gradBlue)"/>
   <rect x="500" y="289" width="400" height="12" fill="url(#gradBlue)"/>
-  <text x="700" y="289" text-anchor="middle" font-size="14" font-weight="700" fill="#fff">BEHAVIOR ENGINE</text>
+  <text x="700" y="289" text-anchor="middle" font-size="14" font-weight="700" fill="#fff">BEHAVIOR ENGINE · 행동 엔진</text>
 
   <rect x="518" y="312" width="364" height="48" rx="8" fill="#fff" stroke="#93C5FD" stroke-width="1"/>
-  <text x="536" y="331" font-size="11" font-weight="600" fill="#2563EB">Social Force Model</text>
-  <text x="536" y="348" font-size="10" fill="#6B7280">Helbing Pedestrian Dynamics</text>
+  <text x="536" y="331" font-size="11" font-weight="600" fill="#2563EB">Social Force · 사회적 힘 모델</text>
+  <text x="536" y="348" font-size="10" fill="#6B7280">Helbing · 보행자 동역학</text>
 
   <rect x="518" y="368" width="364" height="48" rx="8" fill="#fff" stroke="#93C5FD" stroke-width="1"/>
-  <text x="536" y="387" font-size="11" font-weight="600" fill="#2563EB">KDE Density Estimation</text>
-  <text x="536" y="404" font-size="10" fill="#6B7280">Kernel Density Heatmap</text>
+  <text x="536" y="387" font-size="11" font-weight="600" fill="#2563EB">KDE · 군중 밀도 추정</text>
+  <text x="536" y="404" font-size="10" fill="#6B7280">Kernel Density · 밀도 히트맵</text>
 
   <rect x="518" y="424" width="364" height="48" rx="8" fill="#fff" stroke="#93C5FD" stroke-width="1"/>
-  <text x="536" y="443" font-size="11" font-weight="600" fill="#2563EB">LWR Traffic Flow</text>
-  <text x="536" y="460" font-size="10" fill="#6B7280">Lighthill-Whitham-Richards Model</text>
+  <text x="536" y="443" font-size="11" font-weight="600" fill="#2563EB">LWR · 교통 흐름 모델</text>
+  <text x="536" y="460" font-size="10" fill="#6B7280">LWR · 교통류 보존 모델</text>
 
   <rect x="518" y="480" width="364" height="48" rx="8" fill="#fff" stroke="#93C5FD" stroke-width="1"/>
-  <text x="536" y="499" font-size="11" font-weight="600" fill="#2563EB">Greenshields Model</text>
-  <text x="536" y="516" font-size="10" fill="#6B7280">Speed-Density Relationship</text>
+  <text x="536" y="499" font-size="11" font-weight="600" fill="#2563EB">Greenshields · 속도-밀도 모델</text>
+  <text x="536" y="516" font-size="10" fill="#6B7280">Speed-Density · 속도-밀도 관계</text>
 
   <!-- DECISION ENGINE (PURPLE) -->
   <rect x="940" y="265" width="400" height="387" rx="12" fill="#F5F3FF" stroke="#C4B5FD" stroke-width="1.5" filter="url(#shadowLg)"/>
   <rect x="940" y="265" width="400" height="36" rx="12" fill="url(#gradPurple)"/>
   <rect x="940" y="289" width="400" height="12" fill="url(#gradPurple)"/>
-  <text x="1140" y="289" text-anchor="middle" font-size="14" font-weight="700" fill="#fff">DECISION ENGINE</text>
+  <text x="1140" y="289" text-anchor="middle" font-size="14" font-weight="700" fill="#fff">DECISION ENGINE · 결정 엔진</text>
 
   <rect x="958" y="312" width="364" height="48" rx="8" fill="#fff" stroke="#A78BFA" stroke-width="1"/>
-  <text x="976" y="331" font-size="11" font-weight="600" fill="#6D28D9">A* Dynamic Pathfinding</text>
-  <text x="976" y="348" font-size="10" fill="#6B7280">MinHeap + Spatial Grid</text>
+  <text x="976" y="331" font-size="11" font-weight="600" fill="#6D28D9">A* Dynamic · 동적 경로 탐색</text>
+  <text x="976" y="348" font-size="10" fill="#6B7280">MinHeap+Grid · 최소힙·공간격자</text>
 
   <rect x="958" y="368" width="364" height="48" rx="8" fill="#fff" stroke="#A78BFA" stroke-width="1"/>
-  <text x="976" y="387" font-size="11" font-weight="600" fill="#6D28D9">Risk Map (4-Factor)</text>
+  <text x="976" y="387" font-size="11" font-weight="600" fill="#6D28D9">Risk Map · 4요소 위험지도</text>
   <text x="976" y="404" font-size="10" fill="#6B7280">R(x,y,t) = w1*F + w2*S + w3*D + w4*C</text>
 
   <rect x="958" y="424" width="364" height="48" rx="8" fill="#fff" stroke="#A78BFA" stroke-width="1"/>
-  <text x="976" y="443" font-size="11" font-weight="600" fill="#6D28D9">Health-Aware Routing</text>
-  <text x="976" y="460" font-size="10" fill="#6B7280">Age / Mobility / Medical Condition</text>
+  <text x="976" y="443" font-size="11" font-weight="600" fill="#6D28D9">Health-Aware · 건강 반영 경로</text>
+  <text x="976" y="460" font-size="10" fill="#6B7280">Age·Mobility·Medical · 나이·이동·의료</text>
 
   <rect x="958" y="480" width="364" height="48" rx="8" fill="#fff" stroke="#A78BFA" stroke-width="1"/>
-  <text x="976" y="499" font-size="11" font-weight="600" fill="#6D28D9">PPO Reinforcement Learning</text>
-  <text x="976" y="516" font-size="10" fill="#6B7280">Proximal Policy Optimization</text>
+  <text x="976" y="499" font-size="11" font-weight="600" fill="#6D28D9">PPO RL · 강화학습</text>
+  <text x="976" y="516" font-size="10" fill="#6B7280">Proximal Policy · 근사 정책 최적화</text>
 
   <rect x="958" y="536" width="364" height="48" rx="8" fill="#fff" stroke="#A78BFA" stroke-width="1"/>
-  <text x="976" y="555" font-size="11" font-weight="600" fill="#6D28D9">Exit Crowd Balancing</text>
-  <text x="976" y="572" font-size="10" fill="#6B7280">Multi-Exit Load Distribution</text>
+  <text x="976" y="555" font-size="11" font-weight="600" fill="#6D28D9">Exit Balance · 출구 부하 분산</text>
+  <text x="976" y="572" font-size="10" fill="#6B7280">Multi-Exit · 다중 출구 분산</text>
 
   <rect x="958" y="592" width="364" height="48" rx="8" fill="#fff" stroke="#A78BFA" stroke-width="1"/>
-  <text x="976" y="611" font-size="11" font-weight="600" fill="#6D28D9">Priority Routing (a=2.0)</text>
-  <text x="976" y="628" font-size="10" fill="#6B7280">Weighted Rescue Scoring</text>
+  <text x="976" y="611" font-size="11" font-weight="600" fill="#6D28D9">Priority · 취약계층 우선 (a=2.0)</text>
+  <text x="976" y="628" font-size="10" fill="#6B7280">Weighted Rescue · 가중 구조 점수</text>
 
   <!-- Arrow: Layer 2 to Layer 3 -->
   <line x1="700" y1="670" x2="700" y2="697" stroke="#94A3B8" stroke-width="2" marker-end="url(#arrowGray)"/>
-  <text x="740" y="689" font-size="10" fill="#94A3B8">AI Output</text>
+  <text x="740" y="689" font-size="10" fill="#94A3B8">AI Output · AI 출력</text>
 
   <!-- ============================================================ -->
   <!-- LAYER 3: PLATFORM MODES -->
   <!-- ============================================================ -->
   <rect x="40" y="702" width="1320" height="155" rx="14" fill="#F8FAFC" stroke="#E2E8F0" stroke-width="1" filter="url(#shadow)"/>
-  <text x="700" y="725" text-anchor="middle" font-size="14" font-weight="700" fill="#475569">LAYER 3 : DUAL MODE PLATFORM</text>
+  <text x="700" y="725" text-anchor="middle" font-size="14" font-weight="700" fill="#475569">LAYER 3 · DUAL MODE PLATFORM · 듀얼 모드 플랫폼</text>
 
   <!-- Normal Mode (Teal) -->
   <rect x="60" y="737" width="620" height="105" rx="12" fill="#F0FDFA" stroke="#99F6E4" stroke-width="1.5" filter="url(#shadow)"/>
   <rect x="60" y="737" width="620" height="30" rx="12" fill="url(#gradTeal)"/>
   <rect x="60" y="755" width="620" height="12" fill="url(#gradTeal)"/>
-  <text x="370" y="758" text-anchor="middle" font-size="12" font-weight="700" fill="#fff">NORMAL MODE -- Security Monitoring</text>
+  <text x="370" y="758" text-anchor="middle" font-size="12" font-weight="700" fill="#fff">NORMAL MODE · 평상시 보안 모니터링</text>
 
   <rect x="78" y="776" width="185" height="54" rx="8" fill="#fff" stroke="#A7F3D0" stroke-width="1"/>
-  <text x="170" y="796" text-anchor="middle" font-size="11" font-weight="600" fill="#0D9488">Security Watch</text>
-  <text x="170" y="812" text-anchor="middle" font-size="10" fill="#6B7280">24/7 Monitoring</text>
+  <text x="170" y="796" text-anchor="middle" font-size="11" font-weight="600" fill="#0D9488">Security · 보안 감시</text>
+  <text x="170" y="812" text-anchor="middle" font-size="10" fill="#6B7280">24/7 · 상시 모니터링</text>
 
   <rect x="278" y="776" width="185" height="54" rx="8" fill="#fff" stroke="#A7F3D0" stroke-width="1"/>
-  <text x="370" y="796" text-anchor="middle" font-size="11" font-weight="600" fill="#0D9488">Movement Track</text>
-  <text x="370" y="812" text-anchor="middle" font-size="10" fill="#6B7280">WiFi Positioning</text>
+  <text x="370" y="796" text-anchor="middle" font-size="11" font-weight="600" fill="#0D9488">Movement · 동선 추적</text>
+  <text x="370" y="812" text-anchor="middle" font-size="10" fill="#6B7280">WiFi · 정밀 위치추적</text>
 
   <rect x="478" y="776" width="185" height="54" rx="8" fill="#fff" stroke="#A7F3D0" stroke-width="1"/>
-  <text x="570" y="796" text-anchor="middle" font-size="11" font-weight="600" fill="#0D9488">Space Analytics</text>
-  <text x="570" y="812" text-anchor="middle" font-size="10" fill="#6B7280">Occupancy / Flow</text>
+  <text x="570" y="796" text-anchor="middle" font-size="11" font-weight="600" fill="#0D9488">Space · 공간 분석</text>
+  <text x="570" y="812" text-anchor="middle" font-size="10" fill="#6B7280">Occupancy·Flow · 점유율·흐름</text>
 
   <!-- Emergency Mode (Red) -->
   <rect x="720" y="737" width="620" height="105" rx="12" fill="#FEF2F2" stroke="#FECACA" stroke-width="1.5" filter="url(#shadow)"/>
   <rect x="720" y="737" width="620" height="30" rx="12" fill="url(#gradEmergency)"/>
   <rect x="720" y="755" width="620" height="12" fill="url(#gradEmergency)"/>
-  <text x="1030" y="758" text-anchor="middle" font-size="12" font-weight="700" fill="#fff">EMERGENCY MODE -- Real-time Evacuation</text>
+  <text x="1030" y="758" text-anchor="middle" font-size="12" font-weight="700" fill="#fff">EMERGENCY MODE · 비상시 실시간 대피</text>
 
   <rect x="738" y="776" width="185" height="54" rx="8" fill="#fff" stroke="#FCA5A5" stroke-width="1"/>
-  <text x="830" y="796" text-anchor="middle" font-size="11" font-weight="600" fill="#DC2626">Personal Routes</text>
-  <text x="830" y="812" text-anchor="middle" font-size="10" fill="#6B7280">Individual Paths</text>
+  <text x="830" y="796" text-anchor="middle" font-size="11" font-weight="600" fill="#DC2626">Personal · 개인별 경로</text>
+  <text x="830" y="812" text-anchor="middle" font-size="10" fill="#6B7280">Individual · 개인 맞춤</text>
 
   <rect x="938" y="776" width="185" height="54" rx="8" fill="#fff" stroke="#FCA5A5" stroke-width="1"/>
-  <text x="1030" y="796" text-anchor="middle" font-size="11" font-weight="600" fill="#DC2626">6000+ Agents</text>
-  <text x="1030" y="812" text-anchor="middle" font-size="10" fill="#6B7280">Mass Simulation</text>
+  <text x="1030" y="796" text-anchor="middle" font-size="11" font-weight="600" fill="#DC2626">6,000+ Agents · 동시 처리</text>
+  <text x="1030" y="812" text-anchor="middle" font-size="10" fill="#6B7280">Mass · 대규모 시뮬레이션</text>
 
   <rect x="1138" y="776" width="185" height="54" rx="8" fill="#fff" stroke="#FCA5A5" stroke-width="1"/>
-  <text x="1230" y="796" text-anchor="middle" font-size="11" font-weight="600" fill="#DC2626">Risk Response</text>
-  <text x="1230" y="812" text-anchor="middle" font-size="10" fill="#6B7280">Dynamic Re-routing</text>
+  <text x="1230" y="796" text-anchor="middle" font-size="11" font-weight="600" fill="#DC2626">Risk · 위험 대응</text>
+  <text x="1230" y="812" text-anchor="middle" font-size="10" fill="#6B7280">Dynamic · 동적 재경로</text>
 
   <!-- Arrow: Layer 3 to Layer 4 -->
   <line x1="700" y1="860" x2="700" y2="887" stroke="#94A3B8" stroke-width="2" marker-end="url(#arrowGray)"/>
-  <text x="740" y="879" font-size="10" fill="#94A3B8">Commands</text>
+  <text x="740" y="879" font-size="10" fill="#94A3B8">Commands · 명령 전송</text>
 
   <!-- ============================================================ -->
   <!-- LAYER 4: VISUALIZATION & UI -->
@@ -227,39 +227,39 @@
   <rect x="40" y="892" width="1320" height="110" rx="14" fill="#F0FDF4" stroke="#BBF7D0" stroke-width="1" filter="url(#shadow)"/>
   <rect x="40" y="892" width="1320" height="28" rx="14" fill="url(#gradGreen)"/>
   <rect x="40" y="906" width="1320" height="14" fill="url(#gradGreen)"/>
-  <text x="700" y="910" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">LAYER 4 : VISUALIZATION &amp; UI</text>
+  <text x="700" y="910" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">LAYER 4 · VISUALIZATION &amp; UI · 시각화 &amp; UI</text>
 
   <!-- UI boxes -->
   <rect x="60" y="930" width="230" height="58" rx="10" fill="#fff" stroke="#86EFAC" stroke-width="1" filter="url(#shadow)"/>
-  <text x="175" y="953" text-anchor="middle" font-size="12" font-weight="600" fill="#059669">Web Dashboard</text>
-  <text x="175" y="970" text-anchor="middle" font-size="10" fill="#6B7280">index.html</text>
+  <text x="175" y="953" text-anchor="middle" font-size="12" font-weight="600" fill="#059669">Web Dashboard · 웹 대시보드</text>
+  <text x="175" y="970" text-anchor="middle" font-size="10" fill="#6B7280">index.html · 메인 페이지</text>
 
   <rect x="320" y="930" width="230" height="58" rx="10" fill="#fff" stroke="#86EFAC" stroke-width="1" filter="url(#shadow)"/>
-  <text x="435" y="953" text-anchor="middle" font-size="12" font-weight="600" fill="#059669">Simulation Engine</text>
-  <text x="435" y="970" text-anchor="middle" font-size="10" fill="#6B7280">Canvas 2D Rendering</text>
+  <text x="435" y="953" text-anchor="middle" font-size="12" font-weight="600" fill="#059669">Simulation · 시뮬레이션 엔진</text>
+  <text x="435" y="970" text-anchor="middle" font-size="10" fill="#6B7280">Canvas 2D · 2D 렌더링</text>
 
   <rect x="580" y="930" width="230" height="58" rx="10" fill="#fff" stroke="#86EFAC" stroke-width="1" filter="url(#shadow)"/>
-  <text x="695" y="953" text-anchor="middle" font-size="12" font-weight="600" fill="#059669">Risk Map Display</text>
-  <text x="695" y="970" text-anchor="middle" font-size="10" fill="#6B7280">Real-time Heatmap</text>
+  <text x="695" y="953" text-anchor="middle" font-size="12" font-weight="600" fill="#059669">Risk Map · 위험지도 표시</text>
+  <text x="695" y="970" text-anchor="middle" font-size="10" fill="#6B7280">Real-time · 실시간 히트맵</text>
 
   <rect x="840" y="930" width="230" height="58" rx="10" fill="#fff" stroke="#86EFAC" stroke-width="1" filter="url(#shadow)"/>
-  <text x="955" y="953" text-anchor="middle" font-size="12" font-weight="600" fill="#059669">Route Optimizer</text>
-  <text x="955" y="970" text-anchor="middle" font-size="10" fill="#6B7280">Path Visualization</text>
+  <text x="955" y="953" text-anchor="middle" font-size="12" font-weight="600" fill="#059669">Route · 경로 최적화</text>
+  <text x="955" y="970" text-anchor="middle" font-size="10" fill="#6B7280">Path · 경로 시각화</text>
 
   <rect x="1100" y="930" width="230" height="58" rx="10" fill="#fff" stroke="#86EFAC" stroke-width="1" filter="url(#shadow)"/>
-  <text x="1215" y="953" text-anchor="middle" font-size="12" font-weight="600" fill="#059669">Mobile Guidance</text>
-  <text x="1215" y="970" text-anchor="middle" font-size="10" fill="#6B7280">Responsive PWA</text>
+  <text x="1215" y="953" text-anchor="middle" font-size="12" font-weight="600" fill="#059669">Mobile · 모바일 가이드</text>
+  <text x="1215" y="970" text-anchor="middle" font-size="10" fill="#6B7280">Responsive PWA · 반응형 PWA</text>
 
   <!-- ============================================================ -->
   <!-- Footer: Formula and tech stack -->
   <!-- ============================================================ -->
   <rect x="40" y="1017" width="1320" height="66" rx="10" fill="#F8FAFC" stroke="#E2E8F0" stroke-width="1"/>
-  <text x="60" y="1036" font-size="11" fill="#64748B">Risk Formula:</text>
+  <text x="60" y="1036" font-size="11" fill="#64748B">Risk Formula · 위험 수식:</text>
   <text x="145" y="1036" font-size="12" font-weight="600" fill="#7C3AED" font-style="italic">R(x,y,t) = w1 * F(fire) + w2 * S(smoke) + w3 * D(density) + w4 * C(collapse)</text>
-  <text x="60" y="1054" font-size="11" fill="#64748B">Exit Score:</text>
+  <text x="60" y="1054" font-size="11" fill="#64748B">Exit Score · 출구 점수:</text>
   <text x="145" y="1054" font-size="12" font-weight="600" fill="#7C3AED" font-style="italic">Score(exit) = Dist + Fire*a + Smoke*a + Crowd | a=2.0(Priority), 1.0(Standard)</text>
   <line x1="720" y1="1022" x2="720" y2="1078" stroke="#E2E8F0" stroke-width="1"/>
-  <text x="740" y="1036" font-size="10" fill="#94A3B8">Tech Stack:</text>
+  <text x="740" y="1036" font-size="10" fill="#94A3B8">Tech Stack · 기술 스택:</text>
   <text x="740" y="1054" font-size="11" font-weight="500" fill="#475569">Pure Static Web (HTML / CSS / JavaScript)  |  Canvas 2D  |  A* + MinHeap  |  No Backend Required</text>
 
   <!-- Decorative corner badge -->
@@ -267,6 +267,6 @@
   <text x="1300" y="48" text-anchor="middle" font-size="11" font-weight="600" fill="#fff">v1.0</text>
 
   <!-- Vertical side labels -->
-  <text x="22" y="520" text-anchor="middle" font-size="10" fill="#CBD5E1" transform="rotate(-90,22,520)" font-weight="600" letter-spacing="2">DATA FLOW</text>
+  <text x="22" y="520" text-anchor="middle" font-size="10" fill="#CBD5E1" transform="rotate(-90,22,520)" font-weight="600" letter-spacing="2">DATA FLOW · 데이터 흐름</text>
 
 </svg>
