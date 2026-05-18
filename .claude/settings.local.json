@@ -64,7 +64,10 @@
       "WebFetch(domain:www.tintlife.co.kr)",
       "PowerShell(Start-Process \"C:\\\\01 클로드코드\\\\50-12 화이어 내비\\\\pitch-deck.html\")",
       "Bash(ls -la .vercel)",
-      "Bash(cat vercel.json)"
+      "Bash(cat vercel.json)",
+      "PowerShell(Get-Command *)",
+      "PowerShell(scoop install *)",
+      "PowerShell($ffmpeg = \"$env:USERPROFILE\\\\scoop\\\\apps\\\\ffmpeg\\\\current\\\\bin\\\\ffmpeg.exe\"; & $ffmpeg -y -i \"C:\\\\01 클로드코드\\\\50-12 화이어 내비\\\\화이어내비 소개 영상.mp4\" -vf \"scale=-2:720\" -c:v libx264 -crf 28 -preset medium -c:a aac -b:a 96k -movflags +faststart \"C:\\\\01 클로드코드\\\\50-12 화이어 내비\\\\firenavi-intro.mp4\" 2>&1 | Select-Object -Last 6)"
     ]
   },
   "model": "claude-opus-4-7"
