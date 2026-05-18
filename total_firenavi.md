@@ -686,19 +686,29 @@ FireNavi의 모든 알고리즘을 수학 수식으로 정밀 정의한 페이�
 
 ## 31. 팀 구성
 
+FireNavi는 **4인 핵심 리더십** + 협력 파트너 네트워크로 구성됩니다.
+
 ### CEO · 심재우 (Founder · AI Architect) 🧠
-- 3 AI 엔진 설계 · 5건 특허 발명자
+- 3 AI 엔진 설계자 · 5건 특허 발명자
 - AI/소프트웨어 플랫폼 다수 구축
 - 이메일: jaiwshim@gmail.com
 
-### CTO · 채용 진행 중 🚢 (Safety Engineering)
-- 해양·건축 안전 분야 15년+ 경력
-- 소방기술사 자격
-- IMO 컨설팅 경험자
+### CTO · 서병근 (Disaster Science Ph.D.) 🚒
+- **재난과학박사** (Ph.D., Disaster Science)
+- **존슨콘트롤즈(Johnson Controls)** 출신 — 글로벌 빌딩 솔루션 실무
+- **소방기술심의위원** — 국가 화재안전 정책·표준 제정 참여
+- FireNavi 안전공학·소방·인증 영역 총괄
 
-### CBO · 협업 파트너 🤝 (Business Development)
-- 초고층빌딩·호텔·시공사 네트워크
-- 보험사·재보험사 영업 경험자 모집
+### CBO · 3인 체제 🤝 (Business Development Triangle)
+- **서한균** · **선웅규** · **정필완** — 3인 BD 트라이앵글
+- 크루즈·호텔·시공사·보험사 네트워크 영업 분담
+- 4개 채널(직판·파트너십·보험 번들·공공 입찰) 병렬 가동
+
+### CDO · 이강수 (Design · Brand Experience) 🎨
+- UI/UX · 시각 디자인 · 브랜드 경험 총괄
+- 시설 관리자 콘솔·소방관 단말·거주자 디바이스 UI/UX
+- 위기 상황용 직관적 안전 인터페이스 설계
+- 럭셔리 디자인 시스템 (Bordeaux × Royal Navy × Champagne Gold)
 
 ### 협력 파트너 / 자문
 - 한국선급(KR) · 자문 검토 중
