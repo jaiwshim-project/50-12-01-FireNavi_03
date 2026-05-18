@@ -1,0 +1,25 @@
+# Dependencies
+node_modules/
+
+# Build artifacts (large binary blobs)
+pdf_base64.txt
+*.pdf
+*.mp4
+*.mov
+*.pptx
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/
+
+# Logs
+*.log
+npm-debug.log*
+
+# Local env / secrets
+.env
+.env.local

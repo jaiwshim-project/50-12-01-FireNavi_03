@@ -1,0 +1,10 @@
+<!DOCTYPE html>
+<html><body style="margin:0;background:#000;display:flex;align-items:center;justify-content:center;height:100vh;">
+<video id="v" src="화이어내비_영상.mp4" style="max-width:100%;max-height:100%;"></video>
+<script>
+const v = document.getElementById("v");
+v.muted = true;
+window.seekTo = (t) => { v.currentTime = t; return new Promise(r => v.addEventListener("seeked", r, {once:true})); };
+v.addEventListener("loadedmetadata", () => { document.title = "ready:" + v.duration + ":" + v.videoWidth + "x" + v.videoHeight; });
+</script>
+</body></html>

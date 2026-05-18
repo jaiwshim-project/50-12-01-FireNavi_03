@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 900" width="600" height="900">
+  <style>
+    text { font-family: sans-serif; font-size: 11px; fill: #000000; }
+    .ref { font-size: 12px; font-weight: bold; }
+    .process { stroke: #000000; stroke-width: 1.5; fill: none; }
+    .dashed-process { stroke: #000000; stroke-width: 1.5; fill: none; stroke-dasharray: 6,3; }
+    .arrow { stroke: #000000; stroke-width: 1.2; fill: none; marker-end: url(#ah); }
+  </style>
+  <defs>
+    <marker id="ah" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6 Z" fill="#000000"/>
+    </marker>
+  </defs>
+
+  <!-- Title -->
+  <text x="300" y="22" text-anchor="middle" font-size="14" font-weight="bold">[도면 2]</text>
+
+  <!-- S100: 센서 데이터 수집 -->
+  <rect x="190" y="40" width="220" height="40" class="process"/>
+  <text x="125" y="64" class="ref">S100</text>
+  <text x="300" y="64" text-anchor="middle">센서 데이터 수집</text>
+
+  <!-- Arrow S100 → S200 -->
+  <line x1="300" y1="80" x2="300" y2="100" class="arrow"/>
+
+  <!-- S200: WiFi 위치 파악 -->
+  <rect x="190" y="100" width="220" height="40" class="process"/>
+  <text x="125" y="124" class="ref">S200</text>
+  <text x="300" y="124" text-anchor="middle">WiFi 위치 파악</text>
+
+  <!-- Arrow S200 → S300 -->
+  <line x1="300" y1="140" x2="300" y2="170" class="arrow"/>
+
+  <!-- S300: 화재 감지? (diamond) -->
+  <polygon points="300,170 410,215 300,260 190,215" class="process"/>
+  <text x="125" y="219" class="ref">S300</text>
+  <text x="300" y="212" text-anchor="middle">화재</text>
+  <text x="300" y="225" text-anchor="middle">감지?</text>
+
+  <!-- No branch → S310 -->
+  <line x1="410" y1="215" x2="500" y2="215" class="arrow"/>
+  <text x="430" y="208" font-size="10">No</text>
+
+  <!-- S310: Normal Mode 유지 -->
+  <rect x="500" y="195" width="90" height="40" class="process"/>
+  <text x="505" y="188" class="ref" font-size="10">S310</text>
+  <text x="545" y="212" text-anchor="middle" font-size="9">Normal Mode</text>
+  <text x="545" y="224" text-anchor="middle" font-size="9">유지</text>
+
+  <!-- S310 loop back to S100 -->
+  <line x1="545" y1="195" x2="545" y2="55" stroke="#000000" stroke-width="1.2" fill="none"/>
+  <line x1="545" y1="55" x2="410" y2="55" class="arrow"/>
+
+  <!-- Yes branch → S400 -->
+  <line x1="300" y1="260" x2="300" y2="290" class="arrow"/>
+  <text x="310" y="280" font-size="10">Yes</text>
+
+  <!-- S400: Emergency Mode 전환 -->
+  <rect x="190" y="290" width="220" height="40" class="process"/>
+  <text x="125" y="314" class="ref">S400</text>
+  <text x="300" y="314" text-anchor="middle">Emergency Mode 전환</text>
+
+  <!-- Arrow S400 → S410 -->
+  <line x1="300" y1="330" x2="300" y2="360" class="arrow"/>
+
+  <!-- S410: 3 AI 엔진 동시 가동 -->
+  <rect x="190" y="360" width="220" height="40" class="process"/>
+  <text x="125" y="384" class="ref">S410</text>
+  <text x="300" y="384" text-anchor="middle">3 AI 엔진 동시 가동</text>
+
+  <!-- Arrow S410 → S420 -->
+  <line x1="300" y1="400" x2="300" y2="430" class="arrow"/>
+
+  <!-- S420: 동적 리스크맵 생성 -->
+  <rect x="190" y="430" width="220" height="40" class="process"/>
+  <text x="125" y="454" class="ref">S420</text>
+  <text x="300" y="454" text-anchor="middle">동적 리스크맵 생성</text>
+
+  <!-- Arrow S420 → S430 -->
+  <line x1="300" y1="470" x2="300" y2="500" class="arrow"/>
+
+  <!-- S430: 우선구조 대상 식별 (dashed) -->
+  <rect x="190" y="500" width="220" height="40" class="dashed-process"/>
+  <text x="125" y="524" class="ref">S430</text>
+  <text x="300" y="524" text-anchor="middle">우선구조 대상 식별</text>
+
+  <!-- Arrow S430 → S440 -->
+  <line x1="300" y1="540" x2="300" y2="570" class="arrow"/>
+
+  <!-- S440: 개인별 대피 경로 생성 -->
+  <rect x="190" y="570" width="220" height="40" class="process"/>
+  <text x="125" y="594" class="ref">S440</text>
+  <text x="300" y="594" text-anchor="middle">개인별 대피 경로 생성</text>
+
+  <!-- Arrow S440 → S450 -->
+  <line x1="300" y1="610" x2="300" y2="645" class="arrow"/>
+
+  <!-- S450: 상황 변화? (diamond) -->
+  <polygon points="300,645 400,685 300,725 200,685" class="process"/>
+  <text x="135" y="689" class="ref">S450</text>
+  <text x="300" y="682" text-anchor="middle">상황</text>
+  <text x="300" y="695" text-anchor="middle">변화?</text>
+
+  <!-- Yes branch → loop back to S410 -->
+  <line x1="200" y1="685" x2="100" y2="685" stroke="#000000" stroke-width="1.2" fill="none"/>
+  <text x="140" y="678" font-size="10">Yes</text>
+  <line x1="100" y1="685" x2="100" y2="380" stroke="#000000" stroke-width="1.2" fill="none"/>
+  <line x1="100" y1="380" x2="190" y2="380" class="arrow"/>
+
+  <!-- No branch → S460 -->
+  <line x1="300" y1="725" x2="300" y2="760" class="arrow"/>
+  <text x="310" y="745" font-size="10">No</text>
+
+  <!-- S460: 대피 완료 판정 -->
+  <rect x="190" y="760" width="220" height="40" class="process"/>
+  <text x="125" y="784" class="ref">S460</text>
+  <text x="300" y="784" text-anchor="middle">대피 완료 판정</text>
+
+  <!-- Arrow S460 → S500 -->
+  <line x1="300" y1="800" x2="300" y2="835" class="arrow"/>
+
+  <!-- S500: 통계 및 보고 (oval for end) -->
+  <ellipse cx="300" cy="860" rx="110" ry="25" class="process"/>
+  <text x="135" y="864" class="ref">S500</text>
+  <text x="300" y="864" text-anchor="middle">통계 및 보고</text>
+
+</svg>

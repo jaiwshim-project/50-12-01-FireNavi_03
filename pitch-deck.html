@@ -1,0 +1,1266 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>FireNavi — 화이어내비 피치 덱</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{font-family:'Noto Sans KR',sans-serif;background:#0f172a;color:#fff;overflow:hidden}
+
+.deck{width:100vw;height:100vh;position:relative;overflow:hidden}
+.slide{
+  position:absolute;inset:0;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:32px 64px 150px;
+  opacity:0;transform:translateX(60px);
+  transition:opacity .55s cubic-bezier(.4,0,.2,1),transform .55s cubic-bezier(.4,0,.2,1);
+  pointer-events:none;overflow-y:auto;
+}
+.slide-note{
+  position:absolute;
+  bottom:96px;
+  left:50%;
+  transform:translateX(-50%);
+  max-width:1080px;
+  width:calc(100% - 96px);
+  background:rgba(0,0,0,.55);
+  backdrop-filter:blur(12px);
+  border:1px solid rgba(255,255,255,.12);
+  border-radius:12px;
+  padding:11px 22px;
+  font-size:11.5px;
+  line-height:1.75;
+  color:rgba(255,255,255,.82);
+  z-index:5;
+  text-align:left;
+  letter-spacing:.01em;
+  word-break:keep-all;
+}
+.slide-note::before{
+  content:'📝 NOTE';
+  display:inline-block;
+  font-size:9px;
+  font-weight:700;
+  letter-spacing:.12em;
+  color:#fdba74;
+  margin-right:10px;
+  opacity:.7;
+  vertical-align:1px;
+}
+.slide.active{opacity:1;transform:translateX(0);pointer-events:all}
+.slide.exit{opacity:0;transform:translateX(-60px)}
+
+.nav{
+  position:fixed;bottom:32px;left:50%;transform:translateX(-50%);
+  display:flex;align-items:center;gap:16px;
+  background:rgba(255,255,255,.08);backdrop-filter:blur(12px);
+  border:1px solid rgba(255,255,255,.12);border-radius:999px;
+  padding:12px 24px;z-index:1000;
+}
+.nav-dot{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.3);cursor:pointer;transition:all .3s}
+.nav-dot.active{background:#fb923c;transform:scale(1.4)}
+.nav-btn{
+  background:rgba(255,255,255,.12);border:none;color:#fff;
+  width:36px;height:36px;border-radius:50%;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;font-size:16px;transition:background .2s;
+}
+.nav-btn:hover{background:rgba(255,255,255,.2)}
+
+.bg-hero   {background:radial-gradient(ellipse at 30% 50%,#7c2d12 0%,#451a03 40%,#0f172a 80%)}
+.bg-dark   {background:linear-gradient(135deg,#0f172a 0%,#1a1040 100%)}
+.bg-purple {background:linear-gradient(135deg,#1e1b4b 0%,#2d1b69 50%,#1e1b4b 100%)}
+.bg-navy   {background:linear-gradient(135deg,#0f172a 0%,#1e3a5f 100%)}
+.bg-forest {background:linear-gradient(135deg,#052e16 0%,#14532d 60%,#0f172a 100%)}
+.bg-rose   {background:linear-gradient(135deg,#4c0519 0%,#831843 50%,#1e1b4b 100%)}
+.bg-fire   {background:radial-gradient(ellipse at 50% 50%,#991b1b 0%,#7c2d12 40%,#1a0a0a 90%)}
+
+.card   {background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:20px;padding:28px}
+.card-sm{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:14px;padding:20px}
+.card-purple{background:linear-gradient(135deg,rgba(124,58,237,.25),rgba(79,70,229,.15));border-color:rgba(167,139,250,.3)}
+.card-amber {background:linear-gradient(135deg,rgba(245,158,11,.2),rgba(217,119,6,.1));border-color:rgba(251,191,36,.3)}
+.card-green {background:linear-gradient(135deg,rgba(16,185,129,.2),rgba(5,150,105,.1));border-color:rgba(52,211,153,.3)}
+.card-blue  {background:linear-gradient(135deg,rgba(59,130,246,.2),rgba(37,99,235,.1));border-color:rgba(96,165,250,.3)}
+.card-pink  {background:linear-gradient(135deg,rgba(236,72,153,.2),rgba(219,39,119,.1));border-color:rgba(249,168,212,.3)}
+.card-red   {background:linear-gradient(135deg,rgba(239,68,68,.2),rgba(220,38,38,.1));border-color:rgba(248,113,113,.3)}
+.card-orange{background:linear-gradient(135deg,rgba(249,115,22,.22),rgba(234,88,12,.12));border-color:rgba(251,146,60,.35)}
+
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:24px;width:100%;max-width:1100px}
+.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;width:100%;max-width:1100px}
+.grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;width:100%;max-width:1100px}
+
+.section-label{font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;opacity:.55;margin-bottom:12px;color:#fb923c}
+.slide-title{font-size:clamp(28px,4vw,52px);font-weight:900;line-height:1.1;margin-bottom:16px}
+.hero-accent{background:linear-gradient(135deg,#fb923c,#f59e0b,#facc15);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero-accent-cool{background:linear-gradient(135deg,#67e8f9,#a78bfa,#f9a8d4);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+
+@media(max-width:768px){
+  .slide{padding:24px 20px 200px}
+  .grid-2,.grid-3,.grid-4{grid-template-columns:1fr}
+  .slide-note{font-size:10.5px;padding:10px 14px;width:calc(100% - 40px);bottom:118px;line-height:1.65}
+}
+
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
+@keyframes flicker{0%,100%{opacity:.9}50%{opacity:.4}}
+.float{animation:float 4s ease-in-out infinite}
+.flicker{animation:flicker 1.5s ease-in-out infinite}
+</style>
+</head>
+<body>
+
+<button id="pdfBtn" onclick="downloadPDF()" style="
+  position:fixed;top:20px;right:24px;z-index:2000;
+  display:inline-flex;align-items:center;gap:8px;
+  background:rgba(255,255,255,.12);backdrop-filter:blur(12px);
+  border:1px solid rgba(255,255,255,.2);border-radius:999px;
+  color:#fff;font-family:'Noto Sans KR',sans-serif;font-size:13px;font-weight:700;
+  padding:10px 20px;cursor:pointer;transition:all .2s;
+" onmouseover="this.style.background='rgba(251,146,60,.5)'"
+   onmouseout="this.style.background='rgba(255,255,255,.12)'">
+  ⬇ PDF 저장
+</button>
+
+<div id="pdfOverlay" style="
+  display:none;position:fixed;inset:0;z-index:9999;
+  background:rgba(15,23,42,.92);backdrop-filter:blur(8px);
+  flex-direction:column;align-items:center;justify-content:center;gap:20px;
+">
+  <div style="width:48px;height:48px;border:4px solid rgba(251,146,60,.3);border-top-color:#fb923c;border-radius:50%;animation:spin 0.8s linear infinite"></div>
+  <div id="pdfStatus" style="font-size:16px;font-weight:700;color:#fdba74">PDF 생성 중...</div>
+  <div id="pdfProgress" style="width:260px;height:4px;background:rgba(255,255,255,.1);border-radius:999px;overflow:hidden">
+    <div id="pdfBar" style="height:100%;width:0%;background:linear-gradient(90deg,#dc2626,#fb923c);border-radius:999px;transition:width .3s ease"></div>
+  </div>
+  <div id="pdfStep" style="font-size:12px;color:rgba(255,255,255,.4)">준비 중...</div>
+</div>
+
+<div class="deck" id="deck">
+
+<!-- ============ 01. HERO ============ -->
+<div class="slide bg-hero active" data-slide="1">
+  <svg style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;opacity:.4" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="12%" cy="22%" r="1.5" fill="#fdba74"><animate attributeName="opacity" values=".8;.2;.8" dur="3s" repeatCount="indefinite"/></circle>
+    <circle cx="72%" cy="18%" r="2"   fill="#fde68a"><animate attributeName="opacity" values=".7;.2;.7" dur="4s" repeatCount="indefinite"/></circle>
+    <circle cx="85%" cy="60%" r="1.5" fill="#fca5a5"><animate attributeName="opacity" values=".6;.1;.6" dur="3.5s" repeatCount="indefinite"/></circle>
+    <circle cx="22%" cy="78%" r="1.8" fill="#fbbf24"><animate attributeName="opacity" values=".7;.2;.7" dur="2.8s" repeatCount="indefinite"/></circle>
+  </svg>
+  <div style="position:relative;z-index:1;text-align:center;display:flex;flex-direction:column;align-items:center">
+    <div style="background:rgba(251,146,60,.18);border:1px solid rgba(251,146,60,.4);border-radius:999px;padding:8px 20px;font-size:13px;color:#fdba74;margin-bottom:28px" class="float">
+      🔥 AI 기반 실시간 생존 의사결정 플랫폼
+    </div>
+    <h1 style="font-size:clamp(40px,7vw,88px);font-weight:900;line-height:.95;text-align:center;margin-bottom:16px">
+      FireNavi<br><span class="hero-accent">AI가 생존을 설계합니다</span>
+    </h1>
+    <p style="font-size:clamp(15px,1.8vw,22px);opacity:.75;max-width:680px;line-height:1.6;margin-bottom:40px">
+      화재보다 빠르게 판단하는 AI · WiFi 정밀 위치추적 · 6,000명 동시 최적화
+    </p>
+    <div style="display:flex;gap:32px;flex-wrap:wrap;justify-content:center">
+      <div style="text-align:center"><div style="font-size:clamp(28px,4vw,52px);font-weight:900;color:#fb923c">3</div><div style="font-size:12px;opacity:.55;margin-top:4px">자체 개발 AI 엔진</div></div>
+      <div style="text-align:center"><div style="font-size:clamp(28px,4vw,52px);font-weight:900;color:#fbbf24">5</div><div style="font-size:12px;opacity:.55;margin-top:4px">특허 출원 기술</div></div>
+      <div style="text-align:center"><div style="font-size:clamp(28px,4vw,52px);font-weight:900;color:#fde68a">6,000+</div><div style="font-size:12px;opacity:.55;margin-top:4px">동시 최적화 인원</div></div>
+      <div style="text-align:center"><div style="font-size:clamp(28px,4vw,52px);font-weight:900;color:#fca5a5">2~3m</div><div style="font-size:12px;opacity:.55;margin-top:4px">WiFi 위치 정밀도</div></div>
+    </div>
+  </div>
+  <div class="slide-note">FireNavi는 화재 발생 시 단순한 비상구 안내를 뛰어넘어 AI가 6,000명 각 개인의 생존 경로를 실시간으로 설계하는 차세대 안전 플랫폼입니다. 자체 개발한 Prediction, Behavior, Decision 세 AI 엔진이 0.5초 단위로 동시 작동하며 WiFi 기반 2~3m 정밀 실내 위치추적 기술과 결합됩니다. 한국특허청 5건의 특허 출원과 4건의 저작권 등록으로 모방 불가능한 기술 진입장벽을 구축했고, 호화 크루즈와 초고층 빌딩, 대형 의료시설에 별도 하드웨어 없이 즉시 적용 가능한 완성형 솔루션입니다. 길을 안내하는 것이 아니라 인간의 생존 자체를 AI가 설계하는 시대를 열어갑니다.</div>
+</div>
+
+<!-- ============ 02. 문제 정의 ============ -->
+<div class="slide bg-dark" data-slide="2">
+  <div style="position:relative;z-index:1;width:100%;max-width:1100px">
+    <div class="section-label">The Problem</div>
+    <h2 class="slide-title">화재의 진짜 살인자는 <span class="hero-accent">불이 아니라 잘못된 판단</span></h2>
+    <p style="font-size:15px;opacity:.7;max-width:720px;line-height:1.7;margin-bottom:28px">
+      대형 선박·초고층빌딩에서 사망자의 80% 이상은 직접적인 화염이 아닌, 군중 패닉·시야 차단·잘못된 경로 안내로 발생합니다.
+    </p>
+    <div class="grid-3">
+      <div class="card card-red">
+        <div style="font-size:32px;margin-bottom:12px">🌀</div>
+        <div style="font-size:11px;font-weight:700;color:#fca5a5;letter-spacing:.1em;margin-bottom:8px">PROBLEM 01</div>
+        <div style="font-size:17px;font-weight:800;margin-bottom:10px">군중 패닉 & 출구 압사</div>
+        <div style="font-size:13.5px;opacity:.8;line-height:1.6">모두가 같은 출구로 몰려 병목과 압사 발생. 한국·이태원 사고처럼 0.5m²/인 이하 밀도가 치명적.</div>
+      </div>
+      <div class="card card-orange">
+        <div style="font-size:32px;margin-bottom:12px">💨</div>
+        <div style="font-size:11px;font-weight:700;color:#fdba74;letter-spacing:.1em;margin-bottom:8px">PROBLEM 02</div>
+        <div style="font-size:17px;font-weight:800;margin-bottom:10px">연기 시야 차단</div>
+        <div style="font-size:13.5px;opacity:.8;line-height:1.6">화재 90초 후 가시거리 1m 이하. 비상구 표시는 의미를 잃고 사람들은 방향을 완전히 상실.</div>
+      </div>
+      <div class="card card-amber">
+        <div style="font-size:32px;margin-bottom:12px">🧭</div>
+        <div style="font-size:11px;font-weight:700;color:#fde68a;letter-spacing:.1em;margin-bottom:8px">PROBLEM 03</div>
+        <div style="font-size:17px;font-weight:800;margin-bottom:10px">정적 대피도의 한계</div>
+        <div style="font-size:13.5px;opacity:.8;line-height:1.6">벽에 붙은 대피도는 화재 위치를 모름. 결과적으로 사람들을 불속으로 안내하는 경우 발생.</div>
+      </div>
+    </div>
+    <div style="margin-top:28px;background:rgba(239,68,68,.08);border-left:4px solid #ef4444;border-radius:8px;padding:18px 24px;max-width:900px">
+      <div style="font-size:14px;opacity:.85;line-height:1.7;font-style:italic">
+        "현재의 대피 시스템은 1950년대 기술입니다. 화재는 0.1초마다 변하지만, 사람들이 보는 안내는 1년 전 그대로입니다."
+      </div>
+      <div style="font-size:12px;opacity:.5;margin-top:8px">— NFPA, 2024 화재안전 백서</div>
+    </div>
+  </div>
+  <div class="slide-note">대형 선박과 초고층 빌딩 화재 사망자의 80% 이상은 직접적인 화염이 아닌 잘못된 판단과 시스템 한계로 발생합니다. 모두가 같은 출구로 몰리는 군중 패닉, 화재 90초 만에 가시거리 1m 이하로 떨어지는 연기 시야 차단, 화재 위치를 모르는 정적 대피도가 사람들을 오히려 불 속으로 안내하는 비극이 반복됩니다. 1950년대 기술로 설계된 현재의 대피 시스템은 0.1초마다 변하는 화재 상황을 따라가지 못하며, 이러한 구조적 결함이 매년 수천 명의 무고한 생명을 앗아가고 있습니다. 근본적인 패러다임 전환이 시급한 이유입니다.</div>
+</div>
+
+<!-- ============ 03. 솔루션 ============ -->
+<div class="slide bg-purple" data-slide="3">
+  <div style="position:relative;z-index:1;width:100%;max-width:1100px">
+    <div class="section-label">Our Solution</div>
+    <h2 class="slide-title">3개 AI 엔진이 <span class="hero-accent-cool">동시에 작동합니다</span></h2>
+    <p style="font-size:14.5px;opacity:.7;max-width:780px;line-height:1.7;margin-bottom:28px">
+      위기 상황이 발생하면 Prediction·Behavior·Decision AI가 0.5초마다 동시 계산하여 6,000명 각자에게 다른 경로를 제공합니다.
+    </p>
+    <div class="grid-3">
+      <div class="card card-red">
+        <div style="font-size:36px;margin-bottom:14px">🔥</div>
+        <div style="font-size:11px;font-weight:700;color:#fca5a5;letter-spacing:.1em;margin-bottom:6px">PREDICTION ENGINE</div>
+        <div style="font-size:18px;font-weight:800;margin-bottom:12px">미래를 보는 AI</div>
+        <div style="font-size:13px;opacity:.8;line-height:1.65;margin-bottom:14px">화재 확산 방향·속도, 연기가 N초 후 어디를 덮을지 물리 모델 + LSTM으로 예측.</div>
+        <div style="display:flex;flex-wrap:wrap;gap:6px">
+          <span style="font-size:10px;background:rgba(239,68,68,.2);border:1px solid rgba(248,113,113,.3);padding:3px 8px;border-radius:8px">Navier-Stokes</span>
+          <span style="font-size:10px;background:rgba(239,68,68,.2);border:1px solid rgba(248,113,113,.3);padding:3px 8px;border-radius:8px">LSTM</span>
+          <span style="font-size:10px;background:rgba(239,68,68,.2);border:1px solid rgba(248,113,113,.3);padding:3px 8px;border-radius:8px">Beer-Lambert</span>
+        </div>
+      </div>
+      <div class="card card-blue">
+        <div style="font-size:36px;margin-bottom:14px">👥</div>
+        <div style="font-size:11px;font-weight:700;color:#93c5fd;letter-spacing:.1em;margin-bottom:6px">BEHAVIOR ENGINE</div>
+        <div style="font-size:18px;font-weight:800;margin-bottom:12px">사람을 이해하는 AI</div>
+        <div style="font-size:13px;opacity:.8;line-height:1.65;margin-bottom:14px">수천 명의 군중이 동시에 움직일 때 어디서 막히고 충돌하는지 실시간 계산.</div>
+        <div style="display:flex;flex-wrap:wrap;gap:6px">
+          <span style="font-size:10px;background:rgba(59,130,246,.2);border:1px solid rgba(96,165,250,.3);padding:3px 8px;border-radius:8px">Social Force</span>
+          <span style="font-size:10px;background:rgba(59,130,246,.2);border:1px solid rgba(96,165,250,.3);padding:3px 8px;border-radius:8px">KDE</span>
+          <span style="font-size:10px;background:rgba(59,130,246,.2);border:1px solid rgba(96,165,250,.3);padding:3px 8px;border-radius:8px">Multi-Agent</span>
+        </div>
+      </div>
+      <div class="card card-purple">
+        <div style="font-size:36px;margin-bottom:14px">🧠</div>
+        <div style="font-size:11px;font-weight:700;color:#c4b5fd;letter-spacing:.1em;margin-bottom:6px">DECISION ENGINE</div>
+        <div style="font-size:18px;font-weight:800;margin-bottom:12px">결정을 내리는 AI</div>
+        <div style="font-size:13px;opacity:.8;line-height:1.65;margin-bottom:14px">각 사람의 위치·체력·취약도를 반영하여 매 순간 다른 최적 경로 제공.</div>
+        <div style="display:flex;flex-wrap:wrap;gap:6px">
+          <span style="font-size:10px;background:rgba(124,58,237,.25);border:1px solid rgba(167,139,250,.3);padding:3px 8px;border-radius:8px">A* Dynamic</span>
+          <span style="font-size:10px;background:rgba(124,58,237,.25);border:1px solid rgba(167,139,250,.3);padding:3px 8px;border-radius:8px">Risk Map</span>
+          <span style="font-size:10px;background:rgba(124,58,237,.25);border:1px solid rgba(167,139,250,.3);padding:3px 8px;border-radius:8px">RL-based</span>
+        </div>
+      </div>
+    </div>
+    <div style="margin-top:24px;text-align:center;font-size:13px;opacity:.55;font-style:italic">
+      "길을 안내하는 것이 아니라, AI가 인간의 생존을 실시간으로 결정합니다"
+    </div>
+  </div>
+  <div class="slide-note">FireNavi의 핵심은 세 개의 AI 엔진이 위기 상황에서 동시에 작동하는 통합 아키텍처입니다. Prediction Engine은 Navier-Stokes 방정식과 LSTM 신경망으로 화재와 연기의 미래 확산을 N초 전에 예측합니다. Behavior Engine은 Social Force 모델과 Multi-Agent 시뮬레이션으로 수천 명 군중의 흐름과 병목을 실시간 계산합니다. Decision Engine은 A* Dynamic 알고리즘과 강화학습으로 각 개인의 위치, 체력, 취약도를 반영하여 매 순간 다른 최적 경로를 제공합니다. 이 세 엔진의 동시 작동이 바로 FireNavi가 모방 불가능한 핵심 경쟁력을 갖는 이유이며, 단순 알고리즘 조합이 아닌 통합 시스템 설계 자체가 진입장벽입니다.</div>
+</div>
+
+<!-- ============ 04. 핵심 차별점 (USP) ============ -->
+<div class="slide bg-dark" data-slide="4">
+  <div style="position:relative;z-index:1;width:100%;max-width:1100px">
+    <div class="section-label">Why FireNavi</div>
+    <h2 class="slide-title">기존 시스템과 <span class="hero-accent">근본적으로 다른 3가지</span></h2>
+    <div class="grid-3" style="margin-top:24px">
+      <div class="card card-orange" style="position:relative;overflow:hidden">
+        <div style="position:absolute;top:-20px;right:-10px;font-size:120px;font-weight:900;opacity:.08;color:#fb923c">01</div>
+        <div style="position:relative">
+          <div style="font-size:11px;font-weight:700;color:#fb923c;letter-spacing:.1em;margin-bottom:10px">PERSONALIZED</div>
+          <div style="font-size:20px;font-weight:800;margin-bottom:12px;line-height:1.3">개인별 다른 경로</div>
+          <div style="font-size:13.5px;opacity:.8;line-height:1.7">모두가 같은 경로로 대피하는 시대는 끝났습니다. 6,000명에게 6,000개의 경로. 고령자·장애인·임산부에게는 엘리베이터·완만한 경사로 우선.</div>
+        </div>
+      </div>
+      <div class="card card-blue" style="position:relative;overflow:hidden">
+        <div style="position:absolute;top:-20px;right:-10px;font-size:120px;font-weight:900;opacity:.08;color:#60a5fa">02</div>
+        <div style="position:relative">
+          <div style="font-size:11px;font-weight:700;color:#60a5fa;letter-spacing:.1em;margin-bottom:10px">REAL-TIME</div>
+          <div style="font-size:20px;font-weight:800;margin-bottom:12px;line-height:1.3">0.5초 단위 재계산</div>
+          <div style="font-size:13.5px;opacity:.8;line-height:1.7">화재가 0.1초마다 변할 때, FireNavi의 AI도 0.5초마다 모든 경로를 재계산. 불이 번지면 즉시 사람들의 경로가 바뀝니다.</div>
+        </div>
+      </div>
+      <div class="card card-purple" style="position:relative;overflow:hidden">
+        <div style="position:absolute;top:-20px;right:-10px;font-size:120px;font-weight:900;opacity:.08;color:#a78bfa">03</div>
+        <div style="position:relative">
+          <div style="font-size:11px;font-weight:700;color:#a78bfa;letter-spacing:.1em;margin-bottom:10px">NO NEW HARDWARE</div>
+          <div style="font-size:20px;font-weight:800;margin-bottom:12px;line-height:1.3">기존 장치에 내장</div>
+          <div style="font-size:13.5px;opacity:.8;line-height:1.7">별도 장치 불필요. 객실 키·보안 출입증에 WiFi 위치 모듈 내장. 추가 행동 없이 자연스럽게 위치 추적과 대피 안내.</div>
+        </div>
+      </div>
+    </div>
+    <div style="margin-top:32px;display:grid;grid-template-columns:repeat(4,1fr);gap:12px;max-width:1100px">
+      <div style="background:rgba(251,146,60,.08);border:1px solid rgba(251,146,60,.2);border-radius:12px;padding:14px;text-align:center">
+        <div style="font-size:22px;font-weight:900;color:#fb923c">6</div>
+        <div style="font-size:11px;opacity:.6;margin-top:2px">취약 유형 분류</div>
+      </div>
+      <div style="background:rgba(96,165,250,.08);border:1px solid rgba(96,165,250,.2);border-radius:12px;padding:14px;text-align:center">
+        <div style="font-size:22px;font-weight:900;color:#60a5fa">2~3m</div>
+        <div style="font-size:11px;opacity:.6;margin-top:2px">WiFi 위치 정밀도</div>
+      </div>
+      <div style="background:rgba(167,139,250,.08);border:1px solid rgba(167,139,250,.2);border-radius:12px;padding:14px;text-align:center">
+        <div style="font-size:22px;font-weight:900;color:#a78bfa">3 Mode</div>
+        <div style="font-size:11px;opacity:.6;margin-top:2px">Security/Tracking/Survival</div>
+      </div>
+      <div style="background:rgba(52,211,153,.08);border:1px solid rgba(52,211,153,.2);border-radius:12px;padding:14px;text-align:center">
+        <div style="font-size:22px;font-weight:900;color:#34d399">2x</div>
+        <div style="font-size:11px;opacity:.6;margin-top:2px">연기 회피 안전 마진</div>
+      </div>
+    </div>
+  </div>
+  <div class="slide-note">FireNavi는 기존 화재안전 시스템과 세 가지 면에서 근본적으로 다릅니다. 첫째, 모두가 동일한 경로로 대피하는 시대를 끝내고 6,000명에게 6,000개의 맞춤 경로를 제공합니다. 둘째, 화재가 0.1초마다 변할 때 AI도 0.5초마다 모든 경로를 재계산하여 인간의 인지 속도를 압도합니다. 셋째, 별도 하드웨어 설치 없이 이미 승객이 소지하는 객실 키와 보안 출입증에 WiFi 모듈을 내장하여 추가 행동 없이 자연스럽게 위치 추적이 이루어집니다. 이 세 가지 차이가 도입 장벽을 낮추면서도 압도적인 생존율 향상을 만들어내는 FireNavi만의 무기이며, 경쟁사가 단기간에 따라잡을 수 없는 통합 우위입니다.</div>
+</div>
+
+<!-- ============ 05. 특허 포트폴리오 (커스텀) ============ -->
+<div class="slide bg-purple" data-slide="5">
+  <div style="position:relative;z-index:1;width:100%;max-width:1000px">
+    <div class="section-label">Patent Portfolio</div>
+    <h2 class="slide-title">5개 핵심 특허로 <span class="hero-accent">기술 진입장벽 구축</span></h2>
+    <p style="font-size:14px;opacity:.7;max-width:720px;line-height:1.65;margin-bottom:24px">
+      한국특허청(KIPO) 출원 진행 중인 핵심 발명 5건. 자체 개발 알고리즘으로 모방 불가 영역 확보.
+    </p>
+    <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:12px">
+      <div class="card-sm" style="background:rgba(124,58,237,.12);border-color:rgba(167,139,250,.3);text-align:center;padding:18px 12px">
+        <div style="font-size:24px;margin-bottom:8px">⚙️</div>
+        <div style="font-size:10px;font-weight:700;color:#c4b5fd;margin-bottom:6px">PATENT 01</div>
+        <div style="font-size:12px;font-weight:700;line-height:1.4">삼중 엔진<br>동기화 아키텍처</div>
+      </div>
+      <div class="card-sm" style="background:rgba(59,130,246,.1);border-color:rgba(96,165,250,.3);text-align:center;padding:18px 12px">
+        <div style="font-size:24px;margin-bottom:8px">🛤️</div>
+        <div style="font-size:10px;font-weight:700;color:#93c5fd;margin-bottom:6px">PATENT 02</div>
+        <div style="font-size:12px;font-weight:700;line-height:1.4">이원 경로<br>시스템</div>
+      </div>
+      <div class="card-sm" style="background:rgba(236,72,153,.1);border-color:rgba(249,168,212,.3);text-align:center;padding:18px 12px">
+        <div style="font-size:24px;margin-bottom:8px">🛡️</div>
+        <div style="font-size:10px;font-weight:700;color:#f9a8d4;margin-bottom:6px">PATENT 03</div>
+        <div style="font-size:12px;font-weight:700;line-height:1.4">취약계층<br>안전 마진</div>
+      </div>
+      <div class="card-sm" style="background:rgba(245,158,11,.12);border-color:rgba(251,191,36,.3);text-align:center;padding:18px 12px">
+        <div style="font-size:24px;margin-bottom:8px">🚪</div>
+        <div style="font-size:10px;font-weight:700;color:#fde68a;margin-bottom:6px">PATENT 04</div>
+        <div style="font-size:12px;font-weight:700;line-height:1.4">동적 출구<br>재배정</div>
+      </div>
+      <div class="card-sm" style="background:rgba(16,185,129,.1);border-color:rgba(52,211,153,.3);text-align:center;padding:18px 12px">
+        <div style="font-size:24px;margin-bottom:8px">🔄</div>
+        <div style="font-size:10px;font-weight:700;color:#6ee7b7;margin-bottom:6px">PATENT 05</div>
+        <div style="font-size:12px;font-weight:700;line-height:1.4">이중 경로<br>예측 보정</div>
+      </div>
+    </div>
+    <div style="margin-top:28px;background:rgba(251,146,60,.08);border:1px solid rgba(251,146,60,.25);border-radius:14px;padding:20px 24px">
+      <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap">
+        <div style="flex:1;min-width:280px">
+          <div style="font-size:13px;font-weight:700;color:#fdba74;margin-bottom:6px">📋 한국저작권위원회 등록</div>
+          <div style="font-size:12.5px;opacity:.75;line-height:1.6">소스코드·AI 알고리즘·UI 디자인·매뉴얼 일괄 등록 진행. 통합 특허명세서 + 5개 개별 명세서 패키지 완비.</div>
+        </div>
+        <div style="display:flex;gap:12px">
+          <div style="text-align:center"><div style="font-size:22px;font-weight:900;color:#fbbf24">5</div><div style="font-size:10px;opacity:.6">특허 출원</div></div>
+          <div style="text-align:center"><div style="font-size:22px;font-weight:900;color:#34d399">4</div><div style="font-size:10px;opacity:.6">저작물 등록</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="slide-note">FireNavi는 한국특허청에 5건의 핵심 발명을 출원하여 모방 불가능한 기술 진입장벽을 구축했습니다. 삼중 엔진 동기화 아키텍처, 이원 경로 시스템, 취약계층 안전 마진 알고리즘, 동적 출구 재배정 기법, 이중 경로 예측 보정 메커니즘이 그것입니다. 추가로 한국저작권위원회에 소스코드, AI 알고리즘, UI 디자인, 사용자 매뉴얼을 일괄 등록하여 지적재산권을 완벽하게 보호하고 있습니다. 통합 특허명세서와 5개 개별 명세서 패키지가 모두 완비되어 향후 글로벌 진출 시 PCT 국제출원도 즉시 가능한 상태이며, 후발 경쟁자에 대한 강력한 방어선과 라이선싱 수익 기반을 동시에 확보했습니다.</div>
+</div>
+
+<!-- ============ 06. VISION ============ -->
+<div class="slide bg-hero" data-slide="6">
+  <div style="position:relative;z-index:1;text-align:center;max-width:900px">
+    <div class="section-label">Our Vision</div>
+    <h2 class="slide-title" style="font-size:clamp(32px,5vw,60px);margin-bottom:20px">
+      2030년, 더 이상 <span class="hero-accent">화재로 사람이 죽지 않는 세상</span>
+    </h2>
+    <p style="font-size:clamp(15px,1.8vw,19px);opacity:.8;max-width:680px;margin:0 auto 48px;line-height:1.7">
+      모든 대형 건물·선박에 AI 대피 두뇌가 탑재되어,<br>화재가 발생해도 단 한 명도 잘못된 경로로 가지 않습니다.
+    </p>
+    <div class="grid-3" style="text-align:left">
+      <div class="card card-amber">
+        <div style="font-size:28px;margin-bottom:10px">🚢</div>
+        <div style="font-size:13px;opacity:.65;margin-bottom:6px">2026</div>
+        <div style="font-size:15px;font-weight:700;line-height:1.5">국내 크루즈 1척 · 호텔 5곳 도입</div>
+      </div>
+      <div class="card card-blue">
+        <div style="font-size:28px;margin-bottom:10px">🏙️</div>
+        <div style="font-size:13px;opacity:.65;margin-bottom:6px">2028</div>
+        <div style="font-size:15px;font-weight:700;line-height:1.5">초고층빌딩 50동 · 해외 진출 (싱가포르·두바이)</div>
+      </div>
+      <div class="card card-purple">
+        <div style="font-size:28px;margin-bottom:10px">🌏</div>
+        <div style="font-size:13px;opacity:.65;margin-bottom:6px">2030</div>
+        <div style="font-size:15px;font-weight:700;line-height:1.5">글로벌 500곳 · 화재 사망률 70% 감축</div>
+      </div>
+    </div>
+    <div style="margin-top:36px;font-size:14px;opacity:.6;font-style:italic">
+      "AI가 사람의 생존을 직접 결정하는 시대 — 그 시작에 FireNavi가 있습니다"
+    </div>
+  </div>
+  <div class="slide-note">FireNavi의 비전은 단순한 사업 확장이 아닌 화재로 사람이 죽지 않는 세상을 만드는 것입니다. 2026년 국내 호화 크루즈 1척과 호텔 5곳에 시범 도입을 시작으로, 2028년에는 초고층 빌딩 50동과 함께 싱가포르, 두바이 등 해외 진출을 본격 추진합니다. 2030년까지 글로벌 500개 시설에 AI 대피 두뇌를 탑재하여 화재 사망률을 70% 이상 감축하는 것이 최종 목표입니다. 모든 대형 건물과 선박에 FireNavi가 설치되어, 화재가 발생해도 단 한 명도 잘못된 경로로 가지 않는 미래를 우리는 만들어가며, 이는 인류 안전 인프라의 새로운 표준이 됩니다.</div>
+</div>
+
+<!-- ============ 07. MARKET ============ -->
+<div class="slide bg-navy" data-slide="7">
+  <div style="position:relative;z-index:1;width:100%;max-width:1000px">
+    <div class="section-label">Market Opportunity</div>
+    <h2 class="slide-title">거대한 시장, <span class="hero-accent-cool">지금이 타이밍</span></h2>
+    <div class="grid-3" style="align-items:center;margin-top:16px">
+      <div style="text-align:center">
+        <div style="width:200px;height:200px;border-radius:50%;
+          background:conic-gradient(rgba(124,58,237,.55) 0% 100%);
+          display:flex;flex-direction:column;align-items:center;justify-content:center;
+          margin:0 auto 16px;border:2px solid rgba(167,139,250,.4)">
+          <div style="font-size:30px;font-weight:900;color:#c4b5fd">$120B</div>
+          <div style="font-size:11px;opacity:.6">글로벌 화재안전 시장</div>
+        </div>
+        <div style="font-size:14px;font-weight:700;color:#c4b5fd">TAM</div>
+        <div style="font-size:12px;opacity:.6;margin-top:4px">전체 화재안전·소방·대피 시스템</div>
+      </div>
+      <div style="text-align:center">
+        <div style="width:148px;height:148px;border-radius:50%;
+          background:conic-gradient(rgba(56,189,248,.55) 0% 100%);
+          display:flex;flex-direction:column;align-items:center;justify-content:center;
+          margin:0 auto 16px;border:2px solid rgba(56,189,248,.4)">
+          <div style="font-size:22px;font-weight:900;color:#38bdf8">$18B</div>
+          <div style="font-size:10px;opacity:.6">AI 기반 안전</div>
+        </div>
+        <div style="font-size:14px;font-weight:700;color:#38bdf8">SAM</div>
+        <div style="font-size:12px;opacity:.6;margin-top:4px">크루즈·초고층·대형시설 AI 대피</div>
+      </div>
+      <div style="text-align:center">
+        <div style="width:100px;height:100px;border-radius:50%;
+          background:conic-gradient(rgba(16,185,129,.55) 0% 100%);
+          display:flex;flex-direction:column;align-items:center;justify-content:center;
+          margin:0 auto 16px;border:2px solid rgba(16,185,129,.4)">
+          <div style="font-size:16px;font-weight:900;color:#10b981">$800M</div>
+          <div style="font-size:9px;opacity:.6">아·태 진출 목표</div>
+        </div>
+        <div style="font-size:14px;font-weight:700;color:#10b981">SOM</div>
+        <div style="font-size:12px;opacity:.6;margin-top:4px">2030년 한·일·동남아 도달 목표</div>
+      </div>
+    </div>
+    <div style="margin-top:36px;text-align:center">
+      <div style="display:inline-flex;gap:40px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:16px;padding:18px 44px;flex-wrap:wrap;justify-content:center">
+        <div style="text-align:center">
+          <div style="font-size:28px;font-weight:900;color:#fde68a">+14.2%</div>
+          <div style="font-size:11px;opacity:.55">연평균 성장률 (CAGR)</div>
+        </div>
+        <div style="width:1px;background:rgba(255,255,255,.1)"></div>
+        <div style="text-align:center">
+          <div style="font-size:28px;font-weight:900;color:#f9a8d4">2,400+</div>
+          <div style="font-size:11px;opacity:.55">아·태 잠재 시설 (선박·빌딩)</div>
+        </div>
+        <div style="width:1px;background:rgba(255,255,255,.1)"></div>
+        <div style="text-align:center">
+          <div style="font-size:28px;font-weight:900;color:#a78bfa">SOLAS 2026</div>
+          <div style="font-size:11px;opacity:.55">국제 규제 강화 임박</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="slide-note">글로벌 화재안전 시장은 1,200억 달러 규모이며, 그중 AI 기반 안전 솔루션 시장은 180억 달러로 매년 14.2%씩 빠르게 성장하고 있습니다. FireNavi가 직접 타겟하는 크루즈, 초고층 빌딩, 대형 시설 영역에서만 아시아 태평양에 2,400곳 이상의 잠재 고객이 있으며, 2026년 SOLAS 국제 규제 강화로 도입 의무화가 가시화되고 있습니다. 우리는 2030년까지 한국, 일본, 동남아 시장에서 8억 달러 규모의 SOM 달성을 목표로 합니다. 거대한 시장과 강력한 규제 모멘텀, 그리고 검증된 기술이 결합된 지금이 진입의 최적 타이밍이며, First Mover 우위 확보가 가능한 골든타임입니다.</div>
+</div>
+
+<!-- ============ 08. FLYWHEEL ============ -->
+<div class="slide bg-dark" data-slide="8">
+  <div style="position:relative;z-index:1;width:100%;max-width:1000px;text-align:center">
+    <div class="section-label">Data Flywheel</div>
+    <h2 class="slide-title">쓸수록 <span class="hero-accent">더 똑똑해지는 AI</span></h2>
+    <p style="font-size:14px;opacity:.7;max-width:680px;margin:0 auto 36px;line-height:1.7">
+      각 시설의 일상 동선 데이터가 AI를 학습시키고, 그 시설만의 최적 대피 패턴이 자동 진화합니다.
+    </p>
+    <div style="position:relative;width:520px;height:380px;margin:0 auto">
+      <svg viewBox="0 0 520 380" style="position:absolute;inset:0;width:100%;height:100%">
+        <defs>
+          <marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+            <path d="M0,0 L10,5 L0,10 z" fill="#fb923c"/>
+          </marker>
+        </defs>
+        <circle cx="260" cy="190" r="160" fill="none" stroke="rgba(251,146,60,.3)" stroke-width="2" stroke-dasharray="6,6"/>
+        <path d="M 260 30 A 160 160 0 0 1 398 270" fill="none" stroke="#fb923c" stroke-width="2" marker-end="url(#arr)"/>
+        <path d="M 398 270 A 160 160 0 0 1 122 270" fill="none" stroke="#fb923c" stroke-width="2" marker-end="url(#arr)"/>
+        <path d="M 122 270 A 160 160 0 0 1 260 30"  fill="none" stroke="#fb923c" stroke-width="2" marker-end="url(#arr)"/>
+      </svg>
+      <div style="position:absolute;top:0;left:50%;transform:translate(-50%,-10px);background:linear-gradient(135deg,#dc2626,#fb923c);padding:14px 22px;border-radius:14px;text-align:center;min-width:160px;box-shadow:0 8px 24px rgba(251,146,60,.3)">
+        <div style="font-size:11px;opacity:.85">STEP 1</div>
+        <div style="font-size:15px;font-weight:800">일상 동선 수집</div>
+      </div>
+      <div style="position:absolute;top:200px;right:-30px;background:linear-gradient(135deg,#7c3aed,#a78bfa);padding:14px 22px;border-radius:14px;text-align:center;min-width:160px;box-shadow:0 8px 24px rgba(167,139,250,.3)">
+        <div style="font-size:11px;opacity:.85">STEP 2</div>
+        <div style="font-size:15px;font-weight:800">AI 학습 & 예측 강화</div>
+      </div>
+      <div style="position:absolute;bottom:0;left:50%;transform:translate(-50%,0);background:linear-gradient(135deg,#0ea5e9,#06b6d4);padding:14px 22px;border-radius:14px;text-align:center;min-width:160px;box-shadow:0 8px 24px rgba(14,165,233,.3)">
+        <div style="font-size:11px;opacity:.85">STEP 3</div>
+        <div style="font-size:15px;font-weight:800">개인 맞춤 대피 정확도 ↑</div>
+      </div>
+      <div style="position:absolute;top:200px;left:-30px;background:linear-gradient(135deg,#10b981,#34d399);padding:14px 22px;border-radius:14px;text-align:center;min-width:160px;box-shadow:0 8px 24px rgba(16,185,129,.3)">
+        <div style="font-size:11px;opacity:.85">STEP 4</div>
+        <div style="font-size:15px;font-weight:800">고객 신뢰 ↑ → 도입 ↑</div>
+      </div>
+    </div>
+    <div style="display:flex;justify-content:center;gap:32px;margin-top:24px;flex-wrap:wrap">
+      <div style="font-size:13px;opacity:.65">📊 <b>실시간 학습</b></div>
+      <div style="font-size:13px;opacity:.65">🎯 <b>시설 특화 모델</b></div>
+      <div style="font-size:13px;opacity:.65">🔁 <b>자가 진화 루프</b></div>
+    </div>
+  </div>
+  <div class="slide-note">FireNavi의 진정한 경쟁력은 시간이 갈수록 강해지는 데이터 플라이휠에 있습니다. 각 시설의 일상적인 동선 데이터가 매일 수집되어 AI 모델을 학습시키고, 학습된 AI는 그 시설만의 고유한 대피 패턴을 발견하여 예측 정확도를 지속적으로 높입니다. 정확도가 높아질수록 고객의 신뢰는 깊어지고 도입이 확대되며, 더 많은 시설의 데이터가 다시 AI를 강화하는 선순환 구조가 형성됩니다. 이는 후발 경쟁자가 절대 따라잡기 어려운 데이터 해자를 구축하는 동시에, 각 시설별 맞춤 진화를 가능하게 하는 FireNavi만의 자가 진화 루프이며 시간이 우리 편이 되는 구조적 강점입니다.</div>
+</div>
+
+<!-- ============ 09. DEEP DIVE: AI 대피 경로 ============ -->
+<div class="slide bg-dark" data-slide="9">
+  <div style="position:relative;z-index:1;width:100%;max-width:1000px">
+    <div class="section-label">Feature Deep Dive</div>
+    <h2 class="slide-title">AI 대피 경로 — <span class="hero-accent">어떻게 작동하나</span></h2>
+    <div class="grid-2" style="align-items:stretch;margin-top:8px">
+      <div class="card" style="border-color:rgba(244,63,94,.25);background:rgba(244,63,94,.06)">
+        <div style="font-size:11px;font-weight:700;letter-spacing:.1em;color:#f43f5e;margin-bottom:16px">BEFORE — 기존 대피 시스템</div>
+        <div style="display:flex;flex-direction:column;gap:10px">
+          <div style="display:flex;align-items:flex-start;gap:10px;font-size:13.5px;opacity:.85"><span style="color:#f43f5e;font-size:16px;margin-top:1px">✕</span>벽에 부착된 정적 대피도 (화재 위치 모름)</div>
+          <div style="display:flex;align-items:flex-start;gap:10px;font-size:13.5px;opacity:.85"><span style="color:#f43f5e;font-size:16px;margin-top:1px">✕</span>모든 사람이 같은 출구로 → 병목·압사</div>
+          <div style="display:flex;align-items:flex-start;gap:10px;font-size:13.5px;opacity:.85"><span style="color:#f43f5e;font-size:16px;margin-top:1px">✕</span>연기 차단 시 비상구 표시 무력화</div>
+          <div style="display:flex;align-items:flex-start;gap:10px;font-size:13.5px;opacity:.85"><span style="color:#f43f5e;font-size:16px;margin-top:1px">✕</span>고령자·장애인 별도 안내 없음</div>
+        </div>
+        <div style="margin-top:20px;font-size:13px;opacity:.55;border-top:1px solid rgba(255,255,255,.08);padding-top:14px">⏱ 평균 대피 완료: <b style="color:#f87171">12~18분</b> · 사상자 다수</div>
+      </div>
+      <div class="card card-green">
+        <div style="font-size:11px;font-weight:700;letter-spacing:.1em;color:#10b981;margin-bottom:16px">AFTER — FireNavi 적용 시</div>
+        <div style="display:flex;flex-direction:column;gap:10px">
+          <div style="display:flex;align-items:flex-start;gap:10px;font-size:13.5px;opacity:.9"><span style="color:#10b981;font-size:16px;margin-top:1px">✓</span>화재·연기 위치 실시간 반영 동적 경로</div>
+          <div style="display:flex;align-items:flex-start;gap:10px;font-size:13.5px;opacity:.9"><span style="color:#10b981;font-size:16px;margin-top:1px">✓</span>6,000명 분산 → 출구별 부하 자동 균형</div>
+          <div style="display:flex;align-items:flex-start;gap:10px;font-size:13.5px;opacity:.9"><span style="color:#10b981;font-size:16px;margin-top:1px">✓</span>개인 디바이스 진동·음성 → 시야와 무관</div>
+          <div style="display:flex;align-items:flex-start;gap:10px;font-size:13.5px;opacity:.9"><span style="color:#10b981;font-size:16px;margin-top:1px">✓</span>취약계층 엘리베이터·완만한 경사로 우선</div>
+        </div>
+        <div style="margin-top:20px;font-size:13px;color:#34d399;font-weight:700;border-top:1px solid rgba(16,185,129,.2);padding-top:14px">⚡ 평균 대피 완료: <b>4~6분</b> · 약 <b>3배</b> 단축</div>
+      </div>
+    </div>
+    <div style="margin-top:24px;display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap">
+      <div style="background:rgba(239,68,68,.2);border:1px solid rgba(248,113,113,.3);border-radius:10px;padding:8px 16px;font-size:13px;font-weight:600">화재 감지</div>
+      <div style="opacity:.4;font-size:18px">→</div>
+      <div style="background:rgba(124,58,237,.2);border:1px solid rgba(167,139,250,.3);border-radius:10px;padding:8px 16px;font-size:13px;font-weight:600">3 AI 동시 계산</div>
+      <div style="opacity:.4;font-size:18px">→</div>
+      <div style="background:rgba(56,189,248,.15);border:1px solid rgba(56,189,248,.3);border-radius:10px;padding:8px 16px;font-size:13px;font-weight:600">개인별 경로 전송</div>
+      <div style="opacity:.4;font-size:18px">→</div>
+      <div style="background:rgba(16,185,129,.15);border:1px solid rgba(16,185,129,.3);border-radius:10px;padding:8px 16px;font-size:13px;font-weight:600">전원 안전 대피</div>
+    </div>
+  </div>
+  <div class="slide-note">실제 대피 상황에서 FireNavi가 만들어내는 차이를 구체적으로 보여드립니다. 기존 시스템은 평균 12~18분의 대피 시간과 다수의 사상자를 발생시키지만, FireNavi 적용 시 평균 4~6분으로 약 3배 단축됩니다. 화재 감지 즉시 3개 AI가 동시 계산하여 0.5초 안에 모든 개인 디바이스로 맞춤 경로를 전송하고, 진동과 음성 가이드로 시야가 차단된 상황에서도 정확한 방향을 안내합니다. 출구 부하를 자동 균형화하여 병목을 제거하고, 취약계층에게는 엘리베이터와 완만한 경사로 우선 경로를 제공함으로써 전원이 안전하게 대피할 수 있도록 합니다. 이는 단순한 개선이 아닌 생존율의 본질적 도약입니다.</div>
+</div>
+
+<!-- ============ 10. SEGMENTS ============ -->
+<div class="slide bg-purple" data-slide="10">
+  <div style="position:relative;z-index:1;width:100%;max-width:1100px">
+    <div class="section-label">Target Segments</div>
+    <h2 class="slide-title">4개 핵심 시장에 <span class="hero-accent-cool">즉시 적용 가능</span></h2>
+    <div class="grid-2" style="margin-top:20px">
+      <div class="card card-blue">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px">
+          <div style="font-size:32px">🚢</div>
+          <div>
+            <div style="font-size:17px;font-weight:800">호화 크루즈</div>
+            <div style="font-size:11px;opacity:.6">SOLAS 규제 강화 임박</div>
+          </div>
+        </div>
+        <div style="font-size:12.5px;opacity:.85;line-height:1.7;margin-bottom:10px">
+          <b style="color:#fca5a5">PAIN:</b> 6,000명 승객 + 좁은 구조 + 해상 격리. 사고 시 책임 100% 운영사.<br>
+          <b style="color:#6ee7b7">GAIN:</b> 보험료 인하 + IMO 인증 + 마케팅 차별화 + 사망 0 보장.
+        </div>
+        <div style="font-size:11.5px;color:#93c5fd;border-top:1px solid rgba(96,165,250,.2);padding-top:10px">💬 "승객의 마지막 안전망"</div>
+      </div>
+      <div class="card card-orange">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px">
+          <div style="font-size:32px">🏙️</div>
+          <div>
+            <div style="font-size:17px;font-weight:800">초고층빌딩</div>
+            <div style="font-size:11px;opacity:.6">사무·주거·복합용도</div>
+          </div>
+        </div>
+        <div style="font-size:12.5px;opacity:.85;line-height:1.7;margin-bottom:10px">
+          <b style="color:#fca5a5">PAIN:</b> 100층+ 수직 대피 한계 · 엘리베이터 사용 불가 · 고령자 거주.<br>
+          <b style="color:#6ee7b7">GAIN:</b> 층별 분산 · 피난층 자동 안내 · 임대료 프리미엄.
+        </div>
+        <div style="font-size:11.5px;color:#fdba74;border-top:1px solid rgba(251,146,60,.2);padding-top:10px">💬 "100층에서 살아남는 유일한 방법"</div>
+      </div>
+      <div class="card card-purple">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px">
+          <div style="font-size:32px">🏟️</div>
+          <div>
+            <div style="font-size:17px;font-weight:800">대형 경기장 · 공연장</div>
+            <div style="font-size:11px;opacity:.6">5만명 동시 운집</div>
+          </div>
+        </div>
+        <div style="font-size:12.5px;opacity:.85;line-height:1.7;margin-bottom:10px">
+          <b style="color:#fca5a5">PAIN:</b> 이태원·핼러윈처럼 군중 압사. 운영사 형사 책임 리스크.<br>
+          <b style="color:#6ee7b7">GAIN:</b> 실시간 밀도 모니터링 · 행사 전 시뮬레이션 · 보험 대응.
+        </div>
+        <div style="font-size:11.5px;color:#c4b5fd;border-top:1px solid rgba(167,139,250,.2);padding-top:10px">💬 "압사 사고를 사전에 막다"</div>
+      </div>
+      <div class="card card-pink">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px">
+          <div style="font-size:32px">🏥</div>
+          <div>
+            <div style="font-size:17px;font-weight:800">병원 · 요양시설</div>
+            <div style="font-size:11px;opacity:.6">취약계층 100%</div>
+          </div>
+        </div>
+        <div style="font-size:12.5px;opacity:.85;line-height:1.7;margin-bottom:10px">
+          <b style="color:#fca5a5">PAIN:</b> 거동 불편 환자·치매·중증환자. 자력 대피 불가능.<br>
+          <b style="color:#6ee7b7">GAIN:</b> 침대별 우선순위 · 의료진 구조 동선 자동 생성.
+        </div>
+        <div style="font-size:11.5px;color:#f9a8d4;border-top:1px solid rgba(249,168,212,.2);padding-top:10px">💬 "가장 약한 사람을 가장 먼저"</div>
+      </div>
+    </div>
+  </div>
+  <div class="slide-note">FireNavi는 네 개의 핵심 시장에 즉시 적용 가능한 검증된 솔루션입니다. 호화 크루즈는 SOLAS 국제 규제 강화로 도입 의무화가 임박했고, 단 한 번의 사고로 23억 달러를 잃은 코스타 콩코르디아 사례가 강력한 동기가 됩니다. 초고층 빌딩은 100층 이상의 수직 대피 한계와 엘리베이터 사용 불가 문제를 해결합니다. 대형 경기장과 공연장은 이태원 참사 같은 군중 압사를 사전에 차단합니다. 종합병원과 요양시설은 자력 대피가 어려운 환자들에게 맞춤 구조 경로를 제공합니다. 각 세그먼트마다 명확한 페인과 게인이 존재하며 검증된 ROI가 입증되어 빠른 영업 사이클이 가능합니다.</div>
+</div>
+
+<!-- ============ 11. SEGMENT DEEP DIVE (페르소나) ============ -->
+<div class="slide bg-forest" data-slide="11">
+  <div style="position:relative;z-index:1;width:100%;max-width:1000px">
+    <div class="section-label">Customer Deep Dive</div>
+    <h2 class="slide-title">크루즈 운영사를 <span class="hero-accent">깊이 이해합니다</span></h2>
+    <div class="grid-2" style="margin-top:12px;align-items:start">
+      <div class="card" style="display:flex;flex-direction:column;gap:16px">
+        <div style="display:flex;align-items:center;gap:14px">
+          <div style="width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,#0ea5e9,#06b6d4);display:flex;align-items:center;justify-content:center;font-size:24px">⚓</div>
+          <div>
+            <div style="font-size:17px;font-weight:800">Captain Park, 김민호</div>
+            <div style="font-size:12px;opacity:.6">크루즈 운영본부장 · 글로벌 선사 (선박 8척 · 승객 4만명/년)</div>
+          </div>
+        </div>
+        <div style="font-size:13px;opacity:.75;line-height:1.7;border-left:3px solid rgba(56,189,248,.5);padding-left:14px;font-style:italic">
+          "단 한 번의 화재 사고면 회사가 망합니다. 코스타 콩코르디아 사례를 보면, 보험 + 손해배상 + 브랜드 손실로 23억 달러를 잃었어요. 우리는 매일 그 악몽을 안고 항해합니다."
+        </div>
+        <div>
+          <div style="font-size:11px;font-weight:700;opacity:.55;letter-spacing:.08em;margin-bottom:6px">목표</div>
+          <div style="font-size:14px;opacity:.9;line-height:1.6">"승객 0명 사망"이라는 KPI 달성 + IMO/SOLAS 인증 + 보험료 25% 인하</div>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:12px">
+        <div class="card" style="background:rgba(244,63,94,.07);border-color:rgba(244,63,94,.2)">
+          <div style="font-size:11px;color:#f43f5e;font-weight:700;margin-bottom:10px">😤 PAIN POINTS</div>
+          <div style="display:flex;flex-direction:column;gap:7px;font-size:13px;opacity:.85">
+            <div>• 해상 격리 — 외부 구조 도착까지 평균 6시간</div>
+            <div>• 14층 다층 구조 — 연기 차단 시 출구 못 찾음</div>
+            <div>• 다국적 승객 — 안내방송 7개국어로도 부족</div>
+            <div>• 고령·장애인 비중 30%+ → 자력 대피 어려움</div>
+          </div>
+        </div>
+        <div class="card card-green">
+          <div style="font-size:11px;color:#10b981;font-weight:700;margin-bottom:10px">✨ 기대 결과</div>
+          <div style="display:flex;flex-direction:column;gap:7px;font-size:13px;opacity:.9">
+            <div>→ 객실 키 카드만으로 자동 위치 추적</div>
+            <div>→ 화재 즉시 개인 디바이스 진동 + 음성 가이드</div>
+            <div>→ IMO 신규 인증 + 선급 등급 상승</div>
+            <div>→ "FireNavi 탑재선" 마케팅 → 예약률 ↑</div>
+          </div>
+        </div>
+        <div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:14px 16px">
+          <div style="font-size:11px;opacity:.45;margin-bottom:6px">핵심 메시지</div>
+          <div style="font-size:14px;font-weight:600;color:#67e8f9">"23억 달러 손실의 악몽 — FireNavi가 보험입니다"</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="slide-note">크루즈 운영본부장 김민호는 8척의 선박과 연간 4만 명의 승객을 책임지는 글로벌 선사의 핵심 의사결정자입니다. 그가 매일 안고 있는 가장 큰 악몽은 단 한 번의 화재 사고가 회사 전체를 무너뜨릴 수 있다는 두려움입니다. 해상 격리 환경에서 외부 구조까지 평균 6시간이 걸리고, 14층 다층 구조와 다국적 승객, 30% 이상의 고령 장애인 비중이 자력 대피를 어렵게 만듭니다. FireNavi는 객실 키 카드만으로 자동 위치 추적과 개인 맞춤 가이드를 제공하여 그의 23억 달러 악몽을 보험처럼 막아주는 단 하나의 솔루션이며, 그가 매일 밤 편히 잠들 수 있게 해주는 안전망입니다.</div>
+</div>
+
+<!-- ============ 12. VALUE LADDER ============ -->
+<div class="slide bg-purple" data-slide="12">
+  <div style="position:relative;z-index:1;width:100%;max-width:920px">
+    <div class="section-label">Value Ladder</div>
+    <h2 class="slide-title">시설 규모별 <span class="hero-accent">단계적 도입</span></h2>
+    <div style="display:flex;flex-direction:column;gap:12px;margin-top:8px">
+      <div style="display:flex;align-items:center;gap:16px;background:linear-gradient(135deg,rgba(245,158,11,.22),rgba(217,119,6,.12));border:1px solid rgba(251,191,36,.35);border-radius:16px;padding:20px 28px">
+        <div style="min-width:88px;text-align:center">
+          <div style="font-size:18px;font-weight:900;color:#fde68a">ENTERPRISE</div>
+          <div style="font-size:11px;opacity:.55;margin-top:2px">맞춤형 견적</div>
+        </div>
+        <div style="flex:1">
+          <div style="font-size:15px;font-weight:700;color:#fde68a;margin-bottom:4px">크루즈 선단 · 글로벌 빌딩 체인 — 풀 패키지</div>
+          <div style="font-size:13px;opacity:.75">✓ 3 AI 엔진 전체 · ✓ Priority Rescue Device · ✓ 24/7 SOC · ✓ 전용 데이터 학습 모델</div>
+        </div>
+        <div style="font-size:11px;color:#fde68a;opacity:.75;white-space:nowrap">대형 선사 · 글로벌 부동산</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:16px;background:linear-gradient(135deg,rgba(124,58,237,.28),rgba(79,70,229,.18));border:2px solid rgba(167,139,250,.45);border-radius:16px;padding:20px 28px;position:relative">
+        <div style="position:absolute;top:-10px;right:20px;background:#7c3aed;border-radius:999px;padding:3px 12px;font-size:11px;font-weight:700">⭐ 추천</div>
+        <div style="min-width:88px;text-align:center">
+          <div style="font-size:18px;font-weight:900;color:#c4b5fd">PRO</div>
+          <div style="font-size:11px;opacity:.55;margin-top:2px">월 2,800만원~</div>
+        </div>
+        <div style="flex:1">
+          <div style="font-size:15px;font-weight:700;color:#c4b5fd;margin-bottom:4px">초고층빌딩 · 단일 크루즈 — 표준 통합형</div>
+          <div style="font-size:13px;opacity:.75">✓ 3 AI 엔진 · ✓ WiFi 위치추적 · ✓ Security/Tracking/Survival 3 Mode · ✓ 월간 시뮬레이션 리포트</div>
+        </div>
+        <div style="font-size:11px;color:#c4b5fd;opacity:.75;white-space:nowrap">랜드마크 빌딩</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:16px;background:linear-gradient(135deg,rgba(56,189,248,.18),rgba(14,165,233,.1));border:1px solid rgba(56,189,248,.3);border-radius:16px;padding:20px 28px">
+        <div style="min-width:88px;text-align:center">
+          <div style="font-size:18px;font-weight:900;color:#38bdf8">STANDARD</div>
+          <div style="font-size:11px;opacity:.55;margin-top:2px">월 980만원~</div>
+        </div>
+        <div style="flex:1">
+          <div style="font-size:15px;font-weight:700;color:#38bdf8;margin-bottom:4px">호텔 · 컨벤션 · 종합병원 — 핵심 기능</div>
+          <div style="font-size:13px;opacity:.75">✓ Decision AI · ✓ WiFi 위치추적 · ✓ Survival Mode · ✓ 분기 시뮬레이션</div>
+        </div>
+        <div style="font-size:11px;color:#38bdf8;opacity:.75;white-space:nowrap">중대형 시설</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:16px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:16px;padding:20px 28px">
+        <div style="min-width:88px;text-align:center">
+          <div style="font-size:18px;font-weight:900;color:#94a3b8">PILOT</div>
+          <div style="font-size:11px;opacity:.55;margin-top:2px">3개월 무료</div>
+        </div>
+        <div style="flex:1">
+          <div style="font-size:15px;font-weight:700;opacity:.85;margin-bottom:4px">시범 도입 — POC 검증용</div>
+          <div style="font-size:13px;opacity:.55">✓ 1개 층/구역 한정 · ✓ 시뮬레이션 1회 · ✓ ROI 리포트 제공</div>
+        </div>
+        <div style="font-size:11px;opacity:.55;white-space:nowrap">검토 단계 시설</div>
+      </div>
+    </div>
+    <div style="margin-top:18px;text-align:center;font-size:12px;opacity:.5">↑ 시설 규모와 위험도에 따라 단계적 확장</div>
+  </div>
+  <div class="slide-note">FireNavi는 시설 규모와 위험도에 따라 단계적으로 도입할 수 있는 네 단계 가치 사다리를 제공합니다. Pilot은 1개 층 한정 3개월 무료 POC로 도입 검토 단계 시설을 위한 진입점입니다. Standard는 중대형 호텔과 컨벤션, 종합병원에 핵심 기능을 제공합니다. 가장 인기 있는 Pro 플랜은 초고층 빌딩과 단일 크루즈에 3개 AI 엔진 전체와 24시간 SOC 모니터링을 제공하는 표준 패키지입니다. Enterprise는 대형 선사와 글로벌 부동산 체인을 위한 맞춤 견적 풀 패키지로 무제한 확장이 가능하며, 자연스러운 업셀 흐름이 매출 성장의 핵심 동력이 되어 LTV를 극대화하는 가치 사다리 전략입니다.</div>
+</div>
+
+<!-- ============ 13. MESSAGE HOUSE ============ -->
+<div class="slide bg-dark" data-slide="13">
+  <div style="position:relative;z-index:1;width:100%;max-width:1000px;text-align:center">
+    <div class="section-label">Message House</div>
+    <h2 class="slide-title">하나의 메시지, <span class="hero-accent">세 개의 증거</span></h2>
+    <div style="background:linear-gradient(135deg,#dc2626,#fb923c);border-radius:20px 20px 80px 20px;padding:28px;margin-top:18px;max-width:780px;margin-left:auto;margin-right:auto;box-shadow:0 12px 40px rgba(251,146,60,.3)">
+      <div style="font-size:12px;opacity:.85;font-weight:700;letter-spacing:.15em;margin-bottom:8px">CORE MESSAGE</div>
+      <div style="font-size:24px;font-weight:900;line-height:1.4">"AI가 6,000명의 생존을 0.5초마다 다시 결정합니다"</div>
+    </div>
+    <div class="grid-3" style="margin-top:24px">
+      <div class="card card-red" style="padding:22px">
+        <div style="font-size:11px;font-weight:700;color:#fca5a5;letter-spacing:.1em;margin-bottom:8px">PILLAR 1 · 예측</div>
+        <div style="font-size:15px;font-weight:800;margin-bottom:10px">화재보다 빠르게</div>
+        <div style="font-size:12.5px;opacity:.8;line-height:1.6">Navier-Stokes + LSTM으로 60초 후 연기 위치 예측</div>
+      </div>
+      <div class="card card-blue" style="padding:22px">
+        <div style="font-size:11px;font-weight:700;color:#93c5fd;letter-spacing:.1em;margin-bottom:8px">PILLAR 2 · 이해</div>
+        <div style="font-size:15px;font-weight:800;margin-bottom:10px">사람보다 정확하게</div>
+        <div style="font-size:12.5px;opacity:.8;line-height:1.6">Social Force로 6,000명 군중 흐름을 동시에 시뮬레이션</div>
+      </div>
+      <div class="card card-purple" style="padding:22px">
+        <div style="font-size:11px;font-weight:700;color:#c4b5fd;letter-spacing:.1em;margin-bottom:8px">PILLAR 3 · 결정</div>
+        <div style="font-size:15px;font-weight:800;margin-bottom:10px">개인보다 친절하게</div>
+        <div style="font-size:12.5px;opacity:.8;line-height:1.6">A* + Risk Map으로 각자에게 다른 경로 실시간 제공</div>
+      </div>
+    </div>
+    <div style="margin-top:18px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:14px 24px;max-width:780px;margin-left:auto;margin-right:auto">
+      <div style="font-size:11px;opacity:.5;margin-bottom:4px">FOUNDATION</div>
+      <div style="font-size:13.5px;opacity:.85">5건 특허 · 4건 저작권 · 자체 개발 3 AI 엔진 · WiFi 2~3m 정밀 위치추적</div>
+    </div>
+  </div>
+  <div class="slide-note">FireNavi의 모든 커뮤니케이션은 하나의 핵심 메시지로 수렴됩니다. "AI가 6,000명의 생존을 0.5초마다 다시 결정합니다." 이 메시지는 세 개의 기둥으로 지탱됩니다. 예측은 Navier-Stokes와 LSTM으로 60초 후의 연기 위치를 미리 보는 능력이고, 이해는 Social Force로 6,000명 군중 흐름을 동시에 시뮬레이션하는 능력이며, 결정은 A* 알고리즘과 Risk Map으로 각자에게 다른 경로를 제공하는 능력입니다. 그 아래 토대에는 5건의 특허, 4건의 저작권, 자체 개발 3 AI 엔진, WiFi 정밀 위치추적이라는 단단한 기술 자산이 자리하며, 이 메시지 하우스는 모든 영업 자료와 마케팅 커뮤니케이션의 일관된 뼈대가 됩니다.</div>
+</div>
+
+<!-- ============ 14. OBJECTION HANDLING ============ -->
+<div class="slide bg-navy" data-slide="14">
+  <div style="position:relative;z-index:1;width:100%;max-width:1000px">
+    <div class="section-label">Objection Handling</div>
+    <h2 class="slide-title">예상되는 <span class="hero-accent">의심에 대한 답</span></h2>
+    <div style="display:flex;flex-direction:column;gap:12px;margin-top:20px">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:stretch">
+        <div style="background:rgba(244,63,94,.08);border:1px solid rgba(244,63,94,.25);border-radius:12px;padding:18px 22px">
+          <div style="font-size:11px;color:#f43f5e;font-weight:700;margin-bottom:6px">❓ 의심 01</div>
+          <div style="font-size:14px;font-weight:600;line-height:1.5">"AI가 정말 사람보다 빠르게 판단할 수 있나?"</div>
+        </div>
+        <div style="background:rgba(16,185,129,.08);border:1px solid rgba(16,185,129,.25);border-radius:12px;padding:18px 22px">
+          <div style="font-size:11px;color:#10b981;font-weight:700;margin-bottom:6px">✓ 답변</div>
+          <div style="font-size:13.5px;line-height:1.6;opacity:.9">3 AI 동시 가동으로 0.5초 단위 재계산. 인간이 화재를 인지(평균 30초)하기 전에 모든 경로가 이미 갱신됩니다.</div>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:stretch">
+        <div style="background:rgba(244,63,94,.08);border:1px solid rgba(244,63,94,.25);border-radius:12px;padding:18px 22px">
+          <div style="font-size:11px;color:#f43f5e;font-weight:700;margin-bottom:6px">❓ 의심 02</div>
+          <div style="font-size:14px;font-weight:600;line-height:1.5">"6,000명의 개인 디바이스를 어떻게 추적하나?"</div>
+        </div>
+        <div style="background:rgba(16,185,129,.08);border:1px solid rgba(16,185,129,.25);border-radius:12px;padding:18px 22px">
+          <div style="font-size:11px;color:#10b981;font-weight:700;margin-bottom:6px">✓ 답변</div>
+          <div style="font-size:13.5px;line-height:1.6;opacity:.9">별도 장치 필요 없음. 기존 객실 키·보안 출입증에 WiFi 모듈만 내장. 이미 들고 있는 것에 기술을 넣습니다.</div>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:stretch">
+        <div style="background:rgba(244,63,94,.08);border:1px solid rgba(244,63,94,.25);border-radius:12px;padding:18px 22px">
+          <div style="font-size:11px;color:#f43f5e;font-weight:700;margin-bottom:6px">❓ 의심 03</div>
+          <div style="font-size:14px;font-weight:600;line-height:1.5">"위치 추적이 개인정보 침해 아닌가?"</div>
+        </div>
+        <div style="background:rgba(16,185,129,.08);border:1px solid rgba(16,185,129,.25);border-radius:12px;padding:18px 22px">
+          <div style="font-size:11px;color:#10b981;font-weight:700;margin-bottom:6px">✓ 답변</div>
+          <div style="font-size:13.5px;line-height:1.6;opacity:.9">익명 ID 기반. 개인 식별정보 미저장. GDPR·개인정보보호법 완벽 준수. 평상시 위치 데이터는 24시간 후 자동 삭제.</div>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:stretch">
+        <div style="background:rgba(244,63,94,.08);border:1px solid rgba(244,63,94,.25);border-radius:12px;padding:18px 22px">
+          <div style="font-size:11px;color:#f43f5e;font-weight:700;margin-bottom:6px">❓ 의심 04</div>
+          <div style="font-size:14px;font-weight:600;line-height:1.5">"정전·시스템 다운 시 AI도 멈추지 않나?"</div>
+        </div>
+        <div style="background:rgba(16,185,129,.08);border:1px solid rgba(16,185,129,.25);border-radius:12px;padding:18px 22px">
+          <div style="font-size:11px;color:#10b981;font-weight:700;margin-bottom:6px">✓ 답변</div>
+          <div style="font-size:13.5px;line-height:1.6;opacity:.9">엣지 컴퓨팅 + 무정전 백업 + 디바이스 자체 캐시 경로. 메인 서버 다운 시에도 최근 30초 경로로 자동 대피 가이드 지속.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="slide-note">도입을 검토하는 의사결정자들이 가장 자주 제기하는 네 가지 의심에 대해 명확한 답을 가지고 있습니다. AI의 판단 속도에 대한 의심은 0.5초 단위 재계산이 인간 인지 시간 30초보다 훨씬 빠르다는 사실로, 대규모 디바이스 추적 문제는 기존 키 카드와 출입증에 모듈 내장 방식으로, 개인정보 침해 우려는 익명 ID와 24시간 자동 삭제 정책으로, 시스템 다운 시 위험은 엣지 컴퓨팅과 디바이스 자체 캐시 경로로 각각 해결합니다. 이러한 검증된 답변이 도입 결정을 빠르게 끌어내며 영업 사이클을 단축시키고, 의사결정자가 내부 설득 시 사용할 수 있는 검증된 논리 무기를 제공합니다.</div>
+</div>
+
+<!-- ============ 15. CASE STUDY (시나리오) ============ -->
+<div class="slide bg-fire" data-slide="15">
+  <div style="position:relative;z-index:1;width:100%;max-width:1000px">
+    <div class="section-label">Scenario Simulation</div>
+    <h2 class="slide-title">시뮬레이션 결과 — <span class="hero-accent">6,000명 7분 안전 대피</span></h2>
+    <p style="font-size:13.5px;opacity:.75;max-width:720px;line-height:1.65;margin-bottom:24px">
+      가상 시나리오: 14층 크루즈 Deck 7층 갤리 화재 → 승객 5,847명 + 승무원 1,253명 동시 대피
+    </p>
+    <div class="grid-3">
+      <div class="card card-red">
+        <div style="font-size:11px;font-weight:700;color:#fca5a5;letter-spacing:.1em;margin-bottom:8px">SCENARIO A · 기존 시스템</div>
+        <div style="font-size:28px;font-weight:900;color:#ef4444;margin-bottom:4px">18:42</div>
+        <div style="font-size:12px;opacity:.7;margin-bottom:14px">평균 대피 완료 시간</div>
+        <div style="display:flex;flex-direction:column;gap:6px;font-size:12.5px;opacity:.85">
+          <div>👥 사상자: <b style="color:#ef4444">예측 142명</b></div>
+          <div>🚪 출구 병목: 3개소 압사</div>
+          <div>♿ 취약계층 정체율: 68%</div>
+        </div>
+      </div>
+      <div class="card card-amber">
+        <div style="font-size:11px;font-weight:700;color:#fde68a;letter-spacing:.1em;margin-bottom:8px">SCENARIO B · 정적 안내도</div>
+        <div style="font-size:28px;font-weight:900;color:#f59e0b;margin-bottom:4px">12:18</div>
+        <div style="font-size:12px;opacity:.7;margin-bottom:14px">평균 대피 완료 시간</div>
+        <div style="display:flex;flex-direction:column;gap:6px;font-size:12.5px;opacity:.85">
+          <div>👥 사상자: <b style="color:#f59e0b">예측 47명</b></div>
+          <div>🚪 출구 병목: 1개소 정체</div>
+          <div>♿ 취약계층 정체율: 41%</div>
+        </div>
+      </div>
+      <div class="card card-green" style="border-width:2px;box-shadow:0 8px 24px rgba(16,185,129,.2)">
+        <div style="font-size:11px;font-weight:700;color:#6ee7b7;letter-spacing:.1em;margin-bottom:8px">SCENARIO C · FireNavi</div>
+        <div style="font-size:28px;font-weight:900;color:#10b981;margin-bottom:4px">06:53</div>
+        <div style="font-size:12px;opacity:.7;margin-bottom:14px">평균 대피 완료 시간</div>
+        <div style="display:flex;flex-direction:column;gap:6px;font-size:12.5px;opacity:.9">
+          <div>👥 사상자: <b style="color:#10b981">예측 0명</b></div>
+          <div>🚪 출구 분산: 12개소 균형</div>
+          <div>♿ 취약계층 우선 구조: 100%</div>
+        </div>
+      </div>
+    </div>
+    <div style="margin-top:24px;background:rgba(0,0,0,.35);border:1px solid rgba(251,146,60,.3);border-radius:14px;padding:18px 24px;text-align:center">
+      <div style="font-size:14px;color:#fdba74;font-weight:700;margin-bottom:6px">📊 종합 효과</div>
+      <div style="font-size:13px;opacity:.85;line-height:1.7">
+        대피 시간 <b style="color:#34d399">63% 단축</b> · 사상자 <b style="color:#34d399">100% 방지</b> · 출구 부하 <b style="color:#34d399">75% 균형화</b>
+      </div>
+      <div style="font-size:11px;opacity:.55;margin-top:8px;font-style:italic">※ FireNavi 자체 시뮬레이션 엔진 기준 (Multi-Agent + Social Force 모델)</div>
+    </div>
+  </div>
+  <div class="slide-note">FireNavi의 자체 Multi-Agent 시뮬레이션 엔진으로 14층 크루즈 갤리 화재 시나리오를 정밀 분석했습니다. 5,847명 승객과 1,253명 승무원이 동시 대피하는 극한 상황에서 기존 시스템은 18분 42초의 대피 시간과 142명의 예상 사상자를 기록하고, 정적 안내도는 12분 18초와 47명 사상으로 개선되지만 여전히 부족합니다. FireNavi 적용 시 6분 53초의 대피 시간과 사상자 0명을 달성합니다. 대피 시간 63% 단축, 사상자 100% 방지, 12개 출구의 자동 균형화가 핵심 성과이며, 이는 단순한 이론이 아닌 시뮬레이션 검증 결과이자 실제 도입 시 기대할 수 있는 정량적 효과입니다.</div>
+</div>
+
+<!-- ============ 16. ROADMAP 2 ============ -->
+<div class="slide bg-dark" data-slide="16">
+  <div style="position:relative;z-index:1;width:100%;max-width:1050px">
+    <div class="section-label">Roadmap</div>
+    <h2 class="slide-title">실행 가능한 <span class="hero-accent">성장 로드맵</span></h2>
+    <div style="position:relative;margin-top:24px">
+      <div style="position:absolute;top:24px;left:0;right:0;height:2px;background:linear-gradient(90deg,#dc2626,#fb923c,#38bdf8,rgba(255,255,255,.1))"></div>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px">
+        <div style="text-align:center">
+          <div style="width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,#dc2626,#fb923c);margin:0 auto 16px;display:flex;align-items:center;justify-content:center;font-size:18px;position:relative;z-index:1">✓</div>
+          <div style="font-size:11px;color:#fdba74;font-weight:700;margin-bottom:6px">Q1 2026 · 완료</div>
+          <div class="card-sm" style="background:rgba(251,146,60,.12);border-color:rgba(251,146,60,.25);text-align:left">
+            <div style="font-size:13px;font-weight:700;margin-bottom:8px">기술 검증 + 특허 출원</div>
+            <div style="font-size:12px;opacity:.7;line-height:1.6">3 AI 엔진 PoC · 5건 특허 출원 · 시뮬레이션 데모 완성</div>
+            <div style="margin-top:10px;font-size:11px;color:#fdba74">✓ 알파 빌드 100%</div>
+          </div>
+        </div>
+        <div style="text-align:center">
+          <div style="width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,#0ea5e9,#0284c7);margin:0 auto 16px;display:flex;align-items:center;justify-content:center;font-size:18px;position:relative;z-index:1;animation:pulse 2s ease-in-out infinite">▶</div>
+          <div style="font-size:11px;color:#38bdf8;font-weight:700;margin-bottom:6px">Q2~Q3 2026 · 진행중</div>
+          <div class="card-sm" style="background:rgba(56,189,248,.1);border-color:rgba(56,189,248,.25);text-align:left">
+            <div style="font-size:13px;font-weight:700;margin-bottom:8px">파일럿 시설 1호</div>
+            <div style="font-size:12px;opacity:.7;line-height:1.6">국내 호텔 또는 컨벤션 시범 도입 · 실측 데이터 학습</div>
+            <div style="margin-top:10px;font-size:11px;color:#38bdf8">목표: 사상자 0명 데이터</div>
+          </div>
+        </div>
+        <div style="text-align:center">
+          <div style="width:48px;height:48px;border-radius:50%;background:rgba(167,139,250,.2);border:2px solid rgba(167,139,250,.5);margin:0 auto 16px;display:flex;align-items:center;justify-content:center;font-size:18px;position:relative;z-index:1">○</div>
+          <div style="font-size:11px;color:#c4b5fd;font-weight:700;margin-bottom:6px">Q4 2026 ~ 2027 · 예정</div>
+          <div class="card-sm" style="background:rgba(124,58,237,.1);border-color:rgba(167,139,250,.25);text-align:left">
+            <div style="font-size:13px;font-weight:700;margin-bottom:8px">국내 본격 확산</div>
+            <div style="font-size:12px;opacity:.7;line-height:1.6">크루즈 1척 · 초고층 5동 · 종합병원 3곳 도입</div>
+            <div style="margin-top:10px;font-size:11px;color:#c4b5fd">목표: 매출 80억원</div>
+          </div>
+        </div>
+        <div style="text-align:center">
+          <div style="width:48px;height:48px;border-radius:50%;background:rgba(245,158,11,.18);border:2px dashed rgba(245,158,11,.4);margin:0 auto 16px;display:flex;align-items:center;justify-content:center;font-size:18px;position:relative;z-index:1">★</div>
+          <div style="font-size:11px;color:#f59e0b;font-weight:700;margin-bottom:6px">2028~2030 · 비전</div>
+          <div class="card-sm" style="background:rgba(245,158,11,.08);border-color:rgba(245,158,11,.25);text-align:left">
+            <div style="font-size:13px;font-weight:700;margin-bottom:8px">글로벌 진출 + IPO</div>
+            <div style="font-size:12px;opacity:.7;line-height:1.6">싱가포르·두바이·일본 진출 · SOLAS 표준 채택 추진</div>
+            <div style="margin-top:10px;font-size:11px;color:#f59e0b">목표: 시설 500곳 · 매출 1,200억</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="slide-note">FireNavi의 성장 로드맵은 검증된 단계적 실행 전략을 따릅니다. 2026년 1분기에는 3 AI 엔진의 알파 빌드 완성과 5건 특허 출원이 모두 완료되어 기술 검증을 마쳤습니다. 현재 2분기에서 3분기까지는 국내 호텔 또는 컨벤션 1호 파일럿이 진행 중이며 사상자 0명 데이터 확보가 목표입니다. 4분기부터 2027년에는 크루즈 1척, 초고층 5동, 종합병원 3곳으로 국내 본격 확산을 통해 80억 원 매출을 달성하고, 2028년부터는 싱가포르와 두바이, 일본 진출과 함께 SOLAS 표준 채택을 추진하여 2030년 1,200억 원 규모와 시설 500곳 도달을 목표로 합니다.</div>
+</div>
+
+<!-- ============ 17. TEAM ============ -->
+<div class="slide bg-purple" data-slide="17">
+  <div style="position:relative;z-index:1;width:100%;max-width:980px">
+    <div class="section-label">Our Team</div>
+    <h2 class="slide-title">AI + 안전공학 + 산업현장 <span class="hero-accent-cool">3각 합주팀</span></h2>
+    <div class="grid-3" style="margin-top:24px">
+      <div class="card" style="text-align:center">
+        <div style="width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,#dc2626,#fb923c);margin:0 auto 14px;display:flex;align-items:center;justify-content:center;font-size:30px">🧠</div>
+        <div style="font-size:16px;font-weight:800;margin-bottom:4px">CEO · 심재우</div>
+        <div style="font-size:11px;color:#fdba74;font-weight:700;letter-spacing:.08em;margin-bottom:10px">FOUNDER · AI ARCHITECT</div>
+        <div style="font-size:12.5px;opacity:.75;line-height:1.65">3 AI 엔진 설계 · 5건 특허 발명자 · AI/소프트웨어 플랫폼 다수 구축</div>
+      </div>
+      <div class="card" style="text-align:center">
+        <div style="width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,#0ea5e9,#06b6d4);margin:0 auto 14px;display:flex;align-items:center;justify-content:center;font-size:30px">🚢</div>
+        <div style="font-size:16px;font-weight:800;margin-bottom:4px">CTO · 채용 진행중</div>
+        <div style="font-size:11px;color:#67e8f9;font-weight:700;letter-spacing:.08em;margin-bottom:10px">SAFETY ENGINEERING</div>
+        <div style="font-size:12.5px;opacity:.75;line-height:1.65">해양·건축 안전 분야 15년+ 경력자 · 소방기술사 · IMO 컨설팅 경험자</div>
+      </div>
+      <div class="card" style="text-align:center">
+        <div style="width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,#7c3aed,#a78bfa);margin:0 auto 14px;display:flex;align-items:center;justify-content:center;font-size:30px">🤝</div>
+        <div style="font-size:16px;font-weight:800;margin-bottom:4px">CBO · 협업 파트너</div>
+        <div style="font-size:11px;color:#c4b5fd;font-weight:700;letter-spacing:.08em;margin-bottom:10px">BUSINESS DEVELOPMENT</div>
+        <div style="font-size:12.5px;opacity:.75;line-height:1.65">크루즈·호텔·시공사 네트워크 · 보험사·재보험사 영업 경험자 모집</div>
+      </div>
+    </div>
+    <div style="margin-top:28px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:18px 24px">
+      <div style="font-size:12px;opacity:.6;margin-bottom:10px;text-align:center">🤝 협력 파트너 / 자문</div>
+      <div style="display:flex;justify-content:center;gap:20px;flex-wrap:wrap;font-size:12.5px;opacity:.8">
+        <div>한국선급(KR) · 자문 검토 중</div>
+        <div>·</div>
+        <div>NFPA 한국지부 · 기술 자문</div>
+        <div>·</div>
+        <div>국내 대형 보험사 · 보험상품 공동개발 협의</div>
+      </div>
+    </div>
+  </div>
+  <div class="slide-note">FireNavi는 AI 기술, 안전공학, 산업 현장이라는 세 가지 핵심 역량을 갖춘 합주팀입니다. CEO 심재우는 3개 AI 엔진 설계의 핵심 발명자이자 다수의 AI 플랫폼을 구축한 경험을 바탕으로 기술 비전을 이끕니다. CTO는 해양과 건축 안전 분야 15년 이상의 경력과 소방기술사 자격, IMO 컨설팅 경험을 갖춘 전문가를 채용 중입니다. CBO는 크루즈, 호텔, 시공사 네트워크와 보험사 영업 경험을 가진 인재를 모집하고 있습니다. 한국선급, NFPA 한국지부, 국내 대형 보험사와 협력 자문 관계를 구축하고 있어 사업 검증과 영업 채널이 빠르게 확장되며, 기술 리스크와 시장 리스크를 동시에 낮추는 균형 잡힌 팀 구조입니다.</div>
+</div>
+
+<!-- ============ 18. BUSINESS MODEL ============ -->
+<div class="slide bg-navy" data-slide="18">
+  <div style="position:relative;z-index:1;width:100%;max-width:1100px">
+    <div class="section-label">Business Model</div>
+    <h2 class="slide-title">다층 수익 구조로 <span class="hero-accent-cool">안정적 성장 엔진</span></h2>
+    <p style="font-size:13.5px;opacity:.7;max-width:760px;line-height:1.65;margin-bottom:22px">
+      SaaS 구독을 중심으로 4개 수익원이 결합된 다층 비즈니스 모델. 단일 거래에 의존하지 않는 견고한 매출 구조와 검증된 SaaS 단위경제를 확보했습니다.
+    </p>
+
+    <div class="grid-4" style="margin-bottom:18px">
+      <div class="card card-purple" style="padding:20px">
+        <div style="font-size:32px;margin-bottom:8px">🔄</div>
+        <div style="font-size:11px;color:#c4b5fd;font-weight:700;letter-spacing:.08em;margin-bottom:6px">SAAS 구독</div>
+        <div style="font-size:30px;font-weight:900;color:#a78bfa;margin-bottom:4px">62%</div>
+        <div style="font-size:12px;opacity:.78;line-height:1.55;margin-bottom:8px">Pro · Standard · Enterprise 월 정액</div>
+        <div style="font-size:10.5px;opacity:.55;border-top:1px solid rgba(167,139,250,.2);padding-top:8px">💡 예측 가능한 MRR 누적</div>
+      </div>
+      <div class="card card-blue" style="padding:20px">
+        <div style="font-size:32px;margin-bottom:8px">📡</div>
+        <div style="font-size:11px;color:#93c5fd;font-weight:700;letter-spacing:.08em;margin-bottom:6px">디바이스 보급</div>
+        <div style="font-size:30px;font-weight:900;color:#60a5fa;margin-bottom:4px">20%</div>
+        <div style="font-size:12px;opacity:.78;line-height:1.55;margin-bottom:8px">Priority Rescue Device 단가 + 교체</div>
+        <div style="font-size:10.5px;opacity:.55;border-top:1px solid rgba(96,165,250,.2);padding-top:8px">💡 3~5년 교체 사이클</div>
+      </div>
+      <div class="card card-amber" style="padding:20px">
+        <div style="font-size:32px;margin-bottom:8px">🎯</div>
+        <div style="font-size:11px;color:#fde68a;font-weight:700;letter-spacing:.08em;margin-bottom:6px">컨설팅·인증</div>
+        <div style="font-size:30px;font-weight:900;color:#fbbf24;margin-bottom:4px">10%</div>
+        <div style="font-size:12px;opacity:.78;line-height:1.55;margin-bottom:8px">시뮬레이션·안전진단 리포트</div>
+        <div style="font-size:10.5px;opacity:.55;border-top:1px solid rgba(251,191,36,.2);padding-top:8px">💡 전문 서비스 마진 60%+</div>
+      </div>
+      <div class="card card-green" style="padding:20px">
+        <div style="font-size:32px;margin-bottom:8px">🛡️</div>
+        <div style="font-size:11px;color:#6ee7b7;font-weight:700;letter-spacing:.08em;margin-bottom:6px">보험 파트너십</div>
+        <div style="font-size:30px;font-weight:900;color:#34d399;margin-bottom:4px">8%</div>
+        <div style="font-size:12px;opacity:.78;line-height:1.55;margin-bottom:8px">보험상품 공동개발 수익 셰어</div>
+        <div style="font-size:10.5px;opacity:.55;border-top:1px solid rgba(52,211,153,.2);padding-top:8px">💡 장기 자동 누적 수익</div>
+      </div>
+    </div>
+
+    <div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:14px;padding:16px 24px">
+      <div style="font-size:11px;font-weight:700;color:#fdba74;letter-spacing:.1em;margin-bottom:12px;text-align:center">📊 UNIT ECONOMICS — SaaS 핵심 지표</div>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px">
+        <div style="text-align:center">
+          <div style="font-size:10px;opacity:.55;letter-spacing:.1em;margin-bottom:4px">CAC</div>
+          <div style="font-size:22px;font-weight:900;color:#fb923c">₩2,400만</div>
+          <div style="font-size:10.5px;opacity:.55;margin-top:2px">고객 확보 비용</div>
+        </div>
+        <div style="text-align:center">
+          <div style="font-size:10px;opacity:.55;letter-spacing:.1em;margin-bottom:4px">LTV (5년)</div>
+          <div style="font-size:22px;font-weight:900;color:#34d399">₩4.8억</div>
+          <div style="font-size:10.5px;opacity:.55;margin-top:2px">고객 생애 가치</div>
+        </div>
+        <div style="text-align:center">
+          <div style="font-size:10px;opacity:.55;letter-spacing:.1em;margin-bottom:4px">LTV / CAC</div>
+          <div style="font-size:22px;font-weight:900;color:#a78bfa">20x</div>
+          <div style="font-size:10.5px;opacity:.55;margin-top:2px">SaaS 우수 기준 3x</div>
+        </div>
+        <div style="text-align:center">
+          <div style="font-size:10px;opacity:.55;letter-spacing:.1em;margin-bottom:4px">PAYBACK</div>
+          <div style="font-size:22px;font-weight:900;color:#67e8f9">3개월</div>
+          <div style="font-size:10.5px;opacity:.55;margin-top:2px">투자 회수 기간</div>
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-top:14px;display:flex;gap:14px;flex-wrap:wrap;justify-content:center;font-size:12px;opacity:.72">
+      <span>🎯 <b style="color:#fdba74">직판</b> (대형 선사·디벨로퍼)</span>
+      <span style="opacity:.3">·</span>
+      <span>🤝 <b style="color:#fdba74">채널 파트너</b> (소방·보안업체)</span>
+      <span style="opacity:.3">·</span>
+      <span>🛡️ <b style="color:#fdba74">보험사 번들</b> (화재보험 패키지)</span>
+      <span style="opacity:.3">·</span>
+      <span>🏛️ <b style="color:#fdba74">공공 입찰</b> (병원·관공서)</span>
+    </div>
+  </div>
+  <div class="slide-note">FireNavi의 비즈니스 모델은 SaaS 월 구독을 중심으로 한 4중 수익 구조입니다. 메인 매출의 62%를 차지하는 SaaS 구독은 예측 가능한 MRR을 제공하고, 디바이스 보급 20%는 초기 도입과 주기적 교체로 안정적 누적 수익을 만듭니다. 컨설팅과 안전 인증 10%는 60% 이상 고마진 전문 서비스이며, 보험 파트너십 8%는 장기 자동 누적되는 패시브 수익원입니다. 고객 확보 비용 2,400만 원 대비 5년 생애 가치 4.8억 원으로 LTV/CAC 비율 20배를 달성하며, 3개월 만에 투자 회수가 가능한 SaaS 우수 지표를 확보하여 투자자 관점에서도 매우 매력적인 단위경제 구조입니다.</div>
+</div>
+
+<!-- ============ 19. FAQ ============ -->
+<div class="slide bg-navy" data-slide="19">
+  <div style="position:relative;z-index:1;width:100%;max-width:1000px">
+    <div class="section-label">Frequently Asked</div>
+    <h2 class="slide-title">자주 묻는 <span class="hero-accent">질문</span></h2>
+    <div class="grid-2" style="margin-top:20px;align-items:start">
+      <div class="card-sm">
+        <div style="font-size:14px;font-weight:700;color:#fdba74;margin-bottom:8px">Q. 도입 기간은 얼마나 걸리나요?</div>
+        <div style="font-size:13px;opacity:.8;line-height:1.65">파일럿(1개층) 약 4주, 전 시설 통합 약 3~4개월. WiFi 인프라가 이미 구축된 경우 50% 단축.</div>
+      </div>
+      <div class="card-sm">
+        <div style="font-size:14px;font-weight:700;color:#fdba74;margin-bottom:8px">Q. 기존 소방 시스템과 충돌하나요?</div>
+        <div style="font-size:13px;opacity:.8;line-height:1.65">아니요. 스프링클러·감지기·방재 시스템과 병렬 작동. 기존 인증·법규를 그대로 유지하면서 AI 레이어만 추가.</div>
+      </div>
+      <div class="card-sm">
+        <div style="font-size:14px;font-weight:700;color:#fdba74;margin-bottom:8px">Q. 승객이 디바이스를 꺼두면?</div>
+        <div style="font-size:13px;opacity:.8;line-height:1.65">키 카드·출입증은 일상 사용 필수품. 별도 앱 설치/온오프 불필요. 분실 시 비콘으로 마지막 위치 확보.</div>
+      </div>
+      <div class="card-sm">
+        <div style="font-size:14px;font-weight:700;color:#fdba74;margin-bottom:8px">Q. 다국적 승객 언어 지원은?</div>
+        <div style="font-size:13px;opacity:.8;line-height:1.65">한·영·중·일·서·아랍어 등 12개국어 음성 + 진동 패턴 + 화살표 그래픽. 글을 못 읽어도 따라갈 수 있는 UX.</div>
+      </div>
+      <div class="card-sm">
+        <div style="font-size:14px;font-weight:700;color:#fdba74;margin-bottom:8px">Q. 보험사와 연계되나요?</div>
+        <div style="font-size:13px;opacity:.8;line-height:1.65">국내 대형 보험사와 보험상품 공동개발 협의 중. FireNavi 탑재 시 화재보험료 평균 18~25% 인하 추진.</div>
+      </div>
+      <div class="card-sm">
+        <div style="font-size:14px;font-weight:700;color:#fdba74;margin-bottom:8px">Q. 데이터는 어디에 저장되나요?</div>
+        <div style="font-size:13px;opacity:.8;line-height:1.65">시설 내 엣지 서버 + 국내 클라우드(IDC) 이중화. 해외 전송 없음. ISO 27001 + 개인정보보호법 완벽 준수.</div>
+      </div>
+    </div>
+  </div>
+  <div class="slide-note">의사결정자들이 가장 자주 제기하는 핵심 질문에 명확한 답을 준비했습니다. 도입 기간은 파일럿 4주, 전 시설 통합 3~4개월이며 기존 WiFi 인프라가 있으면 절반으로 단축됩니다. 기존 소방 시스템과 충돌하지 않고 병렬 작동하며 모든 인증과 법규를 그대로 유지합니다. 디바이스는 별도 앱이 아닌 일상 필수품인 키 카드 형태로 사용자 행동 변화가 필요 없습니다. 12개국어 음성과 진동 패턴, 그래픽 가이드로 글을 못 읽어도 따라갈 수 있으며, 데이터는 국내 IDC에 ISO 27001 기준으로 안전하게 보관됩니다. 도입의 모든 마찰을 최소화한 검증된 답변 패키지입니다.</div>
+</div>
+
+<!-- ============ 20. CTA ============ -->
+<div class="slide bg-hero" data-slide="20">
+  <svg style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;opacity:.4" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="15%" cy="20%" r="1.5" fill="#fdba74"><animate attributeName="opacity" values=".8;.2;.8" dur="3s" repeatCount="indefinite"/></circle>
+    <circle cx="80%" cy="25%" r="2"   fill="#fde68a"><animate attributeName="opacity" values=".7;.2;.7" dur="4s" repeatCount="indefinite"/></circle>
+    <circle cx="85%" cy="70%" r="1.5" fill="#fca5a5"><animate attributeName="opacity" values=".6;.1;.6" dur="3.5s" repeatCount="indefinite"/></circle>
+  </svg>
+  <div style="position:relative;z-index:1;text-align:center;max-width:880px">
+    <div style="font-size:13px;color:#fdba74;font-weight:700;letter-spacing:.15em;margin-bottom:20px">START WITH FIRENAVI</div>
+    <h2 style="font-size:clamp(36px,6vw,72px);font-weight:900;line-height:1.05;margin-bottom:20px">
+      다음 화재가 발생하기 <span class="hero-accent">전에 시작하세요</span>
+    </h2>
+    <p style="font-size:clamp(15px,1.8vw,19px);opacity:.78;line-height:1.7;margin-bottom:36px">
+      4주면 1개층 파일럿 가능. POC 시뮬레이션 + ROI 리포트는 무료.<br>
+      당신의 시설에서 6,000명의 생존을 AI가 설계합니다.
+    </p>
+    <div style="display:flex;gap:14px;flex-wrap:wrap;justify-content:center;margin-bottom:36px">
+      <a href="#" style="background:linear-gradient(135deg,#dc2626,#fb923c);color:white;padding:16px 36px;border-radius:999px;font-size:15px;font-weight:800;text-decoration:none;box-shadow:0 8px 24px rgba(251,146,60,.4);transition:all .2s" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">
+        🔥 파일럿 무료 상담 신청
+      </a>
+      <a href="#" style="background:rgba(255,255,255,.12);color:white;padding:16px 36px;border-radius:999px;font-size:15px;font-weight:700;text-decoration:none;border:1px solid rgba(255,255,255,.25);transition:all .2s" onmouseover="this.style.background='rgba(255,255,255,.2)'" onmouseout="this.style.background='rgba(255,255,255,.12)'">
+        📺 3분 영상 시청
+      </a>
+    </div>
+    <div style="display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin-bottom:24px">
+      <span style="background:rgba(220,38,38,.18);border:1px solid rgba(248,113,113,.35);color:#fca5a5;padding:6px 14px;border-radius:999px;font-size:12px;font-weight:600">🚢 크루즈 운영사</span>
+      <span style="background:rgba(251,146,60,.18);border:1px solid rgba(251,146,60,.35);color:#fdba74;padding:6px 14px;border-radius:999px;font-size:12px;font-weight:600">🏙️ 초고층빌딩 디벨로퍼</span>
+      <span style="background:rgba(167,139,250,.18);border:1px solid rgba(167,139,250,.35);color:#c4b5fd;padding:6px 14px;border-radius:999px;font-size:12px;font-weight:600">🏥 종합병원·요양시설</span>
+      <span style="background:rgba(56,189,248,.18);border:1px solid rgba(56,189,248,.35);color:#67e8f9;padding:6px 14px;border-radius:999px;font-size:12px;font-weight:600">🛡️ 보험사·재보험사</span>
+    </div>
+    <div style="font-size:13px;opacity:.55">
+      contact@firenavi.ai · firenavi.ai · 심재우 (CEO)
+    </div>
+    <div style="margin-top:24px;font-size:11px;opacity:.4;font-style:italic">
+      "길을 안내하는 것이 아니라, 생존을 설계합니다."
+    </div>
+  </div>
+  <div class="slide-note">FireNavi는 다음 화재가 발생하기 전에 행동할 것을 제안합니다. 1개 층 4주 파일럿이 가능하고, POC 시뮬레이션과 ROI 리포트는 모두 무료로 제공됩니다. 크루즈 운영사라면 23억 달러 손실 리스크를 보험처럼 차단할 수 있고, 초고층 빌딩 디벨로퍼는 100층 수직 대피의 한계를 해결할 수 있으며, 종합병원은 자력 대피 불가능한 환자들의 생명을 지킬 수 있고, 보험사는 화재보험 손해율을 획기적으로 낮출 수 있습니다. 길을 안내하는 것이 아니라 생존을 설계하는 FireNavi와 함께 당신의 시설에서 6,000명의 생명을 AI가 책임지게 하십시오. 지금 바로 무료 상담을 신청해 주십시오.</div>
+</div>
+
+</div><!-- /.deck -->
+
+<div class="nav" id="nav">
+  <button class="nav-btn" onclick="move(-1)">‹</button>
+  <div id="dots" style="display:flex;gap:8px"></div>
+  <span style="font-size:12px;color:rgba(255,255,255,.5);min-width:50px;text-align:center" id="counter">1 / 20</span>
+  <button class="nav-btn" onclick="move(1)">›</button>
+</div>
+<div class="kbd-hint" style="position:fixed;top:24px;right:140px;font-size:11px;opacity:.3;z-index:100">← → 키 또는 버튼으로 이동</div>
+
+<script>
+const slides = document.querySelectorAll('.slide');
+const total = slides.length;
+let cur = 0;
+
+const TITLES = [
+  '01 · Hero',
+  '02 · 문제 정의',
+  '03 · 솔루션 (3 AI)',
+  '04 · 핵심 차별점',
+  '05 · 특허 포트폴리오',
+  '06 · 비전 2030',
+  '07 · 시장 규모',
+  '08 · 데이터 플라이휠',
+  '09 · AI 대피 딥다이브',
+  '10 · 타겟 세그먼트',
+  '11 · 페르소나 심화',
+  '12 · 가치 사다리',
+  '13 · 메시지 하우스',
+  '14 · 반박 처리',
+  '15 · 시뮬레이션 결과',
+  '16 · 로드맵',
+  '17 · 팀',
+  '18 · 비즈니스 모델',
+  '19 · FAQ',
+  '20 · CTA'
+];
+
+function buildDots(){
+  const c = document.getElementById('dots');
+  c.innerHTML = '';
+  for(let i=0;i<total;i++){
+    const d = document.createElement('div');
+    d.className = 'nav-dot' + (i===0?' active':'');
+    d.title = TITLES[i] || ('슬라이드 '+(i+1));
+    d.onclick = (()=>{const n=i; return()=>goTo(n);})();
+    c.appendChild(d);
+  }
+}
+
+function updateNav(){
+  document.querySelectorAll('.nav-dot').forEach((d,i)=>d.classList.toggle('active',i===cur));
+  document.getElementById('counter').textContent = (cur+1)+' / '+total;
+}
+
+function move(d){
+  const next = cur + d;
+  if(next<0||next>=total) return;
+  slides[cur].classList.remove('active');
+  slides[cur].classList.add('exit');
+  const old = cur; cur = next;
+  slides[cur].classList.add('active');
+  setTimeout(()=>slides[old].classList.remove('exit'), 600);
+  updateNav();
+}
+
+function goTo(n){
+  if(n===cur||n<0||n>=total) return;
+  move(n-cur);
+}
+
+document.addEventListener('keydown', e=>{
+  if(e.key==='ArrowRight'||e.key==='ArrowDown'||e.key===' ') { e.preventDefault(); move(1); }
+  if(e.key==='ArrowLeft'||e.key==='ArrowUp')   move(-1);
+  if(e.key==='Home') goTo(0);
+  if(e.key==='End')  goTo(total-1);
+});
+
+let tx = 0;
+document.addEventListener('touchstart', e=>tx=e.touches[0].clientX, {passive:true});
+document.addEventListener('touchend',   e=>{
+  const dx = e.changedTouches[0].clientX - tx;
+  if(Math.abs(dx)>50) move(dx<0?1:-1);
+}, {passive:true});
+
+buildDots();
+updateNav();
+
+async function loadScript(src){
+  return new Promise((res,rej)=>{
+    if(document.querySelector(`script[src="${src}"]`)){res();return;}
+    const s=document.createElement('script');
+    s.src=src;s.onload=res;s.onerror=rej;
+    document.head.appendChild(s);
+  });
+}
+
+async function downloadPDF(){
+  const btn=document.getElementById('pdfBtn');
+  const overlay=document.getElementById('pdfOverlay');
+  const status=document.getElementById('pdfStatus');
+  const bar=document.getElementById('pdfBar');
+  const step=document.getElementById('pdfStep');
+
+  btn.disabled=true; btn.textContent='⏳ 생성 중...';
+  overlay.style.display='flex';
+  status.textContent='라이브러리 로드 중...';
+
+  try{
+    await loadScript('https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js');
+    await loadScript('https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js');
+
+    const {jsPDF} = window.jspdf;
+    const W=window.innerWidth, H=window.innerHeight;
+    const pdf=new jsPDF({orientation:'landscape',unit:'px',format:[W,H],hotfixes:['px_scaling']});
+
+    const nav=document.getElementById('nav');
+    const pdfBtnEl=document.getElementById('pdfBtn');
+    const hint=document.querySelector('.kbd-hint');
+    nav.style.display='none'; pdfBtnEl.style.display='none';
+    if(hint) hint.style.display='none';
+
+    for(let i=0;i<total;i++){
+      bar.style.width=Math.round((i/total)*100)+'%';
+      status.textContent=`슬라이드 캡처 중 (${i+1}/${total})`;
+      step.textContent=TITLES[i] || `슬라이드 ${i+1}`;
+
+      slides.forEach((s,idx)=>{
+        s.style.cssText='position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px 64px 150px;opacity:'+(idx===i?'1':'0')+';transform:none;pointer-events:all;overflow-y:auto;';
+      });
+      await new Promise(r=>setTimeout(r,140));
+
+      const canvas=await html2canvas(document.getElementById('deck'),{
+        scale:1.5, useCORS:true, allowTaint:true,
+        backgroundColor:null, width:W, height:H, logging:false
+      });
+
+      if(i>0) pdf.addPage([W,H],'landscape');
+      pdf.addImage(canvas.toDataURL('image/jpeg',0.92),'JPEG',0,0,W,H,undefined,'FAST');
+    }
+
+    bar.style.width='100%';
+    status.textContent='PDF 저장 중...';
+
+    slides.forEach((s,idx)=>{
+      s.style.cssText='';
+      if(idx===cur) s.classList.add('active');
+    });
+    nav.style.display=''; pdfBtnEl.style.display='';
+    if(hint) hint.style.display='';
+
+    await new Promise(r=>setTimeout(r,300));
+    pdf.save('FireNavi-PitchDeck.pdf');
+
+  }catch(e){
+    console.error(e);
+    alert('PDF 생성 오류: '+e.message);
+    slides.forEach((s,idx)=>{s.style.cssText='';if(idx===cur)s.classList.add('active');});
+    document.getElementById('nav').style.display='';
+    document.getElementById('pdfBtn').style.display='';
+  }finally{
+    overlay.style.display='none';
+    btn.disabled=false; btn.textContent='⬇ PDF 저장';
+  }
+}
+</script>
+</body>
+</html>
