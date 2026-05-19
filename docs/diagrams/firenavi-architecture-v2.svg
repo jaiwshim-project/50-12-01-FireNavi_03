@@ -1,0 +1,529 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1700 1700" font-family="Inter, 'Noto Sans KR', system-ui, sans-serif">
+  <defs>
+    <!-- Filters -->
+    <filter id="shadow" x="-5%" y="-5%" width="110%" height="115%">
+      <feDropShadow dx="0" dy="3" stdDeviation="5" flood-color="#0F1E3D" flood-opacity="0.18"/>
+    </filter>
+    <filter id="shadowLg" x="-5%" y="-5%" width="110%" height="115%">
+      <feDropShadow dx="0" dy="6" stdDeviation="10" flood-color="#0F1E3D" flood-opacity="0.25"/>
+    </filter>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="3" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+
+    <!-- Gradients -->
+    <linearGradient id="bgGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#FAF8F3"/>
+      <stop offset="100%" stop-color="#F2EEE5"/>
+    </linearGradient>
+    <linearGradient id="headerGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0F1E3D"/>
+      <stop offset="50%" stop-color="#1E3A8A"/>
+      <stop offset="100%" stop-color="#6D28D9"/>
+    </linearGradient>
+    <linearGradient id="goldGrad" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#92722A"/>
+      <stop offset="50%" stop-color="#C9A961"/>
+      <stop offset="100%" stop-color="#D4AF37"/>
+    </linearGradient>
+    <linearGradient id="fireGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#7F1D1D"/>
+      <stop offset="50%" stop-color="#B91C1C"/>
+      <stop offset="100%" stop-color="#C2410C"/>
+    </linearGradient>
+    <linearGradient id="moatGrad" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#15803D"/>
+      <stop offset="100%" stop-color="#10B981"/>
+    </linearGradient>
+    <linearGradient id="reasonGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#7F1D1D"/>
+      <stop offset="100%" stop-color="#4C1D95"/>
+    </linearGradient>
+    <radialGradient id="centerGrad" cx="50%" cy="50%">
+      <stop offset="0%" stop-color="#FDE68A" stop-opacity="1"/>
+      <stop offset="50%" stop-color="#C9A961" stop-opacity="0.8"/>
+      <stop offset="100%" stop-color="#92722A" stop-opacity="0"/>
+    </radialGradient>
+
+    <!-- Arrow markers -->
+    <marker id="arrGold" markerWidth="12" markerHeight="10" refX="11" refY="5" orient="auto">
+      <polygon points="0,0 12,5 0,10" fill="#C9A961"/>
+    </marker>
+    <marker id="arrFire" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto">
+      <polygon points="0,0 10,4 0,8" fill="#B91C1C"/>
+    </marker>
+    <marker id="arrGreen" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto">
+      <polygon points="0,0 10,4 0,8" fill="#15803D"/>
+    </marker>
+  </defs>
+
+  <!-- BACKGROUND -->
+  <rect width="1700" height="1700" fill="url(#bgGrad)"/>
+
+  <!-- ============== HEADER ============== -->
+  <rect x="20" y="20" width="1660" height="120" rx="20" fill="url(#headerGrad)" filter="url(#shadowLg)"/>
+  <circle cx="1580" cy="65" r="55" fill="#C9A961" opacity="0.25"/>
+  <circle cx="120" cy="100" r="42" fill="#B91C1C" opacity="0.25"/>
+
+  <text x="850" y="55" text-anchor="middle" font-size="13" font-weight="800" letter-spacing="3" fill="#FDE68A">FIRENAVI · COMPETITIVE ARCHITECTURE v2.0 · 경쟁 우위 구조 분석</text>
+  <text x="850" y="92" text-anchor="middle" font-size="28" font-weight="900" fill="#FFFFFF">왜 글로벌 경쟁사가 놓쳤는가 — 7가지 구조적 이유 + 4중 해자</text>
+  <text x="850" y="120" text-anchor="middle" font-size="14" fill="#CBD5E1" font-style="italic">"못 본 게 아니라 구조적으로 못 볼 수밖에 없었다" — Innovator's Dilemma in Fire Safety</text>
+
+  <!-- ============== SECTION 1: 7 REASONS COMPETITORS MISSED ============== -->
+  <rect x="20" y="170" width="1660" height="520" rx="18" fill="#FFFFFF" stroke="#E5E0D3" stroke-width="1" filter="url(#shadow)"/>
+  <rect x="20" y="170" width="1660" height="42" rx="18" fill="url(#reasonGrad)"/>
+  <rect x="20" y="190" width="1660" height="22" fill="url(#reasonGrad)"/>
+  <text x="850" y="198" text-anchor="middle" font-size="14" font-weight="800" letter-spacing="2" fill="#FDE68A">SECTION 1 · WHY COMPETITORS MISSED · 7가지 구조적 이유</text>
+
+  <!-- Row 1: 4 reasons -->
+  <!-- R1: Innovator's Dilemma -->
+  <g transform="translate(50, 245)">
+    <rect width="395" height="200" rx="14" fill="#FEF2F2" stroke="#FCA5A5" stroke-width="2" filter="url(#shadow)"/>
+    <rect width="395" height="44" rx="14" fill="url(#fireGrad)"/>
+    <rect y="30" width="395" height="14" fill="url(#fireGrad)"/>
+    <text x="20" y="28" font-size="20" fill="#FFFFFF">⚖️</text>
+    <text x="55" y="22" font-size="9" font-weight="800" letter-spacing="1.5" fill="#FDE68A">REASON 01 · STRUCTURAL</text>
+    <text x="55" y="38" font-size="14" font-weight="900" fill="#FFFFFF">혁신가의 딜레마 (Christensen)</text>
+
+    <text x="20" y="74" font-size="11" font-weight="700" fill="#7F1D1D">기존 매출 보호 우선 → 파괴적 혁신 놓침</text>
+    <g font-size="10.5" fill="#374151">
+      <text x="20" y="98">• Johnson Controls ($66B) — HVAC·하드웨어 우선</text>
+      <text x="20" y="116">• Honeywell ($130B) — 감지기 매출 보호</text>
+      <text x="20" y="134">• Siemens (€145B) — 100년 BMS 시스템 사수</text>
+      <text x="20" y="152">• AI 소프트웨어 = 부수 매출 → 인재·예산 미배정</text>
+    </g>
+    <rect x="20" y="166" width="355" height="22" rx="8" fill="rgba(127,29,29,0.1)"/>
+    <text x="30" y="181" font-size="10" font-style="italic" fill="#7F1D1D">"위대한 기업은 우수 고객 만족하다 파괴적 진입자에게 잠식"</text>
+  </g>
+
+  <!-- R2: Silo Industry -->
+  <g transform="translate(465, 245)">
+    <rect width="395" height="200" rx="14" fill="#FEF2F2" stroke="#FCA5A5" stroke-width="2" filter="url(#shadow)"/>
+    <rect width="395" height="44" rx="14" fill="url(#fireGrad)"/>
+    <rect y="30" width="395" height="14" fill="url(#fireGrad)"/>
+    <text x="20" y="28" font-size="20" fill="#FFFFFF">🏛️</text>
+    <text x="55" y="22" font-size="9" font-weight="800" letter-spacing="1.5" fill="#FDE68A">REASON 02 · ORGANIZATIONAL</text>
+    <text x="55" y="38" font-size="14" font-weight="900" fill="#FFFFFF">사일로화된 학계·산업</text>
+
+    <text x="20" y="74" font-size="11" font-weight="700" fill="#7F1D1D">7개 분야 서로 거의 만나지 않음</text>
+    <g font-size="10.5" fill="#374151">
+      <text x="20" y="98">• CFD (NIST·VTT) · 강화학습 (NeurIPS)</text>
+      <text x="20" y="116">• 군중 동역학 (Helbing) · RTLS (Cisco)</text>
+      <text x="20" y="134">• 화재 표준 (NFPA·IMO) · 노인병학 (CO LC50)</text>
+      <text x="20" y="152">• SPIN Selling (Huthwaite)</text>
+    </g>
+    <rect x="20" y="166" width="355" height="22" rx="8" fill="rgba(127,29,29,0.1)"/>
+    <text x="30" y="181" font-size="10" font-style="italic" fill="#7F1D1D">"각 사일로 전문가는 자기 학회·자기 논문만 본다"</text>
+  </g>
+
+  <!-- R3: Hardware Revenue -->
+  <g transform="translate(880, 245)">
+    <rect width="395" height="200" rx="14" fill="#FEF2F2" stroke="#FCA5A5" stroke-width="2" filter="url(#shadow)"/>
+    <rect width="395" height="44" rx="14" fill="url(#fireGrad)"/>
+    <rect y="30" width="395" height="14" fill="url(#fireGrad)"/>
+    <text x="20" y="28" font-size="20" fill="#FFFFFF">💰</text>
+    <text x="55" y="22" font-size="9" font-weight="800" letter-spacing="1.5" fill="#FDE68A">REASON 03 · BUSINESS MODEL</text>
+    <text x="55" y="38" font-size="14" font-weight="900" fill="#FFFFFF">하드웨어 중심 수익 모델</text>
+
+    <text x="20" y="74" font-size="11" font-weight="700" fill="#7F1D1D">소프트웨어 혁신 인센티브 부재</text>
+    <g font-size="10.5" fill="#374151">
+      <text x="20" y="98">• 감지기 1대 $200~500 마진 (개당 매출)</text>
+      <text x="20" y="116">• 스프링클러 시공 $50K~500K</text>
+      <text x="20" y="134">• SaaS 월 $980만+ → 영업 조직 거부</text>
+      <text x="20" y="152">• "하드 더 팔아야 보너스 나옴" 면역 반응</text>
+    </g>
+    <rect x="20" y="166" width="355" height="22" rx="8" fill="rgba(127,29,29,0.1)"/>
+    <text x="30" y="181" font-size="10" font-style="italic" fill="#7F1D1D">"100년 된 영업 조직의 구조적 반발"</text>
+  </g>
+
+  <!-- R4: Accident-driven Sales -->
+  <g transform="translate(1295, 245)">
+    <rect width="385" height="200" rx="14" fill="#FEF2F2" stroke="#FCA5A5" stroke-width="2" filter="url(#shadow)"/>
+    <rect width="385" height="44" rx="14" fill="url(#fireGrad)"/>
+    <rect y="30" width="385" height="14" fill="url(#fireGrad)"/>
+    <text x="20" y="28" font-size="20" fill="#FFFFFF">🔄</text>
+    <text x="55" y="22" font-size="9" font-weight="800" letter-spacing="1.5" fill="#FDE68A">REASON 04 · INCENTIVE</text>
+    <text x="55" y="38" font-size="14" font-weight="900" fill="#FFFFFF">사고 의존적 영업 사이클</text>
+
+    <text x="20" y="74" font-size="11" font-weight="700" fill="#7F1D1D">"예방"의 패러독스 — 자기 시장 죽이기</text>
+    <g font-size="10.5" fill="#374151">
+      <text x="20" y="98">• 코스타 콩코르디아(2012) → IMO 강화 → 매출 ↑</text>
+      <text x="20" y="116">• 그렌펠 타워(2017) → 영국 건축법 → 패널 시장 ↑</text>
+      <text x="20" y="134">• 사고 ↑ → 규제 ↑ → 투자 ↑ → 매출 ↑</text>
+      <text x="20" y="152">• AI 예방 = 자기 매출 사이클 파괴</text>
+    </g>
+    <rect x="20" y="166" width="345" height="22" rx="8" fill="rgba(127,29,29,0.1)"/>
+    <text x="30" y="181" font-size="10" font-style="italic" fill="#7F1D1D">"화재 없으면 매출 없다"는 본질적 동기 결여</text>
+  </g>
+
+  <!-- Row 2: 3 reasons -->
+  <!-- R5: NIH + Conservatism -->
+  <g transform="translate(50, 465)">
+    <rect width="395" height="200" rx="14" fill="#FEF2F2" stroke="#FCA5A5" stroke-width="2" filter="url(#shadow)"/>
+    <rect width="395" height="44" rx="14" fill="url(#fireGrad)"/>
+    <rect y="30" width="395" height="14" fill="url(#fireGrad)"/>
+    <text x="20" y="28" font-size="20" fill="#FFFFFF">🛡️</text>
+    <text x="55" y="22" font-size="9" font-weight="800" letter-spacing="1.5" fill="#FDE68A">REASON 05 · CULTURAL</text>
+    <text x="55" y="38" font-size="14" font-weight="900" fill="#FFFFFF">NIH 증후군 + 130년 보수성</text>
+
+    <text x="20" y="74" font-size="11" font-weight="700" fill="#7F1D1D">"우리가 정한 표준이 옳다" 문화</text>
+    <g font-size="10.5" fill="#374151">
+      <text x="20" y="98">• NFPA 표준 1896년 설립 (130년)</text>
+      <text x="20" y="116">• IMO SOLAS 1914년 타이타닉 후 제정</text>
+      <text x="20" y="134">• "α=2.0? 어떤 논문에 있나?"</text>
+      <text x="20" y="152">• "100ms? FDS는 5분 걸리는데?"</text>
+    </g>
+    <rect x="20" y="166" width="355" height="22" rx="8" fill="rgba(127,29,29,0.1)"/>
+    <text x="30" y="181" font-size="10" font-style="italic" fill="#7F1D1D">"검증 집착이 혁신을 막는다"</text>
+  </g>
+
+  <!-- R6: Timing Gap -->
+  <g transform="translate(465, 465)">
+    <rect width="395" height="200" rx="14" fill="#FEF2F2" stroke="#FCA5A5" stroke-width="2" filter="url(#shadow)"/>
+    <rect width="395" height="44" rx="14" fill="url(#fireGrad)"/>
+    <rect y="30" width="395" height="14" fill="url(#fireGrad)"/>
+    <text x="20" y="28" font-size="20" fill="#FFFFFF">⏰</text>
+    <text x="55" y="22" font-size="9" font-weight="800" letter-spacing="1.5" fill="#FDE68A">REASON 06 · TIMING</text>
+    <text x="55" y="38" font-size="14" font-weight="900" fill="#FFFFFF">타이밍 갭 — 2024년 윈도우</text>
+
+    <text x="20" y="74" font-size="11" font-weight="700" fill="#7F1D1D">5개 기술 동시 성숙은 매우 최근</text>
+    <g font-size="10.5" fill="#374151">
+      <text x="20" y="98">• LSTM 2014~2016 (Google·DeepMind)</text>
+      <text x="20" y="116">• WiFi RTLS 2~3m 2018~2020 (Cisco)</text>
+      <text x="20" y="134">• GPU CUDA A100 2019~2022 (NVIDIA)</text>
+      <text x="20" y="152">• BIM 2020~2023 · 5G/Edge 2022~2024</text>
+    </g>
+    <rect x="20" y="166" width="355" height="22" rx="8" fill="rgba(127,29,29,0.1)"/>
+    <text x="30" y="181" font-size="10" font-style="italic" fill="#7F1D1D">"5가지가 모두 모인 윈도우는 단 한 번뿐"</text>
+  </g>
+
+  <!-- R7: Human Capital -->
+  <g transform="translate(880, 465)">
+    <rect width="395" height="200" rx="14" fill="#FEF2F2" stroke="#FCA5A5" stroke-width="2" filter="url(#shadow)"/>
+    <rect width="395" height="44" rx="14" fill="url(#fireGrad)"/>
+    <rect y="30" width="395" height="14" fill="url(#fireGrad)"/>
+    <text x="20" y="28" font-size="20" fill="#FFFFFF">🧬</text>
+    <text x="55" y="22" font-size="9" font-weight="800" letter-spacing="1.5" fill="#FDE68A">REASON 07 · HUMAN CAPITAL</text>
+    <text x="55" y="38" font-size="14" font-weight="900" fill="#FFFFFF">5분야 융합 인재 한 자릿수</text>
+
+    <text x="20" y="74" font-size="11" font-weight="700" fill="#7F1D1D">한국에 5가지 모두 가진 사람 = 거의 없음</text>
+    <g font-size="10.5" fill="#374151">
+      <text x="20" y="98">• 기계공학 CAE 석사 + 5년 실무</text>
+      <text x="20" y="116">• 글로벌 엔지니어링 8년 (GE Plastics)</text>
+      <text x="20" y="134">• AI/RL 실무 + SPIN Selling 20년</text>
+      <text x="20" y="152">• 51권 저술 (개념 압축력)</text>
+    </g>
+    <rect x="20" y="166" width="355" height="22" rx="8" fill="rgba(127,29,29,0.1)"/>
+    <text x="30" y="181" font-size="10" font-style="italic" fill="#7F1D1D">"교차로에 서 있던 사람 = 한국 한 자릿수"</text>
+  </g>
+
+  <!-- Center Insight Box -->
+  <g transform="translate(1295, 465)">
+    <rect width="385" height="200" rx="14" fill="url(#headerGrad)" filter="url(#shadowLg)"/>
+    <circle cx="320" cy="50" r="40" fill="url(#centerGrad)" opacity="0.4"/>
+    <text x="20" y="32" font-size="10" font-weight="800" letter-spacing="2" fill="#FDE68A">🎯 CORE INSIGHT</text>
+    <text x="20" y="60" font-size="16" font-weight="900" fill="#FFFFFF">"못 본 게 아니라</text>
+    <text x="20" y="80" font-size="16" font-weight="900" fill="#FDE68A">구조적으로 못 봤다"</text>
+    <line x1="20" y1="92" x2="365" y2="92" stroke="rgba(201,169,97,0.4)" stroke-width="1"/>
+    <text x="20" y="112" font-size="10.5" fill="#CBD5E1">7가지 이유가 동시에 작용 →</text>
+    <text x="20" y="128" font-size="10.5" fill="#CBD5E1">경쟁사가 발견할 확률 = 0에 가까움</text>
+    <text x="20" y="148" font-size="11" font-weight="700" fill="#FDE68A">First-Mover Window:</text>
+    <text x="20" y="164" font-size="14" font-weight="900" fill="#FFFFFF">3~5년 우위 확보 가능</text>
+    <text x="20" y="184" font-size="10" font-style="italic" fill="#FDE68A">"경쟁사 구조가 바뀌어야 따라잡음"</text>
+  </g>
+
+  <!-- ============== SECTION 2: FOUR MOATS ============== -->
+  <rect x="20" y="720" width="1660" height="320" rx="18" fill="#FFFFFF" stroke="#E5E0D3" stroke-width="1" filter="url(#shadow)"/>
+  <rect x="20" y="720" width="1660" height="42" rx="18" fill="url(#moatGrad)"/>
+  <rect x="20" y="740" width="1660" height="22" fill="url(#moatGrad)"/>
+  <text x="850" y="748" text-anchor="middle" font-size="14" font-weight="800" letter-spacing="2" fill="#FFFFFF">SECTION 2 · FOUR DEFENSIVE MOATS · FireNavi 4중 해자</text>
+
+  <!-- Moat 1: Integrated System -->
+  <g transform="translate(50, 795)">
+    <rect width="395" height="220" rx="14" fill="#F0FDF4" stroke="#15803D" stroke-width="2" filter="url(#shadow)"/>
+    <rect width="395" height="40" rx="14" fill="url(#moatGrad)"/>
+    <rect y="26" width="395" height="14" fill="url(#moatGrad)"/>
+    <text x="20" y="28" font-size="15" font-weight="900" fill="#FFFFFF">🥇 MOAT 01 · 통합 시스템 청구항</text>
+
+    <text x="20" y="68" font-size="11" font-weight="700" fill="#15803D">3 AI 엔진 + 100ms + 6,000명 결합</text>
+
+    <rect x="20" y="80" width="355" height="46" rx="8" fill="#FFFFFF" stroke="#86EFAC" stroke-width="1"/>
+    <text x="32" y="98" font-size="11" font-weight="700" fill="#15803D">청구 결합 요소:</text>
+    <text x="32" y="114" font-size="10" fill="#374151">Prediction + Behavior + Decision · 100ms 동기</text>
+    <text x="32" y="124" font-size="10" fill="#374151">+ Lock-free 이중 버퍼 + 시간 스탬프 검증</text>
+
+    <text x="20" y="148" font-size="11" font-weight="700" fill="#15803D">방어 강도</text>
+    <g font-size="10.5" fill="#374151">
+      <text x="20" y="166">• 단일 선행 문헌 동일 개시 0건</text>
+      <text x="20" y="184">• 6개 결합 중 3개 핵심 신규</text>
+      <text x="20" y="202">• Anticipation Doctrine 충족 ✓</text>
+    </g>
+  </g>
+
+  <!-- Moat 2: Quantitative Parameters -->
+  <g transform="translate(465, 795)">
+    <rect width="395" height="220" rx="14" fill="#EFF6FF" stroke="#1E40AF" stroke-width="2" filter="url(#shadow)"/>
+    <rect width="395" height="40" rx="14" fill="url(#headerGrad)"/>
+    <rect y="26" width="395" height="14" fill="url(#headerGrad)"/>
+    <text x="20" y="28" font-size="15" font-weight="900" fill="#FFFFFF">🥈 MOAT 02 · 정량 파라미터</text>
+
+    <text x="20" y="68" font-size="11" font-weight="700" fill="#1E40AF">학술 논문·기존 특허 미명시</text>
+
+    <rect x="20" y="80" width="355" height="46" rx="8" fill="#FFFFFF" stroke="#93C5FD" stroke-width="1"/>
+    <text x="32" y="98" font-size="11" font-weight="700" fill="#1E40AF">정량값 결합:</text>
+    <text x="32" y="114" font-size="10" font-family="JetBrains Mono, monospace" fill="#1E40AF">α=2.0 · Eq.20-22 · 100ms</text>
+    <text x="32" y="124" font-size="10" font-family="JetBrains Mono, monospace" fill="#1E40AF">5m · Penalty 50.0 · 99% CI</text>
+
+    <text x="20" y="148" font-size="11" font-weight="700" fill="#1E40AF">진보성 근거</text>
+    <g font-size="10.5" fill="#374151">
+      <text x="20" y="166">• 통상 기술자 시행착오 없이 도출 불가</text>
+      <text x="20" y="184">• CO LC50 등 의학 근거 결합</text>
+      <text x="20" y="202">• Non-Obviousness Doctrine 충족 ✓</text>
+    </g>
+  </g>
+
+  <!-- Moat 3: Interdisciplinary -->
+  <g transform="translate(880, 795)">
+    <rect width="395" height="220" rx="14" fill="#F5F3FF" stroke="#6D28D9" stroke-width="2" filter="url(#shadow)"/>
+    <rect width="395" height="40" rx="14" fill="url(#headerGrad)"/>
+    <rect y="26" width="395" height="14" fill="url(#headerGrad)"/>
+    <text x="20" y="28" font-size="15" font-weight="900" fill="#FFFFFF">🥉 MOAT 03 · 학제 간 결합</text>
+
+    <text x="20" y="68" font-size="11" font-weight="700" fill="#6D28D9">단일 분야 지식으로 도출 불가</text>
+
+    <rect x="20" y="80" width="355" height="46" rx="8" fill="#FFFFFF" stroke="#C4B5FD" stroke-width="1"/>
+    <text x="32" y="98" font-size="11" font-weight="700" fill="#6D28D9">3분야 결합 예시 (P-03):</text>
+    <text x="32" y="114" font-size="10" fill="#374151">의학(CO LC50) + 알고리즘(α 가중)</text>
+    <text x="32" y="124" font-size="10" fill="#374151">+ 시스템(보호자 5m 매칭)</text>
+
+    <text x="20" y="148" font-size="11" font-weight="700" fill="#6D28D9">차별 강도</text>
+    <g font-size="10.5" fill="#374151">
+      <text x="20" y="166">• P-06: 물리학 + GPU + 화재 도메인</text>
+      <text x="20" y="184">• P-01: AI + 분산시스템 + 안전</text>
+      <text x="20" y="202">• Medici Effect — 사일로 교차로 ✓</text>
+    </g>
+  </g>
+
+  <!-- Moat 4: Data Flywheel -->
+  <g transform="translate(1295, 795)">
+    <rect width="385" height="220" rx="14" fill="#FFFBEB" stroke="#92722A" stroke-width="2" filter="url(#shadow)"/>
+    <rect width="385" height="40" rx="14" fill="url(#goldGrad)"/>
+    <rect y="26" width="385" height="14" fill="url(#goldGrad)"/>
+    <text x="20" y="28" font-size="15" font-weight="900" fill="#FFFFFF">🏅 MOAT 04 · 데이터 플라이휠</text>
+
+    <text x="20" y="68" font-size="11" font-weight="700" fill="#92722A">운영할수록 정확도 ↑ (자가 진화)</text>
+
+    <rect x="20" y="80" width="345" height="46" rx="8" fill="#FFFFFF" stroke="#FDE68A" stroke-width="1"/>
+    <text x="32" y="98" font-size="11" font-weight="700" fill="#92722A">자가 진화 메커니즘:</text>
+    <text x="32" y="114" font-size="10" fill="#374151">매 사건 → Slow Path → LSTM Dense 보정</text>
+    <text x="32" y="124" font-size="10" fill="#374151">+ Loss 110% 초과 시 자동 롤백</text>
+
+    <text x="20" y="148" font-size="11" font-weight="700" fill="#92722A">시간 ↑ → 격차 ↑</text>
+    <g font-size="10.5" fill="#374151">
+      <text x="20" y="166">• 운영 데이터 = 모방 불가 자산</text>
+      <text x="20" y="184">• 시설별 맞춤 진화 (개별 학습)</text>
+      <text x="20" y="202">• 후발 추격 시 격차 더 벌어짐 ✓</text>
+    </g>
+  </g>
+
+  <!-- ============== SECTION 3: COMPETITIVE COMPARISON ============== -->
+  <rect x="20" y="1070" width="1660" height="420" rx="18" fill="#FFFFFF" stroke="#E5E0D3" stroke-width="1" filter="url(#shadow)"/>
+  <rect x="20" y="1070" width="1660" height="42" rx="18" fill="url(#headerGrad)"/>
+  <rect x="20" y="1090" width="1660" height="22" fill="url(#headerGrad)"/>
+  <text x="850" y="1098" text-anchor="middle" font-size="14" font-weight="800" letter-spacing="2" fill="#FDE68A">SECTION 3 · COMPETITIVE MATRIX · FireNavi vs 글로벌 경쟁사</text>
+
+  <!-- Comparison Table -->
+  <g transform="translate(50, 1140)">
+    <!-- Header row -->
+    <rect width="1600" height="36" rx="8" fill="#0F1E3D"/>
+    <text x="20" y="23" font-size="11" font-weight="700" fill="#FDE68A">차별 기준 / 시스템</text>
+    <text x="280" y="23" text-anchor="middle" font-size="11" font-weight="800" fill="#FDE68A">FireNavi</text>
+    <text x="450" y="23" text-anchor="middle" font-size="11" font-weight="700" fill="#FDE68A">Pathfinder</text>
+    <text x="620" y="23" text-anchor="middle" font-size="11" font-weight="700" fill="#FDE68A">FDS+Evac</text>
+    <text x="790" y="23" text-anchor="middle" font-size="11" font-weight="700" fill="#FDE68A">Honeywell</text>
+    <text x="960" y="23" text-anchor="middle" font-size="11" font-weight="700" fill="#FDE68A">Siemens</text>
+    <text x="1130" y="23" text-anchor="middle" font-size="11" font-weight="700" fill="#FDE68A">JC</text>
+    <text x="1300" y="23" text-anchor="middle" font-size="11" font-weight="700" fill="#FDE68A">학술 트윈</text>
+    <text x="1480" y="23" text-anchor="middle" font-size="11" font-weight="700" fill="#FDE68A">USPTO 12530731</text>
+
+    <!-- Data rows -->
+    <!-- Row 1 -->
+    <g transform="translate(0, 40)">
+      <rect width="1600" height="30" fill="#FAF8F3"/>
+      <text x="20" y="20" font-size="10.5" fill="#1F2937">🧠 3 AI 엔진 100ms 동기</text>
+      <text x="280" y="20" text-anchor="middle" font-size="13" font-weight="900" fill="#15803D">✓</text>
+      <text x="450" y="20" text-anchor="middle" font-size="13" font-weight="900" fill="#B91C1C">✗</text>
+      <text x="620" y="20" text-anchor="middle" font-size="13" font-weight="900" fill="#B91C1C">✗</text>
+      <text x="790" y="20" text-anchor="middle" font-size="13" font-weight="900" fill="#C2410C">△</text>
+      <text x="960" y="20" text-anchor="middle" font-size="13" font-weight="900" fill="#C2410C">△</text>
+      <text x="1130" y="20" text-anchor="middle" font-size="13" font-weight="900" fill="#C2410C">△</text>
+      <text x="1300" y="20" text-anchor="middle" font-size="13" font-weight="900" fill="#C2410C">△</text>
+      <text x="1480" y="20" text-anchor="middle" font-size="13" font-weight="900" fill="#C2410C">△</text>
+    </g>
+    <!-- Row 2 -->
+    <g transform="translate(0, 70)">
+      <rect width="1600" height="30" fill="#FFFFFF"/>
+      <text x="20" y="20" font-size="10.5" fill="#1F2937">⚡ 응답 속도 (실시간)</text>
+      <text x="280" y="20" text-anchor="middle" font-size="11" font-weight="700" fill="#15803D">100ms</text>
+      <text x="450" y="20" text-anchor="middle" font-size="11" fill="#6B7280">사후</text>
+      <text x="620" y="20" text-anchor="middle" font-size="11" fill="#6B7280">사후</text>
+      <text x="790" y="20" text-anchor="middle" font-size="11" fill="#C2410C">~수초</text>
+      <text x="960" y="20" text-anchor="middle" font-size="11" fill="#C2410C">~수초</text>
+      <text x="1130" y="20" text-anchor="middle" font-size="11" fill="#C2410C">~수초</text>
+      <text x="1300" y="20" text-anchor="middle" font-size="11" fill="#C2410C">2초</text>
+      <text x="1480" y="20" text-anchor="middle" font-size="11" fill="#C2410C">~수초</text>
+    </g>
+    <!-- Row 3 -->
+    <g transform="translate(0, 100)">
+      <rect width="1600" height="30" fill="#FAF8F3"/>
+      <text x="20" y="20" font-size="10.5" fill="#1F2937">👥 6,000명 동시 처리</text>
+      <text x="280" y="20" text-anchor="middle" font-size="13" font-weight="900" fill="#15803D">✓</text>
+      <text x="450" y="20" text-anchor="middle" font-size="13" fill="#C2410C">△</text>
+      <text x="620" y="20" text-anchor="middle" font-size="13" fill="#C2410C">△</text>
+      <text x="790" y="20" text-anchor="middle" font-size="13" fill="#B91C1C">✗</text>
+      <text x="960" y="20" text-anchor="middle" font-size="13" fill="#B91C1C">✗</text>
+      <text x="1130" y="20" text-anchor="middle" font-size="13" fill="#B91C1C">✗</text>
+      <text x="1300" y="20" text-anchor="middle" font-size="13" fill="#C2410C">△</text>
+      <text x="1480" y="20" text-anchor="middle" font-size="13" fill="#C2410C">△</text>
+    </g>
+    <!-- Row 4 -->
+    <g transform="translate(0, 130)">
+      <rect width="1600" height="30" fill="#FFFFFF"/>
+      <text x="20" y="20" font-size="10.5" fill="#1F2937">🔥 다중 화원 5+ 동시</text>
+      <text x="280" y="20" text-anchor="middle" font-size="13" font-weight="900" fill="#15803D">✓</text>
+      <text x="450" y="20" text-anchor="middle" font-size="13" font-weight="900" fill="#B91C1C">✗</text>
+      <text x="620" y="20" text-anchor="middle" font-size="13" font-weight="900" fill="#C2410C">△</text>
+      <text x="790" y="20" text-anchor="middle" font-size="13" font-weight="900" fill="#B91C1C">✗</text>
+      <text x="960" y="20" text-anchor="middle" font-size="13" font-weight="900" fill="#B91C1C">✗</text>
+      <text x="1130" y="20" text-anchor="middle" font-size="13" font-weight="900" fill="#B91C1C">✗</text>
+      <text x="1300" y="20" text-anchor="middle" font-size="13" font-weight="900" fill="#B91C1C">✗</text>
+      <text x="1480" y="20" text-anchor="middle" font-size="13" font-weight="900" fill="#B91C1C">✗</text>
+    </g>
+    <!-- Row 5 -->
+    <g transform="translate(0, 160)">
+      <rect width="1600" height="30" fill="#FAF8F3"/>
+      <text x="20" y="20" font-size="10.5" fill="#1F2937">🛡️ α=2.0 취약 마진 + Eq.20-22</text>
+      <text x="280" y="20" text-anchor="middle" font-size="13" font-weight="900" fill="#15803D">✓</text>
+      <text x="450" y="20" text-anchor="middle" font-size="13" fill="#C2410C">△</text>
+      <text x="620" y="20" text-anchor="middle" font-size="13" fill="#C2410C">△</text>
+      <text x="790" y="20" text-anchor="middle" font-size="13" font-weight="900" fill="#B91C1C">✗</text>
+      <text x="960" y="20" text-anchor="middle" font-size="13" font-weight="900" fill="#B91C1C">✗</text>
+      <text x="1130" y="20" text-anchor="middle" font-size="13" font-weight="900" fill="#B91C1C">✗</text>
+      <text x="1300" y="20" text-anchor="middle" font-size="13" fill="#C2410C">△</text>
+      <text x="1480" y="20" text-anchor="middle" font-size="13" font-weight="900" fill="#B91C1C">✗</text>
+    </g>
+    <!-- Row 6 -->
+    <g transform="translate(0, 190)">
+      <rect width="1600" height="30" fill="#FFFFFF"/>
+      <text x="20" y="20" font-size="10.5" fill="#1F2937">🤝 보호자 5m 동기화</text>
+      <text x="280" y="20" text-anchor="middle" font-size="13" font-weight="900" fill="#15803D">✓</text>
+      <text x="450" y="20" text-anchor="middle" font-size="13" font-weight="900" fill="#B91C1C">✗</text>
+      <text x="620" y="20" text-anchor="middle" font-size="13" font-weight="900" fill="#B91C1C">✗</text>
+      <text x="790" y="20" text-anchor="middle" font-size="13" font-weight="900" fill="#B91C1C">✗</text>
+      <text x="960" y="20" text-anchor="middle" font-size="13" font-weight="900" fill="#B91C1C">✗</text>
+      <text x="1130" y="20" text-anchor="middle" font-size="13" font-weight="900" fill="#B91C1C">✗</text>
+      <text x="1300" y="20" text-anchor="middle" font-size="13" font-weight="900" fill="#B91C1C">✗</text>
+      <text x="1480" y="20" text-anchor="middle" font-size="13" font-weight="900" fill="#B91C1C">✗</text>
+    </g>
+    <!-- Row 7 -->
+    <g transform="translate(0, 220)">
+      <rect width="1600" height="30" fill="#FAF8F3"/>
+      <text x="20" y="20" font-size="10.5" fill="#1F2937">🌐 3단 폴백 (Cloud-Edge-Device)</text>
+      <text x="280" y="20" text-anchor="middle" font-size="13" font-weight="900" fill="#15803D">✓</text>
+      <text x="450" y="20" text-anchor="middle" font-size="13" font-weight="900" fill="#B91C1C">✗</text>
+      <text x="620" y="20" text-anchor="middle" font-size="13" font-weight="900" fill="#B91C1C">✗</text>
+      <text x="790" y="20" text-anchor="middle" font-size="13" fill="#C2410C">△</text>
+      <text x="960" y="20" text-anchor="middle" font-size="13" fill="#C2410C">△</text>
+      <text x="1130" y="20" text-anchor="middle" font-size="13" fill="#C2410C">△</text>
+      <text x="1300" y="20" text-anchor="middle" font-size="13" fill="#C2410C">△</text>
+      <text x="1480" y="20" text-anchor="middle" font-size="13" font-weight="900" fill="#C2410C">Cloud</text>
+    </g>
+    <!-- Row 8 -->
+    <g transform="translate(0, 250)">
+      <rect width="1600" height="30" fill="#FFFFFF"/>
+      <text x="20" y="20" font-size="10.5" fill="#1F2937">📜 자동 인증 (IMO/NFPA MC 99%)</text>
+      <text x="280" y="20" text-anchor="middle" font-size="13" font-weight="900" fill="#15803D">✓</text>
+      <text x="450" y="20" text-anchor="middle" font-size="13" font-weight="900" fill="#B91C1C">✗</text>
+      <text x="620" y="20" text-anchor="middle" font-size="13" font-weight="900" fill="#B91C1C">✗</text>
+      <text x="790" y="20" text-anchor="middle" font-size="13" font-weight="900" fill="#B91C1C">✗</text>
+      <text x="960" y="20" text-anchor="middle" font-size="13" font-weight="900" fill="#B91C1C">✗</text>
+      <text x="1130" y="20" text-anchor="middle" font-size="13" font-weight="900" fill="#B91C1C">✗</text>
+      <text x="1300" y="20" text-anchor="middle" font-size="13" font-weight="900" fill="#B91C1C">✗</text>
+      <text x="1480" y="20" text-anchor="middle" font-size="13" font-weight="900" fill="#B91C1C">✗</text>
+    </g>
+    <!-- Row 9 -->
+    <g transform="translate(0, 280)">
+      <rect width="1600" height="30" fill="#FAF8F3"/>
+      <text x="20" y="20" font-size="10.5" fill="#1F2937">🔄 연속 학습 + 자동 롤백</text>
+      <text x="280" y="20" text-anchor="middle" font-size="13" font-weight="900" fill="#15803D">✓</text>
+      <text x="450" y="20" text-anchor="middle" font-size="13" font-weight="900" fill="#B91C1C">✗</text>
+      <text x="620" y="20" text-anchor="middle" font-size="13" font-weight="900" fill="#B91C1C">✗</text>
+      <text x="790" y="20" text-anchor="middle" font-size="13" font-weight="900" fill="#B91C1C">✗</text>
+      <text x="960" y="20" text-anchor="middle" font-size="13" font-weight="900" fill="#B91C1C">✗</text>
+      <text x="1130" y="20" text-anchor="middle" font-size="13" font-weight="900" fill="#B91C1C">✗</text>
+      <text x="1300" y="20" text-anchor="middle" font-size="13" font-weight="900" fill="#B91C1C">✗</text>
+      <text x="1480" y="20" text-anchor="middle" font-size="13" font-weight="900" fill="#B91C1C">✗</text>
+    </g>
+    <!-- Score row -->
+    <g transform="translate(0, 314)">
+      <rect width="1600" height="38" rx="8" fill="url(#headerGrad)"/>
+      <text x="20" y="24" font-size="12" font-weight="800" fill="#FDE68A">🏆 종합 차별 점수</text>
+      <text x="280" y="24" text-anchor="middle" font-size="16" font-weight="900" fill="#FDE68A">10/10</text>
+      <text x="450" y="24" text-anchor="middle" font-size="13" font-weight="700" fill="#FFFFFF">2/10</text>
+      <text x="620" y="24" text-anchor="middle" font-size="13" font-weight="700" fill="#FFFFFF">1.5/10</text>
+      <text x="790" y="24" text-anchor="middle" font-size="13" font-weight="700" fill="#FFFFFF">3/10</text>
+      <text x="960" y="24" text-anchor="middle" font-size="13" font-weight="700" fill="#FFFFFF">3/10</text>
+      <text x="1130" y="24" text-anchor="middle" font-size="13" font-weight="700" fill="#FFFFFF">3/10</text>
+      <text x="1300" y="24" text-anchor="middle" font-size="13" font-weight="700" fill="#FFFFFF">3.5/10</text>
+      <text x="1480" y="24" text-anchor="middle" font-size="13" font-weight="700" fill="#FFFFFF">2.5/10</text>
+    </g>
+  </g>
+
+  <!-- ============== SECTION 4: FIRST-MOVER STRATEGY ============== -->
+  <rect x="20" y="1520" width="1660" height="155" rx="18" fill="#FFFFFF" stroke="#E5E0D3" stroke-width="1" filter="url(#shadow)"/>
+  <rect x="20" y="1520" width="1660" height="38" rx="18" fill="url(#goldGrad)"/>
+  <rect x="20" y="1540" width="1660" height="18" fill="url(#goldGrad)"/>
+  <text x="850" y="1547" text-anchor="middle" font-size="13" font-weight="800" letter-spacing="2" fill="#FFFFFF">SECTION 4 · FIRST-MOVER STRATEGY · 3~5년 우위 확보 전략</text>
+
+  <g transform="translate(50, 1580)">
+    <!-- Strategy 1 -->
+    <g transform="translate(0, 0)">
+      <rect width="395" height="80" rx="10" fill="#FEF2F2" stroke="#FCA5A5" stroke-width="1"/>
+      <text x="14" y="22" font-size="11" font-weight="800" fill="#B91C1C">🏃 ACTION 01 · 즉시 출원 (Q2 2026)</text>
+      <text x="14" y="42" font-size="10.5" fill="#374151">P-01 + P-03 + P-06 (충돌 위험 낮음)</text>
+      <text x="14" y="58" font-size="10.5" fill="#374151">+ Edge 우선 청구항 명시 (USPTO 12530731 회피)</text>
+      <text x="14" y="74" font-size="9" font-style="italic" fill="#7F1D1D">📌 First-Mover 우위 시작점</text>
+    </g>
+    <!-- Strategy 2 -->
+    <g transform="translate(412, 0)">
+      <rect width="395" height="80" rx="10" fill="#EFF6FF" stroke="#93C5FD" stroke-width="1"/>
+      <text x="14" y="22" font-size="11" font-weight="800" fill="#1E40AF">🛡️ ACTION 02 · 회피 설계 (Q3 2026)</text>
+      <text x="14" y="42" font-size="10.5" fill="#374151">P-02 STRT 시공간 차원 강조 (USPTO 7683793)</text>
+      <text x="14" y="58" font-size="10.5" fill="#374151">+ 미국 변리사 정밀 청구항 분석</text>
+      <text x="14" y="74" font-size="9" font-style="italic" fill="#1E40AF">📌 청구항 차별화 + 정밀 출원</text>
+    </g>
+    <!-- Strategy 3 -->
+    <g transform="translate(824, 0)">
+      <rect width="395" height="80" rx="10" fill="#F0FDF4" stroke="#86EFAC" stroke-width="1"/>
+      <text x="14" y="22" font-size="11" font-weight="800" fill="#15803D">🤝 ACTION 03 · 파트너십 (Q4 2026)</text>
+      <text x="14" y="42" font-size="10.5" fill="#374151">Johnson Controls (CTO 서병근 친정) 라이선싱</text>
+      <text x="14" y="58" font-size="10.5" fill="#374151">+ Honeywell·Siemens SW 보완 제안</text>
+      <text x="14" y="74" font-size="9" font-style="italic" fill="#15803D">📌 대기업이 자체 개발 포기 시점 활용</text>
+    </g>
+    <!-- Strategy 4 -->
+    <g transform="translate(1236, 0)">
+      <rect width="385" height="80" rx="10" fill="#FFFBEB" stroke="#FDE68A" stroke-width="1"/>
+      <text x="14" y="22" font-size="11" font-weight="800" fill="#92722A">🌍 ACTION 04 · PCT (2027)</text>
+      <text x="14" y="42" font-size="10.5" fill="#374151">미국·EU·일본·중국 우선권 12개월 내</text>
+      <text x="14" y="58" font-size="10.5" fill="#374151">+ IMO MSC/Circ.1533 + NFPA 101 호환 명시</text>
+      <text x="14" y="74" font-size="9" font-style="italic" fill="#92722A">📌 글로벌 보호망 완성</text>
+    </g>
+  </g>
+
+  <!-- ============== FOOTER ============== -->
+  <line x1="20" y1="1690" x2="1680" y2="1690" stroke="#C9A961" stroke-width="2"/>
+  <text x="40" y="1690" font-size="10" fill="#94A3B8">v2.0 · 2026-05-19 · 7 Reasons + 4 Moats + 8 Competitors + 4 Actions</text>
+  <text x="1660" y="1690" text-anchor="end" font-size="10" font-weight="700" fill="#92722A">© 2026 FireNavi · 심재우 (jaiwshim@gmail.com)</text>
+</svg>
