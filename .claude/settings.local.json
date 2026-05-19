@@ -71,7 +71,10 @@
       "PowerShell($ffmpeg = \"$env:USERPROFILE\\\\scoop\\\\apps\\\\ffmpeg\\\\current\\\\bin\\\\ffmpeg.exe\"; & $ffmpeg -y -ss 00:00:00.5 -i \"C:\\\\01 클로드코드\\\\50-12 화이어 내비\\\\firenavi-intro.mp4\" -frames:v 1 -q:v 2 \"C:\\\\01 클로드코드\\\\50-12 화이어 내비\\\\firenavi-intro-poster.jpg\" 2>&1 | Select-Object -Last 3)",
       "WebFetch(domain:aitutorhub.com)",
       "Bash(Get-ChildItem -Path \"C:\\\\01 클로드코드\\\\50-12 화이어 내비\" -Recurse -File -Filter \"*.md\")",
-      "Bash(Select-Object FullName)"
+      "Bash(Select-Object FullName)",
+      "Bash(xmllint --noout docs/diagrams/patent-next-architecture.svg)",
+      "PowerShell(Get-Content *)",
+      "PowerShell(Start-Process \"C:\\\\01 클로드코드\\\\50-12 화이어 내비\\\\docs\\\\diagrams\\\\patent-next-architecture.svg\")"
     ]
   },
   "model": "claude-opus-4-7"

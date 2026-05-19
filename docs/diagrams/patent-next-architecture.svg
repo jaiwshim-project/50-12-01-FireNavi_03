@@ -242,7 +242,7 @@
     <text x="22" y="156" font-size="11" font-weight="700" fill="#15803D">📐 수식</text>
     <rect x="22" y="166" width="246" height="50" rx="6" fill="#F0FDF4" stroke="#86EFAC" stroke-width="1"/>
     <text x="32" y="184" font-size="10" font-family="JetBrains Mono, monospace" fill="#15803D">F(x,y) = Σ wₜ · RSSI_t(APᵢ)</text>
-    <text x="32" y="200" font-size="10" font-family="JetBrains Mono, monospace" fill="#15803D">Drift: |F_now − F_base| &gt; θ</text>
+    <text x="32" y="200" font-size="10" font-family="JetBrains Mono, monospace" fill="#15803D">Drift: |F_now − F_base| &gt; θ → relearn</text>
     <text x="32" y="212" font-size="9" font-style="italic" fill="#6B7280">시간 가중 평균 + 드리프트 감지</text>
 
     <text x="22" y="240" font-size="11" font-weight="700" fill="#15803D">⚙️ 기술 요소</text>
@@ -295,38 +295,38 @@
     <text x="145" y="386" text-anchor="middle" font-size="9" font-weight="800" letter-spacing="1" fill="#FDE68A">🏅 장기 우위 메커니즘</text>
   </g>
 
-  <!-- Patent 5: 3-Tier Fallback -->
+  <!-- Patent 5: 3-Tier Fallback (폭 290으로 통일) -->
   <g transform="translate(1300, 500)">
-    <rect width="240" height="395" rx="16" fill="#FFFFFF" stroke="#92722A" stroke-width="2" filter="url(#dropShadow)"/>
-    <rect width="240" height="56" rx="16" fill="url(#p5Grad)"/>
-    <rect y="40" width="240" height="16" fill="url(#p5Grad)"/>
+    <rect width="290" height="395" rx="16" fill="#FFFFFF" stroke="#92722A" stroke-width="2" filter="url(#dropShadow)"/>
+    <rect width="290" height="56" rx="16" fill="url(#p5Grad)"/>
+    <rect y="40" width="290" height="16" fill="url(#p5Grad)"/>
     <text x="22" y="32" font-size="11" font-weight="800" letter-spacing="1.5" fill="#FFFFFF">PATENT 10 · 3-TIER FALLBACK</text>
-    <text x="22" y="52" font-size="14" font-weight="900" fill="#FFFFFF">3단 캐시 폴백</text>
+    <text x="22" y="52" font-size="15" font-weight="900" fill="#FFFFFF">3단 캐시 폴백</text>
 
     <text x="22" y="92" font-size="11" font-weight="700" fill="#92722A">🎯 핵심 청구항</text>
-    <text x="22" y="112" font-size="10" fill="#374151">Cloud → Edge → Device</text>
-    <text x="22" y="126" font-size="10" fill="#374151">30초 캐시 + 핸드오버</text>
+    <text x="22" y="112" font-size="10" fill="#374151">Cloud → Edge → Device 3계층</text>
+    <text x="22" y="126" font-size="10" fill="#374151">30초 캐시 + 무손실 핸드오버</text>
 
     <text x="22" y="156" font-size="11" font-weight="700" fill="#92722A">📐 수식</text>
-    <rect x="22" y="166" width="196" height="50" rx="6" fill="#FFFBEB" stroke="#FDE68A" stroke-width="1"/>
-    <text x="32" y="184" font-size="10" font-family="JetBrains Mono, monospace" fill="#92722A">Latency = min(Cloud,</text>
-    <text x="32" y="200" font-size="10" font-family="JetBrains Mono, monospace" fill="#92722A">  Edge, Device)</text>
-    <text x="32" y="212" font-size="9" font-style="italic" fill="#6B7280">Cache TTL: 30s · refresh: 5s</text>
+    <rect x="22" y="166" width="246" height="50" rx="6" fill="#FFFBEB" stroke="#FDE68A" stroke-width="1"/>
+    <text x="32" y="184" font-size="10" font-family="JetBrains Mono, monospace" fill="#92722A">Latency = min(Cloud, Edge, Device)</text>
+    <text x="32" y="200" font-size="10" font-family="JetBrains Mono, monospace" fill="#92722A">Cache TTL = 30s · refresh = 5s</text>
+    <text x="32" y="212" font-size="9" font-style="italic" fill="#6B7280">3계층 응답 시간 최소화 + TTL</text>
 
     <text x="22" y="240" font-size="11" font-weight="700" fill="#92722A">⚙️ 기술 요소</text>
     <g font-size="10" fill="#374151">
-      <text x="22" y="258">• 3계층 자동 폴백</text>
-      <text x="22" y="274">• 디바이스 30초 캐시</text>
+      <text x="22" y="258">• 3계층 자동 폴백 메커니즘</text>
+      <text x="22" y="274">• 디바이스 30초 캐시 보장</text>
       <text x="22" y="290">• 무손실 단계 핸드오버</text>
-      <text x="22" y="306">• 단일 장애점 제거</text>
+      <text x="22" y="306">• 단일 장애점(SPOF) 제거</text>
     </g>
 
     <text x="22" y="334" font-size="11" font-weight="700" fill="#92722A">🏆 산업 가치</text>
-    <text x="22" y="352" font-size="10" fill="#374151">해상·정전·전파 차단 환경</text>
-    <text x="22" y="366" font-size="10" fill="#374151">결정적 차별점 확보</text>
+    <text x="22" y="352" font-size="10" fill="#374151">해상·정전·전파 차단 환경 강점</text>
+    <text x="22" y="366" font-size="10" fill="#374151">결정적 안전성 차별점 확보</text>
 
-    <rect x="22" y="376" width="196" height="14" rx="6" fill="#92722A"/>
-    <text x="120" y="386" text-anchor="middle" font-size="9" font-weight="800" letter-spacing="1" fill="#FFFFFF">🏅 안전성 차별점</text>
+    <rect x="22" y="376" width="246" height="14" rx="6" fill="#92722A"/>
+    <text x="145" y="386" text-anchor="middle" font-size="9" font-weight="800" letter-spacing="1" fill="#FFFFFF">🏅 안전성 차별점</text>
   </g>
 
   <!-- ============== SECTION 3: TECH ELEMENTS (Detailed Stack) ============== -->
@@ -377,16 +377,16 @@
     </g>
   </g>
 
-  <!-- Tech category 4: Verification & Safety -->
+  <!-- Tech category 4: Verification &amp; Safety -->
   <g transform="translate(1250, 1020)">
     <rect width="300" height="150" rx="12" fill="#F0FDF4" stroke="#86EFAC" stroke-width="1"/>
     <text x="20" y="28" font-size="13" font-weight="800" fill="#15803D">🛡️ Safety Layers · 안전 계층</text>
     <line x1="20" y1="36" x2="280" y2="36" stroke="#86EFAC" stroke-width="1"/>
-    <g font-size="11" fill="#374151">
-      <text x="20" y="58"><tspan font-weight="700" fill="#15803D">MC Verification</tspan> · 99% 신뢰</text>
-      <text x="20" y="76"><tspan font-weight="700" fill="#15803D">Auto Rollback</tspan> · 110% 임계</text>
-      <text x="20" y="94"><tspan font-weight="700" fill="#15803D">α=2.0 Margin</tspan> · 취약계층</text>
-      <text x="20" y="112"><tspan font-weight="700" fill="#15803D">STRT</tspan> · 시공간 예약</text>
+    <g font-size="10.5" fill="#374151">
+      <text x="20" y="58"><tspan font-weight="700" fill="#15803D">MC Verification</tspan> · 99% 신뢰구간</text>
+      <text x="20" y="76"><tspan font-weight="700" fill="#15803D">Auto Rollback</tspan> · Loss 110% 임계</text>
+      <text x="20" y="94"><tspan font-weight="700" fill="#15803D">α=2.0 Margin</tspan> · 취약계층 보호</text>
+      <text x="20" y="112"><tspan font-weight="700" fill="#15803D">STRT</tspan> · 시공간 예약 테이블</text>
       <text x="20" y="130"><tspan font-weight="700" fill="#15803D">30s Cache</tspan> · 무중단 폴백</text>
     </g>
   </g>
