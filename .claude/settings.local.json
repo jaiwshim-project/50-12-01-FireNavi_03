@@ -74,7 +74,8 @@
       "Bash(Select-Object FullName)",
       "Bash(xmllint --noout docs/diagrams/patent-next-architecture.svg)",
       "PowerShell(Get-Content *)",
-      "PowerShell(Start-Process \"C:\\\\01 클로드코드\\\\50-12 화이어 내비\\\\docs\\\\diagrams\\\\patent-next-architecture.svg\")"
+      "PowerShell(Start-Process \"C:\\\\01 클로드코드\\\\50-12 화이어 내비\\\\docs\\\\diagrams\\\\patent-next-architecture.svg\")",
+      "Bash(git mv *)"
     ]
   },
   "model": "claude-opus-4-7"
