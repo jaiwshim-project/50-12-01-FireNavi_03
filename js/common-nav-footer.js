@@ -72,6 +72,7 @@
           <div class="footer-col">
             <h4 class="footer-col-title">Resources</h4>
             <ul class="footer-links">
+              <li><a href="${pre}pages/patent-rationale.html">🔬 특허 출원 근거</a></li>
               <li><a href="${pre}manual.html">매뉴얼 페이지</a></li>
               <li><a href="${pre}docs/diagrams/architecture.svg">아키텍처 구조도</a></li>
             </ul>
