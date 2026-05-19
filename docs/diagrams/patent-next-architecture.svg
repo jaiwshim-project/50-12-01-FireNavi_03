@@ -1,0 +1,403 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1280" font-family="Inter, 'Noto Sans KR', system-ui, sans-serif">
+  <defs>
+    <!-- Filters -->
+    <filter id="dropShadow" x="-5%" y="-5%" width="110%" height="115%">
+      <feDropShadow dx="0" dy="3" stdDeviation="5" flood-color="#0F1E3D" flood-opacity="0.18"/>
+    </filter>
+    <filter id="dropShadowLg" x="-5%" y="-5%" width="110%" height="115%">
+      <feDropShadow dx="0" dy="6" stdDeviation="10" flood-color="#0F1E3D" flood-opacity="0.25"/>
+    </filter>
+    <filter id="goldGlow">
+      <feGaussianBlur stdDeviation="2" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+
+    <!-- Gradients -->
+    <linearGradient id="bgGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#FAF8F3"/>
+      <stop offset="100%" stop-color="#F2EEE5"/>
+    </linearGradient>
+    <linearGradient id="headerGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0F1E3D"/>
+      <stop offset="50%" stop-color="#1E3A8A"/>
+      <stop offset="100%" stop-color="#6D28D9"/>
+    </linearGradient>
+    <linearGradient id="goldGrad" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#92722A"/>
+      <stop offset="50%" stop-color="#C9A961"/>
+      <stop offset="100%" stop-color="#D4AF37"/>
+    </linearGradient>
+    <linearGradient id="fireGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#7F1D1D"/>
+      <stop offset="50%" stop-color="#B91C1C"/>
+      <stop offset="100%" stop-color="#C2410C"/>
+    </linearGradient>
+
+    <!-- Patent gradients -->
+    <linearGradient id="p1Grad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#7F1D1D"/><stop offset="100%" stop-color="#C2410C"/>
+    </linearGradient>
+    <linearGradient id="p2Grad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#0F1E3D"/><stop offset="100%" stop-color="#1E40AF"/>
+    </linearGradient>
+    <linearGradient id="p3Grad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#15803D"/><stop offset="100%" stop-color="#10B981"/>
+    </linearGradient>
+    <linearGradient id="p4Grad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#4C1D95"/><stop offset="100%" stop-color="#6D28D9"/>
+    </linearGradient>
+    <linearGradient id="p5Grad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#92722A"/><stop offset="100%" stop-color="#C9A961"/>
+    </linearGradient>
+
+    <!-- Arrow markers -->
+    <marker id="arrGold" markerWidth="12" markerHeight="10" refX="11" refY="5" orient="auto">
+      <polygon points="0,0 12,5 0,10" fill="#C9A961"/>
+    </marker>
+    <marker id="arrFire" markerWidth="12" markerHeight="10" refX="11" refY="5" orient="auto">
+      <polygon points="0,0 12,5 0,10" fill="#B91C1C"/>
+    </marker>
+    <marker id="arrNavy" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto">
+      <polygon points="0,0 10,4 0,8" fill="#0F1E3D"/>
+    </marker>
+  </defs>
+
+  <!-- BACKGROUND -->
+  <rect width="1600" height="1280" fill="url(#bgGrad)"/>
+
+  <!-- ============== HEADER ============== -->
+  <rect x="20" y="20" width="1560" height="110" rx="20" fill="url(#headerGrad)" filter="url(#dropShadowLg)"/>
+  <circle cx="1480" cy="60" r="50" fill="#C9A961" opacity="0.25"/>
+  <circle cx="120" cy="100" r="40" fill="#B91C1C" opacity="0.25"/>
+
+  <text x="800" y="60" text-anchor="middle" font-size="14" font-weight="800" letter-spacing="3" fill="#FDE68A">FIRENAVI · NEXT-GEN PATENT PORTFOLIO · 차기 출원 5건</text>
+  <text x="800" y="100" text-anchor="middle" font-size="30" font-weight="900" fill="#FFFFFF">3 AI 엔진 추가 특허 · Process · Architecture · Tech Elements</text>
+
+  <!-- ============== SECTION 1: PROCESS FLOW (5 Steps Horizontal) ============== -->
+  <rect x="20" y="160" width="1560" height="220" rx="18" fill="#FFFFFF" stroke="#E5E0D3" stroke-width="1" filter="url(#dropShadow)"/>
+  <rect x="20" y="160" width="1560" height="40" rx="18" fill="url(#headerGrad)"/>
+  <rect x="20" y="180" width="1560" height="20" fill="url(#headerGrad)"/>
+  <text x="800" y="186" text-anchor="middle" font-size="14" font-weight="800" letter-spacing="2" fill="#FDE68A">SECTION 1 · PROCESS FLOW · 5단계 통합 프로세스</text>
+
+  <!-- Step 1: Sensor Input -->
+  <g transform="translate(80, 230)">
+    <rect width="240" height="130" rx="14" fill="url(#p1Grad)" filter="url(#dropShadow)"/>
+    <rect x="14" y="14" width="50" height="50" rx="10" fill="rgba(255,255,255,0.18)"/>
+    <text x="39" y="48" text-anchor="middle" font-size="24" fill="#FFFFFF">📡</text>
+    <text x="80" y="34" font-size="10" font-weight="800" letter-spacing="1.5" fill="#FDE68A">STEP 01</text>
+    <text x="80" y="52" font-size="13" font-weight="800" fill="#FFFFFF">Multi-Sensor</text>
+    <text x="80" y="66" font-size="10" font-weight="600" fill="#FDE68A">멀티 센서 수집</text>
+    <text x="20" y="92" font-size="10.5" fill="#FFFFFF" opacity="0.92">• CCTV·IoT·WiFi·BIM</text>
+    <text x="20" y="108" font-size="10.5" fill="#FFFFFF" opacity="0.92">• 다중 화원 5+ 감지</text>
+    <text x="20" y="124" font-size="10.5" fill="#FFFFFF" opacity="0.92">• 자가 RF 캘리브레이션</text>
+  </g>
+  <line x1="320" y1="295" x2="362" y2="295" stroke="#C9A961" stroke-width="2.5" marker-end="url(#arrGold)"/>
+
+  <!-- Step 2: AI Engines -->
+  <g transform="translate(370, 230)">
+    <rect width="240" height="130" rx="14" fill="url(#p2Grad)" filter="url(#dropShadow)"/>
+    <rect x="14" y="14" width="50" height="50" rx="10" fill="rgba(255,255,255,0.18)"/>
+    <text x="39" y="48" text-anchor="middle" font-size="24" fill="#FFFFFF">🧠</text>
+    <text x="80" y="34" font-size="10" font-weight="800" letter-spacing="1.5" fill="#FDE68A">STEP 02</text>
+    <text x="80" y="52" font-size="13" font-weight="800" fill="#FFFFFF">3 AI Engines</text>
+    <text x="80" y="66" font-size="10" font-weight="600" fill="#FDE68A">3 AI 엔진 동기 작동</text>
+    <text x="20" y="92" font-size="10.5" fill="#FFFFFF" opacity="0.92">• Prediction (15ms)</text>
+    <text x="20" y="108" font-size="10.5" fill="#FFFFFF" opacity="0.92">• Behavior (30ms)</text>
+    <text x="20" y="124" font-size="10.5" fill="#FFFFFF" opacity="0.92">• Decision (40ms)</text>
+  </g>
+  <line x1="610" y1="295" x2="652" y2="295" stroke="#C9A961" stroke-width="2.5" marker-end="url(#arrGold)"/>
+
+  <!-- Step 3: MC Verification -->
+  <g transform="translate(660, 230)">
+    <rect width="240" height="130" rx="14" fill="url(#p3Grad)" filter="url(#dropShadow)"/>
+    <rect x="14" y="14" width="50" height="50" rx="10" fill="rgba(255,255,255,0.18)"/>
+    <text x="39" y="48" text-anchor="middle" font-size="24" fill="#FFFFFF">🎲</text>
+    <text x="80" y="34" font-size="10" font-weight="800" letter-spacing="1.5" fill="#FDE68A">STEP 03</text>
+    <text x="80" y="52" font-size="13" font-weight="800" fill="#FFFFFF">MC Verify</text>
+    <text x="80" y="66" font-size="10" font-weight="600" fill="#FDE68A">Monte Carlo 검증</text>
+    <text x="20" y="92" font-size="10.5" fill="#FFFFFF" opacity="0.92">• 10K~100K 샘플링</text>
+    <text x="20" y="108" font-size="10.5" fill="#FFFFFF" opacity="0.92">• 99% 신뢰구간 산출</text>
+    <text x="20" y="124" font-size="10.5" fill="#FFFFFF" opacity="0.92">• 인증 자료 자동 생성</text>
+  </g>
+  <line x1="900" y1="295" x2="942" y2="295" stroke="#C9A961" stroke-width="2.5" marker-end="url(#arrGold)"/>
+
+  <!-- Step 4: 3-Tier Fallback -->
+  <g transform="translate(950, 230)">
+    <rect width="240" height="130" rx="14" fill="url(#p4Grad)" filter="url(#dropShadow)"/>
+    <rect x="14" y="14" width="50" height="50" rx="10" fill="rgba(255,255,255,0.18)"/>
+    <text x="39" y="48" text-anchor="middle" font-size="24" fill="#FFFFFF">🛡️</text>
+    <text x="80" y="34" font-size="10" font-weight="800" letter-spacing="1.5" fill="#FDE68A">STEP 04</text>
+    <text x="80" y="52" font-size="13" font-weight="800" fill="#FFFFFF">3-Tier Fallback</text>
+    <text x="80" y="66" font-size="10" font-weight="600" fill="#FDE68A">3단 폴백 시스템</text>
+    <text x="20" y="92" font-size="10.5" fill="#FFFFFF" opacity="0.92">• Cloud → Edge → Device</text>
+    <text x="20" y="108" font-size="10.5" fill="#FFFFFF" opacity="0.92">• 30초 캐시 폴백</text>
+    <text x="20" y="124" font-size="10.5" fill="#FFFFFF" opacity="0.92">• 무손실 핸드오버</text>
+  </g>
+  <line x1="1190" y1="295" x2="1232" y2="295" stroke="#C9A961" stroke-width="2.5" marker-end="url(#arrGold)"/>
+
+  <!-- Step 5: Online Learning -->
+  <g transform="translate(1240, 230)">
+    <rect width="240" height="130" rx="14" fill="url(#p5Grad)" filter="url(#dropShadow)"/>
+    <rect x="14" y="14" width="50" height="50" rx="10" fill="rgba(255,255,255,0.18)"/>
+    <text x="39" y="48" text-anchor="middle" font-size="24" fill="#FFFFFF">🔄</text>
+    <text x="80" y="34" font-size="10" font-weight="800" letter-spacing="1.5" fill="#FFFFFF">STEP 05</text>
+    <text x="80" y="52" font-size="13" font-weight="800" fill="#FFFFFF">Self-Evolve</text>
+    <text x="80" y="66" font-size="10" font-weight="600" fill="#FFFFFF">연속 학습 자가 진화</text>
+    <text x="20" y="92" font-size="10.5" fill="#FFFFFF" opacity="0.92">• Slow → Fast 보정</text>
+    <text x="20" y="108" font-size="10.5" fill="#FFFFFF" opacity="0.92">• 롤백 안전장치</text>
+    <text x="20" y="124" font-size="10.5" fill="#FFFFFF" opacity="0.92">• 데이터 플라이휠</text>
+  </g>
+
+  <!-- Feedback loop arrow (Step 5 → Step 2) -->
+  <path d="M 1360 360 Q 1360 410 1240 410 Q 490 410 490 360" stroke="#B91C1C" stroke-width="2" stroke-dasharray="6,4" fill="none" marker-end="url(#arrFire)"/>
+  <text x="900" y="402" text-anchor="middle" font-size="10" font-weight="700" fill="#B91C1C">Feedback Loop · 학습 결과 재투입</text>
+
+  <!-- ============== SECTION 2: ARCHITECTURE (5 Patent Modules Grid) ============== -->
+  <rect x="20" y="430" width="1560" height="490" rx="18" fill="#FFFFFF" stroke="#E5E0D3" stroke-width="1" filter="url(#dropShadow)"/>
+  <rect x="20" y="430" width="1560" height="40" rx="18" fill="url(#headerGrad)"/>
+  <rect x="20" y="450" width="1560" height="20" fill="url(#headerGrad)"/>
+  <text x="800" y="456" text-anchor="middle" font-size="14" font-weight="800" letter-spacing="2" fill="#FDE68A">SECTION 2 · ARCHITECTURE · 5 차기 특허 모듈 아키텍처</text>
+
+  <!-- Patent 1: Multi-Ignition -->
+  <g transform="translate(60, 500)">
+    <rect width="290" height="395" rx="16" fill="#FFFFFF" stroke="#7F1D1D" stroke-width="2" filter="url(#dropShadow)"/>
+    <rect width="290" height="56" rx="16" fill="url(#p1Grad)"/>
+    <rect y="40" width="290" height="16" fill="url(#p1Grad)"/>
+    <text x="22" y="32" font-size="11" font-weight="800" letter-spacing="1.5" fill="#FDE68A">PATENT 06 · MULTI-IGNITION</text>
+    <text x="22" y="52" font-size="15" font-weight="900" fill="#FFFFFF">다중 화원 동시 처리</text>
+
+    <text x="22" y="92" font-size="11" font-weight="700" fill="#7F1D1D">🎯 핵심 청구항</text>
+    <text x="22" y="112" font-size="10" fill="#374151">5개+ 발화점 GPU 코어별</text>
+    <text x="22" y="126" font-size="10" fill="#374151">동적 분할 + Risk Map 격자 병렬 합성</text>
+
+    <text x="22" y="156" font-size="11" font-weight="700" fill="#7F1D1D">📐 수식</text>
+    <rect x="22" y="166" width="246" height="50" rx="6" fill="#FEF2F2" stroke="#FCA5A5" stroke-width="1"/>
+    <text x="32" y="184" font-size="10" font-family="JetBrains Mono, monospace" fill="#7F1D1D">R_total(x,y,t) = max(R₁..Rₙ)</text>
+    <text x="32" y="200" font-size="10" font-family="JetBrains Mono, monospace" fill="#7F1D1D">  + Σ interaction(Rᵢ, Rⱼ)</text>
+    <text x="32" y="212" font-size="9" font-style="italic" fill="#6B7280">화원 간 합류·열풍 간섭 항</text>
+
+    <text x="22" y="240" font-size="11" font-weight="700" fill="#7F1D1D">⚙️ 기술 요소</text>
+    <g font-size="10" fill="#374151">
+      <text x="22" y="258">• GPU 동적 코어 분할 (CUDA Streams)</text>
+      <text x="22" y="274">• 격자 단위 병렬 Risk Map 합성</text>
+      <text x="22" y="290">• 화원 상호작용 행렬 실시간 계산</text>
+      <text x="22" y="306">• 5+ 동시 처리 부하 균형</text>
+    </g>
+
+    <text x="22" y="334" font-size="11" font-weight="700" fill="#7F1D1D">🏆 산업 가치</text>
+    <text x="22" y="352" font-size="10" fill="#374151">테러·연쇄 화재·대형 정전 시나리오</text>
+    <text x="22" y="366" font-size="10" fill="#374151">초대형 크루즈·100층+ 빌딩 필수</text>
+
+    <rect x="22" y="376" width="246" height="14" rx="6" fill="#7F1D1D"/>
+    <text x="145" y="386" text-anchor="middle" font-size="9" font-weight="800" letter-spacing="1" fill="#FDE68A">🥇 PRIORITY · 최우선 출원</text>
+  </g>
+
+  <!-- Patent 2: Monte Carlo -->
+  <g transform="translate(370, 500)">
+    <rect width="290" height="395" rx="16" fill="#FFFFFF" stroke="#0F1E3D" stroke-width="2" filter="url(#dropShadow)"/>
+    <rect width="290" height="56" rx="16" fill="url(#p2Grad)"/>
+    <rect y="40" width="290" height="16" fill="url(#p2Grad)"/>
+    <text x="22" y="32" font-size="11" font-weight="800" letter-spacing="1.5" fill="#FDE68A">PATENT 07 · MONTE CARLO</text>
+    <text x="22" y="52" font-size="15" font-weight="900" fill="#FFFFFF">MC 경로 신뢰도 검증</text>
+
+    <text x="22" y="92" font-size="11" font-weight="700" fill="#0F1E3D">🎯 핵심 청구항</text>
+    <text x="22" y="112" font-size="10" fill="#374151">생성 경로를 10K~100K회 MC</text>
+    <text x="22" y="126" font-size="10" fill="#374151">시뮬레이션 → 99% 신뢰구간 산출</text>
+
+    <text x="22" y="156" font-size="11" font-weight="700" fill="#0F1E3D">📐 수식</text>
+    <rect x="22" y="166" width="246" height="50" rx="6" fill="#EFF6FF" stroke="#93C5FD" stroke-width="1"/>
+    <text x="32" y="184" font-size="10" font-family="JetBrains Mono, monospace" fill="#0F1E3D">P_safe = (1/N) Σ I(survival_i)</text>
+    <text x="32" y="200" font-size="10" font-family="JetBrains Mono, monospace" fill="#0F1E3D">  ± z_{α/2}·√(P(1−P)/N)</text>
+    <text x="32" y="212" font-size="9" font-style="italic" fill="#6B7280">신뢰구간 산출 + 인증 자동 생성</text>
+
+    <text x="22" y="240" font-size="11" font-weight="700" fill="#0F1E3D">⚙️ 기술 요소</text>
+    <g font-size="10" fill="#374151">
+      <text x="22" y="258">• Importance Sampling 가속</text>
+      <text x="22" y="274">• Stratified Sampling 분산 감소</text>
+      <text x="22" y="290">• 신뢰구간 자동 보고서 생성</text>
+      <text x="22" y="306">• 0.5초 사이클 내 통합</text>
+    </g>
+
+    <text x="22" y="334" font-size="11" font-weight="700" fill="#0F1E3D">🏆 산업 가치</text>
+    <text x="22" y="352" font-size="10" fill="#374151">IMO SOLAS · NFPA 101 인증 자동</text>
+    <text x="22" y="366" font-size="10" fill="#374151">규제 통과 자료 즉시 출력</text>
+
+    <rect x="22" y="376" width="246" height="14" rx="6" fill="#0F1E3D"/>
+    <text x="145" y="386" text-anchor="middle" font-size="9" font-weight="800" letter-spacing="1" fill="#FDE68A">🥈 규제 대응 차별</text>
+  </g>
+
+  <!-- Patent 3: WiFi Self-Calibration -->
+  <g transform="translate(680, 500)">
+    <rect width="290" height="395" rx="16" fill="#FFFFFF" stroke="#15803D" stroke-width="2" filter="url(#dropShadow)"/>
+    <rect width="290" height="56" rx="16" fill="url(#p3Grad)"/>
+    <rect y="40" width="290" height="16" fill="url(#p3Grad)"/>
+    <text x="22" y="32" font-size="11" font-weight="800" letter-spacing="1.5" fill="#FDE68A">PATENT 08 · WIFI SELF-CAL</text>
+    <text x="22" y="52" font-size="15" font-weight="900" fill="#FFFFFF">WiFi 자가 캘리브레이션</text>
+
+    <text x="22" y="92" font-size="11" font-weight="700" fill="#15803D">🎯 핵심 청구항</text>
+    <text x="22" y="112" font-size="10" fill="#374151">7일 일상 동선 → 자동 RF 지문</text>
+    <text x="22" y="126" font-size="10" fill="#374151">시설 구조 변경 시 자동 재학습</text>
+
+    <text x="22" y="156" font-size="11" font-weight="700" fill="#15803D">📐 수식</text>
+    <rect x="22" y="166" width="246" height="50" rx="6" fill="#F0FDF4" stroke="#86EFAC" stroke-width="1"/>
+    <text x="32" y="184" font-size="10" font-family="JetBrains Mono, monospace" fill="#15803D">F(x,y) = Σ wₜ · RSSI_t(APᵢ)</text>
+    <text x="32" y="200" font-size="10" font-family="JetBrains Mono, monospace" fill="#15803D">Drift: |F_now − F_base| &gt; θ</text>
+    <text x="32" y="212" font-size="9" font-style="italic" fill="#6B7280">시간 가중 평균 + 드리프트 감지</text>
+
+    <text x="22" y="240" font-size="11" font-weight="700" fill="#15803D">⚙️ 기술 요소</text>
+    <g font-size="10" fill="#374151">
+      <text x="22" y="258">• 무감독 학습 (Unsupervised)</text>
+      <text x="22" y="274">• 시간 가중 RSSI Fingerprint</text>
+      <text x="22" y="290">• 자동 드리프트 감지·재학습</text>
+      <text x="22" y="306">• 2~3m 정밀도 자동 유지</text>
+    </g>
+
+    <text x="22" y="334" font-size="11" font-weight="700" fill="#15803D">🏆 산업 가치</text>
+    <text x="22" y="352" font-size="10" fill="#374151">수동 캘리브레이션 작업 불필요</text>
+    <text x="22" y="366" font-size="10" fill="#374151">도입 마찰 0 (Zero Burden)</text>
+
+    <rect x="22" y="376" width="246" height="14" rx="6" fill="#15803D"/>
+    <text x="145" y="386" text-anchor="middle" font-size="9" font-weight="800" letter-spacing="1" fill="#FDE68A">🥉 도입 마찰 제거</text>
+  </g>
+
+  <!-- Patent 4: Online Learning -->
+  <g transform="translate(990, 500)">
+    <rect width="290" height="395" rx="16" fill="#FFFFFF" stroke="#4C1D95" stroke-width="2" filter="url(#dropShadow)"/>
+    <rect width="290" height="56" rx="16" fill="url(#p4Grad)"/>
+    <rect y="40" width="290" height="16" fill="url(#p4Grad)"/>
+    <text x="22" y="32" font-size="11" font-weight="800" letter-spacing="1.5" fill="#FDE68A">PATENT 09 · ONLINE LEARN</text>
+    <text x="22" y="52" font-size="15" font-weight="900" fill="#FFFFFF">연속 학습 + 롤백</text>
+
+    <text x="22" y="92" font-size="11" font-weight="700" fill="#4C1D95">🎯 핵심 청구항</text>
+    <text x="22" y="112" font-size="10" fill="#374151">CFD(Slow) → LSTM Dense 보정</text>
+    <text x="22" y="126" font-size="10" fill="#374151">Loss 110% 초과 시 자동 롤백</text>
+
+    <text x="22" y="156" font-size="11" font-weight="700" fill="#4C1D95">📐 수식</text>
+    <rect x="22" y="166" width="246" height="50" rx="6" fill="#F5F3FF" stroke="#C4B5FD" stroke-width="1"/>
+    <text x="32" y="184" font-size="10" font-family="JetBrains Mono, monospace" fill="#4C1D95">L = 0.5·L_CO + 0.3·L_T</text>
+    <text x="32" y="200" font-size="10" font-family="JetBrains Mono, monospace" fill="#4C1D95">       + 0.2·L_visibility</text>
+    <text x="32" y="212" font-size="9" font-style="italic" fill="#6B7280">채널별 가중 손실 + 롤백 안전장치</text>
+
+    <text x="22" y="240" font-size="11" font-weight="700" fill="#4C1D95">⚙️ 기술 요소</text>
+    <g font-size="10" fill="#374151">
+      <text x="22" y="258">• 점진적 경사하강법 (Dense Only)</text>
+      <text x="22" y="274">• 채널 가중 손실 함수</text>
+      <text x="22" y="290">• 자동 롤백 (Loss &gt; 110%)</text>
+      <text x="22" y="306">• 캐시 기반 온라인 학습</text>
+    </g>
+
+    <text x="22" y="334" font-size="11" font-weight="700" fill="#4C1D95">🏆 산업 가치</text>
+    <text x="22" y="352" font-size="10" fill="#374151">운영 기간 ↑ → 정확도 상향곡선</text>
+    <text x="22" y="366" font-size="10" fill="#374151">데이터 플라이휠 핵심 메커니즘</text>
+
+    <rect x="22" y="376" width="246" height="14" rx="6" fill="#4C1D95"/>
+    <text x="145" y="386" text-anchor="middle" font-size="9" font-weight="800" letter-spacing="1" fill="#FDE68A">🏅 장기 우위 메커니즘</text>
+  </g>
+
+  <!-- Patent 5: 3-Tier Fallback -->
+  <g transform="translate(1300, 500)">
+    <rect width="240" height="395" rx="16" fill="#FFFFFF" stroke="#92722A" stroke-width="2" filter="url(#dropShadow)"/>
+    <rect width="240" height="56" rx="16" fill="url(#p5Grad)"/>
+    <rect y="40" width="240" height="16" fill="url(#p5Grad)"/>
+    <text x="22" y="32" font-size="11" font-weight="800" letter-spacing="1.5" fill="#FFFFFF">PATENT 10 · 3-TIER FALLBACK</text>
+    <text x="22" y="52" font-size="14" font-weight="900" fill="#FFFFFF">3단 캐시 폴백</text>
+
+    <text x="22" y="92" font-size="11" font-weight="700" fill="#92722A">🎯 핵심 청구항</text>
+    <text x="22" y="112" font-size="10" fill="#374151">Cloud → Edge → Device</text>
+    <text x="22" y="126" font-size="10" fill="#374151">30초 캐시 + 핸드오버</text>
+
+    <text x="22" y="156" font-size="11" font-weight="700" fill="#92722A">📐 수식</text>
+    <rect x="22" y="166" width="196" height="50" rx="6" fill="#FFFBEB" stroke="#FDE68A" stroke-width="1"/>
+    <text x="32" y="184" font-size="10" font-family="JetBrains Mono, monospace" fill="#92722A">Latency = min(Cloud,</text>
+    <text x="32" y="200" font-size="10" font-family="JetBrains Mono, monospace" fill="#92722A">  Edge, Device)</text>
+    <text x="32" y="212" font-size="9" font-style="italic" fill="#6B7280">Cache TTL: 30s · refresh: 5s</text>
+
+    <text x="22" y="240" font-size="11" font-weight="700" fill="#92722A">⚙️ 기술 요소</text>
+    <g font-size="10" fill="#374151">
+      <text x="22" y="258">• 3계층 자동 폴백</text>
+      <text x="22" y="274">• 디바이스 30초 캐시</text>
+      <text x="22" y="290">• 무손실 단계 핸드오버</text>
+      <text x="22" y="306">• 단일 장애점 제거</text>
+    </g>
+
+    <text x="22" y="334" font-size="11" font-weight="700" fill="#92722A">🏆 산업 가치</text>
+    <text x="22" y="352" font-size="10" fill="#374151">해상·정전·전파 차단 환경</text>
+    <text x="22" y="366" font-size="10" fill="#374151">결정적 차별점 확보</text>
+
+    <rect x="22" y="376" width="196" height="14" rx="6" fill="#92722A"/>
+    <text x="120" y="386" text-anchor="middle" font-size="9" font-weight="800" letter-spacing="1" fill="#FFFFFF">🏅 안전성 차별점</text>
+  </g>
+
+  <!-- ============== SECTION 3: TECH ELEMENTS (Detailed Stack) ============== -->
+  <rect x="20" y="950" width="1560" height="240" rx="18" fill="#FFFFFF" stroke="#E5E0D3" stroke-width="1" filter="url(#dropShadow)"/>
+  <rect x="20" y="950" width="1560" height="40" rx="18" fill="url(#headerGrad)"/>
+  <rect x="20" y="970" width="1560" height="20" fill="url(#headerGrad)"/>
+  <text x="800" y="976" text-anchor="middle" font-size="14" font-weight="800" letter-spacing="2" fill="#FDE68A">SECTION 3 · TECH ELEMENTS · 핵심 기술 요소 + 적용 표준</text>
+
+  <!-- Tech category 1: Algorithms -->
+  <g transform="translate(50, 1020)">
+    <rect width="370" height="150" rx="12" fill="#FEF2F2" stroke="#FCA5A5" stroke-width="1"/>
+    <text x="20" y="28" font-size="13" font-weight="800" fill="#7F1D1D">🧮 Algorithms · 알고리즘</text>
+    <line x1="20" y1="36" x2="350" y2="36" stroke="#FCA5A5" stroke-width="1"/>
+    <g font-size="11" fill="#374151">
+      <text x="20" y="58"><tspan font-weight="700" fill="#7F1D1D">Navier-Stokes CFD</tspan> · 유체역학 연기 흐름</text>
+      <text x="20" y="76"><tspan font-weight="700" fill="#7F1D1D">LSTM</tspan> · 시계열 화재 확산 예측</text>
+      <text x="20" y="94"><tspan font-weight="700" fill="#7F1D1D">Social Force + KDE</tspan> · 군중 동역학</text>
+      <text x="20" y="112"><tspan font-weight="700" fill="#7F1D1D">A* Dynamic + CBS</tspan> · 다중 에이전트 경로</text>
+      <text x="20" y="130"><tspan font-weight="700" fill="#7F1D1D">PPO RL · Monte Carlo</tspan> · 강화학습·검증</text>
+    </g>
+  </g>
+
+  <!-- Tech category 2: Infrastructure -->
+  <g transform="translate(450, 1020)">
+    <rect width="370" height="150" rx="12" fill="#EFF6FF" stroke="#93C5FD" stroke-width="1"/>
+    <text x="20" y="28" font-size="13" font-weight="800" fill="#0F1E3D">⚡ Infrastructure · 인프라</text>
+    <line x1="20" y1="36" x2="350" y2="36" stroke="#93C5FD" stroke-width="1"/>
+    <g font-size="11" fill="#374151">
+      <text x="20" y="58"><tspan font-weight="700" fill="#0F1E3D">CUDA Streams</tspan> · GPU 동적 코어 분할</text>
+      <text x="20" y="76"><tspan font-weight="700" fill="#0F1E3D">Edge Computing</tspan> · 시설 내부 추론</text>
+      <text x="20" y="94"><tspan font-weight="700" fill="#0F1E3D">WebSocket</tspan> · 실시간 양방향 통신</text>
+      <text x="20" y="112"><tspan font-weight="700" fill="#0F1E3D">100ms Lock-Free</tspan> · 이중 버퍼 동기화</text>
+      <text x="20" y="130"><tspan font-weight="700" fill="#0F1E3D">3-Tier Cache</tspan> · Cloud-Edge-Device</text>
+    </g>
+  </g>
+
+  <!-- Tech category 3: Data & Standards -->
+  <g transform="translate(850, 1020)">
+    <rect width="370" height="150" rx="12" fill="#F5F3FF" stroke="#C4B5FD" stroke-width="1"/>
+    <text x="20" y="28" font-size="13" font-weight="800" fill="#4C1D95">📊 Data Standards · 데이터·표준</text>
+    <line x1="20" y1="36" x2="350" y2="36" stroke="#C4B5FD" stroke-width="1"/>
+    <g font-size="11" fill="#374151">
+      <text x="20" y="58"><tspan font-weight="700" fill="#4C1D95">BIM / IFC</tspan> · 건축 정보 모델 표준</text>
+      <text x="20" y="76"><tspan font-weight="700" fill="#4C1D95">WiFi RSSI Fingerprint</tspan> · 위치 지문</text>
+      <text x="20" y="94"><tspan font-weight="700" fill="#4C1D95">NFPA 101</tspan> · 인명 안전 코드</text>
+      <text x="20" y="112"><tspan font-weight="700" fill="#4C1D95">IMO SOLAS II-2</tspan> · 선박 방화 규정</text>
+      <text x="20" y="130"><tspan font-weight="700" fill="#4C1D95">ISO 27001 · GDPR</tspan> · 정보 보안 표준</text>
+    </g>
+  </g>
+
+  <!-- Tech category 4: Verification & Safety -->
+  <g transform="translate(1250, 1020)">
+    <rect width="300" height="150" rx="12" fill="#F0FDF4" stroke="#86EFAC" stroke-width="1"/>
+    <text x="20" y="28" font-size="13" font-weight="800" fill="#15803D">🛡️ Safety Layers · 안전 계층</text>
+    <line x1="20" y1="36" x2="280" y2="36" stroke="#86EFAC" stroke-width="1"/>
+    <g font-size="11" fill="#374151">
+      <text x="20" y="58"><tspan font-weight="700" fill="#15803D">MC Verification</tspan> · 99% 신뢰</text>
+      <text x="20" y="76"><tspan font-weight="700" fill="#15803D">Auto Rollback</tspan> · 110% 임계</text>
+      <text x="20" y="94"><tspan font-weight="700" fill="#15803D">α=2.0 Margin</tspan> · 취약계층</text>
+      <text x="20" y="112"><tspan font-weight="700" fill="#15803D">STRT</tspan> · 시공간 예약</text>
+      <text x="20" y="130"><tspan font-weight="700" fill="#15803D">30s Cache</tspan> · 무중단 폴백</text>
+    </g>
+  </g>
+
+  <!-- ============== FOOTER ============== -->
+  <rect x="20" y="1210" width="1560" height="56" rx="14" fill="#0A0E1A" filter="url(#dropShadow)"/>
+  <text x="40" y="1238" font-size="11" font-weight="700" letter-spacing="1.5" fill="#C9A961">⚖️ 출원 전략 · 1차: ① ⑤ (Q2 2026) → 2차: ② ③ (Q3 2026) → 3차: ④ (Q4 2026)</text>
+  <text x="40" y="1256" font-size="10" fill="#94A3B8">PCT 진입: 2027 Q2~Q4 (우선권 12개월 내) · 최종 포트폴리오: 기존 5건 + 신규 5건 = 총 10건 특허</text>
+  <text x="1560" y="1238" text-anchor="end" font-size="11" font-weight="700" fill="#FDE68A">FireNavi · Next-Gen Patent Portfolio v1.0</text>
+  <text x="1560" y="1256" text-anchor="end" font-size="10" fill="#94A3B8">© 2026 FireNavi · 심재우 (jaiwshim@gmail.com) · All Rights Reserved</text>
+
+  <!-- Decorative gold accent line -->
+  <rect x="20" y="1204" width="1560" height="3" rx="2" fill="url(#goldGrad)"/>
+</svg>
