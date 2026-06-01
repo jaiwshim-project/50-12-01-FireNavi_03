@@ -1,0 +1,1856 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BTS 대형공연장 화재대피 시뮬레이션 — FireNavi v2.0 Lab</title>
+<style>
+  * { margin:0; padding:0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background: #0F1729; color: #E8EAED; overflow-x: hidden;
+  }
+  .header {
+    background: linear-gradient(135deg, #1a1f35 0%, #0f1420 100%);
+    padding: 24px 32px; border-bottom: 2px solid rgba(201,169,97,0.3);
+  }
+  .header h1 {
+    font-size: 1.8rem; color: #C9A961; margin-bottom: 8px;
+    text-shadow: 0 2px 8px rgba(201,169,97,0.4);
+  }
+  .header p { color: rgba(255,255,255,0.7); font-size: 0.95rem; }
+  .container {
+    display: flex; gap: 20px; padding: 20px; max-width: 1800px; margin: 0 auto;
+    flex-wrap: wrap;
+  }
+  .canvas-wrapper {
+    flex: 1; min-width: 800px; background: #1a1f35; border-radius: 12px;
+    padding: 20px; box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+  }
+  canvas {
+    display: block; background: #0a0e1a; border-radius: 8px;
+    box-shadow: inset 0 2px 12px rgba(0,0,0,0.6);
+    cursor: crosshair;
+  }
+  .controls {
+    width: 340px; background: #1a1f35; border-radius: 12px; padding: 20px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+    max-height: calc(100vh - 180px); overflow-y: auto;
+  }
+  .controls h3 {
+    color: #C9A961; font-size: 1.1rem; margin-bottom: 16px;
+    padding-bottom: 12px; border-bottom: 2px solid rgba(201,169,97,0.2);
+  }
+  .btn {
+    width: 100%; padding: 12px 16px; margin-bottom: 10px;
+    background: linear-gradient(135deg, #C9A961 0%, #B89850 100%);
+    color: #0F1729; border: none; border-radius: 8px;
+    font-weight: 700; font-size: 0.95rem; cursor: pointer;
+    transition: all 0.3s; box-shadow: 0 4px 12px rgba(201,169,97,0.3);
+  }
+  .btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(201,169,97,0.5);
+  }
+  .btn.secondary {
+    background: linear-gradient(135deg, #2a3447 0%, #1f2937 100%);
+    color: #C9A961; box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  }
+  .stats {
+    background: #0f1420; border-radius: 8px; padding: 16px; margin-top: 16px;
+    border-left: 4px solid #C9A961;
+  }
+  .stats .stat-row {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.1);
+  }
+  .stats .stat-row:last-child { border-bottom: none; }
+  .stats .stat-label { color: rgba(255,255,255,0.6); font-size: 0.88rem; }
+  .stats .stat-value {
+    color: #C9A961; font-weight: 700; font-size: 1.05rem;
+  }
+  .legend {
+    background: #0f1420; border-radius: 8px; padding: 16px; margin-top: 16px;
+  }
+  .legend-item {
+    display: flex; align-items: center; gap: 10px; padding: 6px 0;
+  }
+  .legend-color {
+    width: 24px; height: 24px; border-radius: 4px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+  }
+  .legend-label { font-size: 0.85rem; color: rgba(255,255,255,0.8); }
+  .info-box {
+    background: rgba(201,169,97,0.1); border: 1px solid rgba(201,169,97,0.3);
+    border-radius: 8px; padding: 14px; margin-top: 16px;
+    font-size: 0.88rem; color: rgba(255,255,255,0.8); line-height: 1.6;
+  }
+  .fire-click-hint {
+    text-align: center; padding: 12px; background: rgba(255,100,50,0.15);
+    border: 2px dashed rgba(255,100,50,0.4); border-radius: 8px;
+    color: #ffaa77; font-weight: 600; margin-top: 16px; font-size: 0.9rem;
+  }
+  .speed-control {
+    background: #0f1420; border-radius: 8px; padding: 16px; margin-top: 16px;
+    border-left: 4px solid #00ff88;
+  }
+  .speed-control h4 {
+    color: #00ff88; font-size: 0.95rem; margin-bottom: 12px;
+  }
+  .slider-container {
+    display: flex; align-items: center; gap: 12px; margin-bottom: 10px;
+  }
+  .slider {
+    flex: 1; -webkit-appearance: none; appearance: none; height: 6px;
+    background: rgba(255,255,255,0.1); border-radius: 3px; outline: none;
+  }
+  .slider::-webkit-slider-thumb {
+    -webkit-appearance: none; appearance: none;
+    width: 18px; height: 18px; background: #C9A961; border-radius: 50%;
+    cursor: pointer; box-shadow: 0 2px 8px rgba(201,169,97,0.5);
+  }
+  .slider::-moz-range-thumb {
+    width: 18px; height: 18px; background: #C9A961; border-radius: 50%;
+    cursor: pointer; border: none; box-shadow: 0 2px 8px rgba(201,169,97,0.5);
+  }
+  .speed-value {
+    color: #C9A961; font-weight: 700; font-size: 1rem; min-width: 40px;
+    text-align: right;
+  }
+  .speed-presets {
+    display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; margin-top: 10px;
+  }
+  .speed-preset {
+    padding: 6px 10px; background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1); border-radius: 6px;
+    color: rgba(255,255,255,0.7); font-size: 0.8rem; cursor: pointer;
+    text-align: center; transition: all 0.2s;
+  }
+  .speed-preset:hover {
+    background: rgba(201,169,97,0.2); border-color: #C9A961; color: #C9A961;
+  }
+  .mode-control {
+    background: #0f1420; border-radius: 8px; padding: 16px; margin-top: 16px;
+    border-left: 4px solid #00BFFF;
+  }
+  .mode-control h4 {
+    color: #00BFFF; font-size: 0.95rem; margin-bottom: 12px;
+  }
+  .mode-option {
+    display: flex; align-items: flex-start; gap: 10px; padding: 10px;
+    background: rgba(255,255,255,0.03); border-radius: 6px; margin-bottom: 8px;
+    cursor: pointer; transition: all 0.2s;
+  }
+  .mode-option:hover {
+    background: rgba(255,255,255,0.06);
+  }
+  .mode-option input[type="radio"] {
+    margin-top: 3px; cursor: pointer;
+  }
+  .mode-option-label {
+    flex: 1;
+  }
+  .mode-option-title {
+    color: rgba(255,255,255,0.9); font-weight: 700; font-size: 0.9rem;
+    margin-bottom: 4px;
+  }
+  .mode-option-desc {
+    color: rgba(255,255,255,0.6); font-size: 0.8rem; line-height: 1.4;
+  }
+  .fire-control {
+    background: #0f1420; border-radius: 8px; padding: 16px; margin-top: 16px;
+    border-left: 4px solid #ff6633;
+  }
+  .fire-control h4 {
+    color: #ff6633; font-size: 0.95rem; margin-bottom: 12px;
+  }
+  .fire-list {
+    display: flex; flex-direction: column; gap: 6px; margin-bottom: 10px;
+  }
+  .fire-item {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 8px 10px; background: rgba(255,100,50,0.1);
+    border-radius: 6px; border: 1px solid rgba(255,100,50,0.3);
+  }
+  .fire-item-label {
+    color: rgba(255,255,255,0.8); font-size: 0.85rem;
+  }
+  .fire-item-remove {
+    background: rgba(255,0,0,0.3); color: #ff6633; border: none;
+    padding: 4px 10px; border-radius: 4px; cursor: pointer; font-size: 0.8rem;
+    transition: all 0.2s;
+  }
+  .fire-item-remove:hover {
+    background: rgba(255,0,0,0.5);
+  }
+  .comparison-stats {
+    background: #0f1420; border-radius: 8px; padding: 16px; margin-top: 16px;
+    border-left: 4px solid #9C27B0;
+  }
+  .comparison-stats h4 {
+    color: #9C27B0; font-size: 0.95rem; margin-bottom: 12px;
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>🏟️ BTS 대형공연장 화재대피 시뮬레이션</h1>
+  <p>6만 명 수용 스타디움 • 원형 3층 관람석 • 중앙 무대 • 18개 출구 (층별 6방향) • 다국어 관객 6유형 • 실시간 군중 분산 안내</p>
+</div>
+
+<div class="container">
+  <div class="canvas-wrapper">
+    <canvas id="canvas" width="1000" height="800"></canvas>
+    <div class="fire-click-hint">
+      🔥 캔버스 내부를 클릭하여 화재 발생 위치를 변경할 수 있습니다
+    </div>
+  </div>
+
+  <div class="controls">
+    <h3>🎛️ 시뮬레이션 제어</h3>
+    <button class="btn" onclick="startSimulation()">▶️ 시뮬레이션 시작</button>
+    <button class="btn secondary" onclick="pauseSimulation()">⏸️ 일시정지</button>
+    <button class="btn secondary" onclick="resetSimulation()">🔄 리셋</button>
+
+    <div class="mode-control">
+      <h4>🤖 대피 안내 모드</h4>
+      <div class="mode-option" onclick="selectMode('panic')">
+        <input type="radio" name="mode" id="mode-panic" value="panic">
+        <div class="mode-option-label">
+          <div class="mode-option-title">❌ 패닉 모드 (AI 없음)</div>
+          <div class="mode-option-desc">출구 랜덤 선택 (50%) + 가까운 곳 (50%). 서로 밀치고 좌충우돌. 넘어짐·압사 발생. 화재 무시.</div>
+        </div>
+      </div>
+      <div class="mode-option" onclick="selectMode('ai')">
+        <input type="radio" name="mode" id="mode-ai" value="ai" checked>
+        <div class="mode-option-label">
+          <div class="mode-option-title">✅ FireNavi AI 모드</div>
+          <div class="mode-option-desc">취약계층 우선, 화재 회피, 출구 분산, 압사 방지. 개인별 안전 경로 자동 안내.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="fire-control">
+      <h4>🔥 화재 발생 지점</h4>
+      <div class="fire-list" id="fireList"></div>
+      <button class="btn secondary" onclick="addFirePoint()" id="addFireBtn">+ 화재 지점 추가 (0/3)</button>
+      <div style="margin-top: 10px; padding: 8px; background: rgba(255,100,50,0.1); border-radius: 6px; font-size: 0.8rem; color: rgba(255,255,255,0.7);">
+        💡 캔버스 클릭으로도 화재 위치 추가/변경 가능
+      </div>
+    </div>
+
+    <div class="speed-control">
+      <h4>⚡ 시뮬레이션 속도</h4>
+      <div class="slider-container">
+        <input type="range" min="0.1" max="2" step="0.1" value="1" class="slider" id="speedSlider" oninput="updateSpeed(this.value)">
+        <span class="speed-value" id="speedValue">1.0x</span>
+      </div>
+      <div class="speed-presets">
+        <div class="speed-preset" onclick="setSpeed(0.1)">0.1x</div>
+        <div class="speed-preset" onclick="setSpeed(0.3)">0.3x</div>
+        <div class="speed-preset" onclick="setSpeed(0.5)">0.5x</div>
+        <div class="speed-preset" onclick="setSpeed(0.7)">0.7x</div>
+        <div class="speed-preset" onclick="setSpeed(1.0)">1.0x</div>
+        <div class="speed-preset" onclick="setSpeed(1.5)">1.5x</div>
+      </div>
+    </div>
+
+    <div class="stats">
+      <div class="stat-row">
+        <span class="stat-label">전체 관객</span>
+        <span class="stat-value" id="totalPeople">60,000</span>
+      </div>
+      <div class="stat-row">
+        <span class="stat-label">대피 완료</span>
+        <span class="stat-value" id="evacuated">0</span>
+      </div>
+      <div class="stat-row">
+        <span class="stat-label">대피 중</span>
+        <span class="stat-value" id="evacuating">0</span>
+      </div>
+      <div class="stat-row">
+        <span class="stat-label">평균 대피시간</span>
+        <span class="stat-value" id="avgTime">0초</span>
+      </div>
+      <div class="stat-row">
+        <span class="stat-label">출구 분산율</span>
+        <span class="stat-value" id="distribution">0%</span>
+      </div>
+      <div class="stat-row">
+        <span class="stat-label">안전 출구 배정율</span>
+        <span class="stat-value" id="safeExitRate">0%</span>
+      </div>
+      <div class="stat-row" style="background: rgba(255,150,0,0.1);">
+        <span class="stat-label">취약계층 대피완료</span>
+        <span class="stat-value" id="vulnerableEvacuated" style="color: #FF9800;">0/0</span>
+      </div>
+    </div>
+
+    <div class="comparison-stats">
+      <h4>📊 모드 비교 결과</h4>
+      <div class="stat-row">
+        <span class="stat-label">현재 모드</span>
+        <span class="stat-value" id="currentMode">FireNavi AI</span>
+      </div>
+      <div class="stat-row">
+        <span class="stat-label">압사 위험 지역</span>
+        <span class="stat-value" id="crushRiskZones" style="color: #F44336;">0</span>
+      </div>
+      <div class="stat-row">
+        <span class="stat-label">화재 노출 인원</span>
+        <span class="stat-value" id="fireExposure" style="color: #FF9800;">0</span>
+      </div>
+      <div class="stat-row" style="background: rgba(255,100,50,0.1);">
+        <span class="stat-label">화재 확산 상태</span>
+        <span class="stat-value" id="fireSpreadStatus" style="color: #FF6633;">-</span>
+      </div>
+      <div class="stat-row" style="background: rgba(255,0,0,0.1);">
+        <span class="stat-label">넘어진 관객</span>
+        <span class="stat-value" id="fallenCount" style="color: #FFAA00;">0</span>
+      </div>
+      <div class="stat-row" style="background: rgba(255,0,0,0.2);">
+        <span class="stat-label">압사 사고</span>
+        <span class="stat-value" id="crushedCount" style="color: #FF0000;">0</span>
+      </div>
+    </div>
+
+    <div class="legend">
+      <h3 style="font-size: 0.95rem; margin-bottom: 12px;">관객 유형 (6종)</h3>
+      <div class="legend-item">
+        <div class="legend-color" style="background: #4CAF50;"></div>
+        <div class="legend-label">건강한 성인 (40%)</div>
+      </div>
+      <div class="legend-item">
+        <div class="legend-color" style="background: #2196F3;"></div>
+        <div class="legend-label">어린이·청소년 (25%)</div>
+      </div>
+      <div class="legend-item">
+        <div class="legend-color" style="background: #FF9800;"></div>
+        <div class="legend-label">고령자 (10%)</div>
+      </div>
+      <div class="legend-item">
+        <div class="legend-color" style="background: #F44336;"></div>
+        <div class="legend-label">장애인·휠체어 (5%)</div>
+      </div>
+      <div class="legend-item">
+        <div class="legend-color" style="background: #9C27B0;"></div>
+        <div class="legend-label">임산부·영유아 (5%)</div>
+      </div>
+      <div class="legend-item">
+        <div class="legend-color" style="background: #FFEB3B;"></div>
+        <div class="legend-label">외국인 관객 (15%)</div>
+      </div>
+    </div>
+
+    <div class="legend" style="border-left-color: #FF00FF;">
+      <h3 style="font-size: 0.95rem; margin-bottom: 12px; color: #FF00FF;">🎤 공연장 구조</h3>
+      <div class="legend-item">
+        <div class="legend-color" style="background: linear-gradient(135deg, #FF00FF 0%, #FFD700 50%, #00FFFF 100%);"></div>
+        <div class="legend-label">공연 무대 (대피 불가)</div>
+      </div>
+      <div class="legend-item">
+        <div class="legend-color" style="background: rgba(33,150,243,0.6);"></div>
+        <div class="legend-label">♿ 모든 출구 무장애 (18개)</div>
+      </div>
+      <div class="legend-item">
+        <div class="legend-color" style="background: rgba(255,152,0,0.6);"></div>
+        <div class="legend-label">🛗/🚶 층간 이동 시설</div>
+      </div>
+    </div>
+
+    <div class="info-box">
+      <strong>🌍 다국어 안내 지원</strong><br>
+      한국어·영어·일본어·중국어·스페인어·태국어 6개 언어로 개인별 대피 안내가 자동 전송됩니다.<br><br>
+      <strong>🔥 화재 위험 기반 출구 배정</strong><br>
+      • 출구-화재 거리 분석<br>
+      • 대피 경로-화재 교차 체크<br>
+      • 실시간 혼잡도 반영<br>
+      • 가까워도 위험한 출구는 자동 제외<br>
+      • 멀어도 안전한 출구를 우선 안내<br><br>
+      <strong>⚖️ 거리-혼잡도 밸런싱 원칙</strong><br>
+      • 혼잡도 페널티 ≤ 거리의 1.5배<br>
+      • 2배 먼 출구는 매우 혼잡해도 선택 안 됨<br>
+      • 장애인: 가까운 무장애 출구 우선<br>
+      • 압사 위험 시에만 먼 출구로 분산
+    </div>
+
+    <div class="info-box" style="background: rgba(100,200,255,0.1); border-color: rgba(100,200,255,0.3);">
+      <strong>💡 BTS 공연장 특화 기능</strong><br>
+      • 티켓 좌석정보 기반 개인별 경로<br>
+      • 동행자 그룹 동기화<br>
+      • VIP석·장애인석 우선 지원<br>
+      • 스탠딩존 관객 분산 대피
+    </div>
+
+    <div class="info-box" style="background: rgba(255,150,0,0.1); border-color: rgba(255,150,0,0.3);">
+      <strong>♿ 취약계층 우선 대피 시스템</strong><br>
+      <strong>우선순위 0 (최우선):</strong> 장애인·휠체어<br>
+      • **모든 출구 무장애** (장애인 접근성 법규 준수)<br>
+      • 가장 가까운 출구 자동 배정<br>
+      • 즉시 이동 시작 (100% 속도)<br><br>
+      <strong>우선순위 1:</strong> 고령자·임산부<br>
+      • 화재 위험 민감도 +50% 적용<br>
+      • 출구 배정 및 이동 시작 우선권<br>
+      • 즉시 이동 시작 (100% 속도)<br><br>
+      <strong>우선순위 3 (일반):</strong> 성인·청소년·외국인<br>
+      • 취약계층 70% 대피 시까지 <strong>속도 20%</strong> (자리 지키기)<br>
+      • 이후 100% 속도로 대피 시작<br>
+      • 취약계층 배정 후 잔여 출구 배정<br><br>
+      <strong>🏟️ 원형 스타디움 구조 (3층 건물)</strong><br>
+      • 중앙: 원형 공연 무대 (반경 120m)<br>
+      • 1층: 필드객석(링) + 1층객석(링) + VIP석 → 1층 출구 6개<br>
+      • 2층: 2층 스탠드(링) → 2층 전용 출구 6개<br>
+      • 3층: 3층 스탠드(링) → 3층 전용 출구 6개<br>
+      • 각 층 관객은 **같은 층 출구**로만 대피 (위층 이동 없음)<br>
+      • 엘리베이터(🛗) 2대, 계단(🚶) 6개 - 층간 이동용<br>
+      • **총 18개 출구 모두 무장애** (경사로/넓은 통로 완비)<br>
+      • 각 층 6방향 균등 배치 → 모든 관객이 가까운 출구 이용
+    </div>
+  </div>
+</div>
+
+<script>
+const canvas = document.getElementById('canvas');
+const ctx = canvas.getContext('2d');
+
+// 공연장 구조 (6만 명 수용 스타디움)
+const STADIUM_WIDTH = 1000;
+const STADIUM_HEIGHT = 800;
+const NUM_PEOPLE = 60000; // 실제로는 샘플링하여 표시
+const DISPLAY_SAMPLE = 5000; // 화면에 표시할 샘플 수 (증가 - 혼잡도 명확화)
+
+// 공연 무대 정의 (중앙 원형)
+const STAGE = {
+  x: 500,
+  y: 400,
+  radius: 120,
+  name: '🎤 공연 무대'
+};
+
+// 구역 정의 (원형 링 구조 - 중앙 무대를 둘러쌈)
+const ZONES = [
+  // 1층 필드객석 (무대 바로 앞)
+  { name: 'A구역(필드객석)', centerX: 500, centerY: 400, innerRadius: 130, outerRadius: 200, capacity: 15000, floor: 1, color: 'rgba(255,200,100,0.15)' },
+
+  // 1층 객석 (원형 링)
+  { name: 'B구역(1층객석)', centerX: 500, centerY: 400, innerRadius: 210, outerRadius: 280, capacity: 18000, floor: 1, color: 'rgba(100,150,200,0.15)' },
+
+  // 2층 스탠드 (원형 링, 1층보다 바깥쪽)
+  { name: 'C구역(2층스탠드)', centerX: 500, centerY: 400, innerRadius: 290, outerRadius: 350, capacity: 12000, floor: 2, color: 'rgba(150,100,200,0.15)' },
+
+  // 3층 스탠드 (원형 링, 가장 바깥쪽)
+  { name: 'D구역(3층스탠드)', centerX: 500, centerY: 400, innerRadius: 360, outerRadius: 410, capacity: 9000, floor: 3, color: 'rgba(200,100,150,0.15)' },
+
+  // VIP석 (무대 앞 특별석)
+  { name: 'VIP석(1층)', x: 400, y: 250, w: 200, h: 40, capacity: 6000, floor: 1, isRect: true, color: 'rgba(201,169,97,0.2)' }
+];
+
+// 출구 정의 (16개 출구 - 원형 배치, 층별 분리)
+const EXITS = [
+  // 1층 출구 (6개) - 1층 객석 외곽 원형 배치
+  { id: 1, x: 200, y: 400, label: '1번 출구(1층)', capacity: 100, floor: 1, type: 'accessible', symbol: '♿' },
+  { id: 2, x: 800, y: 400, label: '2번 출구(1층)', capacity: 100, floor: 1, type: 'accessible', symbol: '♿' },
+  { id: 3, x: 350, y: 200, label: '3번 출구(1층)', capacity: 100, floor: 1, type: 'accessible', symbol: '♿' },
+  { id: 4, x: 650, y: 200, label: '4번 출구(1층)', capacity: 100, floor: 1, type: 'accessible', symbol: '♿' },
+  { id: 5, x: 350, y: 600, label: '5번 출구(1층)', capacity: 80, floor: 1, type: 'accessible', symbol: '♿' },
+  { id: 6, x: 650, y: 600, label: '6번 출구(1층)', capacity: 80, floor: 1, type: 'accessible', symbol: '♿' },
+
+  // 2층 출구 (6개) - 2층 스탠드 외곽 6방향 균등 배치
+  { id: 7, x: 150, y: 400, label: '7번 출구(2층)', capacity: 80, floor: 2, type: 'accessible', symbol: '♿' },
+  { id: 8, x: 850, y: 400, label: '8번 출구(2층)', capacity: 80, floor: 2, type: 'accessible', symbol: '♿' },
+  { id: 9, x: 300, y: 170, label: '9번 출구(2층)', capacity: 80, floor: 2, type: 'accessible', symbol: '♿' },
+  { id: 10, x: 700, y: 170, label: '10번 출구(2층)', capacity: 80, floor: 2, type: 'accessible', symbol: '♿' },
+  { id: 11, x: 300, y: 630, label: '11번 출구(2층)', capacity: 80, floor: 2, type: 'accessible', symbol: '♿' },
+  { id: 12, x: 700, y: 630, label: '12번 출구(2층)', capacity: 80, floor: 2, type: 'accessible', symbol: '♿' },
+
+  // 3층 출구 (6개) - 3층 스탠드 외곽 6방향 균등 배치
+  { id: 13, x: 100, y: 400, label: '13번 출구(3층)', capacity: 70, floor: 3, type: 'accessible', symbol: '♿' },
+  { id: 14, x: 900, y: 400, label: '14번 출구(3층)', capacity: 70, floor: 3, type: 'accessible', symbol: '♿' },
+  { id: 15, x: 250, y: 130, label: '15번 출구(3층)', capacity: 70, floor: 3, type: 'accessible', symbol: '♿' },
+  { id: 16, x: 750, y: 130, label: '16번 출구(3층)', capacity: 70, floor: 3, type: 'accessible', symbol: '♿' },
+  { id: 17, x: 250, y: 670, label: '17번 출구(3층)', capacity: 70, floor: 3, type: 'accessible', symbol: '♿' },
+  { id: 18, x: 750, y: 670, label: '18번 출구(3층)', capacity: 70, floor: 3, type: 'accessible', symbol: '♿' }
+];
+
+// 관객 유형 정의 (6종)
+const PERSON_TYPES = [
+  { name: '건강한 성인', speed: 2.5, color: '#4CAF50', ratio: 0.40, vulnerable: false, priority: 3 },
+  { name: '어린이·청소년', speed: 2.2, color: '#2196F3', ratio: 0.25, vulnerable: false, priority: 3 },
+  { name: '고령자', speed: 1.5, color: '#FF9800', ratio: 0.10, vulnerable: true, priority: 1 },
+  { name: '장애인·휠체어', speed: 1.0, color: '#F44336', ratio: 0.05, vulnerable: true, priority: 0 },
+  { name: '임산부·영유아', speed: 1.3, color: '#9C27B0', ratio: 0.05, vulnerable: true, priority: 1 },
+  { name: '외국인 관객', speed: 2.3, color: '#FFEB3B', ratio: 0.15, vulnerable: false, priority: 3 }
+];
+
+// 무장애 출구 정의 (모든 출구가 무장애)
+const ACCESSIBLE_EXITS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18]; // 모든 출구
+
+// 층간 이동 시설 (엘리베이터, 계단)
+const VERTICAL_FACILITIES = [
+  // 1층-2층-3층 연결 시설
+  { x: 50, y: 400, type: 'elevator', label: 'EV-A', floors: [1,2,3] },
+  { x: 950, y: 400, type: 'stairs', label: '계단-B', floors: [1,2,3] },
+
+  // 2층-3층 연결 시설
+  { x: 200, y: 520, type: 'stairs', label: '계단-C', floors: [2,3] },
+  { x: 800, y: 520, type: 'stairs', label: '계단-D', floors: [2,3] }
+];
+
+// 시뮬레이션 상태
+let people = [];
+let fires = [{
+  x: 300,
+  y: 500,
+  initialRadius: 60,        // 초기 반경
+  currentRadius: 60,        // 현재 반경
+  maxRadius: 180,           // 최대 반경
+  spreadRate: 8,            // 확산 속도 (픽셀/초)
+  startTime: 0              // 화재 발생 시각
+}]; // 다중 화재 지점 (동적 확산)
+let isRunning = false;
+let isPaused = false;
+let animationId = null;
+let startTime = 0;
+let evacuatedCount = 0;
+let totalEvacuationTime = 0;
+let simulationSpeed = 1.0; // 시뮬레이션 속도 배율
+let evacuationMode = 'ai'; // 'panic' 또는 'ai'
+
+// 초기화
+function init() {
+  console.log('Init 시작');
+  people = [];
+  evacuatedCount = 0;
+  totalEvacuationTime = 0;
+
+  updateFireList();
+  console.log('Fires:', fires.length);
+
+  // 관객 생성 (구역별 배치 - 정렬된 형태)
+  const peoplePerZone = Math.floor(DISPLAY_SAMPLE / ZONES.length);
+
+  for (let zone of ZONES) {
+    const zoneCapacity = peoplePerZone;
+
+    // VIP석은 사각형 구역 (기존 방식)
+    if (zone.isRect) {
+      const cols = Math.ceil(Math.sqrt(zoneCapacity * (zone.w / zone.h)));
+      const rows = Math.ceil(zoneCapacity / cols);
+      const spacingX = zone.w / (cols + 1);
+      const spacingY = zone.h / (rows + 1);
+
+      for (let r = 0; r < rows; r++) {
+        for (let c = 0; c < cols; c++) {
+          if (people.length >= DISPLAY_SAMPLE) break;
+
+          const personType = selectPersonType();
+          const personX = zone.x + spacingX * (c + 1);
+          const personY = zone.y + spacingY * (r + 1);
+
+          people.push(createPerson(personX, personY, personType, zone.name));
+        }
+      }
+    } else {
+      // 원형 링 구역: 극좌표계 배치
+      const centerX = zone.centerX;
+      const centerY = zone.centerY;
+      const innerR = zone.innerRadius;
+      const outerR = zone.outerRadius;
+
+      // 방사형으로 배치
+      const numRows = Math.ceil((outerR - innerR) / 8); // 반경 방향 행 수
+      const numPerRow = Math.ceil(zoneCapacity / numRows); // 각 행당 인원
+
+      for (let row = 0; row < numRows; row++) {
+        if (people.length >= DISPLAY_SAMPLE) break;
+
+        const radius = innerR + (outerR - innerR) * (row + 0.5) / numRows;
+        const circumference = 2 * Math.PI * radius;
+        const angleDelta = Math.min(2 * Math.PI / numPerRow, 0.1); // 각도 간격
+
+        for (let i = 0; i < numPerRow; i++) {
+          if (people.length >= DISPLAY_SAMPLE) break;
+
+          const angle = i * angleDelta;
+          const personX = centerX + radius * Math.cos(angle);
+          const personY = centerY + radius * Math.sin(angle);
+
+          // 캔버스 범위 체크
+          if (personX < 10 || personX > STADIUM_WIDTH - 10 ||
+              personY < 10 || personY > STADIUM_HEIGHT - 10) continue;
+
+          const personType = selectPersonType();
+          people.push(createPerson(personX, personY, personType, zone.name));
+        }
+      }
+    }
+  }
+
+  // 헬퍼 함수: 관객 유형 선택
+  function selectPersonType() {
+    const typeRand = Math.random();
+    let cumulative = 0;
+    for (let t of PERSON_TYPES) {
+      cumulative += t.ratio;
+      if (typeRand < cumulative) {
+        return t;
+      }
+    }
+    return PERSON_TYPES[0];
+  }
+
+  // 헬퍼 함수: 관객 객체 생성
+  function createPerson(x, y, personType, zoneName) {
+    // 해당 구역의 층 정보 찾기
+    const zone = ZONES.find(z => z.name === zoneName);
+    const personFloor = zone ? zone.floor : 1;
+
+    return {
+      x: x,
+      y: y,
+      vx: 0,
+      vy: 0,
+      type: personType,
+      targetExit: null,
+      evacuated: false,
+      startEvacTime: 0,
+      zone: zoneName,
+      floor: personFloor,  // 층 정보 추가
+      waitingForVulnerable: !personType.vulnerable,
+      fallen: false,
+      crushed: false,
+      trampledCount: 0
+    };
+  }
+
+  console.log('관객 생성 완료:', people.length);
+
+  // 층별 관객 수 확인
+  const floor1 = people.filter(p => p.floor === 1).length;
+  const floor2 = people.filter(p => p.floor === 2).length;
+  const floor3 = people.filter(p => p.floor === 3).length;
+  console.log(`층별 관객: 1층=${floor1}, 2층=${floor2}, 3층=${floor3}`);
+
+  updateStats();
+  draw();
+  console.log('Init 완료');
+}
+
+// 출구 배정 (모드별 분기)
+function assignExits() {
+  if (evacuationMode === 'panic') {
+    assignExitsPanicMode();
+  } else {
+    assignExitsAIMode();
+  }
+}
+
+// 패닉 모드: AI 없이 완전 랜덤으로 출구 선택 (좌충우돌)
+function assignExitsPanicMode() {
+  for (let person of people) {
+    if (person.evacuated) continue;
+
+    // 같은 층의 출구만 필터링
+    const sameFloorExits = EXITS.filter(e => e.floor === person.floor);
+    if (sameFloorExits.length === 0) continue;
+
+    // 완전 랜덤으로 출구 선택 (50%)
+    // 또는 가장 가까운 출구 (50%)
+    const useRandom = Math.random() < 0.5;
+
+    if (useRandom) {
+      // 완전 랜덤: 같은 층 출구 중 무작위 선택
+      const randomIndex = Math.floor(Math.random() * sameFloorExits.length);
+      person.targetExit = sameFloorExits[randomIndex];
+    } else {
+      // 가장 가까운 출구 (같은 층 내에서, 실제 이동 거리 기준)
+      const distances = sameFloorExits.map(e => {
+        const dist = calculateActualDistance(person.x, person.y, e.x, e.y);
+        return { exit: e, dist: dist };
+      });
+      distances.sort((a, b) => a.dist - b.dist);
+      person.targetExit = distances[0].exit;
+    }
+
+    // 장애인도 계단 출구로 배정 (비현실적이지만 패닉 상황)
+    // 취약계층 우선권 없음
+    // 화재 위험 완전 무시
+    // 혼잡도 완전 무시
+  }
+}
+
+// AI 모드: FireNavi 알고리즘 (취약계층 우선 + 화재 위험도 + 혼잡도 기반 분산)
+function assignExitsAIMode() {
+  const exitLoads = EXITS.map(e => ({ exit: e, load: 0, vulnerableLoad: 0 }));
+
+  // 우선순위별로 정렬 (취약계층 먼저 배정)
+  const sortedPeople = [...people]
+    .filter(p => !p.evacuated)
+    .sort((a, b) => a.type.priority - b.type.priority);
+
+  for (let person of sortedPeople) {
+    // 같은 층의 출구만 필터링
+    const sameFloorExits = EXITS.filter(e => e.floor === person.floor);
+    if (sameFloorExits.length === 0) continue;
+
+    // 각 출구 평가 (같은 층 내에서만)
+    const exitScores = sameFloorExits.map(e => {
+      // 1. 관객-출구 실제 이동 거리 (무대 장애물 고려)
+      const distToExit = calculateActualDistance(person.x, person.y, e.x, e.y);
+
+      // 장애인·휠체어는 무장애 출구만 배정
+      if (person.type.name === '장애인·휠체어') {
+        if (!ACCESSIBLE_EXITS.includes(e.id)) {
+          return { exit: e, score: 999999 }; // 접근 불가능한 출구 제외
+        }
+      }
+
+      // 2. 화재 위험 체크 (동적 확산 기반)
+      let fireDanger = 0;
+      let dangerLevel = 0; // 0~1 사이 위험도
+
+      for (let fire of fires) {
+        const currentRadius = fire.currentRadius;
+
+        // 출구-화재 거리
+        const exitFireDx = e.x - fire.x;
+        const exitFireDy = e.y - fire.y;
+        const exitFireDist = Math.sqrt(exitFireDx * exitFireDx + exitFireDy * exitFireDy);
+
+        // 경로가 화재를 통과하는지 체크
+        const pathFireDist = pointToLineDistance(fire.x, fire.y, person.x, person.y, e.x, e.y);
+
+        // 위험 구역 정의 (동적)
+        const criticalZone = currentRadius * 1.5;  // 매우 위험 (폐쇄 고려)
+        const dangerZone = currentRadius * 2.5;    // 위험 (높은 페널티)
+        const warningZone = currentRadius * 3.5;   // 경고 (보통 페널티)
+
+        // 출구 위험도 계산 (0~1)
+        let exitDanger = 0;
+        if (exitFireDist < criticalZone) {
+          // 매우 위험: 화재 확산에 따라 점진적 폐쇄
+          exitDanger = 1 - (exitFireDist / criticalZone);
+
+          // 폐쇄 임계값: 위험도 0.7 이상이면 완전 폐쇄
+          if (exitDanger > 0.7) {
+            return { exit: e, score: 999999, dangerLevel: exitDanger };
+          }
+
+          // 아직 폐쇄 전: 높은 페널티 (거리의 500%)
+          fireDanger += exitDanger * distToExit * 5;
+        } else if (exitFireDist < dangerZone) {
+          // 위험: 보통 페널티
+          exitDanger = 1 - (exitFireDist - criticalZone) / (dangerZone - criticalZone);
+          fireDanger += exitDanger * distToExit * 2;
+        } else if (exitFireDist < warningZone) {
+          // 경고: 낮은 페널티
+          exitDanger = 1 - (exitFireDist - dangerZone) / (warningZone - dangerZone);
+          fireDanger += exitDanger * distToExit * 0.5;
+        }
+
+        dangerLevel = Math.max(dangerLevel, exitDanger);
+
+        // 경로 위험도 계산
+        if (pathFireDist < currentRadius * 1.5) {
+          const pathDanger = 1 - (pathFireDist / (currentRadius * 1.5));
+
+          // 경로가 화재를 직접 통과하면 더 높은 페널티
+          if (pathDanger > 0.5) {
+            fireDanger += pathDanger * distToExit * 3;
+          } else {
+            fireDanger += pathDanger * distToExit * 1.5;
+          }
+        }
+      }
+
+      // 3. 가장 가까운 비상구 우선 (단순 거리 기반)
+      let score = distToExit;
+
+      // 화재 위험 추가 (거리보다 우선순위 높음)
+      score += fireDanger;
+
+      // 혼잡도만 약간 고려 (거리의 최대 20%까지만 영향)
+      const loadInfo = exitLoads.find(l => l.exit === e);
+      const crowdPenalty = Math.min(loadInfo.load * 3, distToExit * 0.2);
+      score += crowdPenalty;
+
+      return { exit: e, score: score, dangerLevel: dangerLevel };
+    });
+
+    // 점수가 가장 낮은 출구 선택 (낮을수록 가까움)
+    // 단, 위험도가 0.7 이상인 출구는 제외
+    exitScores.sort((a, b) => a.score - b.score);
+
+    person.targetExit = exitScores[0].exit;
+
+    // 출구 부하 업데이트
+    const loadInfo = exitLoads.find(l => l.exit === exitScores[0].exit);
+    loadInfo.load++;
+    if (person.type.vulnerable) {
+      loadInfo.vulnerableLoad++;
+    }
+  }
+}
+
+// 점-선분 거리 계산 (관객-출구 경로가 화재를 통과하는지 체크)
+function pointToLineDistance(px, py, x1, y1, x2, y2) {
+  const A = px - x1;
+  const B = py - y1;
+  const C = x2 - x1;
+  const D = y2 - y1;
+
+  const dot = A * C + B * D;
+  const lenSq = C * C + D * D;
+  let param = -1;
+
+  if (lenSq != 0) param = dot / lenSq;
+
+  let xx, yy;
+
+  if (param < 0) {
+    xx = x1;
+    yy = y1;
+  } else if (param > 1) {
+    xx = x2;
+    yy = y2;
+  } else {
+    xx = x1 + param * C;
+    yy = y1 + param * D;
+  }
+
+  const dx = px - xx;
+  const dy = py - yy;
+  return Math.sqrt(dx * dx + dy * dy);
+}
+
+// 실제 이동 거리 계산 (무대 장애물 고려)
+function calculateActualDistance(x1, y1, x2, y2) {
+  // 직선 거리
+  const dx = x2 - x1;
+  const dy = y2 - y1;
+  const straightDist = Math.sqrt(dx * dx + dy * dy);
+
+  // 직선이 무대를 통과하는지 체크
+  const stageDistToLine = pointToLineDistance(STAGE.x, STAGE.y, x1, y1, x2, y2);
+
+  // 무대를 통과하지 않으면 직선 거리 사용
+  if (stageDistToLine > STAGE.radius) {
+    return straightDist;
+  }
+
+  // 무대를 통과하면 우회 거리 계산
+  // 무대 중심을 기준으로 두 점의 각도 계산
+  const angle1 = Math.atan2(y1 - STAGE.y, x1 - STAGE.x);
+  const angle2 = Math.atan2(y2 - STAGE.y, x2 - STAGE.x);
+
+  // 두 점과 무대 중심까지의 거리
+  const r1 = Math.sqrt((x1 - STAGE.x) ** 2 + (y1 - STAGE.y) ** 2);
+  const r2 = Math.sqrt((x2 - STAGE.x) ** 2 + (y2 - STAGE.y) ** 2);
+
+  // 각도 차이 (짧은 쪽 호 선택)
+  let angleDiff = Math.abs(angle2 - angle1);
+  if (angleDiff > Math.PI) angleDiff = 2 * Math.PI - angleDiff;
+
+  // 각 점에서 무대 접선까지의 거리 (피타고라스 정리)
+  const clearanceRadius = STAGE.radius + 15; // 무대 반경 + 안전 여유
+
+  let tangentDist1 = 0;
+  if (r1 > clearanceRadius) {
+    tangentDist1 = Math.sqrt(r1 * r1 - clearanceRadius * clearanceRadius);
+  }
+
+  let tangentDist2 = 0;
+  if (r2 > clearanceRadius) {
+    tangentDist2 = Math.sqrt(r2 * r2 - clearanceRadius * clearanceRadius);
+  }
+
+  // 무대 외곽 호의 길이
+  const arcLength = clearanceRadius * angleDiff;
+
+  // 총 우회 거리 = 접선까지 거리1 + 호 길이 + 접선에서 도착지까지 거리2
+  const detourDist = tangentDist1 + arcLength + tangentDist2;
+
+  // 우회 거리가 직선 거리의 2배 이상이면 직선 페널티 적용 (밀고 통과)
+  if (detourDist > straightDist * 2) {
+    return straightDist * 1.3; // 밀고 지나가는 페널티 (30% 증가)
+  }
+
+  return detourDist;
+}
+
+// 화재 확산 업데이트
+function updateFireSpread() {
+  const currentTime = Date.now();
+  const elapsedSeconds = (currentTime - startTime) / 1000 * simulationSpeed;
+
+  for (let fire of fires) {
+    // 화재 확산: 시간에 따라 반경 증가
+    const newRadius = Math.min(
+      fire.initialRadius + fire.spreadRate * elapsedSeconds,
+      fire.maxRadius
+    );
+    fire.currentRadius = newRadius;
+  }
+}
+
+// 시뮬레이션 시작
+function startSimulation() {
+  if (!isRunning) {
+    isRunning = true;
+    isPaused = false;
+    startTime = Date.now();
+
+    // 화재 발생 시각 기록
+    for (let fire of fires) {
+      fire.startTime = startTime;
+      fire.currentRadius = fire.initialRadius;
+    }
+
+    assignExits();
+
+    // 출구별 배정 인원 로깅
+    const exitCounts = {};
+    for (let exit of EXITS) {
+      const count = people.filter(p => p.targetExit === exit).length;
+      exitCounts[exit.id] = count;
+    }
+    console.log('출구별 배정 인원:', exitCounts);
+
+    // 대피 시작 시간 기록
+    for (let person of people) {
+      if (!person.evacuated) {
+        person.startEvacTime = startTime;
+      }
+    }
+
+    animate();
+  } else if (isPaused) {
+    isPaused = false;
+    animate();
+  }
+}
+
+// 일시정지
+function pauseSimulation() {
+  isPaused = true;
+  if (animationId) {
+    cancelAnimationFrame(animationId);
+    animationId = null;
+  }
+}
+
+// 리셋
+function resetSimulation() {
+  isRunning = false;
+  isPaused = false;
+  if (animationId) {
+    cancelAnimationFrame(animationId);
+    animationId = null;
+  }
+  init();
+}
+
+// 화재 위치 클릭 추가/변경
+canvas.addEventListener('click', (e) => {
+  const rect = canvas.getBoundingClientRect();
+  const clickX = (e.clientX - rect.left) * (canvas.width / rect.width);
+  const clickY = (e.clientY - rect.top) * (canvas.height / rect.height);
+
+  if (fires.length < 3) {
+    // 3개 미만이면 새 화재 추가
+    fires.push({ x: clickX, y: clickY, radius: 80 });
+    updateFireList();
+  } else {
+    // 3개면 가장 가까운 화재 위치 변경
+    let closestFire = fires[0];
+    let minDist = Infinity;
+
+    for (let fire of fires) {
+      const dx = fire.x - clickX;
+      const dy = fire.y - clickY;
+      const dist = Math.sqrt(dx*dx + dy*dy);
+      if (dist < minDist) {
+        minDist = dist;
+        closestFire = fire;
+      }
+    }
+
+    closestFire.x = clickX;
+    closestFire.y = clickY;
+  }
+
+  if (isRunning) {
+    assignExits(); // 출구 재배정
+  }
+
+  draw();
+});
+
+// 애니메이션 루프
+function animate() {
+  if (!isRunning || isPaused) return;
+
+  updateFireSpread(); // 화재 확산 업데이트
+  update();
+  draw();
+  updateStats();
+
+  animationId = requestAnimationFrame(animate);
+}
+
+// 업데이트
+function update() {
+  // AI 모드에서만 취약계층 우선 대피 적용
+  if (evacuationMode === 'ai') {
+    // 취약계층 대피 진행률 체크
+    const vulnerablePeople = people.filter(p => p.type.vulnerable);
+    const vulnerableRemaining = vulnerablePeople.filter(p => !p.evacuated).length;
+    const vulnerableEvacuationRate = vulnerablePeople.length > 0 ?
+      1 - (vulnerableRemaining / vulnerablePeople.length) : 1;
+
+    // 취약계층 70% 이상 대피하면 일반인도 이동 시작
+    if (vulnerableEvacuationRate >= 0.7) {
+      for (let person of people) {
+        if (person.waitingForVulnerable) {
+          person.waitingForVulnerable = false;
+        }
+      }
+    }
+  } else {
+    // 패닉 모드에서는 모두 즉시 이동
+    for (let person of people) {
+      person.waitingForVulnerable = false;
+    }
+  }
+
+  // AI 모드에서만 취약계층 우선 정렬
+  const sortedPeople = evacuationMode === 'ai'
+    ? [...people].sort((a, b) => a.type.priority - b.type.priority)
+    : people;
+
+  for (let person of sortedPeople) {
+    if (person.evacuated) continue;
+
+    if (!person.targetExit) continue;
+
+    // AI 모드에서만 일반인 대기 로직 적용
+    let speedMultiplier = 1.0;
+    if (evacuationMode === 'ai' && person.waitingForVulnerable) {
+      speedMultiplier = 0.2; // 천천히 움직임 (자리 지키기)
+    }
+
+    // 목표 출구 방향 계산
+    const dx = person.targetExit.x - person.x;
+    const dy = person.targetExit.y - person.y;
+    const dist = Math.sqrt(dx*dx + dy*dy);
+
+    if (dist < 10) {
+      // 대피 완료
+      person.evacuated = true;
+      evacuatedCount++;
+      const evacuationTime = (Date.now() - person.startEvacTime) / 1000;
+      totalEvacuationTime += evacuationTime;
+      continue;
+    }
+
+    // 화재 회피 (AI 모드에서만 적용)
+    let avoidX = 0;
+    let avoidY = 0;
+
+    if (evacuationMode === 'ai') {
+      for (let fire of fires) {
+        const fireDx = person.x - fire.x;
+        const fireDy = person.y - fire.y;
+        const fireDist = Math.sqrt(fireDx*fireDx + fireDy*fireDy);
+
+        // 현재 확산된 반경의 2배 이내면 회피
+        if (fireDist < fire.currentRadius * 2) {
+          const avoidFactor = (fire.currentRadius * 2 - fireDist) / (fire.currentRadius * 2);
+          avoidX += (fireDx / fireDist) * avoidFactor * 3;
+          avoidY += (fireDy / fireDist) * avoidFactor * 3;
+        }
+      }
+    }
+
+    // 패닉 모드: 서로 밀치고 좌충우돌 (완전 혼돈)
+    let panicBoost = 1.0;
+    let randomX = 0;
+    let randomY = 0;
+
+    if (evacuationMode === 'panic') {
+      // 1. 출구 근처에서 속도 증가 (밀려서 빨라짐)
+      // 출구 혼잡도 계산 (압사 위험 판단용)
+      const distToExitPanic = Math.sqrt(dx*dx + dy*dy);
+      if (distToExitPanic < 150) {
+        panicBoost = 1.8; // 출구 근처에서 80% 속도 증가
+      }
+
+      // 2. 좌충우돌 (무작위 방향 흔들림)
+      randomX = (Math.random() - 0.5) * 4;
+      randomY = (Math.random() - 0.5) * 4;
+
+      // 3. 다른 사람을 밀치고 지나감 (주변 관객 밀어내기)
+      let nearbyCount = 0;
+      const exitCrowdCount = person.targetExit
+        ? people.filter(p => p.targetExit === person.targetExit && !p.evacuated).length
+        : 0;
+      const isCrowdedExit = exitCrowdCount > 500; // 500명 이상 몰린 출구
+      const isNearExit = distToExitPanic < 100; // 출구 100px 이내 (병목 구간)
+      const isCrushZone = isNearExit && isCrowdedExit; // 압사 위험 구역
+
+      for (let other of people) {
+        if (other === person || other.evacuated || other.crushed) continue;
+
+        const pushDx = person.x - other.x;
+        const pushDy = person.y - other.y;
+        const pushDist = Math.sqrt(pushDx*pushDx + pushDy*pushDy);
+
+        // 15픽셀 이내 접근 시 밀어냄 (충돌 범위 확대)
+        if (pushDist < 15 && pushDist > 0) {
+          nearbyCount++;
+          const pushForce = (15 - pushDist) / 15;
+          randomX += (pushDx / pushDist) * pushForce * 2;
+          randomY += (pushDy / pushDist) * pushForce * 2;
+
+          // 넘어짐 발생 조건: 압사 위험 구역 + 확률
+          if (!other.fallen) {
+            let fallChance = 0;
+
+            // 취약계층
+            if (other.type.vulnerable) {
+              if (isCrushZone) {
+                fallChance = 0.05; // 압사 위험 구역 5%
+              } else if (isNearExit) {
+                fallChance = 0.02; // 출구 근처 2%
+              } else {
+                fallChance = 0.005; // 일반 구역 0.5%
+              }
+            }
+            // 일반인
+            else {
+              if (isCrushZone) {
+                fallChance = 0.01; // 압사 위험 구역 1%
+              } else if (isNearExit) {
+                fallChance = 0.003; // 출구 근처 0.3%
+              }
+            }
+
+            if (Math.random() < fallChance) {
+              other.fallen = true;
+              other.trampledCount = 0; // 밟힌 횟수 초기화
+            }
+          }
+
+          // 넘어진 사람 위로 지나가면 밟힘 카운트 증가
+          if (other.fallen && !other.crushed) {
+            // 5픽셀 이내로 매우 가까이 접근하면 밟은 것으로 간주
+            if (pushDist < 5) {
+              other.trampledCount++;
+
+              // 5명 이상이 밟고 지나가면 압사
+              if (other.trampledCount >= 5) {
+                other.crushed = true;
+              }
+            }
+          }
+        }
+      }
+
+      // 4. 넘어진 사람은 움직이지 못함
+      if (person.fallen && !person.crushed) {
+        panicBoost = 0.05; // 거의 움직이지 못함
+      }
+
+      // 5. 압사 사고자는 완전히 멈춤
+      if (person.crushed) {
+        panicBoost = 0;
+      }
+
+      // 6. 취약계층도 똑같이 빠르게 (구분 없음)
+      if (person.type.vulnerable && !person.fallen && !person.crushed) {
+        panicBoost *= 1.3; // 취약계층도 패닉 상태에서는 빠르게 (비현실적)
+      }
+    }
+
+    // 이동 (속도 배율 + 대기 배율 + 패닉 가속 + 무작위 흔들림)
+    let moveX = ((dx / dist) * person.type.speed + avoidX + randomX) * simulationSpeed * speedMultiplier * panicBoost;
+    let moveY = ((dy / dist) * person.type.speed + avoidY + randomY) * simulationSpeed * speedMultiplier * panicBoost;
+
+    // 무대 장애물 회피 (원형)
+    const nextX = person.x + moveX;
+    const nextY = person.y + moveY;
+
+    // 무대와의 충돌 감지 (원형)
+    const stageDistX = nextX - STAGE.x;
+    const stageDistY = nextY - STAGE.y;
+    const stageDist = Math.sqrt(stageDistX * stageDistX + stageDistY * stageDistY);
+
+    if (stageDist < STAGE.radius + 10) {
+      // 무대로부터 밀어내기
+      const pushX = person.x - STAGE.x;
+      const pushY = person.y - STAGE.y;
+      const pushDist = Math.sqrt(pushX * pushX + pushY * pushY);
+
+      if (pushDist > 0) {
+        moveX += (pushX / pushDist) * 4;
+        moveY += (pushY / pushDist) * 4;
+      }
+    }
+
+    person.x += moveX;
+    person.y += moveY;
+
+    // 경계 제한
+    person.x = Math.max(10, Math.min(STADIUM_WIDTH - 10, person.x));
+    person.y = Math.max(10, Math.min(STADIUM_HEIGHT - 10, person.y));
+
+    // 무대 내부에 갇힌 경우 강제 이동 (원형)
+    const personStageDistX = person.x - STAGE.x;
+    const personStageDistY = person.y - STAGE.y;
+    const personStageDist = Math.sqrt(personStageDistX * personStageDistX + personStageDistY * personStageDistY);
+
+    if (personStageDist < STAGE.radius) {
+      // 무대 바깥으로 밀어냄
+      const angle = Math.atan2(personStageDistY, personStageDistX);
+      person.x = STAGE.x + (STAGE.radius + 5) * Math.cos(angle);
+      person.y = STAGE.y + (STAGE.radius + 5) * Math.sin(angle);
+    }
+  }
+}
+
+// 그리기
+function draw() {
+  // 배경
+  ctx.fillStyle = '#0a0e1a';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  // 공연 무대 표시 (중앙 원형)
+  const stageGradient = ctx.createRadialGradient(STAGE.x, STAGE.y, 0, STAGE.x, STAGE.y, STAGE.radius);
+  stageGradient.addColorStop(0, '#FFD700');    // 골드
+  stageGradient.addColorStop(0.3, '#FF00FF');  // 마젠타
+  stageGradient.addColorStop(0.6, '#00FFFF');  // 시안
+  stageGradient.addColorStop(1, '#FF0080');    // 핑크
+
+  ctx.fillStyle = stageGradient;
+  ctx.beginPath();
+  ctx.arc(STAGE.x, STAGE.y, STAGE.radius, 0, Math.PI * 2);
+  ctx.fill();
+
+  // 무대 테두리 (네온 효과)
+  ctx.strokeStyle = '#FFD700';
+  ctx.lineWidth = 4;
+  ctx.shadowColor = '#FFD700';
+  ctx.shadowBlur = 20;
+  ctx.beginPath();
+  ctx.arc(STAGE.x, STAGE.y, STAGE.radius, 0, Math.PI * 2);
+  ctx.stroke();
+  ctx.shadowBlur = 0;
+
+  // 무대 라벨
+  ctx.fillStyle = '#FFFFFF';
+  ctx.font = 'bold 18px sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText('🎤 BTS', STAGE.x, STAGE.y - 10);
+  ctx.fillText('공연 무대', STAGE.x, STAGE.y + 15);
+  ctx.textAlign = 'left';
+
+  // 구역 표시 (원형 링)
+  ctx.font = '14px sans-serif';
+
+  for (let zone of ZONES) {
+    if (zone.isRect) {
+      // VIP석은 사각형
+      ctx.fillStyle = zone.color;
+      ctx.fillRect(zone.x, zone.y, zone.w, zone.h);
+
+      ctx.strokeStyle = 'rgba(201,169,97,0.6)';
+      ctx.lineWidth = 2;
+      ctx.strokeRect(zone.x, zone.y, zone.w, zone.h);
+
+      // VIP 라벨
+      ctx.fillStyle = 'rgba(201,169,97,0.9)';
+      ctx.font = 'bold 12px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('VIP석', zone.x + zone.w/2, zone.y + zone.h/2 + 4);
+      ctx.textAlign = 'left';
+    } else {
+      // 원형 링 구역
+      const centerX = zone.centerX;
+      const centerY = zone.centerY;
+      const innerR = zone.innerRadius;
+      const outerR = zone.outerRadius;
+
+      // 링 채우기
+      ctx.fillStyle = zone.color;
+      ctx.beginPath();
+      ctx.arc(centerX, centerY, outerR, 0, Math.PI * 2);
+      ctx.arc(centerX, centerY, innerR, 0, Math.PI * 2, true); // 안쪽 구멍
+      ctx.fill();
+
+      // 링 테두리
+      const floorColors = {
+        1: 'rgba(255,200,100,0.5)',
+        2: 'rgba(150,100,200,0.5)',
+        3: 'rgba(200,100,150,0.5)'
+      };
+      ctx.strokeStyle = floorColors[zone.floor] || 'rgba(100,150,200,0.5)';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.arc(centerX, centerY, outerR, 0, Math.PI * 2);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.arc(centerX, centerY, innerR, 0, Math.PI * 2);
+      ctx.stroke();
+
+      // 구역 라벨 (상단에 표시)
+      const labelAngle = -Math.PI / 2; // 12시 방향
+      const labelRadius = (innerR + outerR) / 2;
+      const labelX = centerX + labelRadius * Math.cos(labelAngle);
+      const labelY = centerY + labelRadius * Math.sin(labelAngle);
+
+      ctx.fillStyle = 'rgba(255,255,255,0.9)';
+      ctx.font = 'bold 12px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText(zone.name, labelX, labelY);
+
+      // 층수 표시
+      ctx.fillStyle = 'rgba(201,169,97,0.9)';
+      ctx.font = 'bold 10px sans-serif';
+      ctx.fillText(`${zone.floor}F`, labelX, labelY + 14);
+      ctx.textAlign = 'left';
+    }
+  }
+
+  // 층간 이동 시설 표시 (엘리베이터/계단)
+  for (let facility of VERTICAL_FACILITIES) {
+    if (facility.type === 'elevator') {
+      // 엘리베이터 (파란색 사각형)
+      ctx.fillStyle = 'rgba(33,150,243,0.4)';
+      ctx.fillRect(facility.x - 15, facility.y - 20, 30, 40);
+
+      ctx.strokeStyle = 'rgba(33,150,243,0.9)';
+      ctx.lineWidth = 2;
+      ctx.strokeRect(facility.x - 15, facility.y - 20, 30, 40);
+
+      // 엘리베이터 아이콘
+      ctx.fillStyle = 'rgba(33,150,243,1)';
+      ctx.font = 'bold 20px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('🛗', facility.x, facility.y + 5);
+
+      // 라벨
+      ctx.fillStyle = 'rgba(255,255,255,0.9)';
+      ctx.font = 'bold 9px sans-serif';
+      ctx.fillText(facility.label, facility.x, facility.y + 28);
+    } else {
+      // 계단 (주황색 사각형)
+      ctx.fillStyle = 'rgba(255,152,0,0.4)';
+      ctx.fillRect(facility.x - 15, facility.y - 20, 30, 40);
+
+      ctx.strokeStyle = 'rgba(255,152,0,0.9)';
+      ctx.lineWidth = 2;
+      ctx.strokeRect(facility.x - 15, facility.y - 20, 30, 40);
+
+      // 계단 아이콘
+      ctx.fillStyle = 'rgba(255,152,0,1)';
+      ctx.font = 'bold 20px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('🚶', facility.x, facility.y + 5);
+
+      // 라벨
+      ctx.fillStyle = 'rgba(255,255,255,0.9)';
+      ctx.font = 'bold 9px sans-serif';
+      ctx.fillText(facility.label, facility.x, facility.y + 28);
+    }
+    ctx.textAlign = 'left';
+  }
+
+  // 압사 위험 구역 표시 (패닉 모드에서만)
+  if (evacuationMode === 'panic' && isRunning) {
+    for (let exit of EXITS) {
+      const crowdCount = people.filter(p => p.targetExit === exit && !p.evacuated).length;
+
+      // 500명 이상 몰린 출구는 압사 위험 구역 표시
+      if (crowdCount > 500) {
+        ctx.fillStyle = 'rgba(255,0,0,0.15)';
+        ctx.beginPath();
+        ctx.arc(exit.x, exit.y, 100, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.strokeStyle = 'rgba(255,0,0,0.4)';
+        ctx.lineWidth = 3;
+        ctx.setLineDash([8, 4]);
+        ctx.beginPath();
+        ctx.arc(exit.x, exit.y, 100, 0, Math.PI * 2);
+        ctx.stroke();
+        ctx.setLineDash([]);
+
+        // 경고 텍스트
+        ctx.fillStyle = 'rgba(255,0,0,0.9)';
+        ctx.font = 'bold 14px sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText('⚠️ 압사 위험', exit.x, exit.y + 50);
+        ctx.textAlign = 'left';
+      }
+    }
+  }
+
+  // 출구 표시 (화재 거리 + 혼잡도에 따라 색상 변경)
+  for (let exit of EXITS) {
+    // 모든 화재 중 가장 가까운 화재까지의 거리
+    let minExitFireDist = Infinity;
+    for (let fire of fires) {
+      const exitFireDx = exit.x - fire.x;
+      const exitFireDy = exit.y - fire.y;
+      const exitFireDist = Math.sqrt(exitFireDx*exitFireDx + exitFireDy*exitFireDy);
+      minExitFireDist = Math.min(minExitFireDist, exitFireDist);
+    }
+    const exitFireDist = minExitFireDist;
+    const fireRadius = fires.length > 0 ? fires[0].radius : 80;
+
+    // 출구로 향하는 관객 수 계산
+    const crowdCount = people.filter(p => p.targetExit === exit && !p.evacuated).length;
+    const crowdRatio = Math.min(crowdCount / 500, 1.0); // 500명 이상이면 최대
+
+    // 화재 근처 출구는 빨간색, 안전한 출구는 초록색
+    let exitColor = '#00ff88'; // 안전 (초록)
+    let isDangerousExit = false;
+
+    if (exitFireDist < fireRadius * 4) {
+      // 위험도에 따라 색상 변경
+      const dangerRatio = 1 - (exitFireDist / (fireRadius * 4));
+      const red = Math.floor(255 * dangerRatio + 0 * (1 - dangerRatio));
+      const green = Math.floor(0 * dangerRatio + 255 * (1 - dangerRatio));
+      exitColor = `rgb(${red},${green},136)`;
+
+      // 매우 위험한 출구 (반경 2배 이내) - 빨간색 + 경고
+      if (exitFireDist < fireRadius * 2) {
+        exitColor = '#FF0000'; // 완전 빨강
+        isDangerousExit = true;
+
+        // 경고 테두리 (굵게)
+        ctx.strokeStyle = 'rgba(255,0,0,0.8)';
+        ctx.lineWidth = 4;
+        ctx.beginPath();
+        ctx.arc(exit.x, exit.y, 14, 0, Math.PI * 2);
+        ctx.stroke();
+
+        // X 표시 (사용 불가)
+        ctx.strokeStyle = '#FF0000';
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.moveTo(exit.x - 6, exit.y - 6);
+        ctx.lineTo(exit.x + 6, exit.y + 6);
+        ctx.moveTo(exit.x + 6, exit.y - 6);
+        ctx.lineTo(exit.x - 6, exit.y + 6);
+        ctx.stroke();
+      }
+      // 위험한 출구 경고 표시 (반경 2~4배)
+      else if (exitFireDist < fireRadius * 3) {
+        ctx.strokeStyle = 'rgba(255,150,0,0.7)';
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.arc(exit.x, exit.y, 12, 0, Math.PI * 2);
+        ctx.stroke();
+      }
+    }
+
+    // 혼잡도 원형 게이지 표시
+    if (isRunning && crowdRatio > 0) {
+      // 배경 원 (회색)
+      ctx.strokeStyle = 'rgba(100,100,100,0.2)';
+      ctx.lineWidth = 4;
+      ctx.beginPath();
+      ctx.arc(exit.x, exit.y, 15, 0, Math.PI * 2);
+      ctx.stroke();
+
+      // 혼잡도 게이지 (빨강~주황)
+      ctx.strokeStyle = `rgba(255, ${255 - crowdRatio * 200}, 0, ${0.3 + crowdRatio * 0.7})`;
+      ctx.lineWidth = 5;
+      ctx.beginPath();
+      ctx.arc(exit.x, exit.y, 15, -Math.PI/2, -Math.PI/2 + Math.PI * 2 * crowdRatio);
+      ctx.stroke();
+
+      // 극도 혼잡 (80% 이상) 시 경고 표시
+      if (crowdRatio > 0.8) {
+        ctx.strokeStyle = 'rgba(255,0,0,0.8)';
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.arc(exit.x, exit.y, 20, 0, Math.PI * 2);
+        ctx.stroke();
+
+        // 위험 표시
+        ctx.fillStyle = 'rgba(255,0,0,0.9)';
+        ctx.font = 'bold 12px sans-serif';
+        ctx.fillText('⚠️', exit.x - 6, exit.y - 25);
+      }
+    }
+
+    // 매우 위험한 출구가 아닐 때만 원 표시
+    if (!isDangerousExit) {
+      ctx.fillStyle = exitColor;
+      ctx.beginPath();
+      ctx.arc(exit.x, exit.y, 8, 0, Math.PI * 2);
+      ctx.fill();
+    }
+
+    // 출구 번호 및 상태 표시 (유형 포함)
+    ctx.fillStyle = exitColor;
+    ctx.font = isDangerousExit ? 'bold 11px sans-serif' : '11px sans-serif';
+
+    if (isDangerousExit) {
+      // 위험 출구는 "사용불가" 표시
+      ctx.fillText(exit.id + '번 ⛔', exit.x - 20, exit.y - 18);
+    } else {
+      // 출구 유형 아이콘 표시
+      ctx.fillText(`${exit.symbol} ${exit.id}번`, exit.x - 20, exit.y - 12);
+    }
+
+    // 출구 유형 설명 (작은 글씨)
+    if (!isDangerousExit) {
+      ctx.fillStyle = 'rgba(255,255,255,0.6)';
+      ctx.font = '8px sans-serif';
+      const typeLabel = exit.type === 'accessible' ? '무장애' : '일반';
+      ctx.fillText(typeLabel, exit.x - 15, exit.y + 25);
+    }
+
+    // 혼잡도 숫자 표시
+    if (isRunning && crowdCount > 0) {
+      ctx.fillStyle = 'rgba(255,255,255,0.9)';
+      ctx.font = 'bold 10px sans-serif';
+      ctx.fillText(Math.floor(crowdCount * (NUM_PEOPLE / DISPLAY_SAMPLE) / 1000) + 'k', exit.x + 15, exit.y + 4);
+    }
+  }
+
+  // 화재 표시 (다중 화재 지점 - 동적 확산)
+  for (let i = 0; i < fires.length; i++) {
+    const fire = fires[i];
+    const currentRadius = fire.currentRadius;
+
+    // 화재 위험 구역 표시 (현재 반경의 3배)
+    const dangerZoneGradient = ctx.createRadialGradient(fire.x, fire.y, currentRadius, fire.x, fire.y, currentRadius * 3);
+    dangerZoneGradient.addColorStop(0, 'rgba(255,0,0,0.15)');
+    dangerZoneGradient.addColorStop(1, 'rgba(255,0,0,0)');
+
+    ctx.fillStyle = dangerZoneGradient;
+    ctx.beginPath();
+    ctx.arc(fire.x, fire.y, currentRadius * 3, 0, Math.PI * 2);
+    ctx.fill();
+
+    // 위험 구역 테두리
+    ctx.strokeStyle = 'rgba(255,0,0,0.3)';
+    ctx.lineWidth = 2;
+    ctx.setLineDash([10, 5]);
+    ctx.beginPath();
+    ctx.arc(fire.x, fire.y, currentRadius * 3, 0, Math.PI * 2);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // 화재 표시 (현재 반경)
+    const fireGradient = ctx.createRadialGradient(fire.x, fire.y, 0, fire.x, fire.y, currentRadius);
+    fireGradient.addColorStop(0, 'rgba(255,100,50,0.8)');
+    fireGradient.addColorStop(0.5, 'rgba(255,150,0,0.5)');
+    fireGradient.addColorStop(1, 'rgba(255,50,0,0.1)');
+
+    ctx.fillStyle = fireGradient;
+    ctx.beginPath();
+    ctx.arc(fire.x, fire.y, currentRadius, 0, Math.PI * 2);
+    ctx.fill();
+
+    // 화재 라벨 (현재 반경 표시)
+    ctx.fillStyle = '#ff6633';
+    ctx.font = 'bold 16px sans-serif';
+    const label = `🔥 화재${fires.length > 1 ? i+1 : ''} (${Math.round(currentRadius)}m)`;
+    ctx.fillText(label, fire.x - 40, fire.y + 5);
+  }
+
+  // 관객 표시
+  for (let person of people) {
+    if (person.evacuated) continue;
+
+    // 패닉 모드: 압사/넘어진 사람 표시
+    if (evacuationMode === 'panic' && (person.fallen || person.crushed)) {
+      // 압사된 사람 (빨간 X)
+      if (person.crushed) {
+        ctx.strokeStyle = '#FF0000';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(person.x - 4, person.y - 4);
+        ctx.lineTo(person.x + 4, person.y + 4);
+        ctx.moveTo(person.x + 4, person.y - 4);
+        ctx.lineTo(person.x - 4, person.y + 4);
+        ctx.stroke();
+
+        ctx.fillStyle = 'rgba(255,0,0,0.5)';
+        ctx.beginPath();
+        ctx.arc(person.x, person.y, 6, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      // 넘어진 사람 (노란 원)
+      else if (person.fallen) {
+        ctx.fillStyle = 'rgba(255,200,0,0.7)';
+        ctx.beginPath();
+        ctx.arc(person.x, person.y, 4, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.strokeStyle = '#FFAA00';
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.arc(person.x, person.y, 4, 0, Math.PI * 2);
+        ctx.stroke();
+      }
+      continue;
+    }
+
+    // AI 모드: 취약계층은 테두리 강조
+    if (evacuationMode === 'ai' && person.type.vulnerable) {
+      ctx.strokeStyle = person.type.color;
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.arc(person.x, person.y, 5, 0, Math.PI * 2);
+      ctx.stroke();
+
+      ctx.fillStyle = person.type.color;
+      ctx.beginPath();
+      ctx.arc(person.x, person.y, 3, 0, Math.PI * 2);
+      ctx.fill();
+    } else if (evacuationMode === 'ai' && person.waitingForVulnerable) {
+      // 대기 중인 일반인은 반투명 + 작은 원
+      ctx.fillStyle = person.type.color + '66';
+      ctx.beginPath();
+      ctx.arc(person.x, person.y, 2.5, 0, Math.PI * 2);
+      ctx.fill();
+
+      // 대기 표시 (작은 점)
+      ctx.fillStyle = 'rgba(255,255,255,0.4)';
+      ctx.beginPath();
+      ctx.arc(person.x, person.y, 1, 0, Math.PI * 2);
+      ctx.fill();
+    } else {
+      ctx.fillStyle = person.type.color;
+      ctx.beginPath();
+      ctx.arc(person.x, person.y, 3, 0, Math.PI * 2);
+      ctx.fill();
+    }
+
+    // 대피 경로 표시 (취약계층 우선)
+    const showPathChance = person.type.vulnerable ? 0.15 : 0.05;
+    if (isRunning && Math.random() < showPathChance && person.targetExit) {
+      ctx.strokeStyle = person.type.color + (person.type.vulnerable ? '88' : '44');
+      ctx.lineWidth = person.type.vulnerable ? 2 : 1;
+      ctx.setLineDash([3, 3]);
+      ctx.beginPath();
+      ctx.moveTo(person.x, person.y);
+      ctx.lineTo(person.targetExit.x, person.targetExit.y);
+      ctx.stroke();
+      ctx.setLineDash([]);
+    }
+  }
+
+  // 시뮬레이션 정보
+  ctx.fillStyle = 'rgba(255,255,255,0.9)';
+  ctx.font = 'bold 16px sans-serif';
+  ctx.fillText('BTS 대형공연장 (6만 명 수용)', 20, 30);
+
+  // 현재 모드 표시
+  if (isRunning) {
+    if (evacuationMode === 'panic') {
+      ctx.fillStyle = 'rgba(255,0,0,0.9)';
+      ctx.font = 'bold 18px sans-serif';
+      ctx.fillText('❌ 패닉 모드 (AI 없음)', 20, 60);
+      ctx.fillStyle = 'rgba(255,100,100,0.8)';
+      ctx.font = '14px sans-serif';
+      ctx.fillText('가까운 출구로 무작위 몰림 • 화재 위험 무시 • 압사 위험 높음', 20, 80);
+    } else {
+      ctx.fillStyle = 'rgba(0,255,136,0.9)';
+      ctx.font = 'bold 18px sans-serif';
+      ctx.fillText('✅ FireNavi AI 모드', 20, 60);
+      ctx.fillStyle = 'rgba(100,255,200,0.8)';
+      ctx.font = '14px sans-serif';
+      ctx.fillText('취약계층 우선 • 화재 회피 • 출구 분산 • 압사 방지', 20, 80);
+    }
+  }
+
+  if (!isRunning) {
+    ctx.fillStyle = 'rgba(201,169,97,0.9)';
+    ctx.font = 'bold 18px sans-serif';
+    ctx.fillText('▶️ 시뮬레이션 시작 버튼을 눌러주세요', canvas.width/2 - 180, canvas.height/2);
+  }
+}
+
+// 통계 업데이트
+function updateStats() {
+  const evacuating = people.filter(p => !p.evacuated).length;
+  const avgTime = evacuatedCount > 0 ? (totalEvacuationTime / evacuatedCount).toFixed(1) : 0;
+
+  // 출구 분산율 계산
+  const exitCounts = EXITS.map(e => people.filter(p => p.targetExit === e && !p.evacuated).length);
+  const maxCount = Math.max(...exitCounts, 1);
+  const minCount = Math.min(...exitCounts.filter(c => c > 0), maxCount);
+  const distribution = maxCount > 0 ? ((minCount / maxCount) * 100).toFixed(0) : 0;
+
+  // 안전 출구 배정율 계산 (모든 화재로부터 충분히 먼 출구를 배정받은 관객 비율)
+  // 화재 반경 4배 이상 떨어진 출구만 안전으로 간주
+  const safeThreshold = fires.length > 0 ? fires[0].radius * 4 : 320;
+  const safeExitCount = people.filter(p => {
+    if (!p.targetExit || p.evacuated) return false;
+
+    // 모든 화재로부터 안전한지 체크
+    for (let fire of fires) {
+      const dx = p.targetExit.x - fire.x;
+      const dy = p.targetExit.y - fire.y;
+      const dist = Math.sqrt(dx*dx + dy*dy);
+      if (dist < safeThreshold) return false;
+    }
+    return true;
+  }).length;
+  const totalActive = people.filter(p => !p.evacuated).length;
+  const safeExitRate = totalActive > 0 ? ((safeExitCount / totalActive) * 100).toFixed(0) : 0;
+
+  // 압사 위험 지역 계산 (출구 혼잡도 500명 이상)
+  const crushRiskZones = EXITS.filter(e => {
+    const count = people.filter(p => p.targetExit === e && !p.evacuated).length;
+    return count > 500;
+  }).length;
+
+  // 화재 노출 인원 계산 (현재 확산 반경의 2배 이내)
+  const fireExposure = people.filter(p => {
+    if (p.evacuated) return false;
+    for (let fire of fires) {
+      const dx = p.x - fire.x;
+      const dy = p.y - fire.y;
+      const dist = Math.sqrt(dx*dx + dy*dy);
+      if (dist < fire.currentRadius * 2) return true;
+    }
+    return false;
+  }).length;
+
+  // 취약계층 대피율 계산
+  const vulnerablePeople = people.filter(p => p.type.vulnerable);
+  const vulnerableEvacuated = vulnerablePeople.filter(p => p.evacuated).length;
+  const vulnerableTotal = vulnerablePeople.length;
+
+  document.getElementById('totalPeople').textContent = NUM_PEOPLE.toLocaleString();
+  document.getElementById('evacuated').textContent = Math.floor(evacuatedCount * (NUM_PEOPLE / DISPLAY_SAMPLE)).toLocaleString();
+  document.getElementById('evacuating').textContent = Math.floor(evacuating * (NUM_PEOPLE / DISPLAY_SAMPLE)).toLocaleString();
+  document.getElementById('avgTime').textContent = avgTime + '초';
+  document.getElementById('distribution').textContent = distribution + '%';
+  document.getElementById('safeExitRate').textContent = safeExitRate + '%';
+  document.getElementById('vulnerableEvacuated').textContent =
+    Math.floor(vulnerableEvacuated * (NUM_PEOPLE / DISPLAY_SAMPLE)).toLocaleString() + ' / ' +
+    Math.floor(vulnerableTotal * (NUM_PEOPLE / DISPLAY_SAMPLE)).toLocaleString();
+
+  // 넘어진 관객 및 압사 사고 계산
+  const fallenCount = people.filter(p => p.fallen && !p.crushed).length;
+  const crushedCount = people.filter(p => p.crushed).length;
+
+  // 비교 통계
+  document.getElementById('currentMode').textContent = evacuationMode === 'panic' ? '패닉 모드 (AI 없음)' : 'FireNavi AI';
+  document.getElementById('crushRiskZones').textContent = crushRiskZones;
+  document.getElementById('fireExposure').textContent = Math.floor(fireExposure * (NUM_PEOPLE / DISPLAY_SAMPLE)).toLocaleString();
+  document.getElementById('fallenCount').textContent = Math.floor(fallenCount * (NUM_PEOPLE / DISPLAY_SAMPLE)).toLocaleString();
+  document.getElementById('crushedCount').textContent = Math.floor(crushedCount * (NUM_PEOPLE / DISPLAY_SAMPLE)).toLocaleString();
+
+  // 화재 확산 상태 업데이트
+  if (fires.length > 0 && isRunning) {
+    const fire = fires[0];
+    const spreadPercent = Math.min(100, Math.round((fire.currentRadius - fire.initialRadius) / (fire.maxRadius - fire.initialRadius) * 100));
+    document.getElementById('fireSpreadStatus').textContent = `${Math.round(fire.currentRadius)}m (${spreadPercent}%)`;
+  } else {
+    document.getElementById('fireSpreadStatus').textContent = '-';
+  }
+}
+
+// 속도 조절 함수
+function updateSpeed(value) {
+  simulationSpeed = parseFloat(value);
+  document.getElementById('speedValue').textContent = simulationSpeed.toFixed(1) + 'x';
+}
+
+function setSpeed(speed) {
+  simulationSpeed = speed;
+  document.getElementById('speedSlider').value = speed;
+  document.getElementById('speedValue').textContent = speed.toFixed(1) + 'x';
+}
+
+// 모드 선택
+function selectMode(mode) {
+  evacuationMode = mode;
+  document.getElementById(`mode-${mode}`).checked = true;
+
+  if (isRunning && !isPaused) {
+    assignExits(); // 실행 중이면 즉시 재배정
+  }
+
+  updateStats();
+}
+
+// 화재 지점 추가
+function addFirePoint() {
+  if (fires.length >= 3) return;
+
+  // 랜덤 위치에 화재 추가
+  fires.push({
+    x: 200 + Math.random() * 600,
+    y: 100 + Math.random() * 600,
+    radius: 80
+  });
+
+  updateFireList();
+
+  if (isRunning && !isPaused) {
+    assignExits(); // 실행 중이면 즉시 재배정
+  }
+
+  draw();
+}
+
+// 화재 지점 제거
+function removeFirePoint(index) {
+  fires.splice(index, 1);
+  updateFireList();
+
+  if (isRunning && !isPaused) {
+    assignExits(); // 실행 중이면 즉시 재배정
+  }
+
+  draw();
+}
+
+// 화재 목록 UI 업데이트
+function updateFireList() {
+  const fireList = document.getElementById('fireList');
+  const addBtn = document.getElementById('addFireBtn');
+
+  fireList.innerHTML = '';
+
+  fires.forEach((fire, i) => {
+    const fireItem = document.createElement('div');
+    fireItem.className = 'fire-item';
+    fireItem.innerHTML = `
+      <span class="fire-item-label">🔥 화재 지점 ${i + 1} (${Math.floor(fire.x)}, ${Math.floor(fire.y)})</span>
+      <button class="fire-item-remove" onclick="removeFirePoint(${i})">삭제</button>
+    `;
+    fireList.appendChild(fireItem);
+  });
+
+  addBtn.textContent = `+ 화재 지점 추가 (${fires.length}/3)`;
+  addBtn.disabled = fires.length >= 3;
+
+  if (fires.length >= 3) {
+    addBtn.style.opacity = '0.5';
+    addBtn.style.cursor = 'not-allowed';
+  } else {
+    addBtn.style.opacity = '1';
+    addBtn.style.cursor = 'pointer';
+  }
+}
+
+// 초기화 실행
+init();
+document.getElementById('mode-ai').checked = true;
+</script>
+
+</body>
+</html>
