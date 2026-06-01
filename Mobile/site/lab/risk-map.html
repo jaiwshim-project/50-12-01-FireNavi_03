@@ -1,0 +1,1696 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FireNavi - 동적 위험지도 | Dynamic Risk Map</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    /* ===== Risk Map Layout ===== */
+    .riskmap-layout {
+      display: grid;
+      grid-template-columns: 300px 1fr;
+      gap: var(--space-lg);
+      margin-bottom: var(--space-xl);
+    }
+
+    @media (max-width: 1024px) {
+      .riskmap-layout {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* ===== Sidebar Controls ===== */
+    .sidebar-panel {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: var(--space-lg);
+    }
+
+    .sidebar-panel h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: var(--space-md);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--text-primary);
+    }
+
+    .weight-control {
+      margin-bottom: var(--space-md);
+    }
+
+    .weight-label {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.8rem;
+      margin-bottom: 4px;
+    }
+
+    .weight-label .name {
+      color: var(--text-secondary);
+      font-weight: 500;
+    }
+
+    .weight-label .sub {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+    }
+
+    .weight-label .val {
+      color: var(--fire-orange);
+      font-weight: 700;
+      font-family: var(--font-mono);
+      min-width: 32px;
+      text-align: right;
+    }
+
+    .weight-slider {
+      width: 100%;
+      -webkit-appearance: none;
+      appearance: none;
+      height: 6px;
+      border-radius: 3px;
+      background: var(--bg-primary);
+      outline: none;
+      cursor: pointer;
+    }
+
+    .weight-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: var(--fire-orange);
+      cursor: pointer;
+      border: 2px solid var(--bg-card);
+      box-shadow: 0 0 6px rgba(237, 137, 54, 0.5);
+    }
+
+    .weight-slider::-moz-range-thumb {
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: var(--fire-orange);
+      cursor: pointer;
+      border: 2px solid var(--bg-card);
+    }
+
+    .formula-display {
+      background: var(--bg-primary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: var(--space-md);
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      color: var(--fire-orange);
+      line-height: 1.8;
+      margin: var(--space-md) 0;
+      word-break: break-all;
+    }
+
+    .normalize-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin: var(--space-md) 0 var(--space-sm);
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+    }
+
+    .normalize-row input[type="checkbox"] {
+      accent-color: var(--fire-orange);
+      width: 16px;
+      height: 16px;
+      cursor: pointer;
+    }
+
+    .sidebar-divider {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: var(--space-md) 0;
+    }
+
+    /* ===== Deck Selector ===== */
+    .deck-selector-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: var(--space-md);
+    }
+
+    .deck-btn {
+      padding: 8px 16px;
+      border-radius: 20px;
+      border: 1px solid var(--border);
+      background: var(--bg-primary);
+      color: var(--text-secondary);
+      font-size: 0.82rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-weight: 500;
+    }
+
+    .deck-btn:hover, .deck-btn.active {
+      background: var(--fire-orange);
+      color: white;
+      border-color: var(--fire-orange);
+    }
+
+    .deck-btn .deck-sub {
+      font-size: 0.7rem;
+      opacity: 0.8;
+    }
+
+    /* ===== Canvas Container ===== */
+    .canvas-wrapper {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+    }
+
+    .canvas-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: var(--space-md) var(--space-lg);
+      border-bottom: 1px solid var(--border);
+      flex-wrap: wrap;
+      gap: var(--space-sm);
+    }
+
+    .canvas-header h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .canvas-header .deck-info {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      font-family: var(--font-mono);
+    }
+
+    #riskCanvas {
+      display: block;
+      width: 100%;
+      max-width: 900px;
+      margin: 0 auto;
+      background: #0a1520;
+    }
+
+    /* ===== Time Control ===== */
+    .time-control-bar {
+      display: flex;
+      align-items: center;
+      gap: var(--space-md);
+      padding: var(--space-md) var(--space-lg);
+      background: var(--bg-primary);
+      border-top: 1px solid var(--border);
+      flex-wrap: wrap;
+    }
+
+    .time-control-bar .time-label {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      white-space: nowrap;
+      font-weight: 600;
+    }
+
+    .time-control-bar .time-value {
+      font-family: var(--font-mono);
+      color: var(--fire-yellow);
+      font-weight: 700;
+      font-size: 1rem;
+      min-width: 70px;
+    }
+
+    #timeSlider {
+      flex: 1;
+      min-width: 150px;
+      -webkit-appearance: none;
+      appearance: none;
+      height: 8px;
+      border-radius: 4px;
+      background: linear-gradient(90deg, #38A169 0%, #ECC94B 40%, #ED8936 70%, #E53E3E 100%);
+      outline: none;
+      cursor: pointer;
+    }
+
+    #timeSlider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: white;
+      cursor: pointer;
+      border: 3px solid var(--fire-orange);
+      box-shadow: 0 0 8px rgba(237, 137, 54, 0.6);
+    }
+
+    #timeSlider::-moz-range-thumb {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: white;
+      cursor: pointer;
+      border: 3px solid var(--fire-orange);
+    }
+
+    .play-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 18px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+      background: var(--bg-card);
+      color: var(--text-primary);
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+
+    .play-btn:hover {
+      background: var(--bg-card-hover);
+      border-color: var(--fire-orange);
+    }
+
+    .play-btn.playing {
+      background: var(--fire-red);
+      border-color: var(--fire-red);
+      color: white;
+    }
+
+    /* ===== Legend Bar ===== */
+    .legend-bar {
+      display: flex;
+      align-items: center;
+      gap: var(--space-md);
+      padding: var(--space-sm) var(--space-lg);
+      background: var(--bg-card);
+      border-top: 1px solid var(--border);
+      flex-wrap: wrap;
+    }
+
+    .legend-bar .legend-title {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      white-space: nowrap;
+    }
+
+    .color-scale-bar {
+      width: 200px;
+      height: 14px;
+      border-radius: 7px;
+      background: linear-gradient(90deg, #3182CE 0%, #38A169 25%, #ECC94B 50%, #ED8936 75%, #E53E3E 100%);
+      border: 1px solid var(--border);
+    }
+
+    .legend-labels {
+      display: flex;
+      gap: var(--space-md);
+      font-size: 0.72rem;
+      color: var(--text-muted);
+    }
+
+    .legend-labels span {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .legend-labels .ldot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      display: inline-block;
+    }
+
+    /* ===== Statistics Panel ===== */
+    .stats-grid {
+      display: grid;
+      grid-auto-flow: column;
+      grid-auto-columns: 1fr;
+      gap: var(--space-md);
+      margin: var(--space-lg) 0;
+    }
+
+    .mini-stat {
+      background: var(--bg-primary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: var(--space-md);
+      text-align: center;
+    }
+
+    .mini-stat .ms-value {
+      font-size: 1.5rem;
+      font-weight: 800;
+      font-family: var(--font-mono);
+    }
+
+    .mini-stat .ms-label {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    .risk-dist-canvas-wrap {
+      display: flex;
+      gap: var(--space-lg);
+      flex-wrap: wrap;
+      align-items: flex-start;
+    }
+
+    #distChart {
+      background: var(--bg-primary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+    }
+
+    .risk-dist-info {
+      flex: 1;
+      min-width: 200px;
+    }
+
+    .risk-dist-info .rdi-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 8px;
+      font-size: 0.85rem;
+    }
+
+    .risk-dist-info .rdi-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 3px;
+      flex-shrink: 0;
+    }
+
+    .risk-dist-info .rdi-name {
+      color: var(--text-secondary);
+      flex: 1;
+    }
+
+    .risk-dist-info .rdi-count {
+      font-family: var(--font-mono);
+      color: var(--text-primary);
+      font-weight: 600;
+    }
+
+    .trend-indicator {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      margin-top: var(--space-sm);
+    }
+
+    .trend-indicator.increasing {
+      background: rgba(229, 62, 62, 0.15);
+      color: var(--fire-red);
+    }
+
+    .trend-indicator.decreasing {
+      background: rgba(56, 161, 105, 0.15);
+      color: var(--safe);
+    }
+
+    .trend-indicator.stable {
+      background: rgba(236, 201, 75, 0.15);
+      color: var(--fire-yellow);
+    }
+
+    /* ===== Path highlight legend ===== */
+    .evac-path-info {
+      background: rgba(56, 161, 105, 0.1);
+      border: 1px solid rgba(56, 161, 105, 0.3);
+      border-radius: var(--radius-md);
+      padding: var(--space-md);
+      margin-top: var(--space-md);
+      font-size: 0.85rem;
+      color: var(--safe);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .evac-path-info .arrow-icon {
+      font-size: 1.2rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="page-wrapper">
+    <!-- NAVIGATION -->
+    <nav class="top-nav">
+      <div class="nav-inner">
+        <a href="../index.html" class="nav-brand">
+          <img src="firenavi-logo.svg" alt="FireNavi" class="nav-logo-img" style="height:36px;vertical-align:middle;margin-right:6px;">
+          <span class="nav-tagline">AI 기반 실시간 생존 의사결정 플랫폼</span>
+        </a>
+        <ul class="nav-links">
+          <li><a href="../index.html">Dashboard</a></li>
+          <li><a href="a-technical-formulation.html">A. 기술수식화</a></li>
+          <li><a href="b-industrial-architecture.html">B. 산업아키텍처</a></li>
+          <li><a href="c-shipyard-proposal.html">C. 조선소제안</a></li>
+          <li><a href="d-insurance-risk-model.html">D. 보험리스크</a></li>
+          <li><a href="simulation.html">시뮬레이션</a></li>
+          <li><a href="risk-map.html" class="active">위험지도</a></li>
+          <li><a href="route-optimizer.html">경로최적화</a></li>
+          <li><a href="../index.html" style="color:#DB2777;">매뉴얼</a></li>
+          <li><a href="../technology.html" style="color:#7C3AED;">구조도</a></li>
+        </ul>
+        <button class="nav-mobile-toggle">&#9776;</button>
+      </div>
+    </nav>
+
+    <!-- PAGE HEADER -->
+    <div class="container">
+      <div class="page-header">
+        <div class="breadcrumb">
+          <a href="../index.html">Home</a>
+          <span>/</span>
+          <span>동적 위험지도</span>
+        </div>
+        <h1 class="page-title">
+          동적 위험지도 <span class="text-warning">Dynamic Risk Map</span>
+        </h1>
+        <p class="page-desc">
+          다중 위험요소 가중합(Multi-hazard Weighted Sum) 기반 실시간 위험지도 시각화.
+          화재 근접도, 연기 농도, 구조 손상도, 군중 밀집도, 대피 거리를 가중 합산하여
+          각 구역의 종합 위험도를 히트맵으로 표시합니다.
+        </p>
+      </div>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div class="container main-content">
+
+      <!-- Deck Selector -->
+      <div class="deck-selector-bar">
+        <button class="deck-btn active" data-deck="0">Deck 1 <span class="deck-sub">(Engine)</span></button>
+        <button class="deck-btn" data-deck="1">Deck 2 <span class="deck-sub">(Cabins)</span></button>
+        <button class="deck-btn" data-deck="2">Deck 3 <span class="deck-sub">(Restaurant)</span></button>
+        <button class="deck-btn" data-deck="3">Deck 4 <span class="deck-sub">(Pool/Muster)</span></button>
+      </div>
+
+      <!-- Risk Map Layout: Sidebar + Canvas -->
+      <div class="riskmap-layout">
+
+        <!-- LEFT SIDEBAR: Controls -->
+        <div class="sidebar-panel">
+          <h3>&#x2699;&#xFE0F; 위험 가중치 설정 (Risk Factor Weights)</h3>
+
+          <div class="weight-control">
+            <div class="weight-label">
+              <span class="name">w&#x2081;: 화재 근접도 <span class="sub">(Fire Proximity)</span></span>
+              <span class="val" id="w1Val">30</span>
+            </div>
+            <input type="range" class="weight-slider" id="w1" min="0" max="100" value="30">
+          </div>
+
+          <div class="weight-control">
+            <div class="weight-label">
+              <span class="name">w&#x2082;: 연기 농도 <span class="sub">(Smoke Density)</span></span>
+              <span class="val" id="w2Val">25</span>
+            </div>
+            <input type="range" class="weight-slider" id="w2" min="0" max="100" value="25">
+          </div>
+
+          <div class="weight-control">
+            <div class="weight-label">
+              <span class="name">w&#x2083;: 구조 손상도 <span class="sub">(Structural Damage)</span></span>
+              <span class="val" id="w3Val">20</span>
+            </div>
+            <input type="range" class="weight-slider" id="w3" min="0" max="100" value="20">
+          </div>
+
+          <div class="weight-control">
+            <div class="weight-label">
+              <span class="name">w&#x2084;: 군중 밀집도 <span class="sub">(Crowd Density)</span></span>
+              <span class="val" id="w4Val">15</span>
+            </div>
+            <input type="range" class="weight-slider" id="w4" min="0" max="100" value="15">
+          </div>
+
+          <div class="weight-control">
+            <div class="weight-label">
+              <span class="name">w&#x2085;: 대피 거리 <span class="sub">(Distance to Exit)</span></span>
+              <span class="val" id="w5Val">10</span>
+            </div>
+            <input type="range" class="weight-slider" id="w5" min="0" max="100" value="10">
+          </div>
+
+          <div class="normalize-row">
+            <input type="checkbox" id="normalizeCheck" checked>
+            <label for="normalizeCheck">정규화 (Normalize weights, sum = 1)</label>
+          </div>
+
+          <div class="formula-display">
+            <strong>R(x,y,t)</strong> = w&#x2081;&middot;F + w&#x2082;&middot;S + w&#x2083;&middot;D + w&#x2084;&middot;C + w&#x2085;&middot;E
+          </div>
+
+          <hr class="sidebar-divider">
+
+          <h3>&#x1F4CA; 현재 가중치 분배</h3>
+          <canvas id="weightPie" width="260" height="160"></canvas>
+        </div>
+
+        <!-- RIGHT: Canvas + Time -->
+        <div>
+          <div class="canvas-wrapper">
+            <div class="canvas-header">
+              <h3 id="canvasTitle">&#x1F5FA;&#xFE0F; Deck 1 - Engine Room 위험지도</h3>
+              <span class="deck-info" id="gridInfo">Grid: 45 x 25 | Cells: 1125</span>
+            </div>
+
+            <canvas id="riskCanvas" width="900" height="500"></canvas>
+
+            <!-- Legend Bar -->
+            <div class="legend-bar">
+              <span class="legend-title">Risk Level:</span>
+              <div class="color-scale-bar"></div>
+              <div class="legend-labels">
+                <span><span class="ldot" style="background:#3182CE;"></span> 안전 (Safe)</span>
+                <span><span class="ldot" style="background:#38A169;"></span> 낮음 (Low)</span>
+                <span><span class="ldot" style="background:#ECC94B;"></span> 보통 (Moderate)</span>
+                <span><span class="ldot" style="background:#ED8936;"></span> 높음 (High)</span>
+                <span><span class="ldot" style="background:#E53E3E;"></span> 위험 (Critical)</span>
+              </div>
+            </div>
+
+            <!-- Time Control -->
+            <div class="time-control-bar">
+              <span class="time-label">경과 시간:</span>
+              <span class="time-value" id="timeDisplay">0s</span>
+              <input type="range" id="timeSlider" min="0" max="300" value="0" step="1">
+              <button class="play-btn" id="playBtn">&#x25B6; 자동 재생</button>
+            </div>
+          </div>
+
+          <!-- Evacuation Path Info -->
+          <div class="evac-path-info">
+            <span class="arrow-icon">&#x1F6A8;</span>
+            <span id="evacInfo">최적 대피 경로가 녹색 점선으로 표시됩니다. 시간 경과에 따라 경로가 동적으로 변경됩니다.</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- RISK STATISTICS PANEL -->
+      <div class="content-section">
+        <h2>&#x1F4CA; 위험도 통계 (Risk Statistics)</h2>
+
+        <div class="stats-grid" id="statsGrid">
+          <div class="mini-stat">
+            <div class="ms-value stat-value--danger" id="totalRisk">0.00</div>
+            <div class="ms-label">총 위험도 점수 (Total Risk)</div>
+          </div>
+          <div class="mini-stat">
+            <div class="ms-value stat-value--warning" id="avgRisk">0.00</div>
+            <div class="ms-label">평균 위험도 (Avg Risk)</div>
+          </div>
+          <div class="mini-stat">
+            <div class="ms-value stat-value--danger" id="maxRisk">0.00</div>
+            <div class="ms-label">최대 위험 셀 (Max Cell Risk)</div>
+          </div>
+          <div class="mini-stat">
+            <div class="ms-value stat-value--safe" id="safeCount">0</div>
+            <div class="ms-label">안전 구역 셀 수</div>
+          </div>
+          <div class="mini-stat">
+            <div class="ms-value stat-value--danger" id="criticalCount">0</div>
+            <div class="ms-label">위험 구역 셀 수</div>
+          </div>
+          <div class="mini-stat">
+            <div class="ms-value stat-value--info" id="highestZone">-</div>
+            <div class="ms-label">최고 위험 구역</div>
+          </div>
+        </div>
+
+        <div class="risk-dist-canvas-wrap">
+          <canvas id="distChart" width="300" height="220"></canvas>
+          <div class="risk-dist-info" id="riskDistInfo">
+            <div class="rdi-row"><span class="rdi-dot" style="background:#3182CE;"></span><span class="rdi-name">안전 (Safe, 0.0 - 0.2)</span><span class="rdi-count" id="distSafe">0</span></div>
+            <div class="rdi-row"><span class="rdi-dot" style="background:#38A169;"></span><span class="rdi-name">낮음 (Low, 0.2 - 0.4)</span><span class="rdi-count" id="distLow">0</span></div>
+            <div class="rdi-row"><span class="rdi-dot" style="background:#ECC94B;"></span><span class="rdi-name">보통 (Moderate, 0.4 - 0.6)</span><span class="rdi-count" id="distMod">0</span></div>
+            <div class="rdi-row"><span class="rdi-dot" style="background:#ED8936;"></span><span class="rdi-name">높음 (High, 0.6 - 0.8)</span><span class="rdi-count" id="distHigh">0</span></div>
+            <div class="rdi-row"><span class="rdi-dot" style="background:#E53E3E;"></span><span class="rdi-name">위험 (Critical, 0.8 - 1.0)</span><span class="rdi-count" id="distCrit">0</span></div>
+            <div style="margin-top:var(--space-md);">
+              <span class="trend-indicator increasing" id="trendIndicator">&#x2191; 위험도 증가 추세 (Increasing)</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TECHNICAL DETAILS -->
+      <div class="content-section">
+        <h2>&#x1F52C; 기술 상세 (Technical Details)</h2>
+
+        <h3>1. Multi-hazard Weighted Sum Methodology (다중 위험요소 가중합)</h3>
+        <p>
+          각 그리드 셀 (x, y)에 대한 종합 위험도 R은 5개 위험 요소의 가중합으로 계산됩니다.
+          가중치는 운용자가 실시간으로 조절 가능하며, 정규화 옵션을 통해 가중치 합이 1이 되도록
+          자동 조정됩니다.
+        </p>
+        <div class="formula-block">
+          <span class="formula-label">Weighted Sum</span>
+          <div class="math">
+            R(x, y, t) = &sum;<sub>i=1</sub><sup>5</sup> w<sub>i</sub> &middot; H<sub>i</sub>(x, y, t)
+          </div>
+          <div style="margin-top:8px; color:#A0AEC0; font-size:0.82rem;">
+            H<sub>1</sub> = Fire Proximity, H<sub>2</sub> = Smoke Density,
+            H<sub>3</sub> = Structural Damage, H<sub>4</sub> = Crowd Density,
+            H<sub>5</sub> = Distance to Exit
+          </div>
+        </div>
+
+        <h3>2. Kriging Spatial Interpolation (크리깅 공간 보간법)</h3>
+        <p>
+          이산적 센서 데이터를 연속적인 위험지도로 변환하기 위해 Ordinary Kriging 기법을 사용합니다.
+          센서 위치에서 측정된 값을 기반으로 미측정 지점의 값을 추정하며, 반변이도(Semivariogram)
+          모델을 통해 공간적 상관성을 반영합니다.
+        </p>
+        <div class="formula-block">
+          <span class="formula-label">Kriging Estimator</span>
+          <div class="math">
+            Z&#x0302;(x<sub>0</sub>) = &sum;<sub>i=1</sub><sup>n</sup> &lambda;<sub>i</sub> &middot; Z(x<sub>i</sub>)
+          </div>
+          <div style="margin-top:8px; color:#A0AEC0; font-size:0.82rem;">
+            &lambda;<sub>i</sub>: Kriging weights, Z(x<sub>i</sub>): observed values at sensor locations
+          </div>
+        </div>
+
+        <h3>3. Temporal Risk Evolution Model (시간적 위험도 진화 모델)</h3>
+        <p>
+          화재와 연기의 확산은 시간에 따라 비선형적으로 진행됩니다. 화재 반경은
+          r<sub>fire</sub>(t) = r<sub>0</sub> + &alpha;&radic;t 모델을, 연기 확산은
+          r<sub>smoke</sub>(t) = r<sub>0</sub> + &beta;t<sup>0.7</sup> 모델을 따릅니다.
+          시간 경과에 따른 구조 손상도는 누적 열 노출량의 함수로 계산됩니다.
+        </p>
+        <div class="formula-block">
+          <span class="formula-label">Temporal Evolution</span>
+          <div class="math">
+            r<sub>fire</sub>(t) = r<sub>0</sub> + &alpha;&radic;t<br>
+            r<sub>smoke</sub>(t) = r<sub>0</sub> + &beta;t<sup>0.7</sup><br>
+            D<sub>structural</sub>(x,y,t) = 1 - exp(-&gamma; &middot; &int;<sub>0</sub><sup>t</sup> T(x,y,&tau;) d&tau;)
+          </div>
+        </div>
+
+        <h3>4. Individual Hazard Score Computation (개별 위험 점수 계산)</h3>
+        <p>
+          각 위험 요소 H<sub>i</sub>는 0(안전)에서 1(최대위험)의 정규화된 값으로 산출됩니다.
+        </p>
+        <ul>
+          <li><strong>F (Fire Proximity):</strong> 화재원으로부터의 거리에 반비례하는 Gaussian decay 함수.
+            F(x,y) = exp(-d<sup>2</sup> / 2&sigma;<sub>f</sub><sup>2</sup>)</li>
+          <li><strong>S (Smoke Density):</strong> 연기 확산 모델에 기반한 농도 분포. 화재원에서 더 넓게 확산되며
+            바람/환기 영향을 받음.</li>
+          <li><strong>D (Structural Damage):</strong> 화재 노출 시간과 온도에 따른 구조 건전성 감소율.
+            임계 온도 초과 시 급격히 증가.</li>
+          <li><strong>C (Crowd Density):</strong> 센서 기반 실시간 인원 밀집도.
+            밀집 구역은 대피 병목 위험이 높아 위험도가 증가.</li>
+          <li><strong>E (Distance to Exit):</strong> 가장 가까운 출구까지의 경로 거리를 최대 거리로 정규화.
+            출구에서 멀수록 위험도 증가.</li>
+        </ul>
+      </div>
+
+    </div>
+
+    <!-- FOOTER -->
+    
+  </div>
+
+  <script>
+  (function() {
+    'use strict';
+
+    // ===========================
+    // CONFIGURATION & STATE
+    // ===========================
+    const COLS = 45;
+    const ROWS = 25;
+    const CANVAS_W = 900;
+    const CANVAS_H = 500;
+    const CELL_W = CANVAS_W / COLS;
+    const CELL_H = CANVAS_H / ROWS;
+
+    let currentDeck = 0;
+    let currentTime = 0;
+    let isPlaying = false;
+    let playInterval = null;
+    let prevAvgRisk = 0;
+
+    // Risk grid
+    let riskGrid = [];
+
+    // Weights
+    let weights = { w1: 30, w2: 25, w3: 20, w4: 15, w5: 10 };
+    let normalize = true;
+
+    // Canvas
+    const canvas = document.getElementById('riskCanvas');
+    const ctx = canvas.getContext('2d');
+    canvas.width = CANVAS_W;
+    canvas.height = CANVAS_H;
+
+    // ===========================
+    // DECK CONFIGURATIONS
+    // ===========================
+    const deckConfigs = [
+      {
+        name: 'Deck 1 - Engine Room',
+        nameKr: '엔진실',
+        fireSources: [{ x: 20, y: 12 }],
+        exits: [{ x: 0, y: 12 }, { x: 44, y: 12 }, { x: 22, y: 0 }],
+        musterStations: [],
+        rooms: [
+          { x: 2, y: 2, w: 12, h: 9, label: 'Engine Bay A' },
+          { x: 16, y: 2, w: 14, h: 9, label: 'Engine Bay B' },
+          { x: 32, y: 2, w: 11, h: 9, label: 'Generator Room' },
+          { x: 2, y: 13, w: 12, h: 10, label: 'Fuel Storage' },
+          { x: 16, y: 13, w: 14, h: 10, label: 'Main Engine' },
+          { x: 32, y: 13, w: 11, h: 10, label: 'Crew Quarters' }
+        ],
+        corridors: [
+          { x1: 14, y1: 2, x2: 14, y2: 23 },
+          { x1: 30, y1: 2, x2: 30, y2: 23 },
+          { x1: 2, y1: 12, x2: 43, y2: 12 }
+        ],
+        crowdZones: [{ x: 34, y: 15, r: 5, density: 0.6 }],
+        baseSmokeBias: { dx: -0.3, dy: -0.1 }
+      },
+      {
+        name: 'Deck 2 - Passenger Cabins',
+        nameKr: '객실층',
+        fireSources: [{ x: 30, y: 8 }],
+        exits: [{ x: 0, y: 12 }, { x: 44, y: 12 }, { x: 10, y: 0 }, { x: 35, y: 24 }],
+        musterStations: [],
+        rooms: [
+          { x: 1, y: 1, w: 6, h: 5, label: 'Cabin 201' },
+          { x: 8, y: 1, w: 6, h: 5, label: 'Cabin 202' },
+          { x: 15, y: 1, w: 6, h: 5, label: 'Cabin 203' },
+          { x: 22, y: 1, w: 6, h: 5, label: 'Cabin 204' },
+          { x: 29, y: 1, w: 6, h: 5, label: 'Cabin 205' },
+          { x: 36, y: 1, w: 8, h: 5, label: 'Suite A' },
+          { x: 1, y: 18, w: 6, h: 6, label: 'Cabin 211' },
+          { x: 8, y: 18, w: 6, h: 6, label: 'Cabin 212' },
+          { x: 15, y: 18, w: 6, h: 6, label: 'Cabin 213' },
+          { x: 22, y: 18, w: 6, h: 6, label: 'Cabin 214' },
+          { x: 29, y: 18, w: 6, h: 6, label: 'Cabin 215' },
+          { x: 36, y: 18, w: 8, h: 6, label: 'Suite B' }
+        ],
+        corridors: [
+          { x1: 1, y1: 7, x2: 44, y2: 7 },
+          { x1: 1, y1: 17, x2: 44, y2: 17 },
+          { x1: 1, y1: 12, x2: 44, y2: 12 }
+        ],
+        crowdZones: [
+          { x: 22, y: 12, r: 6, density: 0.7 },
+          { x: 10, y: 12, r: 4, density: 0.4 }
+        ],
+        baseSmokeBias: { dx: 0.2, dy: 0.15 }
+      },
+      {
+        name: 'Deck 3 - Restaurant & Lounge',
+        nameKr: '레스토랑/라운지',
+        fireSources: [{ x: 12, y: 10 }],
+        exits: [{ x: 0, y: 12 }, { x: 44, y: 12 }, { x: 22, y: 24 }, { x: 22, y: 0 }],
+        musterStations: [],
+        rooms: [
+          { x: 2, y: 2, w: 18, h: 10, label: 'Main Restaurant' },
+          { x: 22, y: 2, w: 12, h: 10, label: 'Lounge Bar' },
+          { x: 36, y: 2, w: 7, h: 10, label: 'Kitchen' },
+          { x: 2, y: 14, w: 12, h: 9, label: 'Buffet Area' },
+          { x: 16, y: 14, w: 13, h: 9, label: 'Dance Hall' },
+          { x: 31, y: 14, w: 12, h: 9, label: 'Casino' }
+        ],
+        corridors: [
+          { x1: 2, y1: 12, x2: 43, y2: 12 },
+          { x1: 20, y1: 2, x2: 20, y2: 23 },
+          { x1: 34, y1: 2, x2: 34, y2: 23 }
+        ],
+        crowdZones: [
+          { x: 10, y: 6, r: 7, density: 0.85 },
+          { x: 24, y: 18, r: 5, density: 0.65 },
+          { x: 38, y: 6, r: 4, density: 0.5 }
+        ],
+        baseSmokeBias: { dx: 0.1, dy: -0.2 }
+      },
+      {
+        name: 'Deck 4 - Pool & Muster Station',
+        nameKr: '수영장/집결지',
+        fireSources: [{ x: 35, y: 18 }],
+        exits: [{ x: 0, y: 12 }, { x: 44, y: 12 }, { x: 10, y: 24 }, { x: 35, y: 0 }],
+        musterStations: [
+          { x: 2, y: 1, w: 8, h: 6 },
+          { x: 36, y: 1, w: 8, h: 6 }
+        ],
+        rooms: [
+          { x: 12, y: 1, w: 22, h: 10, label: 'Main Pool' },
+          { x: 2, y: 1, w: 8, h: 6, label: 'Muster A' },
+          { x: 36, y: 1, w: 8, h: 6, label: 'Muster B' },
+          { x: 2, y: 14, w: 14, h: 9, label: 'Sun Deck' },
+          { x: 18, y: 14, w: 10, h: 9, label: 'Spa Area' },
+          { x: 30, y: 14, w: 13, h: 9, label: 'Bar & Grill' }
+        ],
+        corridors: [
+          { x1: 2, y1: 12, x2: 43, y2: 12 },
+          { x1: 10, y1: 1, x2: 10, y2: 23 },
+          { x1: 34, y1: 1, x2: 34, y2: 23 }
+        ],
+        crowdZones: [
+          { x: 22, y: 6, r: 8, density: 0.75 },
+          { x: 8, y: 18, r: 5, density: 0.45 }
+        ],
+        baseSmokeBias: { dx: -0.15, dy: 0.1 }
+      }
+    ];
+
+    // ===========================
+    // COLOR INTERPOLATION
+    // ===========================
+    const riskColors = [
+      { stop: 0.0, r: 49,  g: 130, b: 206 },  // Blue (safe)
+      { stop: 0.25, r: 56,  g: 161, b: 105 },  // Green (low)
+      { stop: 0.5, r: 236, g: 201, b: 75  },   // Yellow (moderate)
+      { stop: 0.75, r: 237, g: 137, b: 54  },   // Orange (high)
+      { stop: 1.0, r: 229, g: 62,  b: 62  }    // Red (critical)
+    ];
+
+    function getRiskColor(val) {
+      val = Math.max(0, Math.min(1, val));
+      let lower = riskColors[0], upper = riskColors[riskColors.length - 1];
+      for (let i = 0; i < riskColors.length - 1; i++) {
+        if (val >= riskColors[i].stop && val <= riskColors[i + 1].stop) {
+          lower = riskColors[i];
+          upper = riskColors[i + 1];
+          break;
+        }
+      }
+      const range = upper.stop - lower.stop;
+      const t = range === 0 ? 0 : (val - lower.stop) / range;
+      const r = Math.round(lower.r + (upper.r - lower.r) * t);
+      const g = Math.round(lower.g + (upper.g - lower.g) * t);
+      const b = Math.round(lower.b + (upper.b - lower.b) * t);
+      return { r, g, b };
+    }
+
+    // ===========================
+    // HAZARD CALCULATIONS
+    // ===========================
+    function getWeights() {
+      let w = [weights.w1, weights.w2, weights.w3, weights.w4, weights.w5];
+      if (normalize) {
+        const sum = w.reduce((a, b) => a + b, 0);
+        if (sum > 0) w = w.map(v => v / sum);
+        else w = [0.2, 0.2, 0.2, 0.2, 0.2];
+      } else {
+        w = w.map(v => v / 100);
+      }
+      return w;
+    }
+
+    function dist(x1, y1, x2, y2) {
+      return Math.sqrt((x1 - x2) ** 2 + (y1 - y2) ** 2);
+    }
+
+    function computeFireProximity(col, row, deck, t) {
+      const cfg = deckConfigs[deck];
+      let maxVal = 0;
+      const timeFactor = Math.sqrt(t / 300);
+      const baseRadius = 3 + 12 * timeFactor;
+      cfg.fireSources.forEach(src => {
+        const d = dist(col, row, src.x, src.y);
+        const sigma = baseRadius;
+        const val = Math.exp(-(d * d) / (2 * sigma * sigma));
+        maxVal = Math.max(maxVal, val);
+      });
+      return maxVal;
+    }
+
+    function computeSmokeDensity(col, row, deck, t) {
+      const cfg = deckConfigs[deck];
+      let maxVal = 0;
+      const timeFactor = Math.pow(t / 300, 0.7);
+      const baseRadius = 5 + 20 * timeFactor;
+      cfg.fireSources.forEach(src => {
+        const biasX = cfg.baseSmokeBias.dx * t * 0.05;
+        const biasY = cfg.baseSmokeBias.dy * t * 0.05;
+        const cx = src.x + biasX;
+        const cy = src.y + biasY;
+        const dx = col - cx;
+        const dy = row - cy;
+        const sigmaX = baseRadius * 1.3;
+        const sigmaY = baseRadius;
+        const val = Math.exp(-(dx * dx) / (2 * sigmaX * sigmaX) - (dy * dy) / (2 * sigmaY * sigmaY));
+        maxVal = Math.max(maxVal, val * 0.85);
+      });
+      return maxVal;
+    }
+
+    function computeStructuralDamage(col, row, deck, t) {
+      const cfg = deckConfigs[deck];
+      let maxVal = 0;
+      const timeFactor = t / 300;
+      cfg.fireSources.forEach(src => {
+        const d = dist(col, row, src.x, src.y);
+        const damageRadius = 2 + 8 * timeFactor;
+        if (d < damageRadius) {
+          const intensity = 1 - d / damageRadius;
+          const cumulative = 1 - Math.exp(-2.5 * intensity * timeFactor);
+          maxVal = Math.max(maxVal, cumulative);
+        }
+      });
+      return maxVal;
+    }
+
+    function computeCrowdDensity(col, row, deck) {
+      const cfg = deckConfigs[deck];
+      let maxVal = 0;
+      cfg.crowdZones.forEach(zone => {
+        const d = dist(col, row, zone.x, zone.y);
+        if (d < zone.r) {
+          const val = zone.density * (1 - d / zone.r);
+          maxVal = Math.max(maxVal, val);
+        }
+      });
+      return maxVal;
+    }
+
+    function computeExitDistance(col, row, deck) {
+      const cfg = deckConfigs[deck];
+      let minDist = Infinity;
+      cfg.exits.forEach(ex => {
+        const d = dist(col, row, ex.x, ex.y);
+        minDist = Math.min(minDist, d);
+      });
+      const maxPossible = dist(0, 0, COLS, ROWS);
+      return Math.min(1, minDist / (maxPossible * 0.6));
+    }
+
+    function computeRiskGrid() {
+      const w = getWeights();
+      riskGrid = [];
+      for (let r = 0; r < ROWS; r++) {
+        riskGrid[r] = [];
+        for (let c = 0; c < COLS; c++) {
+          const F = computeFireProximity(c, r, currentDeck, currentTime);
+          const S = computeSmokeDensity(c, r, currentDeck, currentTime);
+          const D = computeStructuralDamage(c, r, currentDeck, currentTime);
+          const C = computeCrowdDensity(c, r, currentDeck);
+          const E = computeExitDistance(c, r, currentDeck);
+          const risk = w[0] * F + w[1] * S + w[2] * D + w[3] * C + w[4] * E;
+          riskGrid[r][c] = Math.min(1, Math.max(0, risk));
+        }
+      }
+    }
+
+    // ===========================
+    // PATHFINDING (simple greedy for evac path)
+    // ===========================
+    function findEvacPath(deck) {
+      const cfg = deckConfigs[deck];
+      const src = cfg.fireSources[0];
+      // Start from a point near fire but at safe distance
+      let startX = Math.min(COLS - 1, Math.max(0, src.x + 8));
+      let startY = src.y;
+
+      // Find nearest exit
+      let bestExit = cfg.exits[0];
+      let bestDist = Infinity;
+      cfg.exits.forEach(ex => {
+        const d = dist(startX, startY, ex.x, ex.y);
+        // Prefer exits away from fire
+        const fireDist = dist(ex.x, ex.y, src.x, src.y);
+        const score = d - fireDist * 0.5;
+        if (score < bestDist) {
+          bestDist = score;
+          bestExit = ex;
+        }
+      });
+
+      // Simple A*-like greedy path
+      const path = [];
+      let cx = startX, cy = startY;
+      const visited = new Set();
+      const maxSteps = 120;
+
+      for (let step = 0; step < maxSteps; step++) {
+        path.push({ x: cx, y: cy });
+        if (Math.abs(cx - bestExit.x) <= 1 && Math.abs(cy - bestExit.y) <= 1) {
+          path.push({ x: bestExit.x, y: bestExit.y });
+          break;
+        }
+        visited.add(cx + ',' + cy);
+
+        // Try neighbors
+        let bestNext = null;
+        let bestScore = Infinity;
+        const neighbors = [
+          { x: cx - 1, y: cy }, { x: cx + 1, y: cy },
+          { x: cx, y: cy - 1 }, { x: cx, y: cy + 1 },
+          { x: cx - 1, y: cy - 1 }, { x: cx + 1, y: cy - 1 },
+          { x: cx - 1, y: cy + 1 }, { x: cx + 1, y: cy + 1 }
+        ];
+
+        neighbors.forEach(n => {
+          if (n.x < 0 || n.x >= COLS || n.y < 0 || n.y >= ROWS) return;
+          if (visited.has(n.x + ',' + n.y)) return;
+          const riskVal = riskGrid[n.y] ? (riskGrid[n.y][n.x] || 0) : 0;
+          const goalDist = dist(n.x, n.y, bestExit.x, bestExit.y);
+          const score = goalDist * 0.6 + riskVal * 15;
+          if (score < bestScore) {
+            bestScore = score;
+            bestNext = n;
+          }
+        });
+
+        if (!bestNext) break;
+        cx = bestNext.x;
+        cy = bestNext.y;
+      }
+
+      return path;
+    }
+
+    // ===========================
+    // DRAWING
+    // ===========================
+    let animFrame = 0;
+
+    function drawShipOutline() {
+      ctx.save();
+      ctx.strokeStyle = '#4A5568';
+      ctx.lineWidth = 2;
+
+      // Ship hull (rectangle with pointed bow on right)
+      ctx.beginPath();
+      ctx.moveTo(10, 10);
+      ctx.lineTo(CANVAS_W - 60, 10);
+      ctx.lineTo(CANVAS_W - 10, CANVAS_H / 2); // bow point
+      ctx.lineTo(CANVAS_W - 60, CANVAS_H - 10);
+      ctx.lineTo(10, CANVAS_H - 10);
+      ctx.closePath();
+      ctx.stroke();
+
+      ctx.restore();
+    }
+
+    function drawRoomLayout(deck) {
+      const cfg = deckConfigs[deck];
+      ctx.save();
+
+      // Rooms
+      cfg.rooms.forEach(room => {
+        const rx = room.x * CELL_W;
+        const ry = room.y * CELL_H;
+        const rw = room.w * CELL_W;
+        const rh = room.h * CELL_H;
+
+        ctx.strokeStyle = 'rgba(74, 85, 104, 0.7)';
+        ctx.lineWidth = 1;
+        ctx.strokeRect(rx, ry, rw, rh);
+
+        // Room label
+        ctx.fillStyle = 'rgba(160, 174, 192, 0.6)';
+        ctx.font = '10px sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText(room.label, rx + rw / 2, ry + rh / 2 + 3);
+      });
+
+      // Corridors
+      ctx.strokeStyle = 'rgba(99, 179, 237, 0.25)';
+      ctx.lineWidth = 1;
+      ctx.setLineDash([4, 4]);
+      cfg.corridors.forEach(cor => {
+        ctx.beginPath();
+        ctx.moveTo(cor.x1 * CELL_W, cor.y1 * CELL_H);
+        ctx.lineTo(cor.x2 * CELL_W, cor.y2 * CELL_H);
+        ctx.stroke();
+      });
+      ctx.setLineDash([]);
+
+      ctx.restore();
+    }
+
+    function drawFireSources(deck) {
+      const cfg = deckConfigs[deck];
+      animFrame++;
+
+      cfg.fireSources.forEach(src => {
+        const cx = (src.x + 0.5) * CELL_W;
+        const cy = (src.y + 0.5) * CELL_H;
+        const pulse = 6 + 4 * Math.sin(animFrame * 0.08);
+        const outerPulse = 14 + 6 * Math.sin(animFrame * 0.05);
+
+        // Outer glow
+        const grd3 = ctx.createRadialGradient(cx, cy, 0, cx, cy, outerPulse + 10);
+        grd3.addColorStop(0, 'rgba(229, 62, 62, 0.3)');
+        grd3.addColorStop(1, 'rgba(229, 62, 62, 0)');
+        ctx.fillStyle = grd3;
+        ctx.beginPath();
+        ctx.arc(cx, cy, outerPulse + 10, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Pulsing ring
+        ctx.strokeStyle = 'rgba(229, 62, 62, ' + (0.3 + 0.2 * Math.sin(animFrame * 0.1)) + ')';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.arc(cx, cy, outerPulse, 0, Math.PI * 2);
+        ctx.stroke();
+
+        // Core fire
+        const grd = ctx.createRadialGradient(cx, cy, 0, cx, cy, pulse);
+        grd.addColorStop(0, '#FFFFFF');
+        grd.addColorStop(0.3, '#ECC94B');
+        grd.addColorStop(0.6, '#ED8936');
+        grd.addColorStop(1, '#E53E3E');
+        ctx.fillStyle = grd;
+        ctx.beginPath();
+        ctx.arc(cx, cy, pulse, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Label
+        ctx.fillStyle = '#E53E3E';
+        ctx.font = 'bold 11px sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText('FIRE', cx, cy - pulse - 6);
+      });
+    }
+
+    function drawExits(deck) {
+      const cfg = deckConfigs[deck];
+      ctx.save();
+
+      cfg.exits.forEach(ex => {
+        const cx = (ex.x + 0.5) * CELL_W;
+        const cy = (ex.y + 0.5) * CELL_H;
+
+        // Green rectangle
+        ctx.fillStyle = 'rgba(56, 161, 105, 0.8)';
+        ctx.fillRect(cx - 10, cy - 10, 20, 20);
+
+        // Arrow
+        ctx.fillStyle = '#FFFFFF';
+        ctx.font = 'bold 14px sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+
+        if (ex.x === 0) ctx.fillText('\u2190', cx, cy);
+        else if (ex.x === COLS - 1) ctx.fillText('\u2192', cx, cy);
+        else if (ex.y === 0) ctx.fillText('\u2191', cx, cy);
+        else ctx.fillText('\u2193', cx, cy);
+
+        // Label
+        ctx.fillStyle = '#38A169';
+        ctx.font = '9px sans-serif';
+        ctx.textBaseline = 'alphabetic';
+        ctx.fillText('EXIT', cx, cy + 22);
+      });
+
+      ctx.restore();
+    }
+
+    function drawMusterStations(deck) {
+      const cfg = deckConfigs[deck];
+      cfg.musterStations.forEach(ms => {
+        const rx = ms.x * CELL_W;
+        const ry = ms.y * CELL_H;
+        const rw = ms.w * CELL_W;
+        const rh = ms.h * CELL_H;
+
+        ctx.fillStyle = 'rgba(56, 161, 105, 0.15)';
+        ctx.fillRect(rx, ry, rw, rh);
+
+        ctx.strokeStyle = '#38A169';
+        ctx.lineWidth = 2;
+        ctx.setLineDash([6, 3]);
+        ctx.strokeRect(rx, ry, rw, rh);
+        ctx.setLineDash([]);
+
+        ctx.fillStyle = '#38A169';
+        ctx.font = 'bold 12px sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText('MUSTER STATION', rx + rw / 2, ry + rh / 2 + 4);
+      });
+    }
+
+    function drawEvacPath(deck) {
+      const path = findEvacPath(deck);
+      if (path.length < 2) return;
+
+      ctx.save();
+      ctx.strokeStyle = '#38A169';
+      ctx.lineWidth = 3;
+      ctx.setLineDash([8, 5]);
+      ctx.lineDashOffset = -animFrame * 0.5;
+      ctx.globalAlpha = 0.8;
+
+      ctx.beginPath();
+      ctx.moveTo((path[0].x + 0.5) * CELL_W, (path[0].y + 0.5) * CELL_H);
+      for (let i = 1; i < path.length; i++) {
+        ctx.lineTo((path[i].x + 0.5) * CELL_W, (path[i].y + 0.5) * CELL_H);
+      }
+      ctx.stroke();
+
+      // Arrow at end
+      if (path.length >= 2) {
+        const last = path[path.length - 1];
+        const prev = path[path.length - 2];
+        const angle = Math.atan2(
+          (last.y - prev.y) * CELL_H,
+          (last.x - prev.x) * CELL_W
+        );
+        const tipX = (last.x + 0.5) * CELL_W;
+        const tipY = (last.y + 0.5) * CELL_H;
+
+        ctx.setLineDash([]);
+        ctx.fillStyle = '#38A169';
+        ctx.beginPath();
+        ctx.moveTo(tipX, tipY);
+        ctx.lineTo(
+          tipX - 12 * Math.cos(angle - 0.4),
+          tipY - 12 * Math.sin(angle - 0.4)
+        );
+        ctx.lineTo(
+          tipX - 12 * Math.cos(angle + 0.4),
+          tipY - 12 * Math.sin(angle + 0.4)
+        );
+        ctx.closePath();
+        ctx.fill();
+      }
+
+      ctx.restore();
+    }
+
+    function drawHeatmap() {
+      for (let r = 0; r < ROWS; r++) {
+        for (let c = 0; c < COLS; c++) {
+          const val = riskGrid[r][c];
+          const color = getRiskColor(val);
+          ctx.fillStyle = 'rgb(' + color.r + ',' + color.g + ',' + color.b + ')';
+          ctx.globalAlpha = 0.55 + val * 0.35;
+          ctx.fillRect(c * CELL_W, r * CELL_H, CELL_W + 0.5, CELL_H + 0.5);
+        }
+      }
+      ctx.globalAlpha = 1;
+    }
+
+    function render() {
+      ctx.clearRect(0, 0, CANVAS_W, CANVAS_H);
+
+      // Background
+      ctx.fillStyle = '#0a1520';
+      ctx.fillRect(0, 0, CANVAS_W, CANVAS_H);
+
+      // Heatmap
+      drawHeatmap();
+
+      // Ship outline
+      drawShipOutline();
+
+      // Room layout
+      drawRoomLayout(currentDeck);
+
+      // Muster stations
+      drawMusterStations(currentDeck);
+
+      // Evacuation path
+      drawEvacPath(currentDeck);
+
+      // Fire sources
+      drawFireSources(currentDeck);
+
+      // Exits
+      drawExits(currentDeck);
+    }
+
+    // ===========================
+    // STATISTICS
+    // ===========================
+    function updateStatistics() {
+      let total = 0, max = 0, maxZone = '';
+      let counts = { safe: 0, low: 0, moderate: 0, high: 0, critical: 0 };
+      const cfg = deckConfigs[currentDeck];
+
+      for (let r = 0; r < ROWS; r++) {
+        for (let c = 0; c < COLS; c++) {
+          const v = riskGrid[r][c];
+          total += v;
+          if (v > max) {
+            max = v;
+            // Determine zone
+            let zone = '';
+            for (const room of cfg.rooms) {
+              if (c >= room.x && c < room.x + room.w && r >= room.y && r < room.y + room.h) {
+                zone = room.label;
+                break;
+              }
+            }
+            maxZone = zone || ('(' + c + ',' + r + ')');
+          }
+          if (v < 0.2) counts.safe++;
+          else if (v < 0.4) counts.low++;
+          else if (v < 0.6) counts.moderate++;
+          else if (v < 0.8) counts.high++;
+          else counts.critical++;
+        }
+      }
+
+      const cellCount = ROWS * COLS;
+      const avg = total / cellCount;
+
+      document.getElementById('totalRisk').textContent = total.toFixed(1);
+      document.getElementById('avgRisk').textContent = avg.toFixed(3);
+      document.getElementById('maxRisk').textContent = max.toFixed(3);
+      document.getElementById('safeCount').textContent = counts.safe;
+      document.getElementById('criticalCount').textContent = counts.critical;
+      document.getElementById('highestZone').textContent = maxZone;
+
+      document.getElementById('distSafe').textContent = counts.safe;
+      document.getElementById('distLow').textContent = counts.low;
+      document.getElementById('distMod').textContent = counts.moderate;
+      document.getElementById('distHigh').textContent = counts.high;
+      document.getElementById('distCrit').textContent = counts.critical;
+
+      // Trend
+      const trend = document.getElementById('trendIndicator');
+      if (avg > prevAvgRisk + 0.005) {
+        trend.className = 'trend-indicator increasing';
+        trend.innerHTML = '&#x2191; 위험도 증가 추세 (Increasing)';
+      } else if (avg < prevAvgRisk - 0.005) {
+        trend.className = 'trend-indicator decreasing';
+        trend.innerHTML = '&#x2193; 위험도 감소 추세 (Decreasing)';
+      } else {
+        trend.className = 'trend-indicator stable';
+        trend.innerHTML = '&#x2194; 위험도 안정 (Stable)';
+      }
+      prevAvgRisk = avg;
+
+      // Draw distribution bar chart
+      drawDistChart(counts);
+    }
+
+    function drawDistChart(counts) {
+      const c = document.getElementById('distChart');
+      const cx = c.getContext('2d');
+      const w = c.width, h = c.height;
+      cx.clearRect(0, 0, w, h);
+
+      cx.fillStyle = '#2D3E50';
+      cx.fillRect(0, 0, w, h);
+
+      const data = [
+        { label: '안전', count: counts.safe, color: '#3182CE' },
+        { label: '낮음', count: counts.low, color: '#38A169' },
+        { label: '보통', count: counts.moderate, color: '#ECC94B' },
+        { label: '높음', count: counts.high, color: '#ED8936' },
+        { label: '위험', count: counts.critical, color: '#E53E3E' }
+      ];
+
+      const maxCount = Math.max(1, ...data.map(d => d.count));
+      const barW = 36;
+      const gap = 16;
+      const startX = (w - (data.length * barW + (data.length - 1) * gap)) / 2;
+      const topPad = 30;
+      const botPad = 40;
+      const chartH = h - topPad - botPad;
+
+      // Title
+      cx.fillStyle = '#A0AEC0';
+      cx.font = 'bold 11px sans-serif';
+      cx.textAlign = 'center';
+      cx.fillText('Risk Level Distribution', w / 2, 18);
+
+      data.forEach((d, i) => {
+        const x = startX + i * (barW + gap);
+        const barH = (d.count / maxCount) * chartH;
+        const y = topPad + chartH - barH;
+
+        // Bar
+        cx.fillStyle = d.color;
+        cx.globalAlpha = 0.85;
+        cx.fillRect(x, y, barW, barH);
+        cx.globalAlpha = 1;
+
+        // Count on top
+        cx.fillStyle = '#E2E8F0';
+        cx.font = 'bold 10px monospace';
+        cx.textAlign = 'center';
+        cx.fillText(d.count, x + barW / 2, y - 5);
+
+        // Label below
+        cx.fillStyle = '#718096';
+        cx.font = '10px sans-serif';
+        cx.fillText(d.label, x + barW / 2, h - botPad + 15);
+      });
+
+      // Baseline
+      cx.strokeStyle = '#2D3748';
+      cx.lineWidth = 1;
+      cx.beginPath();
+      cx.moveTo(startX - 10, topPad + chartH);
+      cx.lineTo(startX + data.length * (barW + gap), topPad + chartH);
+      cx.stroke();
+    }
+
+    // ===========================
+    // WEIGHT PIE CHART
+    // ===========================
+    function drawWeightPie() {
+      const c = document.getElementById('weightPie');
+      const cx = c.getContext('2d');
+      const w = c.width, h = c.height;
+      cx.clearRect(0, 0, w, h);
+
+      const raw = [weights.w1, weights.w2, weights.w3, weights.w4, weights.w5];
+      const total = raw.reduce((a, b) => a + b, 0) || 1;
+      const colors = ['#E53E3E', '#ED8936', '#ECC94B', '#805AD5', '#3182CE'];
+      const labels = ['F', 'S', 'D', 'C', 'E'];
+
+      const centerX = 75, centerY = 80, radius = 55;
+      let startAngle = -Math.PI / 2;
+
+      raw.forEach((val, i) => {
+        const slice = (val / total) * Math.PI * 2;
+        cx.beginPath();
+        cx.moveTo(centerX, centerY);
+        cx.arc(centerX, centerY, radius, startAngle, startAngle + slice);
+        cx.closePath();
+        cx.fillStyle = colors[i];
+        cx.globalAlpha = 0.8;
+        cx.fill();
+        cx.globalAlpha = 1;
+
+        // Label
+        const midAngle = startAngle + slice / 2;
+        const lx = centerX + (radius * 0.65) * Math.cos(midAngle);
+        const ly = centerY + (radius * 0.65) * Math.sin(midAngle);
+        if (val / total > 0.05) {
+          cx.fillStyle = '#FFF';
+          cx.font = 'bold 10px sans-serif';
+          cx.textAlign = 'center';
+          cx.textBaseline = 'middle';
+          cx.fillText(labels[i], lx, ly);
+        }
+
+        startAngle += slice;
+      });
+
+      // Legend
+      const legendX = 150;
+      const legendNames = ['Fire (F)', 'Smoke (S)', 'Damage (D)', 'Crowd (C)', 'Exit (E)'];
+      raw.forEach((val, i) => {
+        const ly = 20 + i * 28;
+        cx.fillStyle = colors[i];
+        cx.fillRect(legendX, ly, 12, 12);
+        cx.fillStyle = '#A0AEC0';
+        cx.font = '10px sans-serif';
+        cx.textAlign = 'left';
+        cx.textBaseline = 'middle';
+        cx.fillText(legendNames[i] + ' (' + Math.round(val / total * 100) + '%)', legendX + 18, ly + 6);
+      });
+    }
+
+    // ===========================
+    // MAIN UPDATE LOOP
+    // ===========================
+    function update() {
+      computeRiskGrid();
+      render();
+      updateStatistics();
+      drawWeightPie();
+    }
+
+    // Animation loop for pulsing fire
+    let rafId = null;
+    function animationLoop() {
+      render();
+      rafId = requestAnimationFrame(animationLoop);
+    }
+
+    // ===========================
+    // EVENT LISTENERS
+    // ===========================
+
+    // Weight sliders
+    ['w1', 'w2', 'w3', 'w4', 'w5'].forEach(id => {
+      const slider = document.getElementById(id);
+      const valEl = document.getElementById(id + 'Val');
+      slider.addEventListener('input', function() {
+        weights[id] = parseInt(this.value);
+        valEl.textContent = this.value;
+        computeRiskGrid();
+        updateStatistics();
+        drawWeightPie();
+      });
+    });
+
+    // Normalize checkbox
+    document.getElementById('normalizeCheck').addEventListener('change', function() {
+      normalize = this.checked;
+      computeRiskGrid();
+      updateStatistics();
+      drawWeightPie();
+    });
+
+    // Time slider
+    const timeSlider = document.getElementById('timeSlider');
+    const timeDisplay = document.getElementById('timeDisplay');
+    timeSlider.addEventListener('input', function() {
+      currentTime = parseInt(this.value);
+      timeDisplay.textContent = currentTime + 's';
+      computeRiskGrid();
+      updateStatistics();
+    });
+
+    // Play button
+    const playBtn = document.getElementById('playBtn');
+    playBtn.addEventListener('click', function() {
+      if (isPlaying) {
+        isPlaying = false;
+        clearInterval(playInterval);
+        playBtn.classList.remove('playing');
+        playBtn.innerHTML = '&#x25B6; 자동 재생';
+      } else {
+        isPlaying = true;
+        playBtn.classList.add('playing');
+        playBtn.innerHTML = '&#x23F8; 일시정지';
+        playInterval = setInterval(function() {
+          currentTime = Math.min(300, currentTime + 1);
+          timeSlider.value = currentTime;
+          timeDisplay.textContent = currentTime + 's';
+          computeRiskGrid();
+          updateStatistics();
+          if (currentTime >= 300) {
+            isPlaying = false;
+            clearInterval(playInterval);
+            playBtn.classList.remove('playing');
+            playBtn.innerHTML = '&#x25B6; 자동 재생';
+          }
+        }, 50);
+      }
+    });
+
+    // Deck selector
+    document.querySelectorAll('.deck-btn').forEach(btn => {
+      btn.addEventListener('click', function() {
+        document.querySelectorAll('.deck-btn').forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
+        currentDeck = parseInt(this.dataset.deck);
+        const cfg = deckConfigs[currentDeck];
+        document.getElementById('canvasTitle').innerHTML =
+          '&#x1F5FA;&#xFE0F; ' + cfg.name + ' 위험지도';
+        computeRiskGrid();
+        updateStatistics();
+        drawWeightPie();
+      });
+    });
+
+    // ===========================
+    // INITIALIZE
+    // ===========================
+    update();
+    animationLoop();
+
+  })();
+  </script>
+
+    <!-- FOOTER -->
+    
+<footer class="footer-premium">
+      <div class="footer-premium-inner">
+        <div class="footer-grid">
+          <div class="footer-col footer-col--brand">
+            <div class="footer-logo"><img src="firenavi-logo.svg" alt="FireNavi" style="height:40px;vertical-align:middle;"></div>
+            <p class="footer-tagline">AI 기반 실시간 생존 의사결정 플랫폼</p>
+            <p class="footer-desc">화재보다 빠르게 판단하는 AI.<br>길을 안내하는 것이 아니라 생존을 설계합니다.</p>
+            <div class="footer-badges">
+              <span class="footer-badge">Safety</span>
+              <span class="footer-badge">Security</span>
+              <span class="footer-badge">Operation</span>
+            </div>
+          </div>
+          <div class="footer-col">
+            <h4 class="footer-col-title">Core Modules</h4>
+            <ul class="footer-links">
+              <li><a href="a-technical-formulation.html">A. 기술 수식화</a></li>
+              <li><a href="b-industrial-architecture.html">B. 산업 아키텍처</a></li>
+              <li><a href="c-shipyard-proposal.html">C. 조선소 제안</a></li>
+              <li><a href="d-insurance-risk-model.html">D. 보험 리스크</a></li>
+            </ul>
+          </div>
+          <div class="footer-col">
+            <h4 class="footer-col-title">Interactive</h4>
+            <ul class="footer-links">
+              <li><a href="simulation.html">실시간 시뮬레이션</a></li>
+              <li><a href="risk-map.html">동적 위험지도</a></li>
+              <li><a href="route-optimizer.html">경로 최적화</a></li>
+            </ul>
+          </div>
+          <div class="footer-col">
+            <h4 class="footer-col-title">Resources</h4>
+            <ul class="footer-links">
+              <li><a href="../index.html">매뉴얼 페이지</a></li>
+              <li><a href="../technology.html">아키텍처 구조도</a></li>
+            </ul>
+            <h4 class="footer-col-title" style="margin-top:20px;">Contact</h4>
+            <ul class="footer-links">
+              <li><a href="mailto:jaiwshim@gmail.com">jaiwshim@gmail.com</a></li>
+            </ul>
+          </div>
+        </div>
+        <div class="footer-engines">
+          <div class="footer-engine"><span class="footer-engine-dot" style="background:#EF4444;"></span><span>Prediction Engine</span></div>
+          <div class="footer-engine"><span class="footer-engine-dot" style="background:#3B82F6;"></span><span>Behavior Engine</span></div>
+          <div class="footer-engine"><span class="footer-engine-dot" style="background:#7C3AED;"></span><span>Decision Engine</span></div>
+          <div class="footer-engine"><span class="footer-engine-dot" style="background:#EC4899;"></span><span>Priority Rescue AI</span></div>
+          <div class="footer-engine"><span class="footer-engine-dot" style="background:#06B6D4;"></span><span>WiFi Positioning</span></div>
+        </div>
+        <div class="footer-bottom">
+          <p>&copy; 2026 FireNavi. Patented Technology. All Rights Reserved.</p>
+          <p>9 Mathematical Models &middot; 29 Equations &middot; 5 Patents &middot; 3 AI Engines</p>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <script src="js/main.js"></script>
+<script src="js/common-nav-footer.js"></script>
+</body>
+</html>

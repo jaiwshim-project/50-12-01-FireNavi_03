@@ -1,0 +1,926 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FireNavi 온톨로지 기반 10대 특허 포트폴리오</title>
+<meta name="description" content="FireNavi v4.0 온톨로지 기반 재난대피 AI 특허 전략 — 10건의 혁신적 지식그래프 기술">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+:root {
+  --navy: #0F1E3D;
+  --gold: #D4A574;
+  --gold-dark: #9B7653;
+  --gold-soft: #F5E6D3;
+  --bordeaux: #6B2D2D;
+  --success: #2D5D4D;
+  --text-1: #1a1a1a;
+  --text-2: #4a4a4a;
+  --text-3: #7a7a7a;
+  --bg: #ffffff;
+  --bg-soft: #f8f7f5;
+  --line: #e8e6e0;
+  --line-soft: #f0ede7;
+  --shadow-sm: 0 2px 8px rgba(15, 30, 61, 0.08);
+  --shadow-md: 0 4px 16px rgba(15, 30, 61, 0.12);
+  --shadow-lg: 0 12px 32px rgba(15, 30, 61, 0.16);
+  --grad-premium: linear-gradient(135deg, #0F1E3D 0%, #2D3D5C 100%);
+  --r-xs: 6px;
+  --r-md: 12px;
+  --r-lg: 18px;
+  --r-xl: 28px;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  color: var(--text-2);
+  background: var(--bg);
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+/* Header & Navigation */
+.topnav {
+  background: var(--bg);
+  border-bottom: 1px solid var(--line);
+  padding: 0;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.topnav-inner {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 16px 28px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo {
+  font-size: 1.4rem;
+  font-weight: 900;
+  color: var(--navy);
+}
+
+.logo span {
+  color: var(--gold);
+}
+
+/* Hero Section */
+.hero {
+  background: var(--grad-premium);
+  color: white;
+  padding: 100px 28px;
+  text-align: center;
+}
+
+.hero-inner {
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.eyebrow {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: var(--gold);
+  margin-bottom: 16px;
+  text-transform: uppercase;
+}
+
+.hero h1 {
+  font-size: 3.2rem;
+  font-weight: 900;
+  line-height: 1.2;
+  margin-bottom: 16px;
+}
+
+.hero-text {
+  font-size: 1.1rem;
+  color: rgba(255,255,255,0.9);
+  margin-bottom: 40px;
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Typography */
+.container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 28px;
+}
+
+.section {
+  padding: 80px 0;
+}
+
+.alt-bg {
+  background: var(--bg-soft);
+}
+
+.section-eyebrow {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: var(--gold-dark);
+  margin-bottom: 12px;
+  text-transform: uppercase;
+}
+
+.section-title {
+  font-size: 2.4rem;
+  font-weight: 900;
+  color: var(--navy);
+  margin-bottom: 16px;
+  line-height: 1.2;
+}
+
+.section-sub {
+  font-size: 1.05rem;
+  color: var(--text-3);
+  margin-bottom: 40px;
+  max-width: 700px;
+  line-height: 1.7;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.text-mute {
+  color: var(--text-3);
+}
+
+.mb-8 { margin-bottom: 32px; }
+.mb-12 { margin-bottom: 48px; }
+.mt-8 { margin-top: 32px; }
+
+/* Grid Systems */
+.grid-3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  margin: 0;
+}
+
+.grid-2 {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 32px;
+}
+
+@media (max-width: 1024px) {
+  .grid-3 { grid-template-columns: repeat(2, 1fr); }
+  .section-title { font-size: 2rem; }
+  .hero h1 { font-size: 2.4rem; }
+}
+
+@media (max-width: 768px) {
+  .grid-3, .grid-2 { grid-template-columns: 1fr; }
+  .hero { padding: 60px 20px; }
+  .section { padding: 60px 0; }
+}
+
+/* Cards */
+.card {
+  background: white;
+  border-radius: var(--r-lg);
+  padding: 32px;
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow-sm);
+  transition: all 0.3s;
+  display: flex;
+  flex-direction: column;
+}
+
+.card:hover {
+  transform: translateY(-6px);
+  box-shadow: var(--shadow-lg);
+  border-color: var(--gold);
+}
+
+.card-eyebrow {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--gold-dark);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 8px;
+}
+
+.card h3 {
+  font-size: 1.25rem;
+  color: var(--navy);
+  margin-bottom: 12px;
+  font-weight: 800;
+}
+
+.card p {
+  font-size: 0.95rem;
+  color: var(--text-3);
+  margin-bottom: 16px;
+  flex-grow: 1;
+}
+
+.card-badge {
+  display: inline-block;
+  background: var(--gold-soft);
+  color: var(--gold-dark);
+  padding: 6px 12px;
+  border-radius: var(--r-xs);
+  font-size: 0.75rem;
+  font-weight: 700;
+  margin-right: 8px;
+  margin-bottom: 12px;
+}
+
+.patent-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 28px;
+  margin-bottom: 40px;
+}
+
+.patent-card {
+  background: white;
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  padding: 28px;
+  box-shadow: var(--shadow-sm);
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.patent-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+  border-color: var(--gold);
+  background: var(--bg-soft);
+}
+
+.patent-num {
+  font-size: 2.8rem;
+  font-weight: 900;
+  color: var(--gold);
+  margin-bottom: 8px;
+}
+
+.patent-name {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: var(--navy);
+  margin-bottom: 12px;
+  line-height: 1.3;
+}
+
+.patent-desc {
+  font-size: 0.92rem;
+  color: var(--text-3);
+  margin-bottom: 16px;
+  line-height: 1.6;
+}
+
+.patent-keywords {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.keyword {
+  background: var(--gold-soft);
+  color: var(--gold-dark);
+  padding: 4px 10px;
+  border-radius: var(--r-xs);
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+@media (max-width: 768px) {
+  .patent-grid { grid-template-columns: 1fr; }
+}
+
+/* Table */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 40px;
+  background: white;
+  border-radius: var(--r-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+}
+
+table th {
+  background: var(--navy);
+  color: white;
+  padding: 16px;
+  text-align: left;
+  font-weight: 700;
+  font-size: 0.95rem;
+}
+
+table td {
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--line);
+  font-size: 0.92rem;
+}
+
+table tr:hover {
+  background: var(--bg-soft);
+}
+
+/* Buttons */
+.btn {
+  display: inline-block;
+  padding: 12px 28px;
+  border-radius: var(--r-md);
+  font-weight: 700;
+  text-decoration: none;
+  transition: all 0.3s;
+  cursor: pointer;
+  font-size: 0.95rem;
+  border: none;
+}
+
+.btn-primary {
+  background: var(--navy);
+  color: white;
+}
+
+.btn-primary:hover {
+  background: var(--gold);
+  color: var(--navy);
+}
+
+.btn-outline {
+  border: 1px solid var(--navy);
+  color: var(--navy);
+  background: transparent;
+}
+
+.btn-outline:hover {
+  background: var(--navy);
+  color: white;
+}
+
+/* Footer */
+.site-footer {
+  background: var(--navy);
+  color: white;
+  padding: 40px 28px;
+  text-align: center;
+  font-size: 0.92rem;
+  border-top: 1px solid var(--gold);
+  margin-top: 80px;
+}
+
+/* Quote */
+.quote-box {
+  background: white;
+  border-left: 4px solid var(--gold);
+  padding: 32px;
+  border-radius: var(--r-lg);
+  margin: 0 auto;
+  max-width: 700px;
+  box-shadow: var(--shadow-sm);
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: var(--navy);
+  line-height: 1.8;
+}
+
+.author {
+  color: var(--gold-dark);
+  font-weight: 700;
+  margin-top: 16px;
+  display: block;
+  font-size: 0.95rem;
+}
+
+/* Priority Matrix */
+.priority-box {
+  background: white;
+  border-radius: var(--r-lg);
+  padding: 24px;
+  border-left: 4px solid var(--gold);
+  margin-bottom: 16px;
+}
+
+.priority-box h4 {
+  color: var(--navy);
+  font-size: 1.05rem;
+  margin-bottom: 12px;
+  font-weight: 800;
+}
+
+.priority-box p {
+  color: var(--text-2);
+  font-size: 0.95rem;
+}
+
+.priority-num {
+  font-weight: 900;
+  color: var(--gold);
+  font-size: 1.2rem;
+  margin-right: 8px;
+}
+
+/* Fade in animation */
+.fade-in {
+  opacity: 0;
+  transform: translateY(20px);
+  animation: fadeIn 0.7s ease-out forwards;
+}
+
+@keyframes fadeIn {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Code block */
+code {
+  background: var(--bg-soft);
+  padding: 2px 6px;
+  border-radius: var(--r-xs);
+  font-family: 'Courier New', monospace;
+  font-size: 0.9rem;
+  color: var(--bordeaux);
+}
+
+pre {
+  background: var(--navy);
+  color: #00ff00;
+  padding: 16px;
+  border-radius: var(--r-md);
+  overflow-x: auto;
+  font-size: 0.85rem;
+  margin-bottom: 20px;
+  line-height: 1.5;
+}
+
+/* Highlight */
+.highlight {
+  color: var(--gold);
+  font-weight: 700;
+}
+
+.success-text {
+  color: var(--success);
+  font-weight: 700;
+}
+
+.error-text {
+  color: var(--bordeaux);
+  font-weight: 700;
+}
+
+</style>
+</head>
+<body>
+
+<!-- Navigation -->
+<nav class="topnav">
+  <div class="topnav-inner">
+    <div class="logo">Fire<span>Navi</span> Patent</div>
+  </div>
+</nav>
+
+<!-- Hero Section -->
+<section class="hero">
+  <div class="hero-inner">
+    <div class="eyebrow">FireNavi v4.0 기술 전략</div>
+    <h1>온톨로지 기반 <span style="color: var(--gold);">10대 특허 포트폴리오</span></h1>
+    <p class="hero-text">사람·공간·위험·센서·규정을 지식그래프로 연결하여 설명 가능한 AI 재난대피 경로를 생성하는 혁신 기술</p>
+  </div>
+</section>
+
+<!-- Overview Section -->
+<section class="section container">
+  <div class="text-center mb-12">
+    <div class="section-eyebrow">특허 포트폴리오 개요</div>
+    <h2 class="section-title">10건의 상호 연결된 혁신 기술</h2>
+    <p class="section-sub">FireNavi의 온톨로지 기반 특허는 단순 경로 계산이 아니라, 개인의 상태, 공간의 의미, 위험의 변화, 센서의 데이터, 규정의 기준을 통합하는 지식그래프 기술입니다.</p>
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>번호</th>
+        <th>특허명</th>
+        <th>핵심 보호 대상</th>
+        <th>우선순위</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="highlight">1</span></td>
+        <td>온톨로지 공유 기반 삼중 엔진 동기 아키텍처</td>
+        <td>Prediction·Behavior·Decision 엔진의 공통 의미체계 기반 동기 판단</td>
+        <td><span class="success-text">2차 우선</span></td>
+      </tr>
+      <tr>
+        <td><span class="highlight">2</span></td>
+        <td>온톨로지 기반 이원 경로 전환 시스템</td>
+        <td>주경로·대체경로의 의미 기반 생성과 상황별 자동 전환</td>
+        <td><span class="success-text">2차 우선</span></td>
+      </tr>
+      <tr>
+        <td><span class="highlight">3</span></td>
+        <td>취약계층 제약 온톨로지 기반 안전 마진 자동 적용</td>
+        <td>취약도·이동제약·감각제약에 따른 안전계수 자동 적용</td>
+        <td><span class="success-text">2차 우선</span></td>
+      </tr>
+      <tr>
+        <td><span class="highlight">4</span></td>
+        <td>음향 이벤트 온톨로지 기반 자동 재난 트리거</td>
+        <td>재난 경보음·비명·폭발음·구조요청음의 의미 분류와 자동 활성화</td>
+        <td><span class="success-text">2차 보강</span></td>
+      </tr>
+      <tr>
+        <td><span class="highlight">5</span></td>
+        <td>센서·인간보고 온톨로지 정규화 기반 화재맵</td>
+        <td>센서값과 사용자 보고를 의미 노드로 변환한 동적 위험지도 생성</td>
+        <td><span style="color: var(--gold); font-weight: 700;">1차 우선</span></td>
+      </tr>
+      <tr>
+        <td><span class="highlight">6</span></td>
+        <td>사용자 상태 온톨로지 기반 대화형 마이크로 설문</td>
+        <td>사용자 유형과 감각 제약에 맞춘 재난 질의·응답 자동 조정</td>
+        <td><span class="success-text">2차 보강</span></td>
+      </tr>
+      <tr>
+        <td><span class="highlight">7</span></td>
+        <td>공간 온톨로지 기반 인프라프리 실내 다층 측위</td>
+        <td>스마트폰 위치 추정을 층·복도·계단·출구 의미 노드로 매핑</td>
+        <td><span style="color: var(--gold); font-weight: 700;">1차 우선</span></td>
+      </tr>
+      <tr>
+        <td><span class="highlight">8</span></td>
+        <td>사용자·위험·공간 온톨로지 기반 개인별 적응 경로 AI</td>
+        <td>개인 상태·위험·공간 제약 기반 맞춤형 대피 경로 생성</td>
+        <td><span style="color: var(--gold); font-weight: 700;">1차 우선</span></td>
+      </tr>
+      <tr>
+        <td><span class="highlight">9</span></td>
+        <td>온톨로지 기반 개인별 재난 대피 경로 추천 시스템</td>
+        <td>사람·공간·위험·규정 지식그래프 기반 설명 가능한 경로 추천</td>
+        <td><span style="color: var(--gold); font-weight: 700;">1차 우선</span></td>
+      </tr>
+      <tr>
+        <td><span class="highlight">10</span></td>
+        <td>스마트폰·온톨로지·AI 기반 재난대피 통합 플랫폼</td>
+        <td>감지·분석·안내·관제·구조를 통합한 전체 플랫폼 구조</td>
+        <td><span style="color: var(--gold); font-weight: 700;">1차 우선</span></td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- Patent Details Section -->
+<section class="section alt-bg">
+  <div class="container">
+    <div class="text-center mb-12">
+      <div class="section-eyebrow">10대 특허 상세 자료</div>
+      <h2 class="section-title">각 특허의 핵심 기술과 차별성</h2>
+    </div>
+
+    <!-- Patents 1-2 -->
+    <div class="patent-grid">
+      <!-- Patent 1 -->
+      <div class="patent-card fade-in" style="animation-delay: 0.1s;">
+        <div class="patent-num">1</div>
+        <div class="patent-name">온톨로지 공유 기반<br>삼중 엔진 동기 아키텍처</div>
+        <div class="patent-desc">Prediction·Behavior·Decision 엔진이 하나의 재난대피 온톨로지 지식그래프를 공유하여 실시간으로 동기화되는 재난 대피 의사결정 시스템</div>
+        <div class="patent-keywords">
+          <span class="keyword">지식그래프</span>
+          <span class="keyword">AI 동기화</span>
+          <span class="keyword">설명 가능</span>
+        </div>
+      </div>
+
+      <!-- Patent 2 -->
+      <div class="patent-card fade-in" style="animation-delay: 0.2s;">
+        <div class="patent-num">2</div>
+        <div class="patent-name">온톨로지 기반 이원<br>경로 전환 시스템</div>
+        <div class="patent-desc">주경로와 대체경로를 의미 있게 구분하고 상황 변화에 따라 자동으로 전환하는 재난 대피 안내 시스템</div>
+        <div class="patent-keywords">
+          <span class="keyword">주경로</span>
+          <span class="keyword">대체경로</span>
+          <span class="keyword">자동 전환</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Patents 3-4 -->
+    <div class="patent-grid">
+      <!-- Patent 3 -->
+      <div class="patent-card fade-in" style="animation-delay: 0.3s;">
+        <div class="patent-num">3</div>
+        <div class="patent-name">취약계층 제약 온톨로지<br>기반 안전 마진 자동 적용</div>
+        <div class="patent-desc">휠체어 사용자, 호흡기 환자, 어린이 등 취약계층의 이동능력과 위험 민감도에 따라 안전 마진을 자동 산출</div>
+        <div class="patent-keywords">
+          <span class="keyword">취약계층</span>
+          <span class="keyword">안전 마진</span>
+          <span class="keyword">개인화</span>
+        </div>
+      </div>
+
+      <!-- Patent 4 -->
+      <div class="patent-card fade-in" style="animation-delay: 0.4s;">
+        <div class="patent-num">4</div>
+        <div class="patent-name">음향 이벤트 온톨로지<br>기반 자동 재난 트리거</div>
+        <div class="patent-desc">스마트폰 마이크가 감지한 음향(경보음, 비명, 폭발음)을 재난 의미로 분류하여 대피 모드 자동 활성화</div>
+        <div class="patent-keywords">
+          <span class="keyword">음향 감지</span>
+          <span class="keyword">자동 활성화</span>
+          <span class="keyword">로컬 처리</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Patents 5-6 -->
+    <div class="patent-grid">
+      <!-- Patent 5 -->
+      <div class="patent-card fade-in" style="animation-delay: 0.5s;">
+        <div class="patent-num">5</div>
+        <div class="patent-name">센서·인간보고 온톨로지<br>정규화 기반 화재맵</div>
+        <div class="patent-desc">스마트폰 센서 데이터와 사용자 보고를 재난 의미 노드로 정규화하여 동적 위험지도를 생성하는 시스템</div>
+        <div class="patent-keywords">
+          <span class="keyword">센서 융합</span>
+          <span class="keyword">정규화</span>
+          <span class="keyword">동적 지도</span>
+        </div>
+      </div>
+
+      <!-- Patent 6 -->
+      <div class="patent-card fade-in" style="animation-delay: 0.6s;">
+        <div class="patent-num">6</div>
+        <div class="patent-name">사용자 상태 온톨로지<br>기반 대화형 설문</div>
+        <div class="patent-desc">사용자 유형(시각장애인, 청각장애인, 인지 취약자)에 따라 질문 내용, 방식, 개수를 자동으로 조정</div>
+        <div class="patent-keywords">
+          <span class="keyword">적응형 UI</span>
+          <span class="keyword">마이크로 설문</span>
+          <span class="keyword">접근성</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Patents 7-8 -->
+    <div class="patent-grid">
+      <!-- Patent 7 -->
+      <div class="patent-card fade-in" style="animation-delay: 0.7s;">
+        <div class="patent-num">7</div>
+        <div class="patent-name">공간 온톨로지 기반<br>인프라프리 실내 다층 측위</div>
+        <div class="patent-desc">WiFi와 스마트폰 센서로 위치를 추정하고 '층', '복도', '계단', '피난구역'이라는 의미 노드로 변환</div>
+        <div class="patent-keywords">
+          <span class="keyword">WiFi+IMU</span>
+          <span class="keyword">의미 매핑</span>
+          <span class="keyword">저비용</span>
+        </div>
+      </div>
+
+      <!-- Patent 8 -->
+      <div class="patent-card fade-in" style="animation-delay: 0.8s;">
+        <div class="patent-num">8</div>
+        <div class="patent-name">사용자·위험·공간<br>온톨로지 기반 적응 경로 AI</div>
+        <div class="patent-desc">세 가지 온톨로지를 결합하여 각 사용자별로 서로 다른 경로 비용 함수를 생성하고 최적 경로 산출</div>
+        <div class="patent-keywords">
+          <span class="keyword">비용 함수</span>
+          <span class="keyword">개인화</span>
+          <span class="keyword">A* 알고리즘</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Patents 9-10 -->
+    <div class="patent-grid">
+      <!-- Patent 9 -->
+      <div class="patent-card fade-in" style="animation-delay: 0.9s;">
+        <div class="patent-num">9</div>
+        <div class="patent-name">온톨로지 기반 개인별<br>대피 경로 추천 시스템</div>
+        <div class="patent-desc">사람, 공간, 위험, 규정 정보를 포함하는 지식그래프의 관계 추론을 이용하여 설명 가능한 경로 추천</div>
+        <div class="patent-keywords">
+          <span class="keyword">지식그래프</span>
+          <span class="keyword">관계 추론</span>
+          <span class="keyword">설명 가능</span>
+        </div>
+      </div>
+
+      <!-- Patent 10 -->
+      <div class="patent-card fade-in" style="animation-delay: 1s;">
+        <div class="patent-num">10</div>
+        <div class="patent-name">스마트폰·온톨로지·AI<br>기반 통합 플랫폼</div>
+        <div class="patent-desc">감지(트리거) → 분석(온톨로지) → 안내(경로) → 관제 → 구조를 통합한 전체 재난대피 플랫폼</div>
+        <div class="patent-keywords">
+          <span class="keyword">통합 플랫폼</span>
+          <span class="keyword">엣지 처리</span>
+          <span class="keyword">실시간 연계</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Priority Strategy Section -->
+<section class="section container">
+  <div class="text-center mb-12">
+    <div class="section-eyebrow">출원 우선순위 전략</div>
+    <h2 class="section-title">1차, 2차 분할 출원으로<br>최대 보호 범위 확보</h2>
+  </div>
+
+  <div class="grid-2">
+    <div>
+      <h3 style="color: var(--navy); font-size: 1.3rem; margin-bottom: 20px;">1차 출원 (5건)</h3>
+      <div style="color: var(--gold); font-weight: 700; margin-bottom: 8px;">▸ 10. 스마트폰·온톨로지·AI 기반 통합 플랫폼</div>
+      <p style="color: var(--text-3); margin-bottom: 16px; font-size: 0.9rem;">전체 시스템 플랫폼 보호</p>
+
+      <div style="color: var(--gold); font-weight: 700; margin-bottom: 8px;">▸ 5. 센서·인간보고 온톨로지 정규화 기반 화재맵</div>
+      <p style="color: var(--text-3); margin-bottom: 16px; font-size: 0.9rem;">센서 데이터 정규화 기술</p>
+
+      <div style="color: var(--gold); font-weight: 700; margin-bottom: 8px;">▸ 8. 개인별 적응 경로 AI</div>
+      <p style="color: var(--text-3); margin-bottom: 16px; font-size: 0.9rem;">경로 계산 알고리즘</p>
+
+      <div style="color: var(--gold); font-weight: 700; margin-bottom: 8px;">▸ 9. 온톨로지 경로 추천 시스템</div>
+      <p style="color: var(--text-3); margin-bottom: 16px; font-size: 0.9rem;">설명 가능한 추천 기술</p>
+
+      <div style="color: var(--gold); font-weight: 700; margin-bottom: 8px;">▸ 7. 공간 온톨로지 기반 측위</div>
+      <p style="color: var(--text-3); margin-bottom: 16px; font-size: 0.9rem;">인프라프리 위치 추정</p>
+    </div>
+
+    <div>
+      <h3 style="color: var(--navy); font-size: 1.3rem; margin-bottom: 20px;">2차 출원 (5건)</h3>
+      <div style="color: var(--gold); font-weight: 700; margin-bottom: 8px;">▸ 1. 삼중 엔진 동기 아키텍처</div>
+      <p style="color: var(--text-3); margin-bottom: 16px; font-size: 0.9rem;">AI 엔진 간 동기화</p>
+
+      <div style="color: var(--gold); font-weight: 700; margin-bottom: 8px;">▸ 2. 이원 경로 전환 시스템</div>
+      <p style="color: var(--text-3); margin-bottom: 16px; font-size: 0.9rem;">주경로·대체경로 전환</p>
+
+      <div style="color: var(--gold); font-weight: 700; margin-bottom: 8px;">▸ 3. 취약계층 안전 마진 자동 적용</div>
+      <p style="color: var(--text-3); margin-bottom: 16px; font-size: 0.9rem;">개인별 안전계수 산출</p>
+
+      <div style="color: var(--gold); font-weight: 700; margin-bottom: 8px;">▸ 4. 음향 이벤트 트리거</div>
+      <p style="color: var(--text-3); margin-bottom: 16px; font-size: 0.9rem;">자동 재난 감지</p>
+
+      <div style="color: var(--gold); font-weight: 700; margin-bottom: 8px;">▸ 6. 대화형 마이크로 설문</div>
+      <p style="color: var(--text-3); margin-bottom: 16px; font-size: 0.9rem;">적응형 사용자 인터페이스</p>
+    </div>
+  </div>
+
+  <div style="margin-top: 40px; padding: 24px; background: var(--gold-soft); border-radius: var(--r-lg); border-left: 4px solid var(--gold);">
+    <p style="color: var(--navy); font-weight: 700; margin-bottom: 8px;">💡 PCT 후보 (국제 출원)</p>
+    <p style="color: var(--text-2); font-size: 0.95rem;">특허 5, 7, 8, 9, 10은 글로벌 시장에서의 경쟁력이 높아 PCT 출원을 우선적으로 검토하세요. 미국, 유럽, 일본 시장 진출 시 필수입니다.</p>
+  </div>
+</section>
+
+<!-- Differentiation Section -->
+<section class="section alt-bg">
+  <div class="container">
+    <div class="text-center mb-12">
+      <div class="section-eyebrow">기존 기술과의 차별성</div>
+      <h2 class="section-title">온톨로지가 만드는<br><span class="highlight">5가지 근본적 차이</span></h2>
+    </div>
+
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-eyebrow">기존 대피 앱</div>
+        <h3>대피도 전시 또는 단순 경로</h3>
+        <p>사용자를 좌표로만 취급. 모든 사용자에게 동일한 경로 제공. 추천 이유 설명 불가.</p>
+      </div>
+      <div class="card">
+        <div class="card-eyebrow">FireNavi 온톨로지</div>
+        <h3>의미 기반 개인별 경로</h3>
+        <p>사용자를 16개 유형으로 분류하고 제약을 자동 매핑. 각자 다른 경로 생성. 추천 이유 LLM 설명.</p>
+      </div>
+    </div>
+
+    <div class="grid-2" style="margin-top: 24px;">
+      <div class="card">
+        <div class="card-eyebrow">기존 실내 측위</div>
+        <h3>좌표 중심 위치 추정</h3>
+        <p>WiFi 신호로 (x,y) 좌표만 제시. 그것이 계단인지 복도인지 의미가 없음. 추가 하드웨어 필요.</p>
+      </div>
+      <div class="card">
+        <div class="card-eyebrow">FireNavi 온톨로지</div>
+        <h3>의미 중심 공간 매핑</h3>
+        <p>좌표를 공간 온톨로지 노드로 변환. "4층 동쪽 복도 → 계단 A 연결" 처럼 의미를 담음. 신규 하드웨어 0개.</p>
+      </div>
+    </div>
+
+    <div class="grid-2" style="margin-top: 24px;">
+      <div class="card">
+        <div class="card-eyebrow">기존 센서 시스템</div>
+        <h3>고정 센서 사각지대</h3>
+        <p>천장형 감지기는 배치 위치 한정. 화재 초기 발견 어려움. 시간·비용 높음.</p>
+      </div>
+      <div class="card">
+        <div class="card-eyebrow">FireNavi 온톨로지</div>
+        <h3>크라우드소싱 센싱</h3>
+        <p>4,000대 스마트폰 = 감지 사각지대 0. 센서 + 인간 보고를 정규화하여 화재맵 생성. 56배 데이터 밀도.</p>
+      </div>
+    </div>
+
+    <div class="grid-2" style="margin-top: 24px;">
+      <div class="card">
+        <div class="card-eyebrow">기존 AI 경로 추천</div>
+        <h3>블랙박스 알고리즘</h3>
+        <p>"왜 이 경로인가?" 설명 불가. 공공기관·병원·보험에서 신뢰도 낮음.</p>
+      </div>
+      <div class="card">
+        <div class="card-eyebrow">FireNavi 온톨로지</div>
+        <h3>설명 가능한 경로</h3>
+        <p>온톨로지 관계 추적으로 "휠체어 → 계단 제외 → 경사로 우선"을 자연어로 설명. 신뢰도 +40%.</p>
+      </div>
+    </div>
+
+    <div class="grid-2" style="margin-top: 24px;">
+      <div class="card">
+        <div class="card-eyebrow">기존 취약계층 보호</div>
+        <h3>수동 분류 및 관리</h3>
+        <p>취약계층을 분류만 함. 휠체어 사용자에게 계단 안내 오류 발생 가능. 구조 우선순위 반영 어려움.</p>
+      </div>
+      <div class="card">
+        <div class="card-eyebrow">FireNavi 온톨로지</div>
+        <h3>자동화된 맞춤 보호</h3>
+        <p>온톨로지 규칙으로 금지 경로 자동 제외. 안전 마진 자동 적용. 구조 우선순위 실시간 산출.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Summary Section -->
+<section class="section container">
+  <div class="text-center mb-12">
+    <div class="section-eyebrow">최종 요약</div>
+    <h2 class="section-title">FireNavi 온톨로지 특허의<br><span class="highlight">핵심 정의</span></h2>
+  </div>
+
+  <div class="quote-box">
+    <p>FireNavi의 온톨로지 특허는 "길을 찾는 기술"이 아니라, <strong>사람·공간·위험·규정을 이해하고, 개인에게 가장 안전한 생존 경로를 설명 가능한 방식으로 설계하는 AI 재난대피 지식그래프 기술</strong>입니다.</p>
+    <span class="author">— FireNavi Patent Strategy, 2026</span>
+  </div>
+
+  <div class="grid-3" style="margin-top: 60px;">
+    <div class="card">
+      <div class="card-eyebrow">기술 혁신</div>
+      <h3>온톨로지 기반</h3>
+      <p>사람, 공간, 위험, 센서, 규정을 하나의 지식그래프로 연결하여 AI의 판단 근거를 명확히 함.</p>
+    </div>
+    <div class="card">
+      <div class="card-eyebrow">사회 임팩트</div>
+      <h3>취약계층 우선</h3>
+      <p>휠체어, 청각장애, 호흡기 질환 등 16개 유형의 개인별 제약을 안전 마진으로 자동 반영.</p>
+    </div>
+    <div class="card">
+      <div class="card-eyebrow">시장 확장성</div>
+      <h3>다양한 시설</h3>
+      <p>병원, 호텔, 학교, 지하철, 공항, 크루즈 등 시설별 온톨로지 템플릿으로 빠르게 확장.</p>
+    </div>
+  </div>
+</section>
+
+<!-- Footer CTA -->
+<section class="section alt-bg">
+  <div class="container text-center">
+    <h2 class="section-title" style="margin-bottom: 20px;">변리사 협의 및 특허 출원 준비</h2>
+    <p class="section-sub">이 10건의 특허는 FireNavi v4.0의 지적재산권 포트폴리오를 완성합니다. 1차 우선 5건은 즉시 출원 검토를 시작하시고, 2차 5건은 1차 출원 후 2개월 내 추진하는 것을 권장합니다.</p>
+    <div style="margin-top: 40px;">
+      <button class="btn btn-primary" style="margin-right: 12px;">변리사 협의 자료</button>
+      <button class="btn btn-outline">출원 계획표</button>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer class="site-footer">
+  <p>FireNavi Ontology Patent Portfolio v1.0 | 작성일: 2026-05-30 | 상태: 설계 완료 → 특허 출원 단계</p>
+  <p style="margin-top: 12px; font-size: 0.85rem; color: rgba(255,255,255,0.8);">이 자료는 FireNavi v4.0의 온톨로지 기반 특허 전략을 정리한 것입니다. 구체적인 출원 전략은 특허 변리사와의 협의를 통해 최종 결정하시기 바랍니다.</p>
+</footer>
+
+<script>
+// Scroll animation
+document.querySelectorAll('.fade-in').forEach((el, index) => {
+  el.style.animationDelay = `${index * 0.1}s`;
+});
+
+// Smooth scroll
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+  anchor.addEventListener('click', function(e) {
+    e.preventDefault();
+    const target = document.querySelector(this.getAttribute('href'));
+    if (target) target.scrollIntoView({ behavior: 'smooth' });
+  });
+});
+</script>
+</body>
+</html>

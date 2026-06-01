@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>v2.0 → v3.0 차별성 비교 · FireNavi</title>
+<meta name="description" content="FireNavi v2.0(하드웨어 모델)에서 v3.0(스마트폰 우선)으로의 피벗 — 15+ 항목 정량 비교, 5대 사유, TAM 11.5배 확대, 정직 모드 표현 가이드.">
+<link rel="stylesheet" href="css/theme.css">
+<style>
+  /* ========== Page-specific ========== */
+  .reason-grid {
+    display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px;
+    margin-top: 24px;
+  }
+  .reason-card {
+    background: white; border-radius: var(--r-lg); padding: 24px 20px;
+    border: 1px solid var(--line); box-shadow: var(--shadow-sm);
+    position: relative; overflow: hidden; transition: all 0.3s;
+    border-top: 4px solid var(--bordeaux);
+  }
+  .reason-card:hover {
+    transform: translateY(-4px); box-shadow: var(--shadow-md);
+    border-top-color: var(--gold);
+  }
+  .reason-card .rnum {
+    font-family: ui-monospace, monospace;
+    font-size: 0.74rem; font-weight: 700;
+    color: var(--gold-dark);
+    background: var(--gold-soft);
+    display: inline-block;
+    padding: 3px 10px; border-radius: 4px;
+    margin-bottom: 12px;
+    letter-spacing: 0.06em;
+  }
+  .reason-card h4 {
+    font-size: 1rem; font-weight: 800; color: var(--navy);
+    line-height: 1.35; margin-bottom: 10px;
+  }
+  .reason-card p {
+    font-size: 0.85rem; color: var(--text-3); line-height: 1.6;
+  }
+  .reason-card .punch {
+    margin-top: 12px;
+    font-weight: 800; color: var(--bordeaux);
+    font-size: 0.88rem;
+  }
+
+  /* TAM bar visualization */
+  .tam-bars {
+    display: grid; gap: 14px; margin-top: 28px;
+  }
+  .tam-bar {
+    background: white; border-radius: var(--r-md); padding: 18px 22px;
+    border: 1px solid var(--line); box-shadow: var(--shadow-sm);
+    display: grid; grid-template-columns: 180px 1fr 110px; gap: 18px;
+    align-items: center;
+  }
+  .tam-bar .domain {
+    font-weight: 700; color: var(--navy); font-size: 0.95rem;
+  }
+  .tam-bar .bar-track {
+    background: var(--bg-soft); height: 22px; border-radius: 999px;
+    overflow: hidden; position: relative;
+  }
+  .tam-bar .bar-fill {
+    height: 100%; border-radius: 999px;
+    background: var(--grad-gold);
+    transition: width 1.2s ease-out;
+  }
+  .tam-bar.v2 .bar-fill { background: var(--bordeaux); opacity: 0.7; }
+  .tam-bar .amount {
+    text-align: right; font-weight: 800; color: var(--navy);
+    font-size: 1.05rem;
+  }
+  .tam-bar.v2 .amount { color: var(--bordeaux); }
+
+  /* GTM cards */
+  .gtm-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 24px;
+  }
+  .gtm-col {
+    background: white; border-radius: var(--r-lg); padding: 28px;
+    border: 1px solid var(--line); box-shadow: var(--shadow-sm);
+  }
+  .gtm-col.bad { border-top: 4px solid var(--bordeaux); }
+  .gtm-col.good { border-top: 4px solid var(--success); }
+  .gtm-col h4 {
+    font-size: 1.1rem; font-weight: 800; margin-bottom: 16px;
+  }
+  .gtm-col.bad h4 { color: var(--bordeaux); }
+  .gtm-col.good h4 { color: var(--success); }
+  .gtm-order { list-style: none; padding: 0; counter-reset: gtm; }
+  .gtm-order li {
+    padding: 10px 14px 10px 46px;
+    margin-bottom: 8px;
+    background: var(--bg-soft);
+    border-radius: var(--r-sm);
+    position: relative;
+    font-size: 0.92rem; color: var(--text-2);
+    border-left: 3px solid transparent;
+  }
+  .gtm-order li::before {
+    counter-increment: gtm;
+    content: counter(gtm);
+    position: absolute; left: 14px; top: 50%;
+    transform: translateY(-50%);
+    width: 24px; height: 24px;
+    border-radius: 50%;
+    background: var(--navy); color: white;
+    font-size: 0.78rem; font-weight: 800;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .gtm-col.good .gtm-order li {
+    border-left-color: var(--success);
+  }
+  .gtm-col.good .gtm-order li::before {
+    background: var(--success);
+  }
+  .gtm-order li .meta {
+    display: block; font-size: 0.74rem; color: var(--text-4);
+    margin-top: 2px; font-weight: 600;
+  }
+
+  /* Honest mode table */
+  .honest-grid {
+    display: grid; gap: 16px;
+  }
+  .honest-row {
+    display: grid; grid-template-columns: 1fr 50px 1fr 1.3fr;
+    gap: 18px; align-items: center;
+    background: white; border-radius: var(--r-lg); padding: 20px 24px;
+    border: 1px solid var(--line); box-shadow: var(--shadow-sm);
+  }
+  .honest-old {
+    background: var(--bordeaux-soft); color: var(--bordeaux);
+    padding: 10px 14px; border-radius: var(--r-sm);
+    font-size: 0.9rem; font-weight: 700;
+    text-decoration: line-through;
+    text-decoration-color: rgba(185,28,28,0.5);
+  }
+  .honest-arrow {
+    text-align: center; font-size: 1.4rem; color: var(--gold);
+  }
+  .honest-new {
+    background: var(--success-soft); color: var(--success);
+    padding: 10px 14px; border-radius: var(--r-sm);
+    font-size: 0.9rem; font-weight: 700;
+  }
+  .honest-why {
+    font-size: 0.82rem; color: var(--text-3); line-height: 1.55;
+  }
+  .honest-why b { color: var(--navy); }
+
+  /* Asset reuse table */
+  .asset-table .arrow-col { color: var(--gold-dark); font-weight: 800; text-align: center; }
+  .asset-table .from-col { color: var(--bordeaux); font-weight: 600; }
+  .asset-table .to-col { color: var(--success); font-weight: 700; }
+
+  /* Big banner under TAM */
+  .pivot-banner {
+    background: var(--grad-premium); color: white;
+    padding: 36px 32px; border-radius: var(--r-xl);
+    text-align: center; box-shadow: var(--shadow-lg);
+    margin-top: 32px;
+  }
+  .pivot-banner .big {
+    font-size: 2.4rem; font-weight: 900; line-height: 1;
+    color: var(--gold);
+    margin-bottom: 8px;
+  }
+  .pivot-banner p {
+    color: rgba(255,255,255,0.85); font-size: 1rem;
+    max-width: 720px; margin: 0 auto;
+  }
+
+  /* CTA navigation cards */
+  .nav-cta-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px;
+  }
+  .nav-cta {
+    background: white; border-radius: var(--r-lg); padding: 28px;
+    border: 1px solid var(--line); box-shadow: var(--shadow-sm);
+    text-decoration: none; color: inherit; display: block;
+    border-top: 4px solid var(--gold);
+    transition: all 0.3s;
+  }
+  .nav-cta:hover { transform: translateY(-4px); box-shadow: var(--shadow-md); border-top-color: var(--navy); }
+  .nav-cta .ic { font-size: 1.8rem; margin-bottom: 10px; }
+  .nav-cta h4 { font-size: 1.05rem; color: var(--navy); margin-bottom: 6px; }
+  .nav-cta p { font-size: 0.85rem; color: var(--text-3); }
+  .nav-cta .arrow {
+    color: var(--gold-dark); font-weight: 700; font-size: 0.85rem;
+    margin-top: 10px; display: inline-block;
+  }
+
+  /* Big comparison table emphasizing winner */
+  table.pro td.win { background: rgba(4,120,87,0.06); }
+  table.pro td.lose { background: rgba(185,28,28,0.04); }
+  table.pro .multiplier {
+    display: inline-block; background: var(--gold-soft);
+    color: var(--gold-dark); padding: 2px 8px; border-radius: 4px;
+    font-weight: 800; font-size: 0.78rem; margin-left: 6px;
+  }
+
+  /* Responsive */
+  @media (max-width: 1024px) {
+    .reason-grid { grid-template-columns: repeat(2, 1fr); }
+    .gtm-grid { grid-template-columns: 1fr; }
+    .nav-cta-grid { grid-template-columns: 1fr; }
+    .tam-bar { grid-template-columns: 140px 1fr 90px; }
+  }
+  @media (max-width: 768px) {
+    .reason-grid { grid-template-columns: 1fr; }
+    .honest-row { grid-template-columns: 1fr; gap: 10px; }
+    .honest-arrow { transform: rotate(90deg); padding: 4px 0; }
+    .tam-bar { grid-template-columns: 1fr; gap: 8px; text-align: left; }
+    .tam-bar .amount { text-align: left; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="topnav"><div class="topnav-inner"></div></nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-inner">
+    <div class="eyebrow">PIVOT · 차별성</div>
+    <h1>
+      <span class="bordeaux-text">v2.0</span> → <span class="gold-text">v3.0</span><br>
+      왜 스마트폰 우선으로 전환했는가
+    </h1>
+    <p class="subtitle">
+      v2.0의 핵심 주장이 코드와 불일치했고, 하드웨어 진입장벽이 5~10년이었습니다.<br>
+      <b>“시설에 설치하지 않고, 이미 있는 폰을 활용한다”</b> — 이 한 줄이 모든 것을 바꿨습니다.<br>
+      TAM 11.5배 확대, 진입 6~12개월, 데이터 밀도 56배, 그리고 정직 모드.
+    </p>
+    <div class="hero-cta">
+      <a href="#reasons" class="btn btn-primary">▼ 5대 피벗 사유</a>
+      <a href="#table" class="btn btn-navy">15+ 항목 정량 비교</a>
+      <a href="#honest" class="btn btn-outline">정직 모드 표현 가이드</a>
+    </div>
+  </div>
+</section>
+
+<!-- WHY: 5 reasons -->
+<section id="reasons">
+  <div class="container">
+    <div class="text-center mb-12">
+      <div class="section-eyebrow">왜 피벗했는가</div>
+      <h2 class="section-title">5대 사유 — <span class="gold-text">코드 정직성</span>과 <span class="gold-text">시장 현실</span> 사이의 거리</h2>
+      <p class="section-sub" style="margin-left:auto;margin-right:auto;">
+        v2.0은 학술적으로 깊고 디자인은 훌륭했지만, AI 챔피언 심사 기준과 실제 코드 사이에 큰 격차가 있었습니다. v3.0은 그 격차를 정직하게 메꾼 결과물입니다.
+      </p>
+    </div>
+
+    <div class="reason-grid">
+      <div class="reason-card">
+        <div class="rnum">사유 01</div>
+        <h4>코드와 마케팅 주장의 불일치</h4>
+        <p>v2.0이 내세운 “3개 AI 엔진 실시간 작동·0.5초 재계산·WiFi 2~3m 측위”는 실제 코드 0줄. 명칭만 있는 마케팅이었습니다.</p>
+        <div class="punch">신경망·RL·측위 = 미구현</div>
+      </div>
+      <div class="reason-card">
+        <div class="rnum">사유 02</div>
+        <h4>하드웨어 진입장벽 = 5~10년</h4>
+        <p>크루즈 1척 설치비 $1.1~1.7M, 드라이독 14~30일, 선급 재인증 1~2년. 시연조차 거의 불가능한 비현실 모델.</p>
+        <div class="punch">설치비 $1.5M · 인증 2년</div>
+      </div>
+      <div class="reason-card">
+        <div class="rnum">사유 03</div>
+        <h4>시장 협소 — 크루즈 30척/년 한정</h4>
+        <p>크루즈 신조 시장 전체가 연 30척. SAM은 $18B에 멈췄고, 1척 영업이 1년~2년 단위였습니다.</p>
+        <div class="punch">전 세계 신조 30척/년</div>
+      </div>
+      <div class="reason-card">
+        <div class="rnum">사유 04</div>
+        <h4>이미 있는 폰 = 56배 데이터 밀도</h4>
+        <p>4,000명 × 폰 7센서 = 28,000+ 데이터 포인트. IoT 500개 대비 56배. 후각·시각·판단력까지 갖춘 분산 인간센서.</p>
+        <div class="punch">28,000 vs 500 = ×56</div>
+      </div>
+      <div class="reason-card">
+        <div class="rnum">사유 05</div>
+        <h4>SaaS 전환으로 TAM 11.5배</h4>
+        <p>Capex 모델($18B SAM)에서 SaaS 모델($208B TAM)로 확대. WiFi 보유 모든 공간 = 모든 시설이 대상.</p>
+        <div class="punch">$18B → $208B (×11.5)</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TABLE: 15+ items -->
+<section id="table" class="alt-bg">
+  <div class="container">
+    <div class="text-center mb-12">
+      <div class="section-eyebrow">항목별 정량 비교</div>
+      <h2 class="section-title">15+ 항목 풀 매트릭스</h2>
+      <p class="section-sub" style="margin-left:auto;margin-right:auto;">
+        비용·시간·데이터·시장·기술·법규·시연 가능성 등 7개 카테고리, 17개 핵심 지표를 v2.0과 v3.0으로 정량 비교했습니다.
+      </p>
+    </div>
+
+    <div class="table-wrap">
+      <table class="pro">
+        <thead>
+          <tr>
+            <th style="width:24%;">항목</th>
+            <th style="width:30%;">v2.0 Hardware Model</th>
+            <th style="width:30%;">v3.0 Smartphone-First</th>
+            <th style="width:16%;">개선 폭</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><b>설치 비용 / 시설</b></td>
+            <td class="lose v2-mark">$1.1~1.7M (선박·인증 포함)</td>
+            <td class="win v3-mark">$50K (SaaS 기본)</td>
+            <td class="delta">-95%<span class="multiplier">×22</span></td>
+          </tr>
+          <tr>
+            <td><b>드라이독·공사</b></td>
+            <td class="lose v2-mark">14~30일 (선박 중단)</td>
+            <td class="win v3-mark">0일 (앱 배포)</td>
+            <td class="delta">-100%</td>
+          </tr>
+          <tr>
+            <td><b>선급/소방 재인증</b></td>
+            <td class="lose v2-mark">1~2년 (KR/DNV/SOLAS)</td>
+            <td class="win v3-mark">불필요 (앱 레이어)</td>
+            <td class="delta">-100%</td>
+          </tr>
+          <tr>
+            <td><b>센서 데이터 포인트</b></td>
+            <td class="lose v2-mark">고정 IoT ≈ 500개</td>
+            <td class="win v3-mark">이동 폰 ≈ 28,000+ (4,000명 × 7센서)</td>
+            <td class="delta">×56</td>
+          </tr>
+          <tr>
+            <td><b>화재 감지 모달</b></td>
+            <td class="lose v2-mark">열·연기 (IoT 고정)</td>
+            <td class="win v3-mark">시각·후각·청각·열·연기 (인간+폰)</td>
+            <td class="delta">+5종</td>
+          </tr>
+          <tr>
+            <td><b>조기 감지 시간</b></td>
+            <td class="lose v2-mark">IoT 도달 시 (지연)</td>
+            <td class="win v3-mark">30~120초 앞서 (인접 거주자 후각)</td>
+            <td class="delta">-30~120초</td>
+          </tr>
+          <tr>
+            <td><b>사용자 활성화</b></td>
+            <td class="lose v2-mark">앱 실행 필요 (패닉 시 실패율 ↑)</td>
+            <td class="win v3-mark">SOLAS 음향 자동 감지 (zero-touch)</td>
+            <td class="delta">+100% 활성률</td>
+          </tr>
+          <tr>
+            <td><b>측위 인프라</b></td>
+            <td class="lose v2-mark">전용 비콘·라이다 설치 필요</td>
+            <td class="win v3-mark">기존 WiFi + IMU + Graph SLAM</td>
+            <td class="delta">인프라 0</td>
+          </tr>
+          <tr>
+            <td><b>핸디캡 유형</b></td>
+            <td class="lose v2-mark">6유형 (Health-Aware)</td>
+            <td class="win v3-mark">30유형 (6개 카테고리 정밀 분류)</td>
+            <td class="delta">×5</td>
+          </tr>
+          <tr>
+            <td><b>시장 범위 (TAM)</b></td>
+            <td class="lose v2-mark">$18B (크루즈 위주)</td>
+            <td class="win v3-mark">$208B (WiFi 보유 모든 공간)</td>
+            <td class="delta">×11.5</td>
+          </tr>
+          <tr>
+            <td><b>시장 진입 기간</b></td>
+            <td class="lose v2-mark">5~10년 (인증·드라이독)</td>
+            <td class="win v3-mark">6~12개월 (앱 배포)</td>
+            <td class="delta">×10 빠름</td>
+          </tr>
+          <tr>
+            <td><b>도메인 확장</b></td>
+            <td class="lose v2-mark">크루즈 신조 30척/년</td>
+            <td class="win v3-mark">병원·호텔·빌딩·학교·경기장·지하철·공항</td>
+            <td class="delta">+7개 도메인</td>
+          </tr>
+          <tr>
+            <td><b>특허 포트폴리오</b></td>
+            <td class="v2-mark">알고리즘 5건</td>
+            <td class="v3-mark">알고리즘 5 + 시스템 4 = <b>9건 이중 방어</b></td>
+            <td class="delta">+4건</td>
+          </tr>
+          <tr>
+            <td><b>시연 가능성</b></td>
+            <td class="lose v2-mark">선박 실선 시연 불가</td>
+            <td class="win v3-mark">브라우저·폰에서 즉시 PoC 작동</td>
+            <td class="delta">즉시 시연</td>
+          </tr>
+          <tr>
+            <td><b>AI 비중 (구현률)</b></td>
+            <td class="lose v2-mark">38% (9개 모델 중 4개 구현, 신경망 0)</td>
+            <td class="win v3-mark">67% (Bayesian·SLAM·Kalman 신규 + 핵심 9개)</td>
+            <td class="delta">+29%p</td>
+          </tr>
+          <tr>
+            <td><b>학술 신규성</b></td>
+            <td class="v2-mark">시뮬레이션 기반 알고리즘 조합</td>
+            <td class="v3-mark">세계 최초 크라우드소싱 화재 대피 시스템</td>
+            <td class="delta">신규 분야</td>
+          </tr>
+          <tr>
+            <td><b>GDPR/개인정보 대응</b></td>
+            <td class="lose v2-mark">미설계 (선박 폐쇄 환경 가정)</td>
+            <td class="win v3-mark">옵트인·로컬 처리·익명 집계 설계</td>
+            <td class="delta">대응 완료</td>
+          </tr>
+          <tr>
+            <td><b>수익 모델</b></td>
+            <td class="lose v2-mark">B2B Capex (1회성 $1.5M)</td>
+            <td class="win v3-mark">SaaS (월 구독 + 옵션 모듈)</td>
+            <td class="delta">반복 수익</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- DEEP COMPARE: 6 items -->
+<section>
+  <div class="container">
+    <div class="text-center mb-12">
+      <div class="section-eyebrow">각 항목 심층 비교</div>
+      <h2 class="section-title">6개 결정적 차이 — <span class="gold-text">왜 v3.0이 이기는가</span></h2>
+    </div>
+
+    <div style="display:grid;gap:20px;">
+      <div class="compare-row">
+        <div class="compare-cell bad">
+          <div class="label">v2.0 · 설치 비용</div>
+          <h4>$1.5M / 시설 (Capex)</h4>
+          <p>전용 IoT 500개 + 비콘 + 게이트웨이 + 서버 + 설치 인건비 + 선급 재인증 비용. 1회성 청구가 가능한 클라이언트가 극소수.</p>
+        </div>
+        <div class="compare-cell good">
+          <div class="label">v3.0 · 설치 비용</div>
+          <h4>$50K / 시설 (SaaS 기본)</h4>
+          <p>기존 WiFi 점검 + 앱 배포 + 1차 캘리브레이션. 95% 비용 절감으로 1순위 종합병원·호텔·빌딩 즉시 도입 가능.</p>
+        </div>
+      </div>
+
+      <div class="compare-row">
+        <div class="compare-cell bad">
+          <div class="label">v2.0 · 데이터 밀도</div>
+          <h4>IoT 500개 (고정·단일 모달)</h4>
+          <p>천장 설치형 열·연기 센서. 위치 고정 → 화재 확산 후 인지. 시각·후각 정보 없음. 군중 행동 직접 관측 불가.</p>
+        </div>
+        <div class="compare-cell good">
+          <div class="label">v3.0 · 데이터 밀도</div>
+          <h4>4,000명 × 7센서 = 28,000+ (이동·멀티모달)</h4>
+          <p>가속도·자이로·GPS·WiFi·마이크·카메라·고도. 인접 거주자의 후각으로 30~120초 앞서 감지. 군중 흐름 실시간 관측.</p>
+        </div>
+      </div>
+
+      <div class="compare-row">
+        <div class="compare-cell bad">
+          <div class="label">v2.0 · 측위 정확도</div>
+          <h4>전용 디바이스 2~3m (코드 0)</h4>
+          <p>“WiFi 2~3m 측위 작동”이라 명시했으나 실제 측위 코드와 하드웨어 모두 0개. 마케팅 주장.</p>
+        </div>
+        <div class="compare-cell good">
+          <div class="label">v3.0 · 측위 정확도</div>
+          <h4>WiFi + IMU + Graph SLAM 1~3m 목표</h4>
+          <p>기존 WiFi 신호 강도 + 폰 IMU + 4,000개 폰의 상호 보정(SLAM)으로 인프라프리 1~3m 목표. 패치 D 특허 출원.</p>
+        </div>
+      </div>
+
+      <div class="compare-row">
+        <div class="compare-cell bad">
+          <div class="label">v2.0 · 활성화 방식</div>
+          <h4>앱 실행 필요 (패닉 시 실패)</h4>
+          <p>거주자가 직접 앱을 열어야 위치·정보 수신 가능. 패닉 상태에서 앱 실행률은 평균 12~28% (NFPA 2022). 핵심 사용자가 가장 큰 위험에 노출.</p>
+        </div>
+        <div class="compare-cell good">
+          <div class="label">v3.0 · 활성화 방식</div>
+          <h4>SOLAS 음향 자동 트리거 (zero-touch)</h4>
+          <p>표준 화재경보음 패턴(900Hz/1850Hz · T3 패턴)을 폰 마이크가 자동 감지 → 4,000대 동시 활성화. 사용자 행위 0건. 패치 A 특허.</p>
+        </div>
+      </div>
+
+      <div class="compare-row">
+        <div class="compare-cell bad">
+          <div class="label">v2.0 · 시장 진입</div>
+          <h4>5~10년 (선급 인증 사이클)</h4>
+          <p>1척 영업 → 설계 변경 → 드라이독 → 인증 → 운영 = 평균 18~36개월. 보수적인 선사는 더 길게 잡음.</p>
+        </div>
+        <div class="compare-cell good">
+          <div class="label">v3.0 · 시장 진입</div>
+          <h4>6~12개월 (앱 + SaaS)</h4>
+          <p>WiFi 점검(2주) → 앱 배포(2주) → 캘리브레이션(2주) → 운영. 신축이 아닌 기존 시설에 즉시 도입 가능.</p>
+        </div>
+      </div>
+
+      <div class="compare-row">
+        <div class="compare-cell bad">
+          <div class="label">v2.0 · 도메인 확장</div>
+          <h4>크루즈 신조 30척/년 한정</h4>
+          <p>선급·SOLAS 규제로 특정 분야 외 확장 어려움. 비즈니스 다각화 경로 불명확.</p>
+        </div>
+        <div class="compare-cell good">
+          <div class="label">v3.0 · 도메인 확장</div>
+          <h4>WiFi 보유 모든 공간 — 7개 즉시 진입 가능</h4>
+          <p>종합병원($25B) → 5성급 호텔($30B) → 초고층 빌딩($40B) → 학교·경기장·지하철·공항($113B). 코드 99% 재사용.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TAM 11.5x viz -->
+<section class="alt-bg">
+  <div class="container">
+    <div class="text-center mb-12">
+      <div class="section-eyebrow">TAM 11.5배 확대</div>
+      <h2 class="section-title">$18B → <span class="gold-text">$208B</span> · 도메인별 시장 규모</h2>
+      <p class="section-sub" style="margin-left:auto;margin-right:auto;">
+        v2.0의 SAM은 크루즈 신조 시장에 한정됐습니다. v3.0은 WiFi 보유 모든 공간으로 확장 — TAM이 11.5배 늘어났습니다.
+      </p>
+    </div>
+
+    <h3 style="text-align:center;color:var(--bordeaux);font-size:1.1rem;font-weight:800;margin-bottom:14px;">v2.0 SAM (Hardware 모델)</h3>
+    <div class="tam-bars">
+      <div class="tam-bar v2">
+        <div class="domain">크루즈 신조</div>
+        <div class="bar-track"><div class="bar-fill" style="width:18%;"></div></div>
+        <div class="amount">$18B</div>
+      </div>
+    </div>
+
+    <h3 style="text-align:center;color:var(--success);font-size:1.1rem;font-weight:800;margin: 32px 0 14px;">v3.0 TAM (Smartphone-First 모델)</h3>
+    <div class="tam-bars">
+      <div class="tam-bar">
+        <div class="domain">종합병원·요양</div>
+        <div class="bar-track"><div class="bar-fill" style="width:12%;"></div></div>
+        <div class="amount">$25B</div>
+      </div>
+      <div class="tam-bar">
+        <div class="domain">5성급 호텔</div>
+        <div class="bar-track"><div class="bar-fill" style="width:14.4%;"></div></div>
+        <div class="amount">$30B</div>
+      </div>
+      <div class="tam-bar">
+        <div class="domain">초고층 빌딩</div>
+        <div class="bar-track"><div class="bar-fill" style="width:19.2%;"></div></div>
+        <div class="amount">$40B</div>
+      </div>
+      <div class="tam-bar">
+        <div class="domain">학교·캠퍼스</div>
+        <div class="bar-track"><div class="bar-fill" style="width:9.6%;"></div></div>
+        <div class="amount">$20B</div>
+      </div>
+      <div class="tam-bar">
+        <div class="domain">경기장·공연장</div>
+        <div class="bar-track"><div class="bar-fill" style="width:11.5%;"></div></div>
+        <div class="amount">$24B</div>
+      </div>
+      <div class="tam-bar">
+        <div class="domain">지하철·공항</div>
+        <div class="bar-track"><div class="bar-fill" style="width:21.6%;"></div></div>
+        <div class="amount">$45B</div>
+      </div>
+      <div class="tam-bar">
+        <div class="domain">크루즈·여객선</div>
+        <div class="bar-track"><div class="bar-fill" style="width:11.5%;"></div></div>
+        <div class="amount">$24B</div>
+      </div>
+    </div>
+
+    <div class="pivot-banner">
+      <div class="big">×11.5</div>
+      <p>크루즈 한정 $18B에서 WiFi 보유 모든 공간 $208B로 — 시장 자체가 다른 차원으로 확장됐습니다. 코드 1줄로 추가 도메인 진입 가능.</p>
+    </div>
+  </div>
+</section>
+
+<!-- GTM realignment -->
+<section>
+  <div class="container">
+    <div class="text-center mb-12">
+      <div class="section-eyebrow">GTM 재정렬</div>
+      <h2 class="section-title">진입 순서가 <span class="gold-text">완전히 뒤집혔습니다</span></h2>
+      <p class="section-sub" style="margin-left:auto;margin-right:auto;">
+        v2.0은 진입장벽이 가장 높은 크루즈를 1순위로 잡았습니다. v3.0은 가장 낮은 종합병원부터 시작 — 매출 회수 시기가 5년 빨라집니다.
+      </p>
+    </div>
+
+    <div class="gtm-grid">
+      <div class="gtm-col bad">
+        <h4>❌ v2.0 진입 순서 (Capex 1순위 = 진입장벽 최고)</h4>
+        <ol class="gtm-order">
+          <li>크루즈 신조 (Fincantieri 협의) <span class="meta">진입장벽 최고 · 18~36개월 영업</span></li>
+          <li>크루즈 개조 시장 <span class="meta">드라이독 30일 필요</span></li>
+          <li>대형 여객선 <span class="meta">선급 재인증 1~2년</span></li>
+          <li>호텔·리조트 <span class="meta">B2B 전용 IoT 영업</span></li>
+          <li>병원·빌딩 <span class="meta">신규 인프라 설치 필요</span></li>
+        </ol>
+      </div>
+      <div class="gtm-col good">
+        <h4>✅ v3.0 진입 순서 (SaaS 1순위 = 진입장벽 최저)</h4>
+        <ol class="gtm-order">
+          <li>종합병원·요양시설 <span class="meta">Q4 2026 · 6~12개월 영업</span></li>
+          <li>5성급 호텔·리조트 <span class="meta">2027 Q2 · 글로벌 체인</span></li>
+          <li>초고층 빌딩 <span class="meta">2027 Q4 · 부동산 운영사</span></li>
+          <li>학교·경기장·공연장 <span class="meta">2028 Q1 · 교육부·KOLA</span></li>
+          <li>지하철·공항 <span class="meta">2028 Q3 · 공공 입찰</span></li>
+          <li>크루즈 (장기) <span class="meta">2029~ · 선급 협의 병행</span></li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="text-center mt-8">
+      <p class="text-mute" style="max-width:760px;margin:0 auto;font-size:0.92rem;">
+        <b>핵심 변화:</b> 크루즈가 1순위에서 6순위(장기)로 격하됐지만 <b>완전 폐기는 아닙니다</b>.
+        v3.0 시스템 성숙도가 충분해진 2029년 이후 선급(KR/DNV) 협력으로 진입 — v2.0 학술 자산이 이때 결정적 신뢰도를 제공합니다.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- v2 → v3 asset reuse -->
+<section class="cream-bg">
+  <div class="container">
+    <div class="text-center mb-12">
+      <div class="section-eyebrow">v2.0 자산의 v3.0 활용</div>
+      <h2 class="section-title">버려지는 것은 <span class="gold-text">없습니다</span></h2>
+      <p class="section-sub" style="margin-left:auto;margin-right:auto;">
+        v3.0은 v2.0의 폐기가 아니라 진화입니다. 9개 수학 모델, 6유형 핸디캡 보호, 5건 알고리즘 특허, Canvas 시뮬레이션 — 모두 v3.0의 핵심 자산으로 이전됐습니다.
+      </p>
+    </div>
+
+    <div class="table-wrap asset-table">
+      <table class="pro">
+        <thead>
+          <tr>
+            <th style="width:28%;">v2.0 자산</th>
+            <th style="width:6%;text-align:center;">→</th>
+            <th style="width:28%;">v3.0 위치·확장</th>
+            <th style="width:38%;">활용 방식</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="from-col">3개 AI 엔진 알고리즘 (Prediction·Behavior·Decision)</td>
+            <td class="arrow-col">→</td>
+            <td class="to-col">Stage 5 라우터로 흡수</td>
+            <td>v3.0 Stage 5(화재맵+경로) 내부 모듈로 재배치. 마케팅 주장에서 실제 알고리즘 프로토타입으로 정직 모드 표현.</td>
+          </tr>
+          <tr>
+            <td class="from-col">6유형 Health-Aware (α=2.0 안전 마진)</td>
+            <td class="arrow-col">→</td>
+            <td class="to-col">30유형으로 확대 (6 카테고리)</td>
+            <td>신체·거동·부상·감각·인지·언어 6개 카테고리로 정밀 분류. α=2.0 알고리즘은 그대로 유지하면서 적용 대상 확장.</td>
+          </tr>
+          <tr>
+            <td class="from-col">9개 수학 모델 (A*·Beer-Lambert·Greenshields 등)</td>
+            <td class="arrow-col">→</td>
+            <td class="to-col">13개로 확대 (+4 신규)</td>
+            <td>기존 9개 + Bayesian Fusion · Acoustic Pattern Match · Graph SLAM · Kalman Fusion 4종 추가.</td>
+          </tr>
+          <tr>
+            <td class="from-col">5건 알고리즘 특허 (PAT-01~05)</td>
+            <td class="arrow-col">→</td>
+            <td class="to-col">9건 이중 방어 (+v3-P-A~D)</td>
+            <td>알고리즘 5건은 그대로 유지. 시스템 특허 4건 신규 추가 — 경쟁사는 두 영역 모두 회피해야 모방 가능.</td>
+          </tr>
+          <tr>
+            <td class="from-col">Canvas 2D 시뮬레이션 페이지 3종</td>
+            <td class="arrow-col">→</td>
+            <td class="to-col">PoC 데모 베이스 + Stage 5 시연용</td>
+            <td>simulation.html은 v3.0 Stage 5 라우터 시연으로 그대로 작동. d-insurance-risk-model.html은 보험사 협상 자료로 유지.</td>
+          </tr>
+          <tr>
+            <td class="from-col">럭셔리 디자인 시스템 (Bordeaux × Navy × Gold)</td>
+            <td class="arrow-col">→</td>
+            <td class="to-col">전체 v3.0 사이트에 일관 적용</td>
+            <td>theme.css의 컬러 팔레트와 타이포그래피는 v2.0에서 검증된 자산. v3.0 사이트 전체에서 그대로 사용 중.</td>
+          </tr>
+          <tr>
+            <td class="from-col">학술 자료 (total_firenavi.md 등)</td>
+            <td class="arrow-col">→</td>
+            <td class="to-col">선사·보험사 협상 자료로 보존</td>
+            <td>선사·학계·보험사는 v2.0 학술 깊이를, 시설 운영자·투자자는 v3.0 즉시 도입성을 — 청중별 자료 매핑.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="quote-box" style="margin-top:32px;">
+      “v3.0은 v2.0의 폐기가 아닌 진화입니다. v2.0 자산은 학술적 신뢰도를 제공하고, v3.0 자산은 즉시 시장 진입을 가능하게 합니다. 두 자산을 함께 가진 점이 FireNavi의 진짜 경쟁력입니다.”
+      <span class="author">— PIVOT_v2_to_v3.md, FireNavi Strategy Note</span>
+    </div>
+  </div>
+</section>
+
+<!-- Honest mode -->
+<section id="honest">
+  <div class="container">
+    <div class="text-center mb-12">
+      <div class="section-eyebrow">정직 모드 표현 가이드</div>
+      <h2 class="section-title">무엇을 <span class="gold-text">폐기·대체</span>했는가</h2>
+      <p class="section-sub" style="margin-left:auto;margin-right:auto;">
+        AI 챔피언 심사는 정직성을 평가합니다. v2.0의 마케팅 과장을 코드가 뒷받침하는 표현으로 교체했습니다. 이 자기 점검 자체가 신뢰도를 높입니다.
+      </p>
+    </div>
+
+    <div class="honest-grid">
+      <div class="honest-row">
+        <div class="honest-old">“0.5초마다 6,000명 재계산”</div>
+        <div class="honest-arrow">→</div>
+        <div class="honest-new">“5초마다 화재맵 갱신 + 변경 시 개인 경로 즉시 보정”</div>
+        <div class="honest-why"><b>이유:</b> 실제 측정 1~2.5초/명. 6,000명 동시 처리 코드 미구현. 5초 화재맵 + 트리거 기반 개인 경로 보정이 실제 작동 방식.</div>
+      </div>
+      <div class="honest-row">
+        <div class="honest-old">“WiFi 2~3m 측위 작동”</div>
+        <div class="honest-arrow">→</div>
+        <div class="honest-new">“WiFi+IMU+SLAM 1~3m 목표, 인프라프리”</div>
+        <div class="honest-why"><b>이유:</b> v2.0 시점 측위 코드와 비콘 하드웨어 모두 0개. v3.0에서 인프라프리 측위로 재설계, 패치 D 특허 출원.</div>
+      </div>
+      <div class="honest-row">
+        <div class="honest-old">“3개 AI 엔진 실시간 작동”</div>
+        <div class="honest-arrow">→</div>
+        <div class="honest-new">“3개 AI 엔진 알고리즘 프로토타입 + ML 모델 통합 예정”</div>
+        <div class="honest-why"><b>이유:</b> 신경망·RL 코드 0줄. 알고리즘 조합은 작동하지만 “AI 엔진” 명칭은 마케팅 과장. 프로덕션 단계 ML 통합을 별도 표시.</div>
+      </div>
+      <div class="honest-row">
+        <div class="honest-old">“$230K 하드웨어 · ROI 2,466배”</div>
+        <div class="honest-arrow">→</div>
+        <div class="honest-new">“$50K 기본 + 옵션 확장 · ROI 3~6개월 회수”</div>
+        <div class="honest-why"><b>이유:</b> 실제 v2.0 총비용은 인증·드라이독 포함 $1.1~1.7M. ROI 2,466배는 비현실적 계산. v3.0은 SaaS로 ROI를 시간 기반(3~6개월)으로 재정의.</div>
+      </div>
+      <div class="honest-row">
+        <div class="honest-old">“Fincantieri 협력 협의 중”</div>
+        <div class="honest-arrow">→</div>
+        <div class="honest-new">“선급(KR/DNV)·조선소 협력 의사 타진”</div>
+        <div class="honest-why"><b>이유:</b> 공식 협약 없음. 사실 그대로 “의사 타진” 단계로 표현. 과장 → 사실 기반으로 교체.</div>
+      </div>
+      <div class="honest-row">
+        <div class="honest-old">“IoT 500개 = 충분한 데이터”</div>
+        <div class="honest-arrow">→</div>
+        <div class="honest-new">“IoT 500개 대비 폰 28,000+ 데이터 포인트 (×56)”</div>
+        <div class="honest-why"><b>이유:</b> v2.0 가정이 잘못된 게 아니라 v3.0이 명시적으로 우월함을 정량 비교. 동일 시설을 어떻게 다르게 보는지 보여주는 표현.</div>
+      </div>
+    </div>
+
+    <div class="text-center mt-12">
+      <p class="text-mute" style="max-width:760px;margin:0 auto;font-size:0.92rem;">
+        <b>중요:</b> 이 가이드는 모든 외부 자료(제안서·발표·영상·웹사이트)에서 일관되게 적용됩니다.
+        AI 챔피언 심사 + 잠재 고객 + 투자자 — 모든 청중에게 같은 표현을 사용합니다.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- CTA: navigation -->
+<section class="alt-bg">
+  <div class="container">
+    <div class="text-center mb-12">
+      <div class="section-eyebrow">계속 둘러보기</div>
+      <h2 class="section-title">v3.0의 <span class="gold-text">기술·특허·시장</span></h2>
+    </div>
+
+    <div class="nav-cta-grid">
+      <a href="technology.html" class="nav-cta">
+        <div class="ic">🛠️</div>
+        <h4>기술 — 5단계 파이프라인</h4>
+        <p>음향 트리거 · 인프라프리 측위 · 마이크로 설문 · 폰 센서 융합 · 베이지안 화재맵+A*. 각 단계별 알고리즘 상세.</p>
+        <span class="arrow">자세히 보기 →</span>
+      </a>
+      <a href="patents.html" class="nav-cta">
+        <div class="ic">📜</div>
+        <h4>특허 9건 포트폴리오</h4>
+        <p>v2.0 알고리즘 5건 + v3.0 시스템 4건. 알고리즘+시스템 이중 방어로 모방 난이도 ★★★★★.</p>
+        <span class="arrow">9건 상세 →</span>
+      </a>
+      <a href="business.html" class="nav-cta">
+        <div class="ic">📈</div>
+        <h4>시장·비즈니스·로드맵</h4>
+        <p>TAM $208B · 7개 도메인 진입 순서 · 5년 매출 계획 · 팀·자금·파트너십.</p>
+        <span class="arrow">로드맵 보기 →</span>
+      </a>
+    </div>
+
+    <div class="text-center mt-12">
+      <a href="../smartphone-poc.html" target="_blank" class="btn btn-primary">▶ PoC 데모 즉시 시연</a>
+      <a href="index.html" class="btn btn-outline" style="margin-left:8px;">← 홈으로 돌아가기</a>
+    </div>
+  </div>
+</section>
+
+<!-- v2.0 Research Lab — 도메인 확장 증명 -->
+<section style="background:#0F1729;color:white;padding:60px 28px;">
+  <div class="container">
+    <div style="text-align:center;margin-bottom:32px;">
+      <div style="display:inline-block;padding:5px 14px;background:rgba(201,169,97,0.2);color:#C9A961;border-radius:999px;font-size:0.78rem;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;">🧪 v2.0 Research Lab</div>
+      <h2 style="color:white;margin-top:14px;">크루즈 외 시설 즉시 적용 증명</h2>
+      <p style="color:rgba(255,255,255,0.7);max-width:720px;margin:8px auto 0;">동일 알고리즘이 빌딩에서도 작동 — 50층 초고층 시뮬레이션</p>
+    </div>
+    <div style="max-width:700px;margin:0 auto;">
+      <a href="lab/simulation-building.html" target="_blank" style="background:rgba(255,255,255,0.05);border:1px solid rgba(201,169,97,0.3);border-radius:14px;padding:24px;text-decoration:none;color:white;display:block;border-top:4px solid #C9A961;">
+        <div style="font-size:0.75rem;color:#C9A961;font-weight:700;margin-bottom:6px;">🏙️ 791줄</div>
+        <h3 style="color:white;margin:0 0 8px;font-size:1.1rem;">초고층 빌딩 50층 시뮬레이션</h3>
+        <p style="color:rgba(255,255,255,0.65);font-size:0.85rem;margin:0 0 12px;">Skyline Tower 화재 — 옥상 헬리포트(50F) vs 1F 정문 수직 대피 분기 로직. 피난층(15F·30F·45F) 자동 안내. v3.0 Universal Cross-Domain 메시지 증명.</p>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;">
+          <span style="background:rgba(201,169,97,0.2);color:#C9A961;padding:2px 8px;border-radius:999px;font-size:0.7rem;font-weight:600;">빌딩</span>
+          <span style="background:rgba(201,169,97,0.2);color:#C9A961;padding:2px 8px;border-radius:999px;font-size:0.7rem;font-weight:600;">50층</span>
+          <span style="background:rgba(201,169,97,0.2);color:#C9A961;padding:2px 8px;border-radius:999px;font-size:0.7rem;font-weight:600;">수직대피</span>
+        </div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<footer class="site-footer"></footer>
+<script src="js/common.js"></script>
+</body>
+</html>

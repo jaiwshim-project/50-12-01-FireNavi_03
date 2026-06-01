@@ -1,0 +1,1317 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>D. 보험사 리스크 모델 고도화 | FireNavi 화이어내비</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .module-accent { color: var(--accent); }
+    .section-num {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: rgba(128,90,213,0.15);
+      color: var(--accent);
+      font-size: 0.9rem;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+    .content-section h2 .section-num { margin-right: 4px; }
+
+    /* Risk grade color bars */
+    .risk-grade-low { color: #3182CE; }
+    .risk-grade-moderate { color: #38A169; }
+    .risk-grade-high { color: #ECC94B; }
+    .risk-grade-veryhigh { color: #ED8936; }
+    .risk-grade-critical { color: #E53E3E; }
+
+    .color-swatch {
+      display: inline-block;
+      width: 14px;
+      height: 14px;
+      border-radius: 3px;
+      vertical-align: middle;
+      margin-right: 6px;
+    }
+
+    /* Comparison block */
+    .comparison-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-md);
+      margin: var(--space-md) 0;
+    }
+    .comparison-card {
+      padding: var(--space-lg);
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border);
+    }
+    .comparison-card--before {
+      background: rgba(229,62,62,0.05);
+      border-color: rgba(229,62,62,0.3);
+    }
+    .comparison-card--after {
+      background: rgba(56,161,105,0.05);
+      border-color: rgba(56,161,105,0.3);
+    }
+    .comparison-card h4 {
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: var(--space-sm);
+    }
+    .comparison-card ul {
+      padding-left: var(--space-lg);
+      margin: 0;
+    }
+    .comparison-card li {
+      font-size: 0.875rem;
+      color: var(--text-secondary);
+      margin-bottom: 6px;
+    }
+
+    /* Scenario metric cards */
+    .scenario-metrics {
+      display: grid;
+      grid-auto-flow: column;
+      grid-auto-columns: 1fr;
+      gap: var(--space-sm);
+      margin: var(--space-md) 0;
+    }
+    .scenario-metric {
+      background: var(--bg-primary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: var(--space-md);
+      text-align: center;
+    }
+    .scenario-metric .label {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+    }
+    .scenario-metric .value {
+      font-size: 1.25rem;
+      font-weight: 700;
+    }
+
+    /* API flow */
+    .api-flow {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-md);
+      flex-wrap: wrap;
+      padding: var(--space-lg);
+      background: var(--bg-primary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      margin: var(--space-md) 0;
+    }
+    .api-node {
+      padding: 12px 20px;
+      border-radius: var(--radius-sm);
+      font-size: 0.85rem;
+      font-weight: 600;
+      text-align: center;
+      border: 1px solid var(--border);
+      background: var(--bg-card);
+    }
+    .api-node--fire { border-color: var(--fire-orange); color: var(--fire-orange); }
+    .api-node--pi { border-color: var(--accent); color: var(--accent); }
+    .api-node--insurer { border-color: var(--info); color: var(--info); }
+    .api-arrow {
+      font-size: 1.5rem;
+      color: var(--text-muted);
+    }
+
+    /* ROI highlight card */
+    .roi-highlight {
+      background: linear-gradient(135deg, rgba(128,90,213,0.08), rgba(49,130,206,0.08));
+      border: 1px solid rgba(128,90,213,0.25);
+      border-radius: var(--radius-lg);
+      padding: var(--space-xl);
+      margin: var(--space-lg) 0;
+      text-align: center;
+    }
+    .roi-highlight .big-number {
+      font-size: 3rem;
+      font-weight: 900;
+      background: var(--gradient-fire);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .roi-highlight .roi-desc {
+      font-size: 1rem;
+      color: var(--text-secondary);
+      margin-top: var(--space-sm);
+    }
+
+    @media (max-width: 768px) {
+      .comparison-grid { grid-template-columns: 1fr; }
+      .scenario-metrics { grid-auto-flow: column; grid-auto-columns: 1fr; }
+    }
+    @media (max-width: 480px) {
+      .scenario-metrics { grid-auto-flow: column; grid-auto-columns: 1fr; }
+      .api-flow { flex-direction: column; }
+      .api-arrow { transform: rotate(90deg); }
+    }
+  </style>
+</head>
+<body>
+  <div class="page-wrapper">
+    <!-- NAVIGATION -->
+    <nav class="top-nav">
+      <div class="nav-inner">
+        <a href="../index.html" class="nav-brand">
+          <img src="firenavi-logo.svg" alt="FireNavi" class="nav-logo-img" style="height:36px;vertical-align:middle;margin-right:6px;">
+          <span class="nav-tagline">AI 기반 실시간 생존 의사결정 플랫폼</span>
+        </a>
+        <ul class="nav-links">
+          <li><a href="../index.html">Dashboard</a></li>
+          <li><a href="a-technical-formulation.html">A. 기술 수식화</a></li>
+          <li><a href="b-industrial-architecture.html">B. 산업 아키텍처</a></li>
+          <li><a href="c-shipyard-proposal.html">C. 조선소 제안</a></li>
+          <li><a href="d-insurance-risk-model.html" class="active">D. 보험 리스크</a></li>
+          <li><a href="simulation.html">시뮬레이션</a></li>
+          <li><a href="risk-map.html">위험지도</a></li>
+          <li><a href="route-optimizer.html">경로최적화</a></li>
+          <li><a href="../index.html" style="color:#DB2777;">매뉴얼</a></li>
+          <li><a href="../technology.html" style="color:#7C3AED;">구조도</a></li>
+        </ul>
+        <button class="nav-mobile-toggle">&#9776;</button>
+      </div>
+    </nav>
+
+    <!-- PAGE HEADER -->
+    <header class="page-header">
+      <div class="container">
+        <div class="breadcrumb">
+          <a href="../index.html">Home</a>
+          <span>/</span>
+          <span class="module-accent">D. 보험사 리스크 모델 고도화</span>
+        </div>
+        <h1 class="page-title">&#x1F4CA; 보험사 리스크 모델 고도화</h1>
+        <p class="page-desc">
+          Insurance Risk Model Enhancement &mdash;
+          Monte Carlo 시뮬레이션, 실시간 위험도 산정, 보험료 동적 산정 모델,
+          P&amp;I Club 연동을 통한 해상보험 리스크 평가 혁신
+        </p>
+        <div class="hero-badges" style="justify-content: flex-start; margin-top: var(--space-md);">
+          <span class="badge badge--accent">Monte Carlo Simulation</span>
+          <span class="badge badge--danger">Real-time Risk Scoring</span>
+          <span class="badge badge--warning">Dynamic Premium</span>
+          <span class="badge badge--info">P&amp;I Club Integration</span>
+          <span class="badge badge--safe">Solvency II Compliant</span>
+        </div>
+      </div>
+    </header>
+
+    <main class="main-content">
+      <div class="container">
+
+        <!-- ============================================================
+             SECTION 1: 보험 리스크 평가 프레임워크
+             ============================================================ -->
+        <section class="content-section" id="section-framework">
+          <h2><span class="section-num">1</span> 보험 리스크 평가 프레임워크 <small class="text-muted" style="font-weight:400; font-size:0.85rem;">Insurance Risk Assessment Framework</small></h2>
+
+          <h3>해상보험의 구조</h3>
+          <p>
+            해상보험(Marine Insurance)은 크게 세 가지 주요 영역으로 구분됩니다.
+            각 영역은 독립된 보험 체계를 가지며, 크루즈 선박의 경우 세 영역 모두에 걸쳐 복합적 리스크 관리가 필요합니다.
+          </p>
+          <ul>
+            <li><strong>P&amp;I Club (Protection &amp; Indemnity)</strong> &mdash; 제3자 책임보험. 승객/선원 상해, 환경오염, 잔해 제거 비용 등을 커버합니다. 상호보험(mutual insurance) 방식으로 운영되며 전 세계 13개 주요 Club이 International Group을 형성합니다.</li>
+            <li><strong>Hull &amp; Machinery (H&amp;M)</strong> &mdash; 선체 및 기관 보험. 화재, 침몰, 좌초 등으로 인한 선박 자체의 물리적 손해를 커버합니다. 선박 가치(insured value)에 기반하여 보험료가 산정됩니다.</li>
+            <li><strong>Cargo Insurance</strong> &mdash; 적하보험. 크루즈의 경우 승객 수하물 및 선내 상점 재고(inventory) 보험이 해당됩니다. 일반 화물선 대비 비중은 낮지만 고가 품목 리스크가 존재합니다.</li>
+          </ul>
+
+          <h3>현행 리스크 평가의 한계</h3>
+          <p>
+            전통적인 해상보험 리스크 평가는 <strong>과거 사고 데이터(historical loss data)</strong>와
+            <strong>선급(Classification Society) 등급</strong>에 의존합니다.
+            이 방식은 다음과 같은 구조적 한계를 내포하고 있습니다:
+          </p>
+          <ul>
+            <li>정적 평가(Static Assessment) &mdash; 연간 또는 갱신 주기 기반의 정적 리스크 평가로, 항해 중 실시간 위험 변화를 반영하지 못합니다.</li>
+            <li>화재 시나리오 세분화 부족 &mdash; 화재 발생 위치, 확산 속도, 대피 효율성 등의 세부 변수가 보험료 산정에 충분히 반영되지 않습니다.</li>
+            <li>데이터 부족(Data Scarcity) &mdash; 크루즈 선박 화재 사고는 빈도가 낮아(low-frequency, high-severity) 통계적 신뢰구간 확보가 어렵습니다.</li>
+            <li>기술 수준 미반영 &mdash; 선박 내 화재 감지/대피 기술의 수준 차이가 보험료에 정량적으로 반영되지 않습니다.</li>
+          </ul>
+
+          <h3>FireNavi 데이터 기반 리스크 혁신</h3>
+          <p>
+            FireNavi는 실시간 센서 데이터, AI 기반 화재 예측, 동적 위험지도를 통해
+            보험사가 활용할 수 있는 <strong>새로운 차원의 리스크 데이터</strong>를 생성합니다.
+            이를 통해 보험 인수(underwriting), 보험료 산정(pricing), 손해 예방(loss prevention)의
+            모든 단계에서 혁신적 개선이 가능합니다.
+          </p>
+
+          <div class="stat-grid">
+            <div class="stat-card">
+              <div class="stat-value stat-value--accent" data-count="30" data-prefix="$" data-suffix="B">$0B</div>
+              <div class="stat-label">글로벌 해상보험 시장</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-value stat-value--danger" data-count="15" data-suffix="건/년">0건/년</div>
+              <div class="stat-label">크루즈 화재 사고 빈도</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-value stat-value--warning" data-count="50" data-prefix="$" data-suffix="M+">$0M+</div>
+              <div class="stat-label">평균 손해액</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-value stat-value--safe" data-count="45" data-suffix="%">0%</div>
+              <div class="stat-label">FireNavi 적용 시 리스크 감소</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ============================================================
+             SECTION 2: Monte Carlo 시뮬레이션 모델
+             ============================================================ -->
+        <section class="content-section" id="section-montecarlo">
+          <h2><span class="section-num">2</span> Monte Carlo 시뮬레이션 모델 <small class="text-muted" style="font-weight:400; font-size:0.85rem;">Monte Carlo Simulation</small></h2>
+
+          <p>
+            Monte Carlo 시뮬레이션은 확률적 입력 변수를 기반으로 대규모 반복 시행을 통해
+            손해 분포(loss distribution)를 추정하는 핵심 기법입니다.
+            FireNavi 데이터를 입력 변수로 활용하면 기존 보험 계리(actuarial) 모델보다
+            훨씬 정밀한 리스크 정량화가 가능합니다.
+          </p>
+
+          <h3>기대 손실 (Expected Loss)</h3>
+          <div class="formula-block">
+            <span class="formula-label">Expected Loss</span>
+            <div class="math">
+              E[Loss] = (1/N) &Sigma;<sub>i=1</sub><sup>N</sup> L<sub>i</sub>
+            </div>
+            <div style="margin-top: 8px; color: var(--text-secondary); font-size: 0.85rem;">
+              where &nbsp; <code>L<sub>i</sub> = f(fire_location, time_to_detect, evacuation_efficiency, structural_damage)</code>
+            </div>
+            <div style="margin-top: 4px; color: var(--text-muted); font-size: 0.8rem;">
+              N = 시뮬레이션 반복 횟수 (100,000+), L<sub>i</sub> = i번째 시행의 손해액
+            </div>
+          </div>
+
+          <h3>화재 발생 위치 확률 분포</h3>
+          <p>
+            선박 내 각 구역(zone)별 화재 발생 확률은 Poisson 분포를 따르며,
+            구역별 발생률(rate parameter) &lambda;<sub>k</sub>는 과거 사고 데이터 및 구역 특성(엔진룸, 갤리, 객실 등)에서 추정됩니다.
+          </p>
+          <div class="formula-block">
+            <span class="formula-label">Fire Occurrence</span>
+            <div class="math">
+              P(fire | zone<sub>k</sub>) ~ Poisson(&lambda;<sub>k</sub>)
+            </div>
+            <div style="margin-top: 8px; color: var(--text-secondary); font-size: 0.85rem;">
+              <code>&lambda;<sub>engine</sub> = 0.42/year, &lambda;<sub>galley</sub> = 0.31/year, &lambda;<sub>cabin</sub> = 0.15/year, &lambda;<sub>other</sub> = 0.12/year</code>
+            </div>
+          </div>
+
+          <h3>피해 규모 분포 (Loss Severity Distribution)</h3>
+          <p>
+            개별 화재 사고의 피해 규모는 Log-Normal 분포를 따릅니다.
+            이는 대부분의 사고가 중소 규모이나, 간헐적으로 매우 큰 손해(tail risk)가 발생하는 해상 화재의 특성을 잘 반영합니다.
+          </p>
+          <div class="formula-block">
+            <span class="formula-label">Loss Severity</span>
+            <div class="math">
+              L ~ LogNormal(&mu;, &sigma;&sup2;)
+            </div>
+            <div style="margin-top: 8px; color: var(--text-secondary); font-size: 0.85rem;">
+              <code>&mu; = ln(median loss), &sigma;&sup2; = loss volatility parameter</code>
+            </div>
+            <div style="margin-top: 4px; color: var(--text-muted); font-size: 0.8rem;">
+              추정값: &mu; = 17.03 (median &#8776; $25M), &sigma; = 1.2
+            </div>
+          </div>
+
+          <h3>시뮬레이션 구성</h3>
+          <div class="data-table-wrap">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>파라미터</th>
+                  <th>설정값</th>
+                  <th>설명</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="highlight-cell">반복 횟수 (N)</td>
+                  <td>100,000+</td>
+                  <td>통계적 수렴(convergence) 보장을 위한 최소 시행 수</td>
+                </tr>
+                <tr>
+                  <td class="highlight-cell">신뢰구간</td>
+                  <td>95% CI</td>
+                  <td>Expected Loss의 95% 신뢰구간 산출</td>
+                </tr>
+                <tr>
+                  <td class="highlight-cell">시간 지평(Horizon)</td>
+                  <td>1년</td>
+                  <td>연간 손해 분포 추정 기준</td>
+                </tr>
+                <tr>
+                  <td class="highlight-cell">입력 변수 수</td>
+                  <td>12개</td>
+                  <td>화재 위치, 감지 시간, 대피 효율, 구조 손상 등</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h3>VaR &amp; TVaR (Value at Risk / Tail Value at Risk)</h3>
+          <p>
+            보험 리스크 관리의 핵심 지표인 VaR과 TVaR을 Monte Carlo 시뮬레이션 결과로부터 직접 산출합니다.
+            VaR은 특정 신뢰 수준에서의 최대 예상 손실을, TVaR은 VaR을 초과하는 극단 시나리오의 평균 손실을 나타냅니다.
+          </p>
+          <div class="formula-block">
+            <span class="formula-label">VaR</span>
+            <div class="math">
+              VaR<sub>&alpha;</sub>: &nbsp; P(L &gt; VaR<sub>&alpha;</sub>) = 1 - &alpha;
+            </div>
+            <div style="margin-top: 8px; color: var(--text-secondary); font-size: 0.85rem;">
+              &alpha; = 0.99일 때, 99%ile 최대 예상 손실
+            </div>
+          </div>
+          <div class="formula-block">
+            <span class="formula-label">TVaR (Conditional VaR)</span>
+            <div class="math">
+              TVaR<sub>&alpha;</sub> = E[L | L &gt; VaR<sub>&alpha;</sub>]
+            </div>
+            <div style="margin-top: 8px; color: var(--text-secondary); font-size: 0.85rem;">
+              VaR을 초과하는 극단 손실 시나리오의 조건부 기대값 (Tail Risk 측정)
+            </div>
+          </div>
+
+          <div class="two-col" style="margin-top: var(--space-lg);">
+            <div>
+              <h3>FireNavi 미적용 시뮬레이션 결과</h3>
+              <div class="stat-grid" style="grid-template-columns: 1fr;">
+                <div class="stat-card">
+                  <div class="stat-value stat-value--danger" style="font-size:1.5rem;">$47.3M</div>
+                  <div class="stat-label">E[Loss] (Expected Annual Loss)</div>
+                </div>
+                <div class="stat-card">
+                  <div class="stat-value stat-value--danger" style="font-size:1.5rem;">$182M</div>
+                  <div class="stat-label">VaR<sub>99%</sub></div>
+                </div>
+                <div class="stat-card">
+                  <div class="stat-value stat-value--danger" style="font-size:1.5rem;">$267M</div>
+                  <div class="stat-label">TVaR<sub>99%</sub></div>
+                </div>
+              </div>
+            </div>
+            <div>
+              <h3>FireNavi 적용 시뮬레이션 결과</h3>
+              <div class="stat-grid" style="grid-template-columns: 1fr;">
+                <div class="stat-card">
+                  <div class="stat-value stat-value--safe" style="font-size:1.5rem;">$28.4M</div>
+                  <div class="stat-label">E[Loss] (Expected Annual Loss)</div>
+                </div>
+                <div class="stat-card">
+                  <div class="stat-value stat-value--safe" style="font-size:1.5rem;">$109M</div>
+                  <div class="stat-label">VaR<sub>99%</sub></div>
+                </div>
+                <div class="stat-card">
+                  <div class="stat-value stat-value--safe" style="font-size:1.5rem;">$158M</div>
+                  <div class="stat-label">TVaR<sub>99%</sub></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ============================================================
+             SECTION 3: 실시간 위험도 산정 모델
+             ============================================================ -->
+        <section class="content-section" id="section-risk-scoring">
+          <h2><span class="section-num">3</span> 실시간 위험도 산정 모델 <small class="text-muted" style="font-weight:400; font-size:0.85rem;">Real-time Risk Scoring</small></h2>
+
+          <p>
+            FireNavi는 선박 내 다중 센서로부터 수집된 데이터를 실시간으로 통합하여
+            시간 t에서의 종합 위험 점수(Risk Score)를 산출합니다.
+            이 점수는 보험사의 동적 리스크 모니터링 및 보험료 조정에 직접 활용됩니다.
+          </p>
+
+          <h3>Risk Score 산정 공식</h3>
+          <div class="formula-block">
+            <span class="formula-label">Risk Score</span>
+            <div class="math">
+              RS(t) = &Sigma;<sub>k=1</sub><sup>K</sup> w<sub>k</sub> &middot; H<sub>k</sub>(t)
+            </div>
+            <div style="margin-top: 8px; color: var(--text-secondary); font-size: 0.85rem;">
+              where &nbsp; <code>H<sub>k</sub>(t)</code> = 개별 위험 요소 점수 (individual hazard score at time t)
+            </div>
+            <div style="margin-top: 4px; color: var(--text-muted); font-size: 0.8rem;">
+              K = 위험 카테고리 수, w<sub>k</sub> = 가중치 (historical loss data 기반 보정)
+            </div>
+          </div>
+
+          <h3>위험 카테고리 (Hazard Categories)</h3>
+          <div class="data-table-wrap">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>카테고리</th>
+                  <th>기호</th>
+                  <th>가중치 (w<sub>k</sub>)</th>
+                  <th>데이터 소스</th>
+                  <th>설명</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="highlight-cell danger-cell">Fire (화재)</td>
+                  <td><code>H<sub>f</sub></code></td>
+                  <td>0.35</td>
+                  <td>온도/열감지 센서, 화염 감지 카메라</td>
+                  <td>화재 발생 여부, 강도, 확산 범위</td>
+                </tr>
+                <tr>
+                  <td class="highlight-cell warning-cell">Smoke (연기)</td>
+                  <td><code>H<sub>s</sub></code></td>
+                  <td>0.25</td>
+                  <td>연기 감지 센서, 가시거리 센서</td>
+                  <td>연기 농도, 확산 속도, 가시거리 저하</td>
+                </tr>
+                <tr>
+                  <td class="highlight-cell">Structural (구조)</td>
+                  <td><code>H<sub>st</sub></code></td>
+                  <td>0.20</td>
+                  <td>구조 변형 센서, BIM 데이터</td>
+                  <td>구조물 손상도, 통로 차단, 비상구 상태</td>
+                </tr>
+                <tr>
+                  <td class="highlight-cell" style="color: var(--info);">Crowd (군중)</td>
+                  <td><code>H<sub>c</sub></code></td>
+                  <td>0.12</td>
+                  <td>CCTV, IoT 카운터, 승선 명부</td>
+                  <td>구역별 인원 밀집도, 병목 위험</td>
+                </tr>
+                <tr>
+                  <td class="highlight-cell" style="color: var(--accent);">Weather (기상)</td>
+                  <td><code>H<sub>w</sub></code></td>
+                  <td>0.08</td>
+                  <td>기상 API, 선박 기상 장비</td>
+                  <td>풍속, 파고, 기온 (대피/구조 난이도 영향)</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h3>Score 정규화 (Normalization)</h3>
+          <div class="formula-block">
+            <span class="formula-label">Normalization</span>
+            <div class="math">
+              RS<sub>norm</sub> = RS(t) / RS<sub>max</sub> &isin; [0, 1]
+            </div>
+            <div style="margin-top: 8px; color: var(--text-secondary); font-size: 0.85rem;">
+              RS<sub>max</sub> = 모든 hazard가 최대치일 때의 이론적 최대 Risk Score
+            </div>
+          </div>
+
+          <h3>Risk Grade 매핑</h3>
+          <p>
+            정규화된 Risk Score를 5단계 등급으로 매핑하여 보험사 및 선박 운영자에게
+            직관적인 위험 수준을 전달합니다.
+          </p>
+          <div class="data-table-wrap">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>등급</th>
+                  <th>RS<sub>norm</sub> 범위</th>
+                  <th>색상</th>
+                  <th>보험사 대응</th>
+                  <th>선박 대응</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="highlight-cell risk-grade-low">Low</td>
+                  <td>0.0 &ndash; 0.2</td>
+                  <td><span class="color-swatch" style="background:#3182CE;"></span>Blue</td>
+                  <td>정상 모니터링, 할인율 최대 적용</td>
+                  <td>일상 운항, 정기 점검</td>
+                </tr>
+                <tr>
+                  <td class="highlight-cell risk-grade-moderate">Moderate</td>
+                  <td>0.2 &ndash; 0.4</td>
+                  <td><span class="color-swatch" style="background:#38A169;"></span>Green</td>
+                  <td>관심 구간, 기본 할인율 적용</td>
+                  <td>강화 모니터링, 원인 파악</td>
+                </tr>
+                <tr>
+                  <td class="highlight-cell risk-grade-high">High</td>
+                  <td>0.4 &ndash; 0.6</td>
+                  <td><span class="color-swatch" style="background:#ECC94B;"></span>Yellow</td>
+                  <td>경고 알림, 할인율 축소</td>
+                  <td>비상 대기(standby), 승무원 배치</td>
+                </tr>
+                <tr>
+                  <td class="highlight-cell risk-grade-veryhigh">Very High</td>
+                  <td>0.6 &ndash; 0.8</td>
+                  <td><span class="color-swatch" style="background:#ED8936;"></span>Orange</td>
+                  <td>긴급 통보, 추가 보험료 검토</td>
+                  <td>대피 준비, 구명보트 점검</td>
+                </tr>
+                <tr>
+                  <td class="highlight-cell risk-grade-critical">Critical</td>
+                  <td>0.8 &ndash; 1.0</td>
+                  <td><span class="color-swatch" style="background:#E53E3E;"></span>Red</td>
+                  <td>재보험사 통보, claims 대비 체제</td>
+                  <td>전원 대피 명령, 구조 요청</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- ============================================================
+             SECTION 4: 보험료 동적 산정 모델
+             ============================================================ -->
+        <section class="content-section" id="section-premium">
+          <h2><span class="section-num">4</span> 보험료 동적 산정 모델 <small class="text-muted" style="font-weight:400; font-size:0.85rem;">Dynamic Premium Calculation</small></h2>
+
+          <p>
+            FireNavi 데이터를 활용한 동적 보험료 산정 모델은 기존의 정적 보험료 체계를 넘어
+            실시간 리스크 수준에 연동된 정밀 pricing을 가능하게 합니다.
+            이를 통해 안전 기술 투자에 대한 직접적인 보험료 할인 인센티브를 제공합니다.
+          </p>
+
+          <h3>기본 보험료 (Base Premium)</h3>
+          <div class="formula-block">
+            <span class="formula-label">Base Premium</span>
+            <div class="math">
+              P<sub>base</sub> = f(ship_class, tonnage, route, passenger_count)
+            </div>
+            <div style="margin-top: 8px; color: var(--text-secondary); font-size: 0.85rem;">
+              선박 등급, 총 톤수, 항해 경로, 최대 승객 수에 기반한 기본 보험료
+            </div>
+          </div>
+
+          <h3>리스크 조정 계수 (Risk Adjustment Factor)</h3>
+          <div class="formula-block">
+            <span class="formula-label">RAF</span>
+            <div class="math">
+              RAF = exp(&beta; &middot; RS<sub>avg</sub>)
+            </div>
+            <div style="margin-top: 8px; color: var(--text-secondary); font-size: 0.85rem;">
+              <code>&beta;</code> = 리스크 민감도 계수 (보험사별 calibration), <code>RS<sub>avg</sub></code> = 보험 기간 평균 Risk Score
+            </div>
+            <div style="margin-top: 4px; color: var(--text-muted); font-size: 0.8rem;">
+              &beta; 추정값: 0.8 ~ 1.5 (보험사 리스크 선호도에 따라 조정)
+            </div>
+          </div>
+
+          <h3>안전 기술 할인 (Safety Technology Discount)</h3>
+          <div class="formula-block">
+            <span class="formula-label">STD</span>
+            <div class="math">
+              STD = 1 - &delta; &middot; FireNavi_score
+            </div>
+            <div style="margin-top: 8px; color: var(--text-secondary); font-size: 0.85rem;">
+              <code>&delta;</code> = 최대 할인율 계수 (0.3 ~ 0.5), <code>FireNavi_score</code> = FireNavi 시스템 성숙도 점수 &isin; [0, 1]
+            </div>
+            <div style="margin-top: 4px; color: var(--text-muted); font-size: 0.8rem;">
+              FireNavi 완전 구축 시 최대 30~50% 보험료 할인 가능
+            </div>
+          </div>
+
+          <h3>최종 보험료 (Final Premium)</h3>
+          <div class="formula-block">
+            <span class="formula-label">Final Premium</span>
+            <div class="math">
+              P<sub>final</sub> = P<sub>base</sub> &times; RAF &times; STD &times; (1 + loading_factor)
+            </div>
+            <div style="margin-top: 8px; color: var(--text-secondary); font-size: 0.85rem;">
+              <code>loading_factor</code> = 사업비 부가율 + 이익 마진 + 재보험 비용
+            </div>
+          </div>
+
+          <h3>손해율 (Historical Loss Ratio)</h3>
+          <div class="formula-block">
+            <span class="formula-label">Loss Ratio</span>
+            <div class="math">
+              LR = Claims<sub>paid</sub> / Premium<sub>earned</sub>
+            </div>
+            <div style="margin-top: 8px; color: var(--text-secondary); font-size: 0.85rem;">
+              목표 LR: 60~70% (해상보험 업계 평균). FireNavi 적용 시 50~60%로 개선 기대
+            </div>
+          </div>
+
+          <h3>보험료 산정 예시 (선박 유형별)</h3>
+          <div class="data-table-wrap">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>선박 유형</th>
+                  <th>총 톤수</th>
+                  <th>승객 수</th>
+                  <th>P<sub>base</sub> (연간)</th>
+                  <th>RAF</th>
+                  <th>STD</th>
+                  <th>P<sub>final</sub> (연간)</th>
+                  <th>절감액</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="highlight-cell">소형 크루즈</td>
+                  <td>30,000 GT</td>
+                  <td>800명</td>
+                  <td>$2.1M</td>
+                  <td>1.12</td>
+                  <td class="safe-cell">0.72</td>
+                  <td class="safe-cell">$1.81M</td>
+                  <td class="safe-cell">-$290K</td>
+                </tr>
+                <tr>
+                  <td class="highlight-cell">중형 크루즈</td>
+                  <td>80,000 GT</td>
+                  <td>2,500명</td>
+                  <td>$5.4M</td>
+                  <td>1.15</td>
+                  <td class="safe-cell">0.68</td>
+                  <td class="safe-cell">$4.47M</td>
+                  <td class="safe-cell">-$930K</td>
+                </tr>
+                <tr>
+                  <td class="highlight-cell">대형 크루즈</td>
+                  <td>150,000 GT</td>
+                  <td>5,000명</td>
+                  <td>$9.8M</td>
+                  <td>1.20</td>
+                  <td class="safe-cell">0.65</td>
+                  <td class="safe-cell">$8.17M</td>
+                  <td class="safe-cell">-$1.63M</td>
+                </tr>
+                <tr>
+                  <td class="highlight-cell">메가 크루즈</td>
+                  <td>230,000 GT</td>
+                  <td>6,500명</td>
+                  <td>$14.2M</td>
+                  <td>1.25</td>
+                  <td class="safe-cell">0.62</td>
+                  <td class="safe-cell">$11.66M</td>
+                  <td class="safe-cell">-$2.54M</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <p class="text-muted" style="font-size: 0.8rem;">
+            * 위 수치는 모델 시뮬레이션 기반 추정치이며, 실제 보험료는 보험사의 인수 정책, 재보험 조건, 선박 이력 등에 따라 변동됩니다.
+            loading_factor = 0.15 적용 기준.
+          </p>
+        </section>
+
+        <!-- ============================================================
+             SECTION 5: P&I Club 연동 모델
+             ============================================================ -->
+        <section class="content-section" id="section-pi-club">
+          <h2><span class="section-num">5</span> P&amp;I Club 연동 모델 <small class="text-muted" style="font-weight:400; font-size:0.85rem;">P&amp;I Club Integration</small></h2>
+
+          <p>
+            P&amp;I Club은 해상보험의 핵심 주체로, 선박 운영자의 제3자 배상 책임을 커버합니다.
+            FireNavi는 P&amp;I Club의 리스크 평가, call 산정, 손해 예방(loss prevention) 프로그램에
+            직접 연동될 수 있는 데이터 인프라를 제공합니다.
+          </p>
+
+          <h3>P&amp;I Club Call 산정 반영</h3>
+          <p>
+            P&amp;I Club은 상호보험(mutual) 방식으로 운영되며, 회원사의 리스크 수준에 따라
+            연간 보험료(call)가 조정됩니다. FireNavi의 실시간 Risk Score 데이터는
+            개별 선박의 리스크 프로파일을 정밀하게 평가하는 데 활용됩니다.
+          </p>
+
+          <h3>Claims History Analysis</h3>
+          <p>
+            FireNavi가 수집하는 화재 이벤트 로그, 대피 시뮬레이션 데이터, 센서 이력은
+            사고 발생 시 claims 처리의 핵심 증거(evidence)로 활용됩니다.
+            사고 원인 분석(root cause analysis)과 책임 판정(liability determination)의 정확도를 향상시킵니다.
+          </p>
+
+          <h3>Loss Prevention Credit System</h3>
+          <p>
+            FireNavi 시스템을 도입한 선박에 대해 P&amp;I Club은 손해 예방 크레딧(loss prevention credit)을 부여합니다.
+            이는 연간 call 할인으로 이어지며, 지속적인 안전 기술 투자를 인센티브화합니다.
+          </p>
+          <ul>
+            <li><strong>Tier 1 Credit (5% 할인)</strong> &mdash; FireNavi 기본 센서 시스템 설치</li>
+            <li><strong>Tier 2 Credit (15% 할인)</strong> &mdash; 실시간 위험지도 + AI 연기확산 예측 운영</li>
+            <li><strong>Tier 3 Credit (25% 할인)</strong> &mdash; 전체 시스템 구축 + P&amp;I Club 데이터 연동</li>
+          </ul>
+
+          <h3>실시간 데이터 공유 프로토콜</h3>
+          <div class="api-flow">
+            <div class="api-node api-node--fire">FireNavi<br><small>선박 시스템</small></div>
+            <div class="api-arrow">&rarr;</div>
+            <div class="api-node" style="border-color: var(--safe); color: var(--safe);">Encrypted API<br><small>TLS 1.3 / REST</small></div>
+            <div class="api-arrow">&rarr;</div>
+            <div class="api-node api-node--pi">P&amp;I Club<br><small>Risk Platform</small></div>
+            <div class="api-arrow">&rarr;</div>
+            <div class="api-node api-node--insurer">Reinsurer<br><small>Portfolio View</small></div>
+          </div>
+          <p>
+            FireNavi에서 P&amp;I Club 리스크 플랫폼으로의 데이터 전송은
+            TLS 1.3 암호화된 RESTful API를 통해 이루어집니다.
+            데이터 포맷은 ACORD(Association for Cooperative Operations Research and Development) 표준을 따르며,
+            실시간 Risk Score, 이벤트 알림, 일일/월간 리포트가 제공됩니다.
+          </p>
+
+          <h3>주요 P&amp;I Club 목록</h3>
+          <div class="data-table-wrap">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>P&amp;I Club</th>
+                  <th>본부</th>
+                  <th>선복량 비중</th>
+                  <th>특징</th>
+                  <th>FireNavi 연동 상태</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="highlight-cell">Gard</td>
+                  <td>노르웨이 (Arendal)</td>
+                  <td>~13%</td>
+                  <td>세계 최대 P&amp;I Club, 크루즈 전문팀 보유</td>
+                  <td class="safe-cell">협의 진행중</td>
+                </tr>
+                <tr>
+                  <td class="highlight-cell">Skuld</td>
+                  <td>노르웨이 (Oslo)</td>
+                  <td>~7%</td>
+                  <td>스칸디나비아 중심, 기술 혁신 선도</td>
+                  <td class="warning-cell">초기 접촉</td>
+                </tr>
+                <tr>
+                  <td class="highlight-cell">UK P&amp;I Club</td>
+                  <td>영국 (London)</td>
+                  <td>~10%</td>
+                  <td>Lloyd's 시장 밀접, 대형 크루즈 다수 인수</td>
+                  <td class="safe-cell">협의 진행중</td>
+                </tr>
+                <tr>
+                  <td class="highlight-cell">Standard Club</td>
+                  <td>영국 (London)</td>
+                  <td>~8%</td>
+                  <td>Charles Taylor 운영, loss prevention 프로그램 우수</td>
+                  <td class="warning-cell">초기 접촉</td>
+                </tr>
+                <tr>
+                  <td class="highlight-cell">Britannia</td>
+                  <td>영국 (London)</td>
+                  <td>~10%</td>
+                  <td>Tindall Riley 운영, 전통 강호</td>
+                  <td class="text-muted">예정</td>
+                </tr>
+                <tr>
+                  <td class="highlight-cell">North P&amp;I</td>
+                  <td>영국 (Newcastle)</td>
+                  <td>~9%</td>
+                  <td>디지털 전환 적극 추진</td>
+                  <td class="text-muted">예정</td>
+                </tr>
+                <tr>
+                  <td class="highlight-cell">한국 P&amp;I</td>
+                  <td>한국 (서울)</td>
+                  <td>~3%</td>
+                  <td>국내 선사 중심, 아시아 네트워크 강점</td>
+                  <td class="safe-cell">파일럿 협의</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- ============================================================
+             SECTION 6: 손해 시나리오 분석
+             ============================================================ -->
+        <section class="content-section" id="section-scenario">
+          <h2><span class="section-num">6</span> 손해 시나리오 분석 <small class="text-muted" style="font-weight:400; font-size:0.85rem;">Loss Scenario Analysis</small></h2>
+
+          <p>
+            크루즈 선박 화재의 주요 시나리오를 유형별로 분석하고,
+            각 시나리오에서 FireNavi 적용 유무에 따른 손해 규모 차이를 정량적으로 비교합니다.
+          </p>
+
+          <div class="tabs">
+            <button class="tab-btn active" data-tab="tab-engine">엔진룸 화재</button>
+            <button class="tab-btn" data-tab="tab-galley">갤리(주방) 화재</button>
+            <button class="tab-btn" data-tab="tab-cabin">객실 화재</button>
+            <button class="tab-btn" data-tab="tab-multi">다중 구역 화재</button>
+          </div>
+
+          <!-- Tab 1: 엔진룸 화재 -->
+          <div class="tab-content active" id="tab-engine">
+            <h3>엔진룸 화재 &mdash; 가장 빈번한 시나리오</h3>
+            <p>
+              엔진룸은 연료 시스템, 고온 기관, 전기 설비가 밀집된 영역으로
+              크루즈 선박 화재의 약 <strong>35~40%</strong>가 이 구역에서 발생합니다.
+              연료 누출과 결합될 경우 급격한 화재 확산이 가능하며,
+              기관 정지로 인한 2차 피해(표류, 충돌)도 리스크에 포함됩니다.
+            </p>
+            <div class="scenario-metrics">
+              <div class="scenario-metric">
+                <div class="label">발생 확률</div>
+                <div class="value text-danger">35~40%</div>
+              </div>
+              <div class="scenario-metric">
+                <div class="label">예상 손해 (기존)</div>
+                <div class="value text-danger">$80~150M</div>
+              </div>
+              <div class="scenario-metric">
+                <div class="label">초기 감지 시간 (기존)</div>
+                <div class="value text-warning">3~8분</div>
+              </div>
+              <div class="scenario-metric">
+                <div class="label">전원 대피 시간 (기존)</div>
+                <div class="value text-warning">45~90분</div>
+              </div>
+            </div>
+            <div class="comparison-grid">
+              <div class="comparison-card comparison-card--before">
+                <h4 class="text-danger">FireNavi 미적용</h4>
+                <ul>
+                  <li>감지 지연: 평균 5.2분</li>
+                  <li>대피 명령까지: 12~18분</li>
+                  <li>병목 구간 혼잡: 심각</li>
+                  <li>노약자 대피 누락 위험: 높음</li>
+                  <li>예상 인명 피해: 5~25명</li>
+                  <li>예상 총 손해: $120M</li>
+                </ul>
+              </div>
+              <div class="comparison-card comparison-card--after">
+                <h4 class="text-safe">FireNavi 적용</h4>
+                <ul>
+                  <li>감지 시간: 평균 0.8분 (85% 단축)</li>
+                  <li>자동 대피 안내 개시: 1.5분</li>
+                  <li>AI 경로 분산으로 병목 해소</li>
+                  <li>건강상태 반영 개별 경로 제공</li>
+                  <li>예상 인명 피해: 0~3명</li>
+                  <li>예상 총 손해: $45M (62% 감소)</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tab 2: 갤리(주방) 화재 -->
+          <div class="tab-content" id="tab-galley">
+            <h3>갤리(주방) 화재</h3>
+            <p>
+              대형 크루즈의 주방 시설은 다수의 가스 조리 설비와 식용유 저장 공간을 포함합니다.
+              식용유 화재(grease fire)는 진화가 어렵고, 환기 시스템을 통한 연기 확산이 빠릅니다.
+              승객이 밀집한 레스토랑/뷔페 구역에 인접해 패닉 유발 가능성이 높습니다.
+            </p>
+            <div class="scenario-metrics">
+              <div class="scenario-metric">
+                <div class="label">발생 확률</div>
+                <div class="value text-warning">25~30%</div>
+              </div>
+              <div class="scenario-metric">
+                <div class="label">예상 손해 (기존)</div>
+                <div class="value text-danger">$30~80M</div>
+              </div>
+              <div class="scenario-metric">
+                <div class="label">초기 감지 시간 (기존)</div>
+                <div class="value text-warning">1~4분</div>
+              </div>
+              <div class="scenario-metric">
+                <div class="label">전원 대피 시간 (기존)</div>
+                <div class="value text-warning">30~60분</div>
+              </div>
+            </div>
+            <div class="comparison-grid">
+              <div class="comparison-card comparison-card--before">
+                <h4 class="text-danger">FireNavi 미적용</h4>
+                <ul>
+                  <li>감지 지연: 평균 2.5분</li>
+                  <li>식사 시간 대 인원 밀집 (1,500+명)</li>
+                  <li>패닉으로 인한 추가 부상 다수</li>
+                  <li>좁은 통로에서 역류 현상</li>
+                  <li>예상 인명 피해: 3~15명</li>
+                  <li>예상 총 손해: $55M</li>
+                </ul>
+              </div>
+              <div class="comparison-card comparison-card--after">
+                <h4 class="text-safe">FireNavi 적용</h4>
+                <ul>
+                  <li>감지 시간: 평균 0.5분</li>
+                  <li>구역별 분산 대피 경로 자동 안내</li>
+                  <li>AI 기반 역류 방지 경로 설계</li>
+                  <li>연기 확산 예측으로 선제적 경로 변경</li>
+                  <li>예상 인명 피해: 0~2명</li>
+                  <li>예상 총 손해: $18M (67% 감소)</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tab 3: 객실 화재 -->
+          <div class="tab-content" id="tab-cabin">
+            <h3>객실 화재</h3>
+            <p>
+              객실(cabin) 화재는 주로 전기 합선, 흡연, 충전 중 배터리 과열 등에 의해 발생합니다.
+              야간 발생 시 승객 인지가 늦어 인명 피해 확대 가능성이 높으며,
+              긴 복도 구조로 인해 연기가 빠르게 확산됩니다.
+            </p>
+            <div class="scenario-metrics">
+              <div class="scenario-metric">
+                <div class="label">발생 확률</div>
+                <div class="value text-warning">15~20%</div>
+              </div>
+              <div class="scenario-metric">
+                <div class="label">예상 손해 (기존)</div>
+                <div class="value text-danger">$20~60M</div>
+              </div>
+              <div class="scenario-metric">
+                <div class="label">초기 감지 시간 (기존)</div>
+                <div class="value text-warning">2~6분</div>
+              </div>
+              <div class="scenario-metric">
+                <div class="label">전원 대피 시간 (기존)</div>
+                <div class="value text-warning">35~75분</div>
+              </div>
+            </div>
+            <div class="comparison-grid">
+              <div class="comparison-card comparison-card--before">
+                <h4 class="text-danger">FireNavi 미적용</h4>
+                <ul>
+                  <li>야간 감지 지연: 평균 4.8분</li>
+                  <li>객실 문 개방 시 산소 유입 → 급격 확산</li>
+                  <li>복도 연기 축적으로 시야 확보 불가</li>
+                  <li>노약자/장애인 독립 대피 곤란</li>
+                  <li>예상 인명 피해: 2~12명</li>
+                  <li>예상 총 손해: $40M</li>
+                </ul>
+              </div>
+              <div class="comparison-card comparison-card--after">
+                <h4 class="text-safe">FireNavi 적용</h4>
+                <ul>
+                  <li>감지 시간: 평균 0.6분 (87% 단축)</li>
+                  <li>객실별 개별 알림 + 개인 디바이스 안내</li>
+                  <li>연기 확산 예측 기반 안전 경로 안내</li>
+                  <li>거동 불편자 위치 자동 파악 → 구조팀 배치</li>
+                  <li>예상 인명 피해: 0~1명</li>
+                  <li>예상 총 손해: $12M (70% 감소)</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tab 4: 다중 구역 화재 -->
+          <div class="tab-content" id="tab-multi">
+            <h3>다중 구역 화재 &mdash; Worst Case Scenario</h3>
+            <p>
+              가장 극단적인 시나리오로, 엔진룸 화재가 인접 구역(연료 탱크, 전기실)으로 확산되거나,
+              폭발에 의한 동시 다발 화재가 발생하는 경우입니다.
+              선박 총 손실(total loss)에 해당할 수 있으며, 대규모 인명 피해 가능성을 내포합니다.
+            </p>
+            <div class="scenario-metrics">
+              <div class="scenario-metric">
+                <div class="label">발생 확률</div>
+                <div class="value" style="color: var(--accent);">3~5%</div>
+              </div>
+              <div class="scenario-metric">
+                <div class="label">예상 손해 (기존)</div>
+                <div class="value text-danger">$500M~$2B</div>
+              </div>
+              <div class="scenario-metric">
+                <div class="label">초기 감지 시간 (기존)</div>
+                <div class="value text-danger">5~15분</div>
+              </div>
+              <div class="scenario-metric">
+                <div class="label">전원 대피 시간 (기존)</div>
+                <div class="value text-danger">60~180분</div>
+              </div>
+            </div>
+            <div class="comparison-grid">
+              <div class="comparison-card comparison-card--before">
+                <h4 class="text-danger">FireNavi 미적용</h4>
+                <ul>
+                  <li>다중 화재원 감지 불가 → 잘못된 대피 경로</li>
+                  <li>통신 시스템 마비 가능성</li>
+                  <li>승무원 혼란으로 대피 지연 심각</li>
+                  <li>구명보트 배치 오류 가능</li>
+                  <li>예상 인명 피해: 20~200+명</li>
+                  <li>예상 총 손해: $800M+</li>
+                </ul>
+              </div>
+              <div class="comparison-card comparison-card--after">
+                <h4 class="text-safe">FireNavi 적용</h4>
+                <ul>
+                  <li>다중 화재원 동시 감지 &amp; 위험지도 즉시 갱신</li>
+                  <li>독립 통신 채널 (Edge Computing) 유지</li>
+                  <li>AI 기반 최적 대피 경로 실시간 재계산</li>
+                  <li>구명보트 배치 자동 최적화</li>
+                  <li>예상 인명 피해: 5~30명</li>
+                  <li>예상 총 손해: $300M (62% 감소)</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ============================================================
+             SECTION 7: 규제 및 인증
+             ============================================================ -->
+        <section class="content-section" id="section-regulation">
+          <h2><span class="section-num">7</span> 규제 및 인증 <small class="text-muted" style="font-weight:400; font-size:0.85rem;">Regulations &amp; Certification</small></h2>
+
+          <p>
+            FireNavi 시스템의 보험 리스크 모델은 국제 보험 규제, 선급 인증, 보험 자본 규제를
+            모두 충족하도록 설계되었습니다. 아래 각 규제/인증 요건과 FireNavi의 준수 방안을 확인하십시오.
+          </p>
+
+          <div class="accordion-item open">
+            <div class="accordion-header">Solvency II &mdash; EU 보험 자본 규제</div>
+            <div class="accordion-body">
+              <p>
+                Solvency II는 유럽연합의 보험사 자본 건전성 규제 체계로,
+                리스크 기반 자본 요건(SCR: Solvency Capital Requirement)을 정의합니다.
+              </p>
+              <ul>
+                <li><strong>Pillar 1 (정량적 요건)</strong> &mdash; FireNavi 데이터는 SCR의 비생명보험(non-life) 모듈 내 해상 리스크 하위 모듈의 파라미터 보정에 활용됩니다.</li>
+                <li><strong>Pillar 2 (정성적 요건)</strong> &mdash; 리스크 관리 시스템(ORSA) 내 시나리오 분석 도구로 Monte Carlo 시뮬레이션을 제공합니다.</li>
+                <li><strong>Pillar 3 (공시 요건)</strong> &mdash; 실시간 리스크 데이터 리포팅으로 투명성 및 공시 품질을 향상시킵니다.</li>
+              </ul>
+              <p class="text-muted" style="font-size: 0.85rem;">
+                FireNavi 준수 수준: Internal Model 방식의 SCR 산출 시, 해상 화재 리스크 서브모듈에 대한 데이터 품질(Data Quality) 등급 향상 기대
+              </p>
+            </div>
+          </div>
+
+          <div class="accordion-item">
+            <div class="accordion-header">IACS &mdash; International Association of Classification Societies</div>
+            <div class="accordion-body">
+              <p>
+                IACS는 12개 주요 선급 협회의 연합체로, 선박 안전 기준의 국제적 통일을 주도합니다.
+                FireNavi는 IACS의 화재 안전 관련 통일 규칙(Unified Requirements)에 부합하도록 설계됩니다.
+              </p>
+              <ul>
+                <li><strong>UR F (Fire Protection)</strong> &mdash; 화재 감지, 소화 시스템, 구조적 방화 요건과의 정합성 확보</li>
+                <li><strong>UR E (Electrical Installations)</strong> &mdash; 센서 네트워크 및 Edge Computing 시스템의 전기 설비 기준 준수</li>
+                <li><strong>Procedural Requirements</strong> &mdash; 선급 검사 시 FireNavi 시스템 운용 상태 점검 절차 포함</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="accordion-item">
+            <div class="accordion-header">DNV GL Certification</div>
+            <div class="accordion-body">
+              <p>
+                DNV GL(현 DNV)은 세계 최대 선급 협회로, 크루즈 선박의 화재 안전 시스템에 대한
+                독립적 인증 서비스를 제공합니다.
+              </p>
+              <ul>
+                <li><strong>Type Approval</strong> &mdash; FireNavi 센서 및 Edge Computing 하드웨어의 형식 승인 취득 절차 진행</li>
+                <li><strong>DNVGL-CG-0339 (Fire Safety)</strong> &mdash; 화재 안전 시스템에 대한 Class Guideline 준수</li>
+                <li><strong>Cyber Security (RP-0496)</strong> &mdash; 선박 사이버 보안 권고사항에 따른 FireNavi 네트워크 보안 설계</li>
+                <li><strong>Smart Ship Notation</strong> &mdash; DNV의 Smart Ship 표기(notation) 취득을 통한 보험료 할인 연계</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="accordion-item">
+            <div class="accordion-header">Lloyd's Register Requirements</div>
+            <div class="accordion-body">
+              <p>
+                Lloyd's Register(LR)는 영국 기반의 선급 협회로, 특히 Lloyd's 보험 시장과의 연계가 강합니다.
+                LR의 인증은 Lloyd's 시장에서의 보험 인수 시 유리한 조건을 확보하는 데 중요합니다.
+              </p>
+              <ul>
+                <li><strong>ShipRight Procedure</strong> &mdash; FireNavi 시스템의 설계 검토 및 설치 검사</li>
+                <li><strong>Digital Ships (Cyber-enabled)</strong> &mdash; 디지털 선박 표기를 위한 사이버 보안 및 데이터 무결성 요건</li>
+                <li><strong>LR's Safety Accelerator</strong> &mdash; 혁신 안전 기술 인증 가속화 프로그램 활용</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="accordion-item">
+            <div class="accordion-header">한국 P&amp;I Club 적용 방안</div>
+            <div class="accordion-body">
+              <p>
+                한국 P&amp;I Club은 국내 선사 중심으로 운영되며,
+                아시아 시장에서의 FireNavi 도입 교두보 역할을 할 수 있습니다.
+              </p>
+              <ul>
+                <li><strong>국내 조선소 연계</strong> &mdash; 한국 조선소(HD현대중공업, 삼성중공업, 한화오션)에서 건조되는 크루즈에 FireNavi 기본 탑재 추진</li>
+                <li><strong>해양수산부 협력</strong> &mdash; 선박 안전 규정 개정 시 FireNavi 기술 기준 반영 로비</li>
+                <li><strong>KMI(한국해양수산개발원) 공동 연구</strong> &mdash; 국내 해상보험 시장의 FireNavi 적용 효과 분석 연구</li>
+                <li><strong>파일럿 프로그램</strong> &mdash; 국내 연안 크루즈(제주 노선 등)에서 시범 운영 후 확대 적용</li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        <!-- ============================================================
+             SECTION 8: ROI 분석 - 보험사 관점
+             ============================================================ -->
+        <section class="content-section" id="section-roi">
+          <h2><span class="section-num">8</span> ROI 분석 &mdash; 보험사 관점 <small class="text-muted" style="font-weight:400; font-size:0.85rem;">ROI from Insurer Perspective</small></h2>
+
+          <p>
+            보험사 관점에서 FireNavi 기술을 인수 심사(underwriting) 및 리스크 관리에 활용할 경우의
+            투자 대비 수익(Return on Investment)을 분석합니다.
+            핵심 가치는 <strong>claims ratio 개선</strong>, <strong>포트폴리오 리스크 경감</strong>,
+            <strong>재보험 비용 최적화</strong>, 그리고 <strong>데이터 기반 인수 우위(underwriting advantage)</strong>입니다.
+          </p>
+
+          <div class="roi-highlight">
+            <div class="big-number">3.2x</div>
+            <div class="roi-desc">FireNavi 데이터 연동 비용 대비 예상 ROI (3년 기준)</div>
+          </div>
+
+          <h3>연간 보험료 수입 대비 Claims Ratio 개선</h3>
+          <p>
+            FireNavi가 장착된 선박의 포트폴리오는 기존 대비 <strong>10~15% 낮은 claims ratio</strong>를 기록할 것으로 예상됩니다.
+            이는 화재 조기 감지에 의한 손해 규모 축소, 효율적 대피에 의한 인명 피해 감소,
+            그리고 구조적 피해 최소화에 기인합니다.
+          </p>
+
+          <h3>Portfolio Risk Reduction</h3>
+          <p>
+            FireNavi 데이터 기반 리스크 세분화(risk segmentation)를 통해
+            보험사는 포트폴리오 내 고위험 선박을 조기에 식별하고
+            리스크 편중(concentration risk)을 관리할 수 있습니다.
+            특히 대형 크루즈 선박의 단일 사고가 포트폴리오 전체에 미치는 영향(catastrophe exposure)을 정량화하여
+            자본 배분의 효율성을 높입니다.
+          </p>
+
+          <h3>Reinsurance Cost Optimization</h3>
+          <p>
+            재보험(reinsurance) 계약 시, FireNavi 데이터를 기반으로 한 정밀 리스크 프로파일을 제시하면
+            재보험사로부터 <strong>더 유리한 조건</strong>(낮은 재보험료, 높은 수용 한도)을 확보할 수 있습니다.
+            이는 재보험 비용의 5~10% 절감으로 이어질 것으로 추정됩니다.
+          </p>
+
+          <h3>Data-Driven Underwriting Advantage</h3>
+          <p>
+            실시간 리스크 데이터를 보유한 보험사는 경쟁사 대비
+            <strong>정보 비대칭(information asymmetry)</strong>의 우위를 가집니다.
+            이를 통해 우량 리스크를 선별적으로 인수하고,
+            불량 리스크에 대한 적정 보험료를 산정할 수 있습니다.
+          </p>
+
+          <div class="stat-grid">
+            <div class="stat-card">
+              <div class="stat-value stat-value--safe" data-count="15" data-suffix="%">0%</div>
+              <div class="stat-label">Claims Ratio 개선</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-value stat-value--info" data-count="25" data-suffix="%">0%</div>
+              <div class="stat-label">Portfolio Risk 감소</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-value stat-value--accent" data-count="10" data-suffix="%">0%</div>
+              <div class="stat-label">재보험 비용 절감</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-value stat-value--warning" data-count="8" data-prefix="$" data-suffix="M">$0M</div>
+              <div class="stat-label">연간 순이익 증가 (대형사 기준)</div>
+            </div>
+          </div>
+
+          <h3>보험사 도입 로드맵</h3>
+          <div class="flow-diagram">
+            <div class="flow-step">
+              <div class="flow-step-num">1</div>
+              <div class="flow-step-title">PoC (6개월)</div>
+              <div class="flow-step-desc">데이터 연동 테스트<br>단일 선박 파일럿</div>
+            </div>
+            <div class="flow-arrow">&rarr;</div>
+            <div class="flow-step">
+              <div class="flow-step-num">2</div>
+              <div class="flow-step-title">파일럿 (12개월)</div>
+              <div class="flow-step-desc">5~10척 적용<br>보험료 모델 검증</div>
+            </div>
+            <div class="flow-arrow">&rarr;</div>
+            <div class="flow-step">
+              <div class="flow-step-num">3</div>
+              <div class="flow-step-title">상용화 (24개월)</div>
+              <div class="flow-step-desc">전체 크루즈 포트폴리오<br>동적 보험료 적용</div>
+            </div>
+            <div class="flow-arrow">&rarr;</div>
+            <div class="flow-step">
+              <div class="flow-step-num">4</div>
+              <div class="flow-step-title">확장 (36개월)</div>
+              <div class="flow-step-desc">재보험 연계<br>글로벌 P&amp;I 표준</div>
+            </div>
+          </div>
+        </section>
+
+      </div><!-- /.container -->
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="footer-premium">
+      <div class="footer-premium-inner">
+        <div class="footer-grid">
+          <div class="footer-col footer-col--brand">
+            <div class="footer-logo"><img src="firenavi-logo.svg" alt="FireNavi" style="height:40px;vertical-align:middle;"></div>
+            <p class="footer-tagline">AI 기반 실시간 생존 의사결정 플랫폼</p>
+            <p class="footer-desc">화재보다 빠르게 판단하는 AI.<br>길을 안내하는 것이 아니라 생존을 설계합니다.</p>
+            <div class="footer-badges">
+              <span class="footer-badge">Safety</span>
+              <span class="footer-badge">Security</span>
+              <span class="footer-badge">Operation</span>
+            </div>
+          </div>
+          <div class="footer-col">
+            <h4 class="footer-col-title">Core Modules</h4>
+            <ul class="footer-links">
+              <li><a href="a-technical-formulation.html">A. 기술 수식화</a></li>
+              <li><a href="b-industrial-architecture.html">B. 산업 아키텍처</a></li>
+              <li><a href="c-shipyard-proposal.html">C. 조선소 제안</a></li>
+              <li><a href="d-insurance-risk-model.html">D. 보험 리스크</a></li>
+            </ul>
+          </div>
+          <div class="footer-col">
+            <h4 class="footer-col-title">Interactive</h4>
+            <ul class="footer-links">
+              <li><a href="simulation.html">실시간 시뮬레이션</a></li>
+              <li><a href="risk-map.html">동적 위험지도</a></li>
+              <li><a href="route-optimizer.html">경로 최적화</a></li>
+            </ul>
+          </div>
+          <div class="footer-col">
+            <h4 class="footer-col-title">Resources</h4>
+            <ul class="footer-links">
+              <li><a href="../index.html">매뉴얼 페이지</a></li>
+              <li><a href="../technology.html">아키텍처 구조도</a></li>
+            </ul>
+            <h4 class="footer-col-title" style="margin-top:20px;">Contact</h4>
+            <ul class="footer-links">
+              <li><a href="mailto:jaiwshim@gmail.com">jaiwshim@gmail.com</a></li>
+            </ul>
+          </div>
+        </div>
+        <div class="footer-engines">
+          <div class="footer-engine"><span class="footer-engine-dot" style="background:#EF4444;"></span><span>Prediction Engine</span></div>
+          <div class="footer-engine"><span class="footer-engine-dot" style="background:#3B82F6;"></span><span>Behavior Engine</span></div>
+          <div class="footer-engine"><span class="footer-engine-dot" style="background:#7C3AED;"></span><span>Decision Engine</span></div>
+          <div class="footer-engine"><span class="footer-engine-dot" style="background:#EC4899;"></span><span>Priority Rescue AI</span></div>
+          <div class="footer-engine"><span class="footer-engine-dot" style="background:#06B6D4;"></span><span>WiFi Positioning</span></div>
+        </div>
+        <div class="footer-bottom">
+          <p>&copy; 2026 FireNavi. Patented Technology. All Rights Reserved.</p>
+          <p>9 Mathematical Models &middot; 29 Equations &middot; 5 Patents &middot; 3 AI Engines</p>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <script src="js/main.js"></script>
+<script src="js/common-nav-footer.js"></script>
+</body>
+</html>

@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>v2.0 Research Lab — FireNavi</title>
+<link rel="stylesheet" href="../css/theme.css">
+<style>
+  .lab-hero {
+    background: linear-gradient(135deg, #0F1729 0%, #131C2E 100%);
+    color: white; padding: 60px 28px; text-align: center;
+  }
+  .lab-hero h1 { color: white; font-size: 2.4rem; }
+  .lab-hero .gold-text {
+    background: var(--grad-gold);
+    -webkit-background-clip: text; background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .lab-hero p { color: rgba(255,255,255,0.7); max-width: 720px; margin: 16px auto 0; }
+  .lab-grid {
+    display: grid; gap: 18px; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  }
+  .lab-card {
+    background: white; border-radius: var(--r-lg); padding: 24px;
+    border: 1px solid var(--line); box-shadow: var(--shadow-sm);
+    border-top: 4px solid var(--gold); transition: all 0.3s;
+    text-decoration: none; color: var(--text-2); display: block;
+  }
+  .lab-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-md); color: var(--text-2); }
+  .lab-card .icon { font-size: 2.2rem; margin-bottom: 12px; }
+  .lab-card h3 { font-size: 1.1rem; color: var(--navy); margin-bottom: 6px; }
+  .lab-card .meta { font-size: 0.75rem; color: var(--gold-dark); font-weight: 700; margin-bottom: 8px; }
+  .lab-card p { font-size: 0.88rem; color: var(--text-3); margin-bottom: 12px; }
+  .lab-card .tags { display: flex; flex-wrap: wrap; gap: 4px; }
+  .lab-card .tag {
+    background: var(--bg-soft); padding: 2px 8px; border-radius: 999px;
+    font-size: 0.7rem; font-weight: 600; color: var(--text-3);
+  }
+  .lab-notice {
+    background: var(--gold-soft); border-left: 4px solid var(--gold);
+    padding: 18px 22px; border-radius: 8px; margin-bottom: 32px;
+    font-size: 0.92rem;
+  }
+  .lab-notice strong { color: var(--gold-dark); }
+</style>
+</head>
+<body>
+
+<nav class="topnav"><div class="topnav-inner"></div></nav>
+
+<section class="lab-hero">
+  <div style="display:inline-block;padding:5px 14px;background:rgba(201,169,97,0.2);color:#C9A961;border-radius:999px;font-size:0.78rem;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;margin-bottom:20px;">🧪 v2.0 Research Lab</div>
+  <h1>실제 작동하는 <span class="gold-text">v2.0 검증 엔진</span></h1>
+  <p>v3.0의 정직성을 증명하는 6개의 실제 작동 페이지. JavaScript로 구현된 A*·Beer-Lambert·Greenshields·6유형 Health-Aware Routing이 직접 시연됩니다.</p>
+</section>
+
+<section style="padding: 60px 28px;">
+  <div class="container">
+    <div class="lab-notice">
+      ℹ️ <strong>Research Lab 안내</strong> — 이 페이지들은 v2.0 시기에 작성되어 다크 테마로 표시됩니다. v3.0 사이트(밝은 테마)와 시각적으로 다르지만, 이는 의도된 분리입니다. <strong>"실험실" 영역</strong>으로서 실제 작동 코드와 알고리즘을 검증할 수 있습니다.
+    </div>
+
+    <h2 class="section-title" style="margin-bottom: 8px;">🚨 화재 대피 시뮬레이션 (★ 핵심)</h2>
+    <p class="section-sub">실제 작동하는 Canvas 2D 시뮬레이션 — 크루즈선, 초고층빌딩, 대형공연장 세 환경에서 동일 알고리즘이 작동함을 증명합니다.</p>
+    <div class="lab-grid" style="grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)); gap: 24px; margin-bottom: 48px;">
+
+      <!-- 크루즈 시뮬 -->
+      <a href="simulation.html" class="lab-card" target="_blank" style="border-top-width: 6px; padding: 32px;">
+        <div style="display:flex; align-items:flex-start; gap: 16px;">
+          <div style="font-size: 3rem; line-height: 1;">🚢</div>
+          <div style="flex: 1;">
+            <div class="meta">★ MAIN · 4,642줄 · 가장 큰 자산</div>
+            <h3 style="font-size: 1.3rem;">크루즈 5층 시뮬레이션</h3>
+          </div>
+        </div>
+        <p style="margin-top: 14px;">5층 객실·복도·레스토랑·기관실·브리지 구조. 6,000명 승객 6유형 분류, 화재 위치 클릭으로 변경, 소방관 AI 배치, 경로 실시간 재계산. A* · Beer-Lambert · Greenshields · Social Force · 6유형 Health-Aware · α=2.0이 모두 작동하는 v2.0의 가장 큰 자산.</p>
+        <div class="tags" style="margin-top: 14px;">
+          <span class="tag">크루즈 5층</span><span class="tag">6유형</span><span class="tag">화재 클릭</span><span class="tag">소방관 AI</span><span class="tag">A*</span>
+        </div>
+        <div style="margin-top: 14px; padding: 10px 14px; background: var(--gold-soft); border-radius: 8px; color: var(--gold-dark); font-size: 0.8rem; font-weight: 700;">
+          ▶ 클릭하여 즉시 시뮬레이션 실행
+        </div>
+      </a>
+
+      <!-- 빌딩 시뮬 -->
+      <a href="simulation-building.html" class="lab-card" target="_blank" style="border-top-width: 6px; padding: 32px;">
+        <div style="display:flex; align-items:flex-start; gap: 16px;">
+          <div style="font-size: 3rem; line-height: 1;">🏙️</div>
+          <div style="flex: 1;">
+            <div class="meta">★ 도메인 확장 · 791줄 · 50층</div>
+            <h3 style="font-size: 1.3rem;">초고층빌딩 50층 시뮬레이션</h3>
+          </div>
+        </div>
+        <p style="margin-top: 14px;">Skyline Tower 50층 화재 시나리오. 화재층 기준 상층/하층 자동 분기 — 위쪽은 옥상 헬리포트(50F), 아래쪽은 1F 정문 안내. 피난층(15F·30F·45F) 자동 표시. 동일 v2.0 알고리즘이 빌딩에서 작동함을 증명, v3.0 Universal Cross-Domain 핵심 근거.</p>
+        <div class="tags" style="margin-top: 14px;">
+          <span class="tag">빌딩 50층</span><span class="tag">수직 대피</span><span class="tag">피난층</span><span class="tag">헬리포트</span><span class="tag">v3 확장 근거</span>
+        </div>
+        <div style="margin-top: 14px; padding: 10px 14px; background: var(--gold-soft); border-radius: 8px; color: var(--gold-dark); font-size: 0.8rem; font-weight: 700;">
+          ▶ 클릭하여 즉시 시뮬레이션 실행
+        </div>
+      </a>
+
+      <!-- BTS 공연장 시뮬 NEW -->
+      <a href="simulation-concert.html" class="lab-card" target="_blank" style="border-top-width: 6px; padding: 32px;">
+        <div style="display:flex; align-items:flex-start; gap: 16px;">
+          <div style="font-size: 3rem; line-height: 1;">🎤</div>
+          <div style="flex: 1;">
+            <div class="meta">★ NEW · 글로벌 공연장 · 6만명</div>
+            <h3 style="font-size: 1.3rem;">BTS 대형공연장 시뮬레이션</h3>
+          </div>
+        </div>
+        <p style="margin-top: 14px;">6만 명 수용 스타디움, 5개 구역(스탠딩·1층·2층·3층·VIP), 8개 출구 분산 안내. 외국인 관객 15%, 다국어 AI 안내, 티켓 좌석정보 기반 개인별 경로, 출구 혼잡도 실시간 분석. K-pop 글로벌 공연장 특화 시나리오.</p>
+        <div class="tags" style="margin-top: 14px;">
+          <span class="tag">공연장 6만명</span><span class="tag">8개 출구</span><span class="tag">다국어</span><span class="tag">출구 분산</span><span class="tag">K-pop</span>
+        </div>
+        <div style="margin-top: 14px; padding: 10px 14px; background: var(--gold-soft); border-radius: 8px; color: var(--gold-dark); font-size: 0.8rem; font-weight: 700;">
+          ▶ 클릭하여 즉시 시뮬레이션 실행
+        </div>
+      </a>
+    </div>
+
+    <h2 class="section-title" style="margin-bottom: 8px;">🔥 알고리즘 시각화 (2종)</h2>
+    <p class="section-sub">시뮬 안에서 사용되는 핵심 알고리즘을 단독 시각화한 페이지.</p>
+    <div class="lab-grid" style="margin-bottom: 48px;">
+      <a href="risk-map.html" class="lab-card" target="_blank">
+        <div class="icon">🗺️</div>
+        <div class="meta">1,696줄</div>
+        <h3>동적 위험지도 (Dynamic Risk Map)</h3>
+        <p>4채널(Fire/Smoke/Crowd/Damage) 위험도 실시간 히트맵 시각화. 4가지 가중치 슬라이더로 가중합 공식 작동 확인. v3.0 Stage 5 Bayesian Fusion의 시각적 기반.</p>
+        <div class="tags">
+          <span class="tag">Risk Map</span><span class="tag">4채널</span><span class="tag">Bayesian 기반</span>
+        </div>
+      </a>
+      <a href="route-optimizer.html" class="lab-card" target="_blank">
+        <div class="icon">🛣️</div>
+        <div class="meta">2,028줄</div>
+        <h3>경로 최적화 (Route Optimizer)</h3>
+        <p>3종 경로 비교 — Standard(거리 우선) · Health-Aware(건강 반영) · AI Optimized(혼잡·연기·충돌 종합). α=2.0 효과 시각 증명. 같은 위치의 건강한 성인과 휠체어 사용자가 다른 경로를 받습니다.</p>
+        <div class="tags">
+          <span class="tag">A*</span><span class="tag">3종 경로</span><span class="tag">α=2.0</span><span class="tag">CrowdPenalty</span>
+        </div>
+      </a>
+    </div>
+
+    <h2 class="section-title" style="margin-bottom: 8px;">📚 학술·비즈니스 자료 (2종)</h2>
+    <p class="section-sub">9 수학모델 학술 페이지·Monte Carlo 보험 모델 등 보강 자료.</p>
+    <div class="lab-grid">
+      <a href="a-technical-formulation.html" class="lab-card" target="_blank">
+        <div class="icon">📐</div>
+        <div class="meta">1,150줄</div>
+        <h3>A. 기술 수식화 (학술 페이지)</h3>
+        <p>9 수학모델 · 29개 방정식 정밀 정의. Navier-Stokes·LSTM·Social Force·LWR 등 수식 상세. 논문 4편 출판 근거.</p>
+        <div class="tags">
+          <span class="tag">9 모델</span><span class="tag">29 방정식</span><span class="tag">학술</span>
+        </div>
+      </a>
+      <a href="d-insurance-risk-model.html" class="lab-card" target="_blank">
+        <div class="icon">📊</div>
+        <div class="meta">1,317줄</div>
+        <h3>D. 보험 리스크 모델</h3>
+        <p>Monte Carlo 10만 회 시뮬레이션 + 동적 보험료 공식. 기대 손실 -40%, VaR -40%, TVaR -41%. 보험사 번들 ROI 정량 근거.</p>
+        <div class="tags">
+          <span class="tag">Monte Carlo</span><span class="tag">10만회</span><span class="tag">VaR/TVaR</span>
+        </div>
+      </a>
+    </div>
+
+    <div style="margin-top: 60px; padding: 32px; background: var(--bg-soft); border-radius: var(--r-lg); text-align: center;">
+      <h3 style="color: var(--navy); margin-bottom: 12px;">💡 v3.0 PoC와의 차이</h3>
+      <p style="color: var(--text-3); max-width: 720px; margin: 0 auto;">
+        <strong>v2.0 Research Lab</strong> = 시뮬레이션 페이지 (선박/빌딩 평면도 + 알고리즘 검증)<br>
+        <strong>v3.0 PoC</strong> = 스마트폰 우선 모델 시연 (음향 트리거 + 30유형 + 베이지안 화재맵)<br>
+        둘은 보완 관계입니다 — Lab은 "알고리즘이 진짜 작동한다"는 증명, PoC는 "스마트폰만으로 v3.0이 작동한다"는 증명.
+      </p>
+      <div style="display:flex; gap: 12px; justify-content: center; margin-top: 20px; flex-wrap: wrap;">
+        <a href="../../smartphone-poc.html" target="_blank" class="btn btn-primary">▶ v3.0 PoC 데모</a>
+        <a href="../technology.html" class="btn btn-outline">기술 페이지로 돌아가기</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="site-footer"></footer>
+<script src="../js/common.js"></script>
+</body>
+</html>

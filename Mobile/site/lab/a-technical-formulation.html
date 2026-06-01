@@ -1,0 +1,1151 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>A. 기술 수식화 및 논문화 | FireNavi - 화이어내비</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="page-wrapper">
+    <!-- NAVIGATION -->
+    <nav class="top-nav">
+      <div class="nav-inner">
+        <a href="../index.html" class="nav-brand">
+          <img src="firenavi-logo.svg" alt="FireNavi" class="nav-logo-img" style="height:36px;vertical-align:middle;margin-right:6px;">
+          <span class="nav-tagline">AI 기반 실시간 생존 의사결정 플랫폼</span>
+        </a>
+        <ul class="nav-links">
+          <li><a href="../index.html">Dashboard</a></li>
+          <li><a href="a-technical-formulation.html" class="active">A. 기술 수식화</a></li>
+          <li><a href="b-industrial-architecture.html">B. 산업 아키텍처</a></li>
+          <li><a href="c-shipyard-proposal.html">C. 조선소 제안</a></li>
+          <li><a href="d-insurance-risk-model.html">D. 보험 리스크</a></li>
+          <li><a href="simulation.html">시뮬레이션</a></li>
+          <li><a href="risk-map.html">위험지도</a></li>
+          <li><a href="route-optimizer.html">경로최적화</a></li>
+          <li><a href="../index.html" style="color:#DB2777;">매뉴얼</a></li>
+          <li><a href="../technology.html" style="color:#7C3AED;">구조도</a></li>
+        </ul>
+        <button class="nav-mobile-toggle">&#9776;</button>
+      </div>
+    </nav>
+
+    <!-- PAGE HEADER -->
+    <section class="container">
+      <div class="page-header">
+        <div class="breadcrumb">
+          <a href="../index.html">Home</a>
+          <span>/</span>
+          <span class="text-warning">A. 기술 수식화 및 논문화</span>
+        </div>
+        <h1 class="page-title">&#x1F4D0; 기술 수식화 및 논문화</h1>
+        <p class="page-desc">
+          호화유람선/초고층빌딩 화재/재난 대피 AI 내비게이션 시스템의 수학적 모델링, 핵심 알고리즘 수식화,
+          그리고 학술 논문 수준의 정형화를 다루는 모듈입니다.
+          군중 밀집도 예측, 연기 확산 모델, 동적 위험지도, 대피 최적화, 강화학습 통합에 이르는
+          전체 기술 체계를 수학적으로 정의합니다.
+        </p>
+      </div>
+    </section>
+
+    <!-- KEY METRICS -->
+    <section class="container">
+      <div class="stat-grid">
+        <div class="stat-card">
+          <div class="stat-value stat-value--danger" data-count="8" data-suffix="개">0개</div>
+          <div class="stat-label">핵심 수학 모델</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value stat-value--warning" data-count="23" data-suffix="개">0개</div>
+          <div class="stat-label">주요 수식 (Equations)</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value stat-value--info" data-count="5" data-suffix="개">0개</div>
+          <div class="stat-label">AI/ML 알고리즘</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value stat-value--safe" data-count="40" data-suffix="%" data-prefix="-">0%</div>
+          <div class="stat-label">대피시간 단축 목표</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value stat-value--accent" data-count="3" data-suffix="편">0편</div>
+          <div class="stat-label">목표 논문 출판</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- MAIN CONTENT -->
+    <main class="container main-content">
+
+      <!-- ============================================================ -->
+      <!-- SECTION 1: 군중 밀집도 예측 알고리즘 -->
+      <!-- ============================================================ -->
+      <div class="content-section" id="crowd-density">
+        <h2>&#x1F465; 1. 군중 밀집도 예측 알고리즘 (Crowd Density Prediction)</h2>
+        <p>
+          대형 크루즈선 내에서 수천 명의 승객이 동시에 대피할 때, 특정 구간의 군중 밀집도를
+          실시간으로 정확하게 예측하는 것은 안전한 대피 경로 설계의 핵심 전제 조건입니다.
+          본 모듈에서는 Social Force Model, Kernel Density Estimation, 그리고 LWR 거시적
+          교통류 모델을 결합한 하이브리드 군중 밀집도 예측 체계를 수식화합니다.
+        </p>
+
+        <h3>1.1 Social Force Model (사회력 모델)</h3>
+        <p>
+          Helbing &amp; Molnar (1995)의 Social Force Model을 기반으로, 각 보행자 <em>i</em>에
+          작용하는 힘을 다음과 같이 정의합니다. 보행자는 목적지를 향한 desire force, 다른 보행자와의
+          social force, 벽면과의 wall force, 그리고 확률적 random force의 합력에 의해 이동합니다.
+        </p>
+        <div class="formula-block">
+          <span class="formula-label">Eq. 1 - Social Force Model</span>
+          <div class="math">
+            F<sub>i</sub> = F<sub>i</sub><sup>desire</sup> + &Sigma;<sub>j&ne;i</sub> F<sub>ij</sub><sup>social</sup> + &Sigma;<sub>w</sub> F<sub>iw</sub><sup>wall</sup> + F<sub>i</sub><sup>random</sup>
+          </div>
+        </div>
+        <p>각 구성 요소의 정의는 다음과 같습니다:</p>
+        <ul>
+          <li><strong>F<sub>i</sub><sup>desire</sup></strong> = m<sub>i</sub> &middot; (v<sub>i</sub><sup>0</sup> &middot; e<sub>i</sub> - v<sub>i</sub>) / &tau;<sub>i</sub> &mdash; 목표 방향으로의 가속력 (relaxation time &tau; 기반)</li>
+          <li><strong>F<sub>ij</sub><sup>social</sup></strong> = A<sub>i</sub> &middot; exp[(r<sub>ij</sub> - d<sub>ij</sub>) / B<sub>i</sub>] &middot; n<sub>ij</sub> &mdash; 보행자 간 반발력</li>
+          <li><strong>F<sub>iw</sub><sup>wall</sup></strong> = A<sub>w</sub> &middot; exp[(r<sub>i</sub> - d<sub>iw</sub>) / B<sub>w</sub>] &middot; n<sub>iw</sub> &mdash; 벽면 회피력</li>
+          <li><strong>F<sub>i</sub><sup>random</sup></strong> &mdash; 패닉 상태에서의 확률적 요동 (stochastic fluctuation)</li>
+        </ul>
+
+        <h3>1.2 Kernel Density Estimation (밀도 추정)</h3>
+        <p>
+          이산적인 승객 위치 데이터로부터 연속적인 밀도 필드를 추정하기 위해
+          Kernel Density Estimation (KDE)을 적용합니다.
+        </p>
+        <div class="formula-block">
+          <span class="formula-label">Eq. 2 - Density Estimation</span>
+          <div class="math">
+            &rho;(x, y, t) = &Sigma;<sub>i=1</sub><sup>N</sup> K<sub>h</sub>(x - x<sub>i</sub>, y - y<sub>i</sub>)
+          </div>
+        </div>
+        <p>
+          여기서 K<sub>h</sub>는 bandwidth <em>h</em>를 가진 2D Gaussian Kernel이며,
+          (x<sub>i</sub>, y<sub>i</sub>)는 시간 <em>t</em>에서 보행자 <em>i</em>의 위치입니다.
+          Bandwidth는 Silverman's Rule of Thumb에 의해 자동 결정됩니다.
+        </p>
+
+        <h3>1.3 LWR Model (거시적 교통류 모델)</h3>
+        <p>
+          Lighthill-Whitham-Richards (LWR) 모델은 보행자 흐름을 연속체로 취급하여
+          복도, 계단 등 1차원 통로에서의 밀도 변화를 보존 법칙으로 기술합니다.
+        </p>
+        <div class="formula-block">
+          <span class="formula-label">Eq. 3 - LWR Conservation Law</span>
+          <div class="math">
+            &part;&rho; / &part;t + &part;(&rho; &middot; v(&rho;)) / &part;x = 0
+          </div>
+        </div>
+
+        <h3>1.4 Fundamental Diagram (기본 다이어그램)</h3>
+        <p>
+          밀도와 속도의 관계를 선형 모델로 정의합니다. 밀도가 증가함에 따라
+          보행 속도가 선형적으로 감소하는 Greenshields 모델을 적용합니다.
+        </p>
+        <div class="formula-block">
+          <span class="formula-label">Eq. 4 - Fundamental Diagram</span>
+          <div class="math">
+            v(&rho;) = v<sub>max</sub> &middot; (1 - &rho; / &rho;<sub>max</sub>)
+          </div>
+        </div>
+
+        <div class="data-table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>파라미터</th>
+                <th>기호</th>
+                <th>값 (일반 조건)</th>
+                <th>값 (패닉 조건)</th>
+                <th>단위</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>최대 보행 속도</td>
+                <td class="font-mono">v<sub>max</sub></td>
+                <td class="safe-cell">1.34</td>
+                <td class="warning-cell">1.66</td>
+                <td>m/s</td>
+              </tr>
+              <tr>
+                <td>최대 밀집도</td>
+                <td class="font-mono">&rho;<sub>max</sub></td>
+                <td class="safe-cell">5.4</td>
+                <td class="danger-cell">7.0</td>
+                <td>인/m&sup2;</td>
+              </tr>
+              <tr>
+                <td>Social Force 상수 A</td>
+                <td class="font-mono">A<sub>i</sub></td>
+                <td>2.1</td>
+                <td>3.0</td>
+                <td>N</td>
+              </tr>
+              <tr>
+                <td>Social Force 범위 B</td>
+                <td class="font-mono">B<sub>i</sub></td>
+                <td>0.3</td>
+                <td>0.2</td>
+                <td>m</td>
+              </tr>
+              <tr>
+                <td>Relaxation Time</td>
+                <td class="font-mono">&tau;<sub>i</sub></td>
+                <td>0.5</td>
+                <td>0.3</td>
+                <td>s</td>
+              </tr>
+              <tr>
+                <td>KDE Bandwidth</td>
+                <td class="font-mono">h</td>
+                <td>1.0</td>
+                <td>0.8</td>
+                <td>m</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ============================================================ -->
+      <!-- SECTION 2: AI 기반 연기 확산 예측 모델 -->
+      <!-- ============================================================ -->
+      <div class="content-section" id="smoke-diffusion">
+        <h2>&#x1F32B;&#xFE0F; 2. AI 기반 연기 확산 예측 모델 (Smoke Diffusion Prediction)</h2>
+        <p>
+          화재 시 연기는 가시거리를 급격히 감소시키고 유독 가스를 포함하여 대피자의 생존율에
+          직접적인 영향을 미칩니다. 본 모듈에서는 Navier-Stokes 방정식 기반의 물리 시뮬레이션과
+          LSTM 기반 딥러닝 예측 모델을 결합한 하이브리드 연기 확산 예측 체계를 정립합니다.
+        </p>
+
+        <h3>2.1 Navier-Stokes 방정식 (연기 수송)</h3>
+        <p>
+          비압축성 유체에 대한 Navier-Stokes 방정식을 기반으로 연기의 유동장을 기술합니다.
+          부력 항을 포함하여 화재에 의한 열적 상승 기류를 반영합니다.
+        </p>
+        <div class="formula-block">
+          <span class="formula-label">Eq. 5 - Navier-Stokes (Momentum)</span>
+          <div class="math">
+            &rho;(&part;u/&part;t + u &middot; &nabla;u) = -&nabla;p + &mu;&nabla;&sup2;u + &rho;g + f<sub>buoyancy</sub>
+          </div>
+        </div>
+        <div class="formula-block">
+          <span class="formula-label">Eq. 6 - Continuity (비압축성)</span>
+          <div class="math">
+            &nabla; &middot; u = 0
+          </div>
+        </div>
+
+        <h3>2.2 Advection-Diffusion Equation (이류-확산 방정식)</h3>
+        <p>
+          연기 농도 C(x, y, z, t)의 시공간 변화를 이류 항(유동에 의한 수송)과
+          확산 항(분자 확산), 그리고 소스 항(화원에서의 발생)으로 기술합니다.
+        </p>
+        <div class="formula-block">
+          <span class="formula-label">Eq. 7 - Advection-Diffusion Equation</span>
+          <div class="math">
+            &part;C/&part;t + u &middot; &nabla;C = D&nabla;&sup2;C + S
+          </div>
+        </div>
+        <ul>
+          <li><strong>C(x,y,z,t)</strong> &mdash; 연기 농도 (mass concentration, kg/m&sup3;)</li>
+          <li><strong>u</strong> &mdash; 유동 속도 벡터 (velocity field, m/s)</li>
+          <li><strong>D</strong> &mdash; 확산 계수 (diffusion coefficient, m&sup2;/s)</li>
+          <li><strong>S</strong> &mdash; 소스 항 (source term, 화원에서의 연기 생성률)</li>
+        </ul>
+
+        <h3>2.3 FDS Zone Model Coupling</h3>
+        <p>
+          NIST의 Fire Dynamics Simulator (FDS)에서 제공하는 zone model 결과를
+          본 시스템의 실시간 예측 모듈에 커플링합니다. FDS의 고해상도 CFD 결과를
+          사전 계산(pre-computation)하여 lookup table을 구축하고, 실시간으로는
+          LSTM 모델이 보간 및 외삽을 수행합니다.
+        </p>
+
+        <h3>2.4 LSTM 기반 실시간 예측 신경망</h3>
+        <p>
+          Long Short-Term Memory (LSTM) 네트워크를 사용하여 센서 데이터의 시계열 패턴으로부터
+          미래 연기 농도를 예측합니다. 입력은 과거 T timestep의 센서 측정값이며,
+          출력은 향후 &Delta;t 시간 후의 각 구역별 연기 농도입니다.
+        </p>
+        <div class="formula-block">
+          <span class="formula-label">Eq. 8 - LSTM Cell</span>
+          <div class="math">
+            f<sub>t</sub> = &sigma;(W<sub>f</sub> &middot; [h<sub>t-1</sub>, x<sub>t</sub>] + b<sub>f</sub>)<br>
+            i<sub>t</sub> = &sigma;(W<sub>i</sub> &middot; [h<sub>t-1</sub>, x<sub>t</sub>] + b<sub>i</sub>)<br>
+            C&#x0303;<sub>t</sub> = tanh(W<sub>C</sub> &middot; [h<sub>t-1</sub>, x<sub>t</sub>] + b<sub>C</sub>)<br>
+            C<sub>t</sub> = f<sub>t</sub> &odot; C<sub>t-1</sub> + i<sub>t</sub> &odot; C&#x0303;<sub>t</sub><br>
+            o<sub>t</sub> = &sigma;(W<sub>o</sub> &middot; [h<sub>t-1</sub>, x<sub>t</sub>] + b<sub>o</sub>)<br>
+            h<sub>t</sub> = o<sub>t</sub> &odot; tanh(C<sub>t</sub>)
+          </div>
+        </div>
+
+        <h3>2.5 온도장 예측 (Temperature Field)</h3>
+        <p>
+          화재로 인한 온도 분포 T(x,y,z,t)는 에너지 보존 방정식에 의해 결정되며,
+          연기 확산 모델과 커플링되어 열적 위험도를 동시에 평가합니다.
+        </p>
+        <div class="formula-block">
+          <span class="formula-label">Eq. 9 - Energy Equation</span>
+          <div class="math">
+            &rho;c<sub>p</sub>(&part;T/&part;t + u &middot; &nabla;T) = k&nabla;&sup2;T + q&#x0307;<sub>source</sub>
+          </div>
+        </div>
+
+        <h3>2.6 가시거리 모델 (Visibility Model)</h3>
+        <p>
+          연기 농도로부터 가시거리를 추정하는 Beer-Lambert 법칙 기반 모델입니다.
+          가시거리가 임계값 이하로 떨어지면 해당 구간은 대피 경로에서 제외됩니다.
+        </p>
+        <div class="formula-block">
+          <span class="formula-label">Eq. 10 - Visibility Model</span>
+          <div class="math">
+            V(C) = K / C
+          </div>
+        </div>
+        <p>
+          여기서 K는 소광 계수(extinction coefficient)이며, 일반적으로 발광 표지판의 경우
+          K = 8, 반사 표지판의 경우 K = 3의 값을 사용합니다.
+          가시거리 V &lt; 5m인 구간은 "연기 위험 구역"으로 분류됩니다.
+        </p>
+
+        <div class="data-table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>모델 구성요소</th>
+                <th>방법론</th>
+                <th>정확도 (RMSE)</th>
+                <th>연산 시간</th>
+                <th>적용 범위</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Full CFD (FDS)</td>
+                <td>LES / DNS</td>
+                <td class="safe-cell">0.02 kg/m&sup3;</td>
+                <td class="danger-cell">수 시간</td>
+                <td>사전 계산 DB</td>
+              </tr>
+              <tr>
+                <td>Zone Model</td>
+                <td>Two-zone approximation</td>
+                <td class="warning-cell">0.08 kg/m&sup3;</td>
+                <td class="safe-cell">수 초</td>
+                <td>실시간 보조</td>
+              </tr>
+              <tr>
+                <td>LSTM Neural Network</td>
+                <td>Sequence-to-Sequence</td>
+                <td class="safe-cell">0.05 kg/m&sup3;</td>
+                <td class="safe-cell">&lt; 100ms</td>
+                <td>실시간 주력</td>
+              </tr>
+              <tr>
+                <td>Hybrid (FDS + LSTM)</td>
+                <td>Transfer Learning</td>
+                <td class="safe-cell">0.03 kg/m&sup3;</td>
+                <td class="safe-cell">&lt; 200ms</td>
+                <td>최종 예측</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ============================================================ -->
+      <!-- SECTION 3: 동적 위험지도 생성 -->
+      <!-- ============================================================ -->
+      <div class="content-section" id="risk-map">
+        <h2>&#x1F5FA;&#xFE0F; 3. 동적 위험지도 생성 (Dynamic Risk Map Generation)</h2>
+        <p>
+          동적 위험지도는 화재, 연기, 구조적 손상, 군중 밀집의 4가지 위험 요소를
+          가중합하여 공간-시간 연속 위험도 필드를 생성하는 FireNavi의 핵심 특허 기술입니다.
+          실시간 센서 데이터와 AI 예측 결과를 통합하여 매 초 갱신됩니다.
+        </p>
+
+        <h3>3.1 Multi-Hazard Weighted Sum (다중 위험요소 가중합)</h3>
+        <div class="formula-block">
+          <span class="formula-label">Eq. 11 - Risk Map</span>
+          <div class="math">
+            R(x, y, t) = w<sub>1</sub> &middot; F(x, y, t) + w<sub>2</sub> &middot; S(x, y, t) + w<sub>3</sub> &middot; D(x, y, t) + w<sub>4</sub> &middot; C(x, y, t)
+          </div>
+        </div>
+        <ul>
+          <li><strong>F(x, y, t)</strong> &mdash; Fire proximity risk: 화원까지의 거리 기반 위험도 (1/d&sup2; decay)</li>
+          <li><strong>S(x, y, t)</strong> &mdash; Smoke concentration: 연기 농도 기반 위험도 (가시거리 반비례)</li>
+          <li><strong>D(x, y, t)</strong> &mdash; Structural damage: 구조적 손상 위험도 (온도, 노출 시간 기반)</li>
+          <li><strong>C(x, y, t)</strong> &mdash; Crowd density: 군중 밀집에 의한 답압 위험도 (&rho; &gt; 4 인/m&sup2; 시 급증)</li>
+        </ul>
+
+        <h3>3.2 가중치 최적화 (Weight Optimization)</h3>
+        <p>
+          각 위험 요소의 가중치 w<sub>1</sub>~w<sub>4</sub>는 과거 화재 사고 데이터 및 시뮬레이션
+          결과로부터 최소제곱법(Least Squares)으로 최적화합니다.
+        </p>
+        <div class="formula-block">
+          <span class="formula-label">Eq. 12 - Weight Optimization</span>
+          <div class="math">
+            min<sub>w</sub> &Sigma;<sub>k=1</sub><sup>N</sup> (R<sub>predicted</sub><sup>(k)</sup> - R<sub>actual</sub><sup>(k)</sup>)&sup2;<br><br>
+            subject to: &Sigma; w<sub>i</sub> = 1, &ensp; w<sub>i</sub> &ge; 0 &ensp; &forall;i
+          </div>
+        </div>
+
+        <h3>3.3 공간 보간 (Spatial Interpolation) - Kriging Method</h3>
+        <p>
+          이산적인 센서 위치에서의 측정값으로부터 전체 공간의 위험도를 보간하기 위해
+          Ordinary Kriging을 적용합니다. 센서 간격이 불균일한 선박 내부 환경에 적합합니다.
+        </p>
+        <div class="formula-block">
+          <span class="formula-label">Eq. 13 - Kriging Estimator</span>
+          <div class="math">
+            R&#x0302;(x<sub>0</sub>) = &Sigma;<sub>i=1</sub><sup>n</sup> &lambda;<sub>i</sub> &middot; R(x<sub>i</sub>)
+          </div>
+        </div>
+        <p>
+          가중치 &lambda;<sub>i</sub>는 variogram 함수 &gamma;(h)로부터 결정되며,
+          추정 분산을 최소화하는 BLUE(Best Linear Unbiased Estimator)를 보장합니다.
+        </p>
+
+        <h3>3.4 시간적 진화 예측 (Temporal Evolution)</h3>
+        <div class="formula-block">
+          <span class="formula-label">Eq. 14 - Temporal Evolution</span>
+          <div class="math">
+            dR/dt = &part;R/&part;t + &nabla;R &middot; v<sub>hazard</sub>
+          </div>
+        </div>
+        <p>
+          위험도의 시간 변화율은 각 위험 요소의 개별 진화와 위험 전파 속도
+          v<sub>hazard</sub>에 의해 결정됩니다. 이를 통해 미래 위험 지도를
+          선행 예측(look-ahead prediction)하여 대피 경로를 사전에 조정합니다.
+        </p>
+
+        <div class="data-table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>위험 요소</th>
+                <th>기호</th>
+                <th>기본 가중치 w</th>
+                <th>센서 소스</th>
+                <th>갱신 주기</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>화재 근접도</td>
+                <td class="font-mono">F(x,y,t)</td>
+                <td class="danger-cell highlight-cell">0.35</td>
+                <td>열감지기, IR 카메라</td>
+                <td>1초</td>
+              </tr>
+              <tr>
+                <td>연기 농도</td>
+                <td class="font-mono">S(x,y,t)</td>
+                <td class="warning-cell highlight-cell">0.30</td>
+                <td>광학 센서, AI 예측</td>
+                <td>2초</td>
+              </tr>
+              <tr>
+                <td>구조 손상</td>
+                <td class="font-mono">D(x,y,t)</td>
+                <td class="highlight-cell">0.20</td>
+                <td>변형 센서, 온도</td>
+                <td>5초</td>
+              </tr>
+              <tr>
+                <td>군중 밀집</td>
+                <td class="font-mono">C(x,y,t)</td>
+                <td class="highlight-cell">0.15</td>
+                <td>CCTV, BLE 비콘</td>
+                <td>1초</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ============================================================ -->
+      <!-- SECTION 4: 대피시간 최소화 최적화 -->
+      <!-- ============================================================ -->
+      <div class="content-section" id="evacuation-optimization">
+        <h2>&#x23F1;&#xFE0F; 4. 대피시간 최소화 최적화 (Evacuation Time Minimization)</h2>
+        <p>
+          전체 승객의 대피 완료 시간을 최소화하는 것이 최종 목적 함수입니다.
+          이는 개별 승객의 대피 시간 중 최대값(bottleneck)을 최소화하는
+          minimax 문제로 정형화되며, 네트워크 흐름 최적화 기법으로 해결합니다.
+        </p>
+
+        <h3>4.1 목적 함수 (Objective Function)</h3>
+        <div class="formula-block">
+          <span class="formula-label">Eq. 15 - Minimax Objective</span>
+          <div class="math">
+            min T<sub>total</sub> = min max<sub>i&isin;P</sub> T<sub>i</sub>
+          </div>
+        </div>
+        <p>
+          여기서 P는 전체 승객 집합이며, T<sub>i</sub>는 승객 <em>i</em>가
+          현재 위치에서 지정 출구까지 도달하는 데 걸리는 시간입니다.
+        </p>
+
+        <h3>4.2 흐름 보존 제약조건 (Flow Conservation)</h3>
+        <div class="formula-block">
+          <span class="formula-label">Eq. 16 - Flow Conservation</span>
+          <div class="math">
+            &Sigma;<sub>j&isin;Out(v)</sub> f<sub>vj</sub> - &Sigma;<sub>j&isin;In(v)</sub> f<sub>jv</sub> = b<sub>v</sub> &ensp; &forall;v &isin; V
+          </div>
+        </div>
+        <p>
+          각 노드 v에서 유출량과 유입량의 차이는 해당 노드의 승객 발생량(또는 흡수량)
+          b<sub>v</sub>와 같아야 합니다. 출발지 노드는 양수, 출구 노드는 음수,
+          통과 노드는 0의 값을 가집니다.
+        </p>
+
+        <h3>4.3 용량 제약조건 (Capacity Constraints)</h3>
+        <div class="formula-block">
+          <span class="formula-label">Eq. 17 - Capacity Constraints</span>
+          <div class="math">
+            0 &le; f<sub>ij</sub>(t) &le; u<sub>ij</sub>(t) &ensp; &forall;(i,j) &isin; E, &ensp; &forall;t
+          </div>
+        </div>
+        <p>
+          각 엣지(복도, 계단, 문)의 흐름은 시간에 따라 변하는 용량 u<sub>ij</sub>(t)를
+          초과할 수 없습니다. 화재나 연기로 인해 특정 경로의 용량이 0으로 감소할 수 있으며,
+          이는 동적 위험지도와 연동됩니다.
+        </p>
+
+        <h3>4.4 Multi-Commodity Flow (다중 상품 흐름)</h3>
+        <p>
+          서로 다른 출발지와 목적지를 가진 승객 그룹을 각각 하나의 commodity로 모델링합니다.
+          각 commodity <em>k</em>는 독립적인 흐름 보존을 만족하되,
+          모든 commodity의 합산 흐름이 엣지 용량을 초과하지 않아야 합니다.
+        </p>
+        <div class="formula-block">
+          <span class="formula-label">Eq. 18 - Multi-Commodity Capacity</span>
+          <div class="math">
+            &Sigma;<sub>k=1</sub><sup>K</sup> f<sub>ij</sub><sup>(k)</sup>(t) &le; u<sub>ij</sub>(t) &ensp; &forall;(i,j) &isin; E, &ensp; &forall;t
+          </div>
+        </div>
+
+        <h3>4.5 출구 배정 최적화 (Exit Assignment)</h3>
+        <div class="formula-block">
+          <span class="formula-label">Eq. 19 - Exit Assignment</span>
+          <div class="math">
+            min &Sigma;<sub>i&isin;P</sub> &Sigma;<sub>j&isin;X</sub> c<sub>ij</sub> &middot; x<sub>ij</sub><br><br>
+            subject to: &Sigma;<sub>j&isin;X</sub> x<sub>ij</sub> = 1 &ensp; &forall;i &isin; P, &ensp; x<sub>ij</sub> &isin; {0, 1}
+          </div>
+        </div>
+        <p>
+          여기서 x<sub>ij</sub>는 승객 <em>i</em>를 출구 <em>j</em>에 배정할지의 이진 변수이며,
+          c<sub>ij</sub>는 해당 배정의 비용(이동 시간 + 위험 노출 비용)입니다.
+          각 승객은 정확히 하나의 출구에 배정되어야 합니다.
+        </p>
+
+        <div class="stat-grid">
+          <div class="stat-card">
+            <div class="stat-value stat-value--danger">18분</div>
+            <div class="stat-label">기존 대피 완료 시간</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value stat-value--safe">11분</div>
+            <div class="stat-label">최적화 후 대피 시간</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value stat-value--warning">38.9%</div>
+            <div class="stat-label">시간 단축률</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value stat-value--info">6,000+</div>
+            <div class="stat-label">최대 동시 대피 인원</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============================================================ -->
+      <!-- SECTION 5: 개인 건강상태 반영 경로 설계 -->
+      <!-- ============================================================ -->
+      <div class="content-section" id="health-aware">
+        <h2>&#x2764;&#xFE0F; 5. 개인 건강상태 반영 경로 설계 (Health-Aware Route Design)</h2>
+        <p>
+          크루즈선 승객에는 노약자, 장애인, 임산부, 어린이 등 다양한 이동 능력을 가진
+          개인이 포함됩니다. 본 모듈에서는 개인의 건강 상태와 이동 능력을 정량적으로
+          반영하여 맞춤형 대피 경로를 설계하는 수학적 프레임워크를 제시합니다.
+        </p>
+
+        <h3>5.1 이동성 지수 (Mobility Factor)</h3>
+        <div class="formula-block">
+          <span class="formula-label">Eq. 20 - Mobility Factor</span>
+          <div class="math">
+            &mu;<sub>i</sub> &isin; [0, 1] &ensp; (0 = immobile, 1 = fully mobile)
+          </div>
+        </div>
+
+        <h3>5.2 속도 조정 함수 (Speed Adjustment)</h3>
+        <div class="formula-block">
+          <span class="formula-label">Eq. 21 - Speed Adjustment</span>
+          <div class="math">
+            v<sub>i</sub> = &mu;<sub>i</sub> &middot; v<sub>base</sub> &middot; f(age<sub>i</sub>, condition<sub>i</sub>)
+          </div>
+        </div>
+        <p>
+          함수 f(age, condition)은 연령과 건강 상태에 따른 보정 계수로,
+          다음과 같은 룩업 테이블로 정의됩니다:
+        </p>
+        <div class="data-table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>분류</th>
+                <th>연령대</th>
+                <th>&mu; 범위</th>
+                <th>f(age, condition)</th>
+                <th>유효 속도 v<sub>i</sub></th>
+                <th>비고</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>건강한 성인</td>
+                <td>18-55세</td>
+                <td class="safe-cell">0.9 - 1.0</td>
+                <td>1.0</td>
+                <td class="safe-cell">1.2 - 1.34 m/s</td>
+                <td>기준 그룹</td>
+              </tr>
+              <tr>
+                <td>고령자</td>
+                <td>65세+</td>
+                <td class="warning-cell">0.5 - 0.8</td>
+                <td>0.7</td>
+                <td class="warning-cell">0.47 - 0.75 m/s</td>
+                <td>계단 속도 추가 감소</td>
+              </tr>
+              <tr>
+                <td>어린이</td>
+                <td>5-12세</td>
+                <td class="warning-cell">0.6 - 0.8</td>
+                <td>0.8</td>
+                <td class="warning-cell">0.64 - 0.86 m/s</td>
+                <td>보호자 동행 필요</td>
+              </tr>
+              <tr>
+                <td>휠체어 사용자</td>
+                <td>전 연령</td>
+                <td class="danger-cell">0.2 - 0.4</td>
+                <td>0.5</td>
+                <td class="danger-cell">0.13 - 0.27 m/s</td>
+                <td>엘리베이터/경사로 필수</td>
+              </tr>
+              <tr>
+                <td>임산부</td>
+                <td>성인</td>
+                <td class="warning-cell">0.5 - 0.7</td>
+                <td>0.75</td>
+                <td class="warning-cell">0.50 - 0.70 m/s</td>
+                <td>계단 주의</td>
+              </tr>
+              <tr>
+                <td>시각 장애인</td>
+                <td>전 연령</td>
+                <td class="warning-cell">0.3 - 0.6</td>
+                <td>0.6</td>
+                <td class="warning-cell">0.24 - 0.48 m/s</td>
+                <td>음성 안내 필수</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>5.3 우선순위 점수 (Priority Scoring)</h3>
+        <div class="formula-block">
+          <span class="formula-label">Eq. 22 - Priority Score</span>
+          <div class="math">
+            P<sub>i</sub> = &alpha; &middot; (1 - &mu;<sub>i</sub>) + &beta; &middot; vulnerability<sub>i</sub> + &gamma; &middot; location_risk<sub>i</sub>
+          </div>
+        </div>
+        <p>
+          우선순위 점수가 높은 승객은 더 안전하고 장애물이 적은 경로에 우선 배정됩니다.
+          가중치 &alpha;, &beta;, &gamma;는 각각 이동 능력 부족에 대한 보상,
+          취약성(나이, 건강 상태), 현재 위치의 위험도를 반영합니다.
+        </p>
+
+        <h3>5.4 ADA-Compliant Route Constraints (접근성 제약)</h3>
+        <ul>
+          <li>휠체어 접근 가능 경로: 문 폭 &ge; 900mm, 경사도 &le; 1:12</li>
+          <li>계단 우회 경로: 엘리베이터 또는 경사로가 포함된 대안 경로 자동 탐색</li>
+          <li>시각 장애인 경로: 촉각 유도선(tactile guide) 설치 구간 우선 배정</li>
+          <li>보호자 동행: 어린이-보호자 간 경로 동기화 (그룹 대피 모드)</li>
+        </ul>
+
+        <h3>5.5 Wheelchair Accessible Path Filtering</h3>
+        <p>
+          그래프 G = (V, E)에서 휠체어 접근 불가 엣지를 제거한 서브그래프 G' = (V, E')에서
+          경로 탐색을 수행합니다. E' = {e &isin; E | width(e) &ge; 0.9m &and; slope(e) &le; 1/12 &and; no_stairs(e)}
+          이 필터링된 그래프에서 Dijkstra 알고리즘을 적용하여 최단 접근성 경로를 도출합니다.
+        </p>
+      </div>
+
+      <!-- ============================================================ -->
+      <!-- SECTION 6: 다중 에이전트 경로 최적화 -->
+      <!-- ============================================================ -->
+      <div class="content-section" id="multi-agent">
+        <h2>&#x1F916; 6. 다중 에이전트 경로 최적화 (Multi-Agent Route Optimization)</h2>
+        <p>
+          수천 명의 승객이 동시에 대피할 때, 개별 최적 경로의 단순 합산은 병목현상과 충돌을
+          야기합니다. 본 모듈에서는 Multi-Agent Path Finding (MAPF) 이론을 적용하여
+          전역 최적 경로 조합을 탐색합니다.
+        </p>
+
+        <h3>6.1 MAPF 문제 정의</h3>
+        <div class="formula-block">
+          <span class="formula-label">Eq. 23 - MAPF Objective</span>
+          <div class="math">
+            min &Sigma;<sub>i=1</sub><sup>N</sup> cost(&pi;<sub>i</sub>)
+          </div>
+        </div>
+        <p>
+          여기서 &pi;<sub>i</sub>는 에이전트 <em>i</em>의 경로(path)이며,
+          cost 함수는 이동 시간 + 위험 노출 비용의 합입니다.
+        </p>
+
+        <h3>6.2 충돌 회피 제약 (Collision Avoidance)</h3>
+        <div class="formula-block">
+          <span class="formula-label">Eq. 24 - Collision Avoidance</span>
+          <div class="math">
+            &forall;t, &ensp; &forall;i &ne; j: &ensp; pos<sub>i</sub>(t) &ne; pos<sub>j</sub>(t)
+          </div>
+        </div>
+        <p>
+          동일 시간 <em>t</em>에서 어떠한 두 에이전트도 같은 노드를 점유할 수 없습니다.
+          추가로 엣지 충돌(두 에이전트가 같은 엣지를 반대 방향으로 동시 이동)도 금지됩니다.
+        </p>
+
+        <h3>6.3 CBS (Conflict-Based Search) 알고리즘</h3>
+        <p>
+          CBS는 MAPF 문제를 효율적으로 해결하는 2단계 알고리즘입니다:
+        </p>
+        <ul>
+          <li><strong>High-level search</strong>: 충돌 트리(Constraint Tree)에서 각 충돌을 탐지하고,
+              충돌이 발생한 에이전트에 제약조건을 추가하며 분기(branch)합니다.</li>
+          <li><strong>Low-level search</strong>: 주어진 제약조건 하에서 개별 에이전트의 최단 경로를
+              A* 알고리즘으로 탐색합니다.</li>
+        </ul>
+        <p>
+          CBS는 최적성(optimality)을 보장하나, 에이전트 수가 많으면 계산 비용이 급증합니다.
+          FireNavi에서는 승객을 구역별 그룹으로 클러스터링한 후
+          그룹 단위 CBS + 그룹 내 Local A*를 조합하는 계층적 접근법을 적용합니다.
+        </p>
+
+        <h3>6.4 강화학습 정책 (RL Policy)</h3>
+        <div class="formula-block">
+          <span class="formula-label">Eq. 25 - Optimal Policy</span>
+          <div class="math">
+            &pi;*(s) = argmax<sub>a&isin;A</sub> Q(s, a)
+          </div>
+        </div>
+
+        <h3>6.5 Bellman Equation</h3>
+        <div class="formula-block">
+          <span class="formula-label">Eq. 26 - Bellman Optimality</span>
+          <div class="math">
+            Q(s, a) = r + &gamma; &middot; max<sub>a'&isin;A</sub> Q(s', a')
+          </div>
+        </div>
+        <p>
+          Bellman 최적 방정식은 현재 상태-행동 쌍의 가치를 즉각 보상 <em>r</em>과
+          할인된 미래 최대 가치의 합으로 정의합니다. 할인 인자 &gamma;는 미래 보상의
+          현재 가치 반영 정도를 조절하며, 대피 시나리오에서는 &gamma; = 0.95 ~ 0.99의
+          높은 값을 사용하여 장기적 안전성을 중시합니다.
+        </p>
+      </div>
+
+      <!-- ============================================================ -->
+      <!-- SECTION 7: 강화학습 통합 모델 -->
+      <!-- ============================================================ -->
+      <div class="content-section" id="rl-integration">
+        <h2>&#x1F9E0; 7. 강화학습 통합 모델 (RL Integration)</h2>
+        <p>
+          FireNavi의 핵심 AI 엔진은 Proximal Policy Optimization (PPO) 기반의
+          강화학습 모델로, 동적 환경에서 최적 대피 경로를 실시간으로 결정합니다.
+          멀티 에이전트 환경에서의 보상 설계와 정책 학습 체계를 정립합니다.
+        </p>
+
+        <h3>7.1 상태 공간 (State Space)</h3>
+        <div class="formula-block">
+          <span class="formula-label">State Space Definition</span>
+          <div class="math">
+            S = {position, risk_map, crowd_density, smoke_level, health_status}
+          </div>
+        </div>
+        <div class="data-table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>상태 변수</th>
+                <th>차원</th>
+                <th>범위</th>
+                <th>소스</th>
+                <th>설명</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>position</td>
+                <td>2D (x, y)</td>
+                <td>[0, L] &times; [0, W]</td>
+                <td>GPS/BLE</td>
+                <td>에이전트 현재 위치</td>
+              </tr>
+              <tr>
+                <td>risk_map</td>
+                <td>H &times; W grid</td>
+                <td>[0, 1]</td>
+                <td>Section 3</td>
+                <td>주변 영역 위험도 맵</td>
+              </tr>
+              <tr>
+                <td>crowd_density</td>
+                <td>H &times; W grid</td>
+                <td>[0, &rho;<sub>max</sub>]</td>
+                <td>Section 1</td>
+                <td>주변 영역 밀집도</td>
+              </tr>
+              <tr>
+                <td>smoke_level</td>
+                <td>scalar</td>
+                <td>[0, 1]</td>
+                <td>Section 2</td>
+                <td>현재 위치 연기 농도</td>
+              </tr>
+              <tr>
+                <td>health_status</td>
+                <td>vector (5D)</td>
+                <td>[0, 1]</td>
+                <td>Section 5</td>
+                <td>&mu;, age, condition 등</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>7.2 행동 공간 (Action Space)</h3>
+        <div class="formula-block">
+          <span class="formula-label">Action Space Definition</span>
+          <div class="math">
+            A = {N, S, E, W, NE, NW, SE, SW, wait}
+          </div>
+        </div>
+        <p>
+          8방향 이동 + 대기(wait)의 9가지 이산 행동으로 구성됩니다.
+          wait 행동은 전방 경로가 과밀 상태이거나 연기가 확산 중일 때
+          일시적으로 안전한 위치에서 대기하는 전략적 선택입니다.
+        </p>
+
+        <h3>7.3 보상 함수 (Reward Function)</h3>
+        <div class="formula-block">
+          <span class="formula-label">Eq. 27 - Reward Function</span>
+          <div class="math">
+            R = -&alpha; &middot; &Delta;t - &beta; &middot; risk(s') + &gamma; &middot; progress(s') + &delta; &middot; safety_bonus
+          </div>
+        </div>
+        <ul>
+          <li><strong>-&alpha; &middot; &Delta;t</strong> &mdash; 시간 패널티: 매 timestep마다 부과하여 신속한 대피를 유도</li>
+          <li><strong>-&beta; &middot; risk(s')</strong> &mdash; 위험 패널티: 위험도가 높은 지역 진입 시 부과</li>
+          <li><strong>+&gamma; &middot; progress(s')</strong> &mdash; 진행 보상: 출구까지의 거리 감소 시 보상</li>
+          <li><strong>+&delta; &middot; safety_bonus</strong> &mdash; 안전 보너스: 안전 구역 도달 시 큰 양의 보상</li>
+        </ul>
+
+        <h3>7.4 PPO (Proximal Policy Optimization) 학습</h3>
+        <p>
+          PPO는 정책 경사(Policy Gradient) 기반 알고리즘으로, clipping mechanism을 통해
+          학습 안정성을 보장합니다. 기존 TRPO 대비 구현이 간결하면서도 동등한 성능을 제공합니다.
+        </p>
+        <div class="formula-block">
+          <span class="formula-label">Eq. 28 - PPO Objective</span>
+          <div class="math">
+            L<sup>CLIP</sup>(&theta;) = E&#x0302;<sub>t</sub>[min(r<sub>t</sub>(&theta;) &middot; A&#x0302;<sub>t</sub>, &ensp; clip(r<sub>t</sub>(&theta;), 1-&epsilon;, 1+&epsilon;) &middot; A&#x0302;<sub>t</sub>)]
+          </div>
+        </div>
+        <p>
+          여기서 r<sub>t</sub>(&theta;) = &pi;<sub>&theta;</sub>(a<sub>t</sub>|s<sub>t</sub>) / &pi;<sub>&theta;old</sub>(a<sub>t</sub>|s<sub>t</sub>)는
+          확률비(probability ratio)이며, A&#x0302;<sub>t</sub>는 추정된 이점 함수(advantage function),
+          &epsilon; = 0.2는 clipping 파라미터입니다.
+        </p>
+
+        <h3>7.5 다중 에이전트 보상 형성 (Multi-Agent Reward Shaping)</h3>
+        <p>
+          개별 에이전트의 이기적 행동이 전체 대피 효율을 저하시키는 것을 방지하기 위해
+          사회적 보상 항을 추가합니다:
+        </p>
+        <div class="formula-block">
+          <span class="formula-label">Eq. 29 - Multi-Agent Reward</span>
+          <div class="math">
+            R<sub>i</sub><sup>total</sup> = R<sub>i</sub><sup>individual</sup> + &lambda; &middot; R<sup>global</sup>
+          </div>
+        </div>
+        <p>
+          R<sup>global</sup>은 전체 시스템의 대피 진행률, 평균 위험 노출도, 병목 해소율 등
+          전역 지표에 기반한 보상입니다. 혼합 계수 &lambda;는 개인 이익과 집단 이익 간의
+          균형을 조절하며, 학습 커리큘럼에 따라 점진적으로 증가시킵니다.
+        </p>
+
+        <div class="data-table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>하이퍼파라미터</th>
+                <th>기호</th>
+                <th>값</th>
+                <th>설명</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>시간 패널티 가중치</td>
+                <td class="font-mono">&alpha;</td>
+                <td>0.1</td>
+                <td>매 step 시간 비용</td>
+              </tr>
+              <tr>
+                <td>위험 패널티 가중치</td>
+                <td class="font-mono">&beta;</td>
+                <td>0.5</td>
+                <td>위험 지역 진입 비용</td>
+              </tr>
+              <tr>
+                <td>진행 보상 가중치</td>
+                <td class="font-mono">&gamma;</td>
+                <td>0.3</td>
+                <td>출구 접근 보상</td>
+              </tr>
+              <tr>
+                <td>안전 보너스</td>
+                <td class="font-mono">&delta;</td>
+                <td>10.0</td>
+                <td>출구 도달 시 보상</td>
+              </tr>
+              <tr>
+                <td>할인 인자</td>
+                <td class="font-mono">&gamma;<sub>discount</sub></td>
+                <td>0.99</td>
+                <td>미래 보상 할인</td>
+              </tr>
+              <tr>
+                <td>PPO Clipping</td>
+                <td class="font-mono">&epsilon;</td>
+                <td>0.2</td>
+                <td>정책 갱신 범위 제한</td>
+              </tr>
+              <tr>
+                <td>학습률</td>
+                <td class="font-mono">lr</td>
+                <td>3&times;10<sup>-4</sup></td>
+                <td>Adam optimizer</td>
+              </tr>
+              <tr>
+                <td>사회적 보상 혼합</td>
+                <td class="font-mono">&lambda;</td>
+                <td>0.1 &rarr; 0.5</td>
+                <td>커리큘럼 학습 시 증가</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ============================================================ -->
+      <!-- SECTION 8: 논문 구성 요약 -->
+      <!-- ============================================================ -->
+      <div class="content-section" id="paper-structure">
+        <h2>&#x1F4DD; 8. 논문 구성 요약 (Paper Structure Summary)</h2>
+        <p>
+          본 기술 모듈의 내용을 학술 논문으로 정형화하기 위한 구성 체계입니다.
+          국제 저널(예: Fire Safety Journal, Safety Science, Ocean Engineering)에
+          투고를 목표로 한 논문 구조를 제시합니다.
+        </p>
+
+        <!-- Flow Diagram for Paper Structure -->
+        <div class="flow-diagram">
+          <div class="flow-step">
+            <div class="flow-step-num">1</div>
+            <div class="flow-step-title">Abstract</div>
+            <div class="flow-step-desc">연구 목적, 방법론, 핵심 결과 요약</div>
+          </div>
+          <div class="flow-arrow">&rarr;</div>
+          <div class="flow-step">
+            <div class="flow-step-num">2</div>
+            <div class="flow-step-title">Introduction</div>
+            <div class="flow-step-desc">문제 정의, 연구 동기, 기여점</div>
+          </div>
+          <div class="flow-arrow">&rarr;</div>
+          <div class="flow-step">
+            <div class="flow-step-num">3</div>
+            <div class="flow-step-title">Related Work</div>
+            <div class="flow-step-desc">선행 연구 분석 및 차별점</div>
+          </div>
+          <div class="flow-arrow">&rarr;</div>
+          <div class="flow-step">
+            <div class="flow-step-num">4</div>
+            <div class="flow-step-title">System Architecture</div>
+            <div class="flow-step-desc">전체 시스템 구조도</div>
+          </div>
+          <div class="flow-arrow">&rarr;</div>
+          <div class="flow-step">
+            <div class="flow-step-num">5</div>
+            <div class="flow-step-title">Mathematical Formulation</div>
+            <div class="flow-step-desc">핵심 수식 및 알고리즘</div>
+          </div>
+          <div class="flow-arrow">&rarr;</div>
+          <div class="flow-step">
+            <div class="flow-step-num">6</div>
+            <div class="flow-step-title">Experimental Results</div>
+            <div class="flow-step-desc">시뮬레이션 검증 및 비교</div>
+          </div>
+          <div class="flow-arrow">&rarr;</div>
+          <div class="flow-step">
+            <div class="flow-step-num">7</div>
+            <div class="flow-step-title">Conclusion</div>
+            <div class="flow-step-desc">결론 및 향후 연구</div>
+          </div>
+        </div>
+
+        <h3>각 장별 상세 구성</h3>
+
+        <div class="two-col">
+          <div>
+            <h3>Chapter 1: Abstract</h3>
+            <ul>
+              <li>연구 배경: 대형 크루즈선 화재의 위험성</li>
+              <li>제안 시스템: FireNavi - 다중 위험요소 기반 AI 대피 시스템</li>
+              <li>핵심 방법론: 동적 위험지도 + RL 기반 경로 최적화</li>
+              <li>주요 결과: 대피시간 38.9% 단축, 위험 노출 62% 감소</li>
+            </ul>
+
+            <h3>Chapter 2: Introduction</h3>
+            <ul>
+              <li>크루즈선 화재 사고 통계 및 피해 규모</li>
+              <li>기존 대피 시스템의 한계점</li>
+              <li>AI/IoT 기술의 발전과 적용 가능성</li>
+              <li>논문의 기여점 5가지 명시</li>
+            </ul>
+
+            <h3>Chapter 3: Related Work</h3>
+            <ul>
+              <li>Crowd simulation 관련 연구 (Helbing, Still 등)</li>
+              <li>Fire-evacuation coupling 연구 (FDS + Pathfinder)</li>
+              <li>Multi-agent path finding (MAPF) 연구</li>
+              <li>RL 기반 대피 연구 동향</li>
+            </ul>
+
+            <h3>Chapter 4: System Architecture</h3>
+            <ul>
+              <li>4계층 아키텍처: Sensor &rarr; Edge &rarr; Cloud &rarr; UI</li>
+              <li>데이터 파이프라인 설계</li>
+              <li>실시간 처리 체계 (latency &lt; 500ms)</li>
+              <li>BIM/IFC 통합 3D 모델</li>
+            </ul>
+          </div>
+          <div>
+            <h3>Chapter 5: Mathematical Formulation</h3>
+            <ul>
+              <li>Section 1~7의 전체 수식 통합</li>
+              <li>모델 간 상호 의존성 분석</li>
+              <li>계산 복잡도 분석: O(N log N) for routing</li>
+              <li>수렴성 및 최적성 증명</li>
+            </ul>
+
+            <h3>Chapter 6: Experimental Results</h3>
+            <ul>
+              <li>시뮬레이션 환경: 6,000명 규모 크루즈선 모델</li>
+              <li>Baseline 비교: 기존 대피 vs FireNavi</li>
+              <li>Ablation study: 각 모듈의 기여도 분석</li>
+              <li>민감도 분석: 가중치 변화에 따른 성능</li>
+              <li>실시간 성능: 95th percentile latency &lt; 200ms</li>
+            </ul>
+
+            <h3>Chapter 7: Conclusion</h3>
+            <ul>
+              <li>연구 성과 요약</li>
+              <li>실용화를 위한 과제 (IMO SOLAS 인증 등)</li>
+              <li>향후 연구: 3D 실내 측위 정밀도 향상, 다층 구조 최적화</li>
+              <li>타 분야 적용 가능성: 초고층 빌딩, 지하철 역사 등</li>
+            </ul>
+
+            <h3>Target Journals</h3>
+            <ul>
+              <li><em>Fire Safety Journal</em> (Elsevier, IF: 3.8)</li>
+              <li><em>Safety Science</em> (Elsevier, IF: 6.1)</li>
+              <li><em>Ocean Engineering</em> (Elsevier, IF: 4.6)</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="footer-premium">
+      <div class="footer-premium-inner">
+        <div class="footer-grid">
+          <div class="footer-col footer-col--brand">
+            <div class="footer-logo"><img src="firenavi-logo.svg" alt="FireNavi" style="height:40px;vertical-align:middle;"></div>
+            <p class="footer-tagline">AI 기반 실시간 생존 의사결정 플랫폼</p>
+            <p class="footer-desc">화재보다 빠르게 판단하는 AI.<br>길을 안내하는 것이 아니라 생존을 설계합니다.</p>
+            <div class="footer-badges">
+              <span class="footer-badge">Safety</span>
+              <span class="footer-badge">Security</span>
+              <span class="footer-badge">Operation</span>
+            </div>
+          </div>
+          <div class="footer-col">
+            <h4 class="footer-col-title">Core Modules</h4>
+            <ul class="footer-links">
+              <li><a href="a-technical-formulation.html">A. 기술 수식화</a></li>
+              <li><a href="b-industrial-architecture.html">B. 산업 아키텍처</a></li>
+              <li><a href="c-shipyard-proposal.html">C. 조선소 제안</a></li>
+              <li><a href="d-insurance-risk-model.html">D. 보험 리스크</a></li>
+            </ul>
+          </div>
+          <div class="footer-col">
+            <h4 class="footer-col-title">Interactive</h4>
+            <ul class="footer-links">
+              <li><a href="simulation.html">실시간 시뮬레이션</a></li>
+              <li><a href="risk-map.html">동적 위험지도</a></li>
+              <li><a href="route-optimizer.html">경로 최적화</a></li>
+            </ul>
+          </div>
+          <div class="footer-col">
+            <h4 class="footer-col-title">Resources</h4>
+            <ul class="footer-links">
+              <li><a href="../index.html">매뉴얼 페이지</a></li>
+              <li><a href="../technology.html">아키텍처 구조도</a></li>
+            </ul>
+            <h4 class="footer-col-title" style="margin-top:20px;">Contact</h4>
+            <ul class="footer-links">
+              <li><a href="mailto:jaiwshim@gmail.com">jaiwshim@gmail.com</a></li>
+            </ul>
+          </div>
+        </div>
+        <div class="footer-engines">
+          <div class="footer-engine"><span class="footer-engine-dot" style="background:#EF4444;"></span><span>Prediction Engine</span></div>
+          <div class="footer-engine"><span class="footer-engine-dot" style="background:#3B82F6;"></span><span>Behavior Engine</span></div>
+          <div class="footer-engine"><span class="footer-engine-dot" style="background:#7C3AED;"></span><span>Decision Engine</span></div>
+          <div class="footer-engine"><span class="footer-engine-dot" style="background:#EC4899;"></span><span>Priority Rescue AI</span></div>
+          <div class="footer-engine"><span class="footer-engine-dot" style="background:#06B6D4;"></span><span>WiFi Positioning</span></div>
+        </div>
+        <div class="footer-bottom">
+          <p>&copy; 2026 FireNavi. Patented Technology. All Rights Reserved.</p>
+          <p>9 Mathematical Models &middot; 29 Equations &middot; 5 Patents &middot; 3 AI Engines</p>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <script src="js/main.js"></script>
+<script src="js/common-nav-footer.js"></script>
+</body>
+</html>

@@ -1,0 +1,2028 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FireNavi - 대피 경로 최적화 | Route Optimizer</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    /* ===== Route Optimizer Page Styles ===== */
+    .ro-layout {
+      display: grid;
+      grid-template-columns: 320px 1fr;
+      gap: var(--space-lg);
+      margin-bottom: var(--space-xl);
+    }
+
+    @media (max-width: 1024px) {
+      .ro-layout {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* --- Passenger Panel --- */
+    .passenger-panel {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: var(--space-md);
+      max-height: 620px;
+      overflow-y: auto;
+    }
+
+    .passenger-panel h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: var(--space-md);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--text-primary);
+    }
+
+    .pax-card {
+      background: var(--bg-primary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 12px;
+      margin-bottom: var(--space-sm);
+      cursor: pointer;
+      transition: all 0.2s;
+      position: relative;
+    }
+
+    .pax-card:hover {
+      border-color: var(--border-light);
+      background: var(--bg-card-hover);
+    }
+
+    .pax-card.selected {
+      border-color: var(--fire-orange);
+      box-shadow: 0 0 12px rgba(237, 137, 54, 0.25);
+    }
+
+    .pax-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 6px;
+    }
+
+    .pax-name {
+      font-weight: 700;
+      font-size: 0.9rem;
+      color: var(--text-primary);
+    }
+
+    .pax-icon {
+      font-size: 1.1rem;
+    }
+
+    .pax-details {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4px;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    .pax-details span {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .pax-mobility {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      margin-top: 6px;
+    }
+
+    .mobility-bar {
+      flex: 1;
+      height: 4px;
+      background: var(--bg-card);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+
+    .mobility-fill {
+      height: 100%;
+      border-radius: 2px;
+      transition: width 0.3s;
+    }
+
+    .pax-needs {
+      display: flex;
+      gap: 4px;
+      margin-top: 6px;
+      flex-wrap: wrap;
+    }
+
+    .need-tag {
+      font-size: 0.65rem;
+      padding: 2px 6px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+    }
+
+    .need-tag--wheelchair { border-color: var(--info); color: var(--info); }
+    .need-tag--elderly { border-color: var(--warning); color: var(--warning); }
+    .need-tag--child { border-color: var(--accent); color: var(--accent); }
+    .need-tag--injured { border-color: var(--danger); color: var(--danger); }
+
+    /* --- Route Details Popup --- */
+    .route-details {
+      background: var(--bg-primary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: var(--space-md);
+      margin-top: var(--space-sm);
+      display: none;
+    }
+
+    .route-details.visible {
+      display: block;
+    }
+
+    .route-details h4 {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--fire-orange);
+      margin-bottom: 8px;
+    }
+
+    .route-metric {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.78rem;
+      padding: 4px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.03);
+    }
+
+    .route-metric-label { color: var(--text-muted); }
+    .route-metric-value { color: var(--text-primary); font-weight: 600; }
+
+    .alt-routes {
+      margin-top: 8px;
+    }
+
+    .alt-route-item {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      padding: 3px 0;
+      cursor: pointer;
+      transition: color 0.2s;
+    }
+
+    .alt-route-item:hover {
+      color: var(--text-primary);
+    }
+
+    /* --- Canvas Area --- */
+    .canvas-area {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+    }
+
+    .canvas-toolbar {
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
+      padding: 10px var(--space-md);
+      background: var(--bg-primary);
+      border-bottom: 1px solid var(--border);
+      flex-wrap: wrap;
+    }
+
+    .canvas-toolbar label {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    #deckCanvas {
+      display: block;
+      width: 100%;
+      cursor: crosshair;
+    }
+
+    .canvas-legend {
+      display: flex;
+      align-items: center;
+      gap: var(--space-md);
+      padding: 8px var(--space-md);
+      background: var(--bg-primary);
+      border-top: 1px solid var(--border);
+      flex-wrap: wrap;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 0.72rem;
+      color: var(--text-muted);
+    }
+
+    .legend-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+    }
+
+    .legend-dot--square {
+      border-radius: 2px;
+    }
+
+    /* --- Controls --- */
+    .controls-panel {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: var(--space-lg);
+      margin-bottom: var(--space-lg);
+    }
+
+    .controls-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-md);
+      align-items: flex-end;
+    }
+
+    .control-group {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .control-group label {
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--text-muted);
+    }
+
+    .control-group input[type="range"] {
+      width: 160px;
+      accent-color: var(--fire-orange);
+    }
+
+    .control-group input[type="checkbox"] {
+      accent-color: var(--fire-orange);
+    }
+
+    .range-val {
+      font-size: 0.75rem;
+      color: var(--fire-orange);
+      font-family: var(--font-mono);
+    }
+
+    .ctrl-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 16px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .ctrl-btn:hover {
+      background: var(--bg-card-hover);
+      border-color: var(--border-light);
+    }
+
+    .ctrl-btn--fire {
+      background: rgba(229, 62, 62, 0.15);
+      border-color: var(--danger);
+      color: var(--danger);
+    }
+
+    .ctrl-btn--fire:hover {
+      background: rgba(229, 62, 62, 0.3);
+    }
+
+    .ctrl-btn--fire.active-mode {
+      background: var(--danger);
+      color: #fff;
+    }
+
+    .ctrl-btn--run {
+      background: var(--gradient-fire);
+      border-color: var(--fire-orange);
+      color: #fff;
+    }
+
+    .ctrl-btn--run:hover {
+      opacity: 0.9;
+    }
+
+    .ctrl-btn--multi {
+      background: rgba(49, 130, 206, 0.15);
+      border-color: var(--info);
+      color: var(--info);
+    }
+
+    .ctrl-btn--multi:hover {
+      background: rgba(49, 130, 206, 0.3);
+    }
+
+    .checkbox-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.82rem;
+      color: var(--text-secondary);
+      cursor: pointer;
+    }
+
+    /* --- Comparison Stats --- */
+    .comparison-section {
+      margin-top: var(--space-lg);
+    }
+
+    .comparison-grid {
+      display: grid;
+      grid-auto-flow: column;
+      grid-auto-columns: 1fr;
+      gap: var(--space-md);
+      margin-top: var(--space-md);
+    }
+
+    .comparison-col {
+      background: var(--bg-primary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: var(--space-md);
+    }
+
+    .comparison-col h4 {
+      font-size: 0.9rem;
+      font-weight: 700;
+      margin-bottom: var(--space-sm);
+      text-align: center;
+    }
+
+    .comparison-col .metric-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 5px 0;
+      font-size: 0.8rem;
+      border-bottom: 1px solid rgba(255,255,255,0.03);
+    }
+
+    .metric-row .mlabel { color: var(--text-muted); }
+    .metric-row .mval { font-weight: 700; font-family: var(--font-mono); }
+
+    /* --- Bar Chart Area --- */
+    .bar-chart-area {
+      margin-top: var(--space-lg);
+    }
+
+    #barChartCanvas {
+      display: block;
+      width: 100%;
+      max-width: 700px;
+      margin: 0 auto;
+    }
+
+    /* --- Algorithm Section --- */
+    .algo-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-md);
+    }
+
+    @media (max-width: 768px) {
+      .algo-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .algo-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: var(--space-lg);
+      box-shadow: var(--shadow-card);
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+    .algo-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+    }
+    .algo-card:nth-child(1) { background: linear-gradient(160deg, rgba(219,234,254,0.25) 0%, #FFFFFF 30%); border-color: rgba(37,99,235,0.12); }
+    .algo-card:nth-child(1)::before { background: linear-gradient(90deg, #2563EB, #3B82F6); }
+    .algo-card:nth-child(1) h4 { color: #1D4ED8; }
+    .algo-card:nth-child(2) { background: linear-gradient(160deg, rgba(209,250,229,0.25) 0%, #FFFFFF 30%); border-color: rgba(5,150,105,0.12); }
+    .algo-card:nth-child(2)::before { background: linear-gradient(90deg, #059669, #10B981); }
+    .algo-card:nth-child(2) h4 { color: #047857; }
+    .algo-card:nth-child(3) { background: linear-gradient(160deg, rgba(237,233,254,0.25) 0%, #FFFFFF 30%); border-color: rgba(124,58,237,0.12); }
+    .algo-card:nth-child(3)::before { background: linear-gradient(90deg, #7C3AED, #A78BFA); }
+    .algo-card:nth-child(3) h4 { color: #6D28D9; }
+    .algo-card:nth-child(4) { background: linear-gradient(160deg, rgba(254,226,226,0.25) 0%, #FFFFFF 30%); border-color: rgba(229,62,62,0.12); }
+    .algo-card:nth-child(4)::before { background: linear-gradient(90deg, #E53E3E, #ED8936); }
+    .algo-card:nth-child(4) h4 { color: #C2410C; }
+    .algo-card:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .algo-card h4 {
+      font-size: 0.95rem;
+      font-weight: 700;
+      margin-bottom: var(--space-sm);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .algo-card p, .algo-card li {
+      font-size: 0.82rem;
+      color: var(--text-secondary);
+      line-height: 1.7;
+    }
+
+    .algo-card ul {
+      padding-left: var(--space-md);
+    }
+
+    .algo-card code {
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      color: var(--fire-orange);
+      background: rgba(237, 137, 54, 0.1);
+      padding: 1px 5px;
+      border-radius: 3px;
+    }
+
+    /* Fire set mode indicator */
+    .fire-mode-indicator {
+      display: none;
+      padding: 6px 12px;
+      background: rgba(229,62,62,0.2);
+      border: 1px solid var(--danger);
+      border-radius: var(--radius-sm);
+      color: var(--danger);
+      font-size: 0.8rem;
+      font-weight: 600;
+      animation: pulse 1.5s infinite;
+    }
+
+    .fire-mode-indicator.visible {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+  </style>
+</head>
+<body>
+  <div class="page-wrapper">
+    <!-- NAVIGATION -->
+    <nav class="top-nav">
+      <div class="nav-inner">
+        <a href="../index.html" class="nav-brand">
+          <img src="firenavi-logo.svg" alt="FireNavi" class="nav-logo-img" style="height:36px;vertical-align:middle;margin-right:6px;">
+          <span class="nav-tagline">AI 기반 실시간 생존 의사결정 플랫폼</span>
+        </a>
+        <ul class="nav-links">
+          <li><a href="../index.html">Dashboard</a></li>
+          <li><a href="a-technical-formulation.html">A. 기술수식화</a></li>
+          <li><a href="b-industrial-architecture.html">B. 산업아키텍처</a></li>
+          <li><a href="c-shipyard-proposal.html">C. 조선소제안</a></li>
+          <li><a href="d-insurance-risk-model.html">D. 보험리스크</a></li>
+          <li><a href="simulation.html">시뮬레이션</a></li>
+          <li><a href="risk-map.html">위험지도</a></li>
+          <li><a href="route-optimizer.html" class="active">경로최적화</a></li>
+          <li><a href="../index.html" style="color:#DB2777;">매뉴얼</a></li>
+          <li><a href="../technology.html" style="color:#7C3AED;">구조도</a></li>
+        </ul>
+        <button class="nav-mobile-toggle">&#9776;</button>
+      </div>
+    </nav>
+
+    <!-- PAGE HEADER -->
+    <div class="main-content">
+      <div class="container">
+        <div class="page-header">
+          <div class="breadcrumb">
+            <a href="../index.html">Home</a>
+            <span>/</span>
+            <span>대피 경로 최적화</span>
+          </div>
+          <h1 class="page-title">대피 경로 최적화 <span class="text-muted" style="font-size:0.6em;">Evacuation Route Optimization</span></h1>
+          <p class="page-desc">
+            A* Pathfinding, Multi-Agent Path Finding (MAPF), 건강상태 반영 경로 설계를 통한
+            최적 대피 경로 계산. 승객별 맞춤 경로를 실시간으로 시각화합니다.
+          </p>
+        </div>
+
+        <!-- OPTIMIZATION CONTROLS -->
+        <div class="controls-panel">
+          <h3 style="font-size:1rem; font-weight:700; margin-bottom:var(--space-md); display:flex; align-items:center; gap:8px;">
+            &#x2699;&#xFE0F; 최적화 제어판 <span class="text-muted" style="font-size:0.75em;">Optimization Controls</span>
+          </h3>
+          <div class="controls-row">
+            <button class="ctrl-btn ctrl-btn--fire" id="btnSetFire" title="클릭 후 캔버스에서 노드를 클릭하세요">
+              &#x1F525; 화재 위치 설정
+            </button>
+            <button class="ctrl-btn ctrl-btn--run" id="btnOptimize">
+              &#x26A1; 최적화 실행
+            </button>
+            <button class="ctrl-btn ctrl-btn--multi" id="btnShowAll">
+              &#x1F465; 전체 대피 경로 표시
+            </button>
+            <div class="control-group">
+              <label>혼잡도 패널티 <span class="range-val" id="congValLabel">0.50</span></label>
+              <input type="range" id="congestionPenalty" min="0" max="1" step="0.05" value="0.50">
+            </div>
+            <div class="control-group">
+              <label>위험도 패널티 <span class="range-val" id="riskValLabel">0.70</span></label>
+              <input type="range" id="riskPenalty" min="0" max="1" step="0.05" value="0.70">
+            </div>
+            <label class="checkbox-row">
+              <input type="checkbox" id="chkWheelchair"> 휠체어 경로만
+            </label>
+            <label class="checkbox-row">
+              <input type="checkbox" id="chkCollision" checked> 충돌 최소화
+            </label>
+            <span class="fire-mode-indicator" id="fireModeIndicator">&#x1F525; 화재 설정 모드 - 노드를 클릭하세요</span>
+          </div>
+        </div>
+
+        <!-- TABS: Route Type -->
+        <div class="content-section" style="padding:0; overflow:hidden;">
+          <div class="tabs">
+            <button class="tab-btn active" data-tab="tab-standard">&#x1F4CF; 표준 경로</button>
+            <button class="tab-btn" data-tab="tab-health">&#x2764;&#xFE0F; 건강상태 반영 경로</button>
+            <button class="tab-btn" data-tab="tab-rl">&#x1F916; AI 최적화 경로</button>
+          </div>
+          <div class="tab-content active" id="tab-standard">
+            <div style="padding: 4px var(--space-md) var(--space-md);">
+              <p style="font-size:0.85rem; color:var(--text-secondary); margin:0;">
+                <strong>표준 경로 (Standard Route)</strong> - 거리 기반 최단 경로. Dijkstra/A* 알고리즘으로 계산.
+                건강상태 무관, 순수 거리 + 위험도 패널티만 반영.
+              </p>
+            </div>
+          </div>
+          <div class="tab-content" id="tab-health">
+            <div style="padding: 4px var(--space-md) var(--space-md);">
+              <p style="font-size:0.85rem; color:var(--text-secondary); margin:0;">
+                <strong>건강상태 반영 경로 (Health-Aware Route)</strong> - 이동속도 = v<sub>base</sub> &times; &mu; (이동능력계수).
+                휠체어/노약자/부상자의 이동속도 감소를 반영하여 계단 회피, 넓은 통로 우선 경로 계산.
+              </p>
+            </div>
+          </div>
+          <div class="tab-content" id="tab-rl">
+            <div style="padding: 4px var(--space-md) var(--space-md);">
+              <p style="font-size:0.85rem; color:var(--text-secondary); margin:0;">
+                <strong>AI 최적화 경로 (RL-Optimized Route)</strong> - 강화학습 정책 기반 경로.
+                혼잡도 예측, 연기 확산 예측, 다중 에이전트 충돌 회피를 동시에 고려한 최적 경로.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- MAIN LAYOUT: Passengers + Canvas -->
+        <div class="ro-layout" style="margin-top: var(--space-lg);">
+          <!-- LEFT: Passenger Panel -->
+          <div class="passenger-panel" id="passengerPanel">
+            <h3>&#x1F6B6; 승객 프로필 <span class="text-muted" style="font-size:0.75em;">Passengers</span></h3>
+            <!-- Passenger cards injected by JS -->
+          </div>
+
+          <!-- RIGHT: Canvas -->
+          <div class="canvas-area">
+            <div class="canvas-toolbar">
+              <span style="font-size:0.82rem; font-weight:700; color:var(--text-primary);">&#x1F6F3;&#xFE0F; 선박 갑판 그래프</span>
+              <span style="font-size:0.72rem; color:var(--text-muted); margin-left:auto;">Deck 2 - Passenger Deck</span>
+            </div>
+            <canvas id="deckCanvas" width="900" height="550"></canvas>
+            <div class="canvas-legend">
+              <div class="legend-item"><span class="legend-dot" style="background:#4299E1;"></span> 객실 Cabin</div>
+              <div class="legend-item"><span class="legend-dot" style="background:#718096;"></span> 복도 Corridor</div>
+              <div class="legend-item"><span class="legend-dot legend-dot--square" style="background:#ED8936;"></span> 계단 Stairway</div>
+              <div class="legend-item"><span class="legend-dot" style="background:#38A169; width:14px; height:14px;"></span> 출구/집결지 Exit</div>
+              <div class="legend-item"><span class="legend-dot" style="background:#E53E3E; box-shadow:0 0 6px rgba(229,62,62,0.6);"></span> 화재 구역 Fire</div>
+              <div class="legend-item"><span style="display:inline-block;width:20px;height:3px;background:linear-gradient(90deg,#38A169,#ECC94B,#E53E3E);border-radius:2px;"></span> 간선 위험도</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ROUTE DETAILS Panel (below canvas) -->
+        <div class="route-details visible" id="routeDetailsPanel" style="margin-bottom:var(--space-lg);">
+          <h4>&#x1F4CA; 경로 상세 정보 <span class="text-muted" style="font-weight:400; font-size:0.8em;">Route Details</span></h4>
+          <p style="font-size:0.82rem; color:var(--text-muted);">승객을 선택하면 경로 상세 정보가 표시됩니다.</p>
+          <div id="routeMetrics"></div>
+        </div>
+
+        <!-- STATISTICS DASHBOARD -->
+        <div class="content-section">
+          <h2>&#x1F4CA; 대피 통계 대시보드 <span class="text-muted" style="font-size:0.6em;">Evacuation Statistics</span></h2>
+          <div class="stat-grid" id="statGrid">
+            <div class="stat-card">
+              <div class="stat-value stat-value--safe" id="statAvgTime">--</div>
+              <div class="stat-label">평균 대피 시간 (FireNavi)</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-value stat-value--danger" id="statAvgTimeStd">--</div>
+              <div class="stat-label">평균 대피 시간 (표준)</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-value stat-value--warning" id="statMaxTime">--</div>
+              <div class="stat-label">최대 대피 시간 (최악)</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-value stat-value--info" id="statConflicts">--</div>
+              <div class="stat-label">경로 충돌 횟수</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-value stat-value--accent" id="statBottlenecks">--</div>
+              <div class="stat-label">병목 구간 수</div>
+            </div>
+          </div>
+
+          <!-- Comparison Section -->
+          <div class="comparison-section">
+            <h3 style="font-size:1rem; font-weight:700; margin-bottom:var(--space-sm);">경로 유형별 비교 <span class="text-muted" style="font-size:0.75em;">Route Comparison</span></h3>
+            <div class="comparison-grid" id="comparisonGrid">
+              <div class="comparison-col">
+                <h4 style="color:var(--text-secondary);">&#x1F4CF; 표준 경로</h4>
+                <div class="metric-row"><span class="mlabel">평균 거리</span><span class="mval" id="cmpStdDist">--</span></div>
+                <div class="metric-row"><span class="mlabel">평균 시간</span><span class="mval" id="cmpStdTime">--</span></div>
+                <div class="metric-row"><span class="mlabel">평균 위험도</span><span class="mval" id="cmpStdRisk">--</span></div>
+                <div class="metric-row"><span class="mlabel">충돌 수</span><span class="mval" id="cmpStdConf">--</span></div>
+              </div>
+              <div class="comparison-col">
+                <h4 style="color:var(--fire-orange);">&#x2764;&#xFE0F; 건강 반영</h4>
+                <div class="metric-row"><span class="mlabel">평균 거리</span><span class="mval" id="cmpHpDist">--</span></div>
+                <div class="metric-row"><span class="mlabel">평균 시간</span><span class="mval" id="cmpHpTime">--</span></div>
+                <div class="metric-row"><span class="mlabel">평균 위험도</span><span class="mval" id="cmpHpRisk">--</span></div>
+                <div class="metric-row"><span class="mlabel">충돌 수</span><span class="mval" id="cmpHpConf">--</span></div>
+              </div>
+              <div class="comparison-col">
+                <h4 style="color:var(--safe);">&#x1F916; AI 최적화</h4>
+                <div class="metric-row"><span class="mlabel">평균 거리</span><span class="mval" id="cmpRlDist">--</span></div>
+                <div class="metric-row"><span class="mlabel">평균 시간</span><span class="mval" id="cmpRlTime">--</span></div>
+                <div class="metric-row"><span class="mlabel">평균 위험도</span><span class="mval" id="cmpRlRisk">--</span></div>
+                <div class="metric-row"><span class="mlabel">충돌 수</span><span class="mval" id="cmpRlConf">--</span></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Bar Chart -->
+          <div class="bar-chart-area">
+            <h3 style="font-size:1rem; font-weight:700; margin:var(--space-lg) 0 var(--space-sm); text-align:center;">
+              경로 유형별 평균 대피 시간 비교 (초)
+            </h3>
+            <canvas id="barChartCanvas" width="700" height="260"></canvas>
+          </div>
+        </div>
+
+        <!-- ALGORITHM EXPLANATION -->
+        <div class="content-section">
+          <h2>&#x1F9E0; 알고리즘 상세 <span class="text-muted" style="font-size:0.6em;">Algorithm Explanation</span></h2>
+          <div class="algo-grid">
+            <div class="algo-card">
+              <h4>&#x1F50D; A* Pathfinding with Dynamic Risk Heuristic</h4>
+              <p>
+                A* 알고리즘은 시작 노드에서 목표까지의 최적 경로를 f(n) = g(n) + h(n) 비용 함수로 탐색합니다.
+                FireNavi에서는 동적 위험 요소를 h(n) 휴리스틱에 반영합니다.
+              </p>
+              <div class="formula-block" style="margin-top:8px;">
+                <span class="formula-label">A* Cost</span>
+                <div class="math">
+                  f(n) = g(n) + h(n) + &lambda;<sub>risk</sub> &middot; R(n) + &lambda;<sub>cong</sub> &middot; C(n)
+                </div>
+              </div>
+              <ul style="margin-top:8px;">
+                <li><code>g(n)</code>: 시작 노드 ~ 현재 노드 실 이동 비용</li>
+                <li><code>h(n)</code>: 유클리드 거리 기반 목표까지 추정 비용</li>
+                <li><code>R(n)</code>: 노드 n의 실시간 위험도 (화재, 연기)</li>
+                <li><code>C(n)</code>: 노드 n의 예측 혼잡도</li>
+              </ul>
+            </div>
+
+            <div class="algo-card">
+              <h4>&#x1F46B; Multi-Agent Path Finding (MAPF) with CBS</h4>
+              <p>
+                Conflict-Based Search (CBS)는 다중 에이전트 경로 탐색에서 충돌을 해결하는 two-level 알고리즘입니다.
+              </p>
+              <ul>
+                <li><strong>High-level:</strong> 충돌 트리(CT) 탐색. 각 노드 = 에이전트별 제약 조건 집합</li>
+                <li><strong>Low-level:</strong> 제약 조건 하에서 개별 A* 경로 탐색</li>
+                <li><strong>충돌 감지:</strong> 두 에이전트가 동일 시간에 동일 노드/간선 사용 시 충돌</li>
+                <li><strong>분기:</strong> 충돌 발견 시 각 에이전트에 제약을 추가하여 분기</li>
+              </ul>
+            </div>
+
+            <div class="algo-card">
+              <h4>&#x1F3AF; 강화학습 정책 (RL Policy)</h4>
+              <p>PPO (Proximal Policy Optimization) 기반 대피 경로 정책:</p>
+              <ul>
+                <li><strong>State:</strong> <code>s = [위치, 화재맵, 연기맵, 밀집도맵, 건강상태]</code></li>
+                <li><strong>Action:</strong> <code>a = {상, 하, 좌, 우, 계단상, 계단하, 대기}</code></li>
+                <li><strong>Reward:</strong> <code>r = -&alpha;&middot;t - &beta;&middot;R(s) + &gamma;&middot;출구도달</code></li>
+              </ul>
+              <div class="formula-block" style="margin-top:8px;">
+                <span class="formula-label">Reward</span>
+                <div class="math">
+                  R = -0.1&middot;&Delta;t - 5.0&middot;R<sub>risk</sub>(s) + 100&middot;&#x1D7D9;<sub>exit</sub>
+                </div>
+              </div>
+            </div>
+
+            <div class="algo-card">
+              <h4>&#x1F6B6; 건강상태 반영 속도 보정 (Health-Aware Speed)</h4>
+              <p>
+                개인별 이동능력계수 &mu; (0.3 ~ 1.0)를 반영하여 간선 이동 시간을 보정합니다.
+              </p>
+              <div class="formula-block" style="margin-top:8px;">
+                <span class="formula-label">Speed Adjustment</span>
+                <div class="math">
+                  v<sub>i</sub> = v<sub>base</sub> &times; &mu;<sub>i</sub> &times; &phi;(density)
+                </div>
+              </div>
+              <ul style="margin-top:8px;">
+                <li><code>&mu; = 1.0</code>: 건강한 성인 (1.2 m/s)</li>
+                <li><code>&mu; = 0.7</code>: 노약자 (0.84 m/s)</li>
+                <li><code>&mu; = 0.5</code>: 부상자 (0.6 m/s)</li>
+                <li><code>&mu; = 0.3</code>: 휠체어 사용자 (0.36 m/s)</li>
+                <li><code>&phi;(d)</code>: 밀집도 감소 함수, <code>&phi; = max(0.4, 1 - 0.15d)</code></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /.container -->
+    </div><!-- /.main-content -->
+  <script>
+  (function() {
+    'use strict';
+
+    // ===================================================================
+    // SHIP DECK GRAPH DATA STRUCTURE
+    // ===================================================================
+
+    // Node types: cabin, corridor, stairway, exit, fire
+    const NODE_TYPES = {
+      CABIN: 'cabin',
+      CORRIDOR: 'corridor',
+      STAIRWAY: 'stairway',
+      EXIT: 'exit',
+      FIRE: 'fire'
+    };
+
+    // Nodes: id, x, y, type, label, wheelchairAccessible
+    const nodes = [
+      // --- Port-side cabins (top row) ---
+      { id: 0,  x: 90,  y: 60,  type: 'cabin',    label: 'C-101', accessible: true },
+      { id: 1,  x: 170, y: 60,  type: 'cabin',    label: 'C-102', accessible: true },
+      { id: 2,  x: 250, y: 60,  type: 'cabin',    label: 'C-103', accessible: true },
+      { id: 3,  x: 330, y: 60,  type: 'cabin',    label: 'C-104', accessible: true },
+      { id: 4,  x: 450, y: 60,  type: 'cabin',    label: 'C-105', accessible: true },
+      { id: 5,  x: 530, y: 60,  type: 'cabin',    label: 'C-106', accessible: true },
+      { id: 6,  x: 610, y: 60,  type: 'cabin',    label: 'C-107', accessible: true },
+      { id: 7,  x: 730, y: 60,  type: 'cabin',    label: 'C-108', accessible: true },
+
+      // --- Main corridor (horizontal, top) ---
+      { id: 8,  x: 90,  y: 130, type: 'corridor', label: 'H1-A',  accessible: true },
+      { id: 9,  x: 170, y: 130, type: 'corridor', label: 'H1-B',  accessible: true },
+      { id: 10, x: 250, y: 130, type: 'corridor', label: 'H1-C',  accessible: true },
+      { id: 11, x: 330, y: 130, type: 'corridor', label: 'H1-D',  accessible: true },
+      { id: 12, x: 410, y: 130, type: 'corridor', label: 'H1-E',  accessible: true },
+      { id: 13, x: 490, y: 130, type: 'corridor', label: 'H1-F',  accessible: true },
+      { id: 14, x: 570, y: 130, type: 'corridor', label: 'H1-G',  accessible: true },
+      { id: 15, x: 650, y: 130, type: 'corridor', label: 'H1-H',  accessible: true },
+      { id: 16, x: 730, y: 130, type: 'corridor', label: 'H1-I',  accessible: true },
+      { id: 17, x: 810, y: 130, type: 'corridor', label: 'H1-J',  accessible: true },
+
+      // --- Stairways ---
+      { id: 18, x: 50,  y: 200, type: 'stairway', label: 'ST-A',  accessible: false },
+      { id: 19, x: 410, y: 200, type: 'stairway', label: 'ST-B',  accessible: false },
+      { id: 20, x: 810, y: 200, type: 'stairway', label: 'ST-C',  accessible: false },
+
+      // --- Central cross corridors ---
+      { id: 21, x: 210, y: 200, type: 'corridor', label: 'X-1',   accessible: true },
+      { id: 22, x: 610, y: 200, type: 'corridor', label: 'X-2',   accessible: true },
+
+      // --- Main corridor (horizontal, bottom) ---
+      { id: 23, x: 90,  y: 280, type: 'corridor', label: 'H2-A',  accessible: true },
+      { id: 24, x: 170, y: 280, type: 'corridor', label: 'H2-B',  accessible: true },
+      { id: 25, x: 250, y: 280, type: 'corridor', label: 'H2-C',  accessible: true },
+      { id: 26, x: 330, y: 280, type: 'corridor', label: 'H2-D',  accessible: true },
+      { id: 27, x: 410, y: 280, type: 'corridor', label: 'H2-E',  accessible: true },
+      { id: 28, x: 490, y: 280, type: 'corridor', label: 'H2-F',  accessible: true },
+      { id: 29, x: 570, y: 280, type: 'corridor', label: 'H2-G',  accessible: true },
+      { id: 30, x: 650, y: 280, type: 'corridor', label: 'H2-H',  accessible: true },
+      { id: 31, x: 730, y: 280, type: 'corridor', label: 'H2-I',  accessible: true },
+      { id: 32, x: 810, y: 280, type: 'corridor', label: 'H2-J',  accessible: true },
+
+      // --- Starboard-side cabins (bottom row) ---
+      { id: 33, x: 90,  y: 360, type: 'cabin',    label: 'C-201', accessible: true },
+      { id: 34, x: 170, y: 360, type: 'cabin',    label: 'C-202', accessible: true },
+      { id: 35, x: 330, y: 360, type: 'cabin',    label: 'C-203', accessible: true },
+      { id: 36, x: 490, y: 360, type: 'cabin',    label: 'C-204', accessible: true },
+      { id: 37, x: 650, y: 360, type: 'cabin',    label: 'C-205', accessible: true },
+      { id: 38, x: 730, y: 360, type: 'cabin',    label: 'C-206', accessible: true },
+
+      // --- Exits / Muster stations ---
+      { id: 39, x: 50,  y: 430, type: 'exit',     label: 'EXIT-A (Muster)', accessible: true },
+      { id: 40, x: 430, y: 470, type: 'exit',     label: 'EXIT-B (Muster)', accessible: true },
+      { id: 41, x: 830, y: 430, type: 'exit',     label: 'EXIT-C (Muster)', accessible: true },
+
+      // --- Elevator (wheelchair accessible vertical link) ---
+      { id: 42, x: 410, y: 400, type: 'corridor', label: 'ELV-1', accessible: true },
+    ];
+
+    // Edges: [fromId, toId, capacity (width), risk (0-1), distance]
+    // capacity: 1=narrow, 2=normal, 3=wide
+    const edges = [
+      // Cabin-to-corridor (port side)
+      [0, 8,   1, 0.0, 70],
+      [1, 9,   1, 0.0, 70],
+      [2, 10,  1, 0.0, 70],
+      [3, 11,  1, 0.0, 70],
+      [4, 13,  1, 0.0, 70],
+      [5, 13,  1, 0.0, 75],
+      [6, 14,  1, 0.0, 70],
+      [7, 16,  1, 0.0, 70],
+
+      // Top corridor horizontal
+      [8, 9,   3, 0.0, 80],
+      [9, 10,  3, 0.0, 80],
+      [10, 11, 3, 0.0, 80],
+      [11, 12, 3, 0.0, 80],
+      [12, 13, 3, 0.0, 80],
+      [13, 14, 3, 0.0, 80],
+      [14, 15, 3, 0.0, 80],
+      [15, 16, 3, 0.0, 80],
+      [16, 17, 3, 0.0, 80],
+
+      // Corridor-to-stairway (top)
+      [8, 18,  2, 0.0, 80],
+      [12, 19, 2, 0.0, 80],
+      [17, 20, 2, 0.0, 80],
+
+      // Cross corridors
+      [10, 21, 2, 0.0, 70],
+      [21, 25, 2, 0.0, 80],
+      [14, 22, 2, 0.0, 70],
+      [22, 29, 2, 0.0, 80],
+
+      // Stairway-to-bottom corridor
+      [18, 23, 2, 0.0, 80],
+      [19, 27, 2, 0.0, 80],
+      [20, 32, 2, 0.0, 80],
+
+      // Bottom corridor horizontal
+      [23, 24, 3, 0.0, 80],
+      [24, 25, 3, 0.0, 80],
+      [25, 26, 3, 0.0, 80],
+      [26, 27, 3, 0.0, 80],
+      [27, 28, 3, 0.0, 80],
+      [28, 29, 3, 0.0, 80],
+      [29, 30, 3, 0.0, 80],
+      [30, 31, 3, 0.0, 80],
+      [31, 32, 3, 0.0, 80],
+
+      // Cabin-to-corridor (starboard side)
+      [23, 33, 1, 0.0, 80],
+      [24, 34, 1, 0.0, 80],
+      [26, 35, 1, 0.0, 80],
+      [28, 36, 1, 0.0, 80],
+      [30, 37, 1, 0.0, 80],
+      [31, 38, 1, 0.0, 80],
+
+      // Bottom corridor to exits
+      [23, 39, 2, 0.0, 150],
+      [27, 42, 2, 0.0, 120],
+      [42, 40, 2, 0.0, 70],
+      [32, 41, 2, 0.0, 150],
+
+      // Additional connections for more routes
+      [18, 39, 2, 0.0, 230],
+      [20, 41, 2, 0.0, 230],
+      [19, 42, 2, 0.0, 200],
+    ];
+
+    // Build adjacency list
+    const adj = {};
+    nodes.forEach(n => { adj[n.id] = []; });
+    edges.forEach(([a, b, cap, risk, dist]) => {
+      adj[a].push({ to: b, capacity: cap, risk: risk, distance: dist });
+      adj[b].push({ to: a, capacity: cap, risk: risk, distance: dist });
+    });
+
+    // ===================================================================
+    // PASSENGERS
+    // ===================================================================
+    const passengers = [
+      { id: 0, name: '김민수', age: 35, health: 'healthy',    icon: '\u{1F468}',    mobility: 1.0, cabin: 'C-102', nodeId: 1,  needs: [],           color: '#4299E1' },
+      { id: 1, name: '이정희', age: 72, health: 'elderly',    icon: '\u{1F475}',    mobility: 0.6, cabin: 'C-104', nodeId: 3,  needs: ['elderly'],  color: '#ED8936' },
+      { id: 2, name: '박수진', age: 28, health: 'healthy',    icon: '\u{1F469}',    mobility: 0.95,cabin: 'C-201', nodeId: 33, needs: [],           color: '#B794F4' },
+      { id: 3, name: '최동원', age: 45, health: 'injured',    icon: '\u{1F9D1}\u{200D}\u{1F9BD}', mobility: 0.3, cabin: 'C-105', nodeId: 4,  needs: ['wheelchair'], color: '#FC8181' },
+      { id: 4, name: '장서윤', age: 8,  health: 'child',      icon: '\u{1F467}',    mobility: 0.7, cabin: 'C-203', nodeId: 35, needs: ['child'],    color: '#F687B3' },
+      { id: 5, name: '송재현', age: 55, health: 'injured',    icon: '\u{1F9D1}',    mobility: 0.5, cabin: 'C-107', nodeId: 6,  needs: ['injured'],  color: '#68D391' },
+      { id: 6, name: '윤하나', age: 30, health: 'healthy',    icon: '\u{1F469}',    mobility: 1.0, cabin: 'C-205', nodeId: 37, needs: [],           color: '#63B3ED' },
+      { id: 7, name: '정태호', age: 68, health: 'elderly',    icon: '\u{1F474}',    mobility: 0.55,cabin: 'C-206', nodeId: 38, needs: ['elderly'],  color: '#FBD38D' },
+    ];
+
+    // ===================================================================
+    // STATE
+    // ===================================================================
+    let selectedPassenger = null;
+    let fireNodes = new Set();
+    let fireSetMode = false;
+    let currentRouteMode = 'standard'; // 'standard', 'health', 'rl'
+    let showAllRoutes = false;
+    let allRoutes = {};       // passengerID -> { path, cost, time, risk }
+    let animPhase = 0;        // for animated dashes
+    let congestionPenalty = 0.5;
+    let riskPenalty = 0.7;
+    let wheelchairOnly = false;
+    let collisionMin = true;
+
+    // Canvas
+    const canvas = document.getElementById('deckCanvas');
+    const ctx = canvas.getContext('2d');
+    let canvasScale = 1;
+
+    // Set initial fire on a node
+    fireNodes.add(12); // H1-E corridor, center of ship
+
+    // ===================================================================
+    // DIJKSTRA / A* IMPLEMENTATION
+    // ===================================================================
+    function heuristic(a, b) {
+      const dx = nodes[a].x - nodes[b].x;
+      const dy = nodes[a].y - nodes[b].y;
+      return Math.sqrt(dx * dx + dy * dy);
+    }
+
+    function computeEdgeWeight(edge, mobilityFactor, mode) {
+      let baseDist = edge.distance;
+      let riskPen = 1 + riskPenalty * edge.risk * 10;
+      let capFactor = 1 / Math.max(edge.capacity, 0.5);
+      let congFactor = 1 + congestionPenalty * capFactor;
+
+      let weight = baseDist * riskPen * congFactor;
+
+      // Fire blocked edges: extremely high cost
+      if (fireNodes.has(edge.to)) {
+        weight += 100000;
+      }
+
+      // Health-aware: slow mobility increases time cost
+      if (mode === 'health' || mode === 'rl') {
+        weight = weight / Math.max(mobilityFactor, 0.1);
+      }
+
+      // RL mode adds a small noise for "learned policy" variation
+      if (mode === 'rl') {
+        weight *= (0.85 + Math.random() * 0.15);  // simulate RL optimization finding better routes
+      }
+
+      return weight;
+    }
+
+    function aStar(startId, goalIds, mobilityFactor, mode, avoidNodes) {
+      // goalIds: array of possible exit node IDs
+      avoidNodes = avoidNodes || new Set();
+
+      const openSet = new MinHeap();
+      const gScore = {};
+      const fScore = {};
+      const cameFrom = {};
+      const closedSet = new Set();
+
+      nodes.forEach(n => {
+        gScore[n.id] = Infinity;
+        fScore[n.id] = Infinity;
+      });
+
+      gScore[startId] = 0;
+      // Use min heuristic to any exit
+      let minH = Infinity;
+      goalIds.forEach(gid => {
+        const h = heuristic(startId, gid);
+        if (h < minH) minH = h;
+      });
+      fScore[startId] = minH;
+      openSet.push(startId, fScore[startId]);
+
+      while (openSet.size() > 0) {
+        const current = openSet.pop();
+        if (goalIds.includes(current)) {
+          // Reconstruct path
+          const path = [current];
+          let c = current;
+          while (cameFrom[c] !== undefined) {
+            c = cameFrom[c];
+            path.unshift(c);
+          }
+          return { path: path, cost: gScore[current] };
+        }
+
+        closedSet.add(current);
+
+        for (const edge of adj[current]) {
+          if (closedSet.has(edge.to)) continue;
+          if (avoidNodes.has(edge.to)) continue;
+
+          // Wheelchair check
+          if (wheelchairOnly && !nodes[edge.to].accessible) continue;
+          if (mobilityFactor < 0.4 && nodes[edge.to].type === 'stairway') continue;
+
+          const w = computeEdgeWeight(edge, mobilityFactor, mode);
+          const tentG = gScore[current] + w;
+
+          if (tentG < gScore[edge.to]) {
+            cameFrom[edge.to] = current;
+            gScore[edge.to] = tentG;
+            let minHGoal = Infinity;
+            goalIds.forEach(gid => {
+              const h = heuristic(edge.to, gid);
+              if (h < minHGoal) minHGoal = h;
+            });
+            fScore[edge.to] = tentG + minHGoal;
+            openSet.push(edge.to, fScore[edge.to]);
+          }
+        }
+      }
+
+      return null; // no path found
+    }
+
+    // MinHeap for A*
+    class MinHeap {
+      constructor() { this.heap = []; }
+      push(val, priority) {
+        this.heap.push({ val, priority });
+        this._bubbleUp(this.heap.length - 1);
+      }
+      pop() {
+        const top = this.heap[0];
+        const end = this.heap.pop();
+        if (this.heap.length > 0) {
+          this.heap[0] = end;
+          this._sinkDown(0);
+        }
+        return top ? top.val : undefined;
+      }
+      size() { return this.heap.length; }
+      _bubbleUp(i) {
+        while (i > 0) {
+          const parent = Math.floor((i - 1) / 2);
+          if (this.heap[i].priority < this.heap[parent].priority) {
+            [this.heap[i], this.heap[parent]] = [this.heap[parent], this.heap[i]];
+            i = parent;
+          } else break;
+        }
+      }
+      _sinkDown(i) {
+        const n = this.heap.length;
+        while (true) {
+          let smallest = i;
+          const l = 2 * i + 1, r = 2 * i + 2;
+          if (l < n && this.heap[l].priority < this.heap[smallest].priority) smallest = l;
+          if (r < n && this.heap[r].priority < this.heap[smallest].priority) smallest = r;
+          if (smallest !== i) {
+            [this.heap[i], this.heap[smallest]] = [this.heap[smallest], this.heap[i]];
+            i = smallest;
+          } else break;
+        }
+      }
+    }
+
+    // ===================================================================
+    // ROUTE COMPUTATION
+    // ===================================================================
+    const exitNodeIds = [39, 40, 41];
+
+    function computeRouteForPassenger(pax, mode) {
+      const mobility = (mode === 'standard') ? 1.0 : pax.mobility;
+      const result = aStar(pax.nodeId, exitNodeIds, mobility, mode, new Set());
+      if (!result) return null;
+
+      const pathDist = result.cost;
+      const baseSpeed = 1.2; // m/s
+      const effectiveSpeed = baseSpeed * (mode === 'standard' ? 1.0 : pax.mobility);
+      const timeSeconds = pathDist / (effectiveSpeed * 80); // scale
+      const riskScore = computePathRisk(result.path);
+
+      return {
+        path: result.path,
+        distance: pathDist,
+        time: timeSeconds,
+        risk: riskScore,
+        mode: mode
+      };
+    }
+
+    function computePathRisk(path) {
+      let totalRisk = 0;
+      for (let i = 0; i < path.length; i++) {
+        const nid = path[i];
+        if (fireNodes.has(nid)) totalRisk += 10;
+        // Check proximity to fire
+        for (const fid of fireNodes) {
+          const d = heuristic(nid, fid);
+          if (d < 150) totalRisk += (150 - d) / 150 * 2;
+        }
+      }
+      return Math.round(totalRisk * 10) / 10;
+    }
+
+    function computeAlternativeRoutes(pax, mode) {
+      const routes = [];
+      const primary = computeRouteForPassenger(pax, mode);
+      if (primary) routes.push(primary);
+
+      // Try blocking intermediate nodes to find alternatives
+      if (primary && primary.path.length > 3) {
+        for (let attempt = 0; attempt < 2; attempt++) {
+          const blockIdx = Math.floor(primary.path.length * (0.3 + attempt * 0.3));
+          const blockNode = primary.path[blockIdx];
+          if (blockNode !== undefined && !exitNodeIds.includes(blockNode) && blockNode !== pax.nodeId) {
+            const avoid = new Set([blockNode]);
+            const mobility = (mode === 'standard') ? 1.0 : pax.mobility;
+            const altResult = aStar(pax.nodeId, exitNodeIds, mobility, mode, avoid);
+            if (altResult) {
+              const effectiveSpeed = 1.2 * (mode === 'standard' ? 1.0 : pax.mobility);
+              routes.push({
+                path: altResult.path,
+                distance: altResult.cost,
+                time: altResult.cost / (effectiveSpeed * 80),
+                risk: computePathRisk(altResult.path),
+                mode: mode
+              });
+            }
+          }
+        }
+      }
+
+      return routes;
+    }
+
+    function computeAllRoutes(mode) {
+      const routes = {};
+      passengers.forEach(pax => {
+        const r = computeRouteForPassenger(pax, mode);
+        if (r) routes[pax.id] = r;
+      });
+      return routes;
+    }
+
+    // ===================================================================
+    // CONFLICT / BOTTLENECK DETECTION
+    // ===================================================================
+    function detectConflicts(routes) {
+      const edgeUsage = {};
+      let conflicts = 0;
+      const bottleneckNodes = {};
+
+      Object.values(routes).forEach(route => {
+        if (!route || !route.path) return;
+        for (let i = 0; i < route.path.length - 1; i++) {
+          const a = route.path[i], b = route.path[i + 1];
+          const key = Math.min(a, b) + '-' + Math.max(a, b);
+          edgeUsage[key] = (edgeUsage[key] || 0) + 1;
+        }
+        route.path.forEach(nid => {
+          bottleneckNodes[nid] = (bottleneckNodes[nid] || 0) + 1;
+        });
+      });
+
+      Object.values(edgeUsage).forEach(count => {
+        if (count > 1) conflicts += count - 1;
+      });
+
+      const bottlenecks = Object.entries(bottleneckNodes)
+        .filter(([_, count]) => count >= 3)
+        .map(([nid, count]) => ({ nodeId: parseInt(nid), count }))
+        .sort((a, b) => b.count - a.count);
+
+      return { conflicts, bottlenecks, edgeUsage };
+    }
+
+    // ===================================================================
+    // UPDATE EDGE RISKS BASED ON FIRE
+    // ===================================================================
+    function updateEdgeRisks() {
+      edges.forEach(edge => {
+        const fromNode = edge[0], toNode = edge[1];
+        let maxRisk = 0;
+        for (const fid of fireNodes) {
+          const dFrom = heuristic(fromNode, fid);
+          const dTo = heuristic(toNode, fid);
+          const minDist = Math.min(dFrom, dTo);
+          if (minDist < 50) maxRisk = Math.max(maxRisk, 1.0);
+          else if (minDist < 150) maxRisk = Math.max(maxRisk, (150 - minDist) / 100);
+        }
+        edge[3] = Math.min(maxRisk, 1.0);
+        // Update adjacency
+      });
+
+      // Rebuild adj with updated risks
+      nodes.forEach(n => { adj[n.id] = []; });
+      edges.forEach(([a, b, cap, risk, dist]) => {
+        adj[a].push({ to: b, capacity: cap, risk: risk, distance: dist });
+        adj[b].push({ to: a, capacity: cap, risk: risk, distance: dist });
+      });
+    }
+
+    // ===================================================================
+    // CANVAS DRAWING
+    // ===================================================================
+    function resizeCanvas() {
+      const container = canvas.parentElement;
+      const w = container.clientWidth;
+      const ratio = 900 / 550;
+      canvas.style.width = w + 'px';
+      canvas.style.height = Math.round(w / ratio) + 'px';
+      canvas.width = 900;
+      canvas.height = 550;
+      canvasScale = w / 900;
+    }
+
+    function drawShipOutline(ctx) {
+      // Ship hull outline
+      ctx.save();
+      ctx.strokeStyle = '#2A4A7F';
+      ctx.lineWidth = 2;
+      ctx.fillStyle = 'rgba(26, 54, 93, 0.15)';
+      ctx.beginPath();
+      ctx.moveTo(20, 20);
+      ctx.lineTo(860, 20);
+      ctx.quadraticCurveTo(890, 20, 890, 50);
+      ctx.lineTo(890, 490);
+      ctx.quadraticCurveTo(890, 520, 860, 530);
+      ctx.lineTo(430, 545);
+      ctx.quadraticCurveTo(420, 548, 410, 545);
+      ctx.lineTo(20, 530);
+      ctx.quadraticCurveTo(10, 520, 10, 490);
+      ctx.lineTo(10, 50);
+      ctx.quadraticCurveTo(10, 20, 20, 20);
+      ctx.closePath();
+      ctx.fill();
+      ctx.stroke();
+      ctx.restore();
+
+      // Deck labels
+      ctx.save();
+      ctx.fillStyle = 'rgba(160, 174, 192, 0.3)';
+      ctx.font = '11px sans-serif';
+      ctx.fillText('PORT SIDE (좌현)', 380, 45);
+      ctx.fillText('STARBOARD SIDE (우현)', 370, 395);
+      ctx.fillText('DECK 2 - PASSENGER', 370, 510);
+      ctx.restore();
+
+      // Room outlines
+      ctx.save();
+      ctx.strokeStyle = 'rgba(45, 55, 72, 0.5)';
+      ctx.lineWidth = 1;
+      // Port cabins zone
+      ctx.strokeRect(60, 35, 710, 60);
+      // Starboard cabins zone
+      ctx.strokeRect(60, 335, 710, 55);
+      // Corridor zones
+      ctx.fillStyle = 'rgba(30, 48, 68, 0.3)';
+      ctx.fillRect(60, 110, 780, 40);
+      ctx.fillRect(60, 260, 780, 40);
+      ctx.restore();
+    }
+
+    function drawEdges(ctx) {
+      edges.forEach(([a, b, cap, risk, dist]) => {
+        const na = nodes[a], nb = nodes[b];
+
+        // Color based on risk
+        let color;
+        if (fireNodes.has(a) || fireNodes.has(b)) {
+          color = '#E53E3E';
+        } else if (risk > 0.6) {
+          color = '#E53E3E';
+        } else if (risk > 0.3) {
+          color = '#ECC94B';
+        } else {
+          color = 'rgba(56, 161, 105, 0.4)';
+        }
+
+        ctx.save();
+        ctx.strokeStyle = color;
+        ctx.lineWidth = cap * 1.2;
+        ctx.globalAlpha = 0.5;
+        ctx.beginPath();
+        ctx.moveTo(na.x, na.y);
+        ctx.lineTo(nb.x, nb.y);
+        ctx.stroke();
+        ctx.restore();
+      });
+    }
+
+    function drawNodes(ctx, time) {
+      nodes.forEach(n => {
+        ctx.save();
+
+        if (n.type === 'cabin') {
+          ctx.fillStyle = '#4299E1';
+          ctx.beginPath();
+          ctx.arc(n.x, n.y, 7, 0, Math.PI * 2);
+          ctx.fill();
+        } else if (n.type === 'corridor') {
+          ctx.fillStyle = '#718096';
+          ctx.beginPath();
+          ctx.arc(n.x, n.y, 5, 0, Math.PI * 2);
+          ctx.fill();
+        } else if (n.type === 'stairway') {
+          ctx.fillStyle = '#ED8936';
+          ctx.fillRect(n.x - 7, n.y - 7, 14, 14);
+          ctx.strokeStyle = '#C05621';
+          ctx.lineWidth = 1;
+          ctx.strokeRect(n.x - 7, n.y - 7, 14, 14);
+        } else if (n.type === 'exit') {
+          ctx.fillStyle = '#38A169';
+          ctx.beginPath();
+          ctx.arc(n.x, n.y, 14, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.strokeStyle = '#2F855A';
+          ctx.lineWidth = 2;
+          ctx.beginPath();
+          ctx.arc(n.x, n.y, 14, 0, Math.PI * 2);
+          ctx.stroke();
+          // Label
+          ctx.fillStyle = '#fff';
+          ctx.font = 'bold 8px sans-serif';
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          ctx.fillText('EXIT', n.x, n.y);
+        }
+
+        // Fire overlay
+        if (fireNodes.has(n.id)) {
+          const pulseR = 12 + Math.sin(time * 4) * 4;
+          ctx.fillStyle = 'rgba(229, 62, 62, ' + (0.5 + Math.sin(time * 4) * 0.3) + ')';
+          ctx.beginPath();
+          ctx.arc(n.x, n.y, pulseR, 0, Math.PI * 2);
+          ctx.fill();
+
+          // Outer pulse ring
+          const ringR = 20 + Math.sin(time * 2) * 8;
+          ctx.strokeStyle = 'rgba(229, 62, 62, ' + (0.3 - Math.sin(time * 2) * 0.2) + ')';
+          ctx.lineWidth = 2;
+          ctx.beginPath();
+          ctx.arc(n.x, n.y, ringR, 0, Math.PI * 2);
+          ctx.stroke();
+
+          ctx.fillStyle = '#fff';
+          ctx.font = 'bold 7px sans-serif';
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          ctx.fillText('FIRE', n.x, n.y);
+        }
+
+        // Node label (only for non-fire, non-exit)
+        if (!fireNodes.has(n.id) && n.type !== 'exit') {
+          ctx.fillStyle = 'rgba(160, 174, 192, 0.5)';
+          ctx.font = '7px sans-serif';
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'top';
+          ctx.fillText(n.label, n.x, n.y + (n.type === 'stairway' ? 10 : 9));
+        }
+
+        ctx.restore();
+      });
+    }
+
+    function drawRoute(ctx, path, color, lineWidth, dashOffset, isAnimated) {
+      if (!path || path.length < 2) return;
+      ctx.save();
+      ctx.strokeStyle = color;
+      ctx.lineWidth = lineWidth;
+      ctx.lineCap = 'round';
+      ctx.lineJoin = 'round';
+
+      if (isAnimated) {
+        ctx.setLineDash([10, 6]);
+        ctx.lineDashOffset = -dashOffset;
+      }
+
+      ctx.beginPath();
+      ctx.moveTo(nodes[path[0]].x, nodes[path[0]].y);
+      for (let i = 1; i < path.length; i++) {
+        ctx.lineTo(nodes[path[i]].x, nodes[path[i]].y);
+      }
+      ctx.stroke();
+
+      // Draw direction arrows along path
+      if (isAnimated && path.length > 2) {
+        for (let i = 1; i < path.length - 1; i += 2) {
+          const px = nodes[path[i]].x;
+          const py = nodes[path[i]].y;
+          const nx = nodes[path[i + 1]].x;
+          const ny = nodes[path[i + 1]].y;
+          const angle = Math.atan2(ny - py, nx - px);
+
+          ctx.save();
+          ctx.translate(px, py);
+          ctx.rotate(angle);
+          ctx.fillStyle = color;
+          ctx.beginPath();
+          ctx.moveTo(8, 0);
+          ctx.lineTo(0, -4);
+          ctx.lineTo(0, 4);
+          ctx.closePath();
+          ctx.fill();
+          ctx.restore();
+        }
+      }
+
+      // Start marker
+      ctx.fillStyle = color;
+      ctx.beginPath();
+      ctx.arc(nodes[path[0]].x, nodes[path[0]].y, 5, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.strokeStyle = '#fff';
+      ctx.lineWidth = 1;
+      ctx.setLineDash([]);
+      ctx.beginPath();
+      ctx.arc(nodes[path[0]].x, nodes[path[0]].y, 5, 0, Math.PI * 2);
+      ctx.stroke();
+
+      ctx.restore();
+    }
+
+    function drawCongestionZones(ctx, edgeUsage) {
+      // Draw orange glow on congested edges
+      Object.entries(edgeUsage).forEach(([key, count]) => {
+        if (count < 2) return;
+        const [a, b] = key.split('-').map(Number);
+        const na = nodes[a], nb = nodes[b];
+        const mx = (na.x + nb.x) / 2;
+        const my = (na.y + nb.y) / 2;
+        const r = 15 + count * 5;
+
+        ctx.save();
+        const grad = ctx.createRadialGradient(mx, my, 0, mx, my, r);
+        grad.addColorStop(0, 'rgba(237, 137, 54, 0.35)');
+        grad.addColorStop(1, 'rgba(237, 137, 54, 0)');
+        ctx.fillStyle = grad;
+        ctx.beginPath();
+        ctx.arc(mx, my, r, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Count label
+        ctx.fillStyle = '#ED8936';
+        ctx.font = 'bold 9px sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(count + 'x', mx, my - r - 3);
+        ctx.restore();
+      });
+    }
+
+    function drawBottleneckMarkers(ctx, bottlenecks) {
+      bottlenecks.forEach(bn => {
+        const n = nodes[bn.nodeId];
+        if (!n) return;
+        ctx.save();
+        ctx.strokeStyle = '#ED8936';
+        ctx.lineWidth = 2;
+        ctx.setLineDash([3, 3]);
+        ctx.beginPath();
+        ctx.arc(n.x, n.y, 18, 0, Math.PI * 2);
+        ctx.stroke();
+
+        ctx.setLineDash([]);
+        ctx.fillStyle = '#ED8936';
+        ctx.font = 'bold 8px sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText('x' + bn.count, n.x, n.y - 22);
+        ctx.restore();
+      });
+    }
+
+    // ===================================================================
+    // MAIN RENDER LOOP
+    // ===================================================================
+    let lastTime = 0;
+
+    function render(timestamp) {
+      const time = timestamp / 1000;
+      animPhase = (time * 30) % 100;
+
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      // Background
+      ctx.fillStyle = '#2D3E50';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      drawShipOutline(ctx);
+      drawEdges(ctx);
+
+      // Draw routes
+      if (showAllRoutes) {
+        const allR = computeAllRoutes(currentRouteMode);
+        allRoutes = allR;
+        const analysis = detectConflicts(allR);
+
+        drawCongestionZones(ctx, analysis.edgeUsage);
+        drawBottleneckMarkers(ctx, analysis.bottlenecks);
+
+        passengers.forEach(pax => {
+          if (allR[pax.id]) {
+            drawRoute(ctx, allR[pax.id].path, pax.color, 2.5, animPhase, true);
+          }
+        });
+
+        updateStatistics(allR, analysis);
+      } else if (selectedPassenger !== null) {
+        const pax = passengers[selectedPassenger];
+        const routes = computeAlternativeRoutes(pax, currentRouteMode);
+
+        // Draw alternatives first (lighter)
+        for (let i = routes.length - 1; i >= 1; i--) {
+          drawRoute(ctx, routes[i].path, pax.color + '44', 1.5, animPhase * 0.7, false);
+        }
+
+        // Draw primary route (animated)
+        if (routes.length > 0) {
+          drawRoute(ctx, routes[0].path, pax.color, 3.5, animPhase, true);
+          allRoutes[pax.id] = routes[0];
+        }
+
+        // Update route details panel
+        if (routes.length > 0) {
+          updateRouteDetails(pax, routes);
+        }
+      }
+
+      drawNodes(ctx, time);
+
+      // Draw passenger locations
+      passengers.forEach(pax => {
+        const n = nodes[pax.nodeId];
+        if (n) {
+          ctx.save();
+          ctx.font = '14px sans-serif';
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          ctx.fillText(pax.icon, n.x, n.y - 18);
+
+          if (pax.id === selectedPassenger) {
+            ctx.strokeStyle = pax.color;
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.arc(n.x, n.y, 12, 0, Math.PI * 2);
+            ctx.stroke();
+          }
+          ctx.restore();
+        }
+      });
+
+      requestAnimationFrame(render);
+    }
+
+    // ===================================================================
+    // UI UPDATES
+    // ===================================================================
+    function updateRouteDetails(pax, routes) {
+      const primary = routes[0];
+      const metricsEl = document.getElementById('routeMetrics');
+      const exitNode = nodes[primary.path[primary.path.length - 1]];
+
+      let html = '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px;">';
+      html += '<div class="route-metric"><span class="route-metric-label">승객</span><span class="route-metric-value">' + pax.icon + ' ' + pax.name + '</span></div>';
+      html += '<div class="route-metric"><span class="route-metric-label">출발</span><span class="route-metric-value">' + pax.cabin + '</span></div>';
+      html += '<div class="route-metric"><span class="route-metric-label">총 거리</span><span class="route-metric-value">' + Math.round(primary.distance) + ' units</span></div>';
+      html += '<div class="route-metric"><span class="route-metric-label">예상 시간</span><span class="route-metric-value">' + primary.time.toFixed(1) + ' 초</span></div>';
+      html += '<div class="route-metric"><span class="route-metric-label">경유 노드</span><span class="route-metric-value">' + primary.path.length + ' 개</span></div>';
+      html += '<div class="route-metric"><span class="route-metric-label">위험도 점수</span><span class="route-metric-value" style="color:' + (primary.risk > 5 ? 'var(--danger)' : primary.risk > 2 ? 'var(--warning)' : 'var(--safe)') + '">' + primary.risk.toFixed(1) + '</span></div>';
+      html += '<div class="route-metric"><span class="route-metric-label">목적지</span><span class="route-metric-value">' + exitNode.label + '</span></div>';
+      html += '<div class="route-metric"><span class="route-metric-label">이동능력 &mu;</span><span class="route-metric-value">' + pax.mobility.toFixed(2) + '</span></div>';
+      html += '</div>';
+
+      // Path detail
+      html += '<div style="font-size:0.75rem; color:var(--text-muted); margin-bottom:8px;"><strong>경로:</strong> ';
+      html += primary.path.map(nid => nodes[nid].label).join(' &rarr; ');
+      html += '</div>';
+
+      // Alternative routes
+      if (routes.length > 1) {
+        html += '<div class="alt-routes"><strong style="font-size:0.78rem; color:var(--text-secondary);">대안 경로:</strong>';
+        for (let i = 1; i < routes.length; i++) {
+          const alt = routes[i];
+          html += '<div class="alt-route-item">&bull; 대안 ' + i + ': ' + Math.round(alt.distance) + ' units, ' + alt.time.toFixed(1) + '초, 위험도 ' + alt.risk.toFixed(1) + '</div>';
+        }
+        html += '</div>';
+      }
+
+      metricsEl.innerHTML = html;
+    }
+
+    function updateStatistics(routesMap, analysis) {
+      const routeArr = Object.values(routesMap).filter(Boolean);
+      if (routeArr.length === 0) return;
+
+      const times = routeArr.map(r => r.time);
+      const avgTime = times.reduce((a, b) => a + b, 0) / times.length;
+      const maxTime = Math.max(...times);
+
+      // Standard route comparison
+      const stdRoutes = computeAllRoutes('standard');
+      const stdTimes = Object.values(stdRoutes).filter(Boolean).map(r => r.time);
+      const stdAvg = stdTimes.length > 0 ? stdTimes.reduce((a, b) => a + b, 0) / stdTimes.length : 0;
+
+      document.getElementById('statAvgTime').textContent = avgTime.toFixed(1) + '초';
+      document.getElementById('statAvgTimeStd').textContent = stdAvg.toFixed(1) + '초';
+      document.getElementById('statMaxTime').textContent = maxTime.toFixed(1) + '초';
+      document.getElementById('statConflicts').textContent = analysis.conflicts + '회';
+      document.getElementById('statBottlenecks').textContent = analysis.bottlenecks.length + '개';
+    }
+
+    function updateComparisonGrid() {
+      const modes = ['standard', 'health', 'rl'];
+      const prefixes = ['cmpStd', 'cmpHp', 'cmpRl'];
+
+      modes.forEach((mode, i) => {
+        const routes = computeAllRoutes(mode);
+        const analysis = detectConflicts(routes);
+        const routeArr = Object.values(routes).filter(Boolean);
+        if (routeArr.length === 0) return;
+
+        const avgDist = routeArr.reduce((s, r) => s + r.distance, 0) / routeArr.length;
+        const avgTime = routeArr.reduce((s, r) => s + r.time, 0) / routeArr.length;
+        const avgRisk = routeArr.reduce((s, r) => s + r.risk, 0) / routeArr.length;
+
+        document.getElementById(prefixes[i] + 'Dist').textContent = Math.round(avgDist) + ' u';
+        document.getElementById(prefixes[i] + 'Time').textContent = avgTime.toFixed(1) + '초';
+        document.getElementById(prefixes[i] + 'Risk').textContent = avgRisk.toFixed(1);
+        document.getElementById(prefixes[i] + 'Conf').textContent = analysis.conflicts + '회';
+      });
+    }
+
+    function drawBarChart() {
+      const barCanvas = document.getElementById('barChartCanvas');
+      const bctx = barCanvas.getContext('2d');
+      const w = barCanvas.width, h = barCanvas.height;
+
+      bctx.clearRect(0, 0, w, h);
+      bctx.fillStyle = '#2D3E50';
+      bctx.fillRect(0, 0, w, h);
+
+      const modes = ['standard', 'health', 'rl'];
+      const labels = ['표준 경로', '건강 반영', 'AI 최적화'];
+      const colors = ['#718096', '#ED8936', '#38A169'];
+
+      const data = modes.map(mode => {
+        const routes = computeAllRoutes(mode);
+        const arr = Object.values(routes).filter(Boolean);
+        return arr.length > 0 ? arr.reduce((s, r) => s + r.time, 0) / arr.length : 0;
+      });
+
+      const maxVal = Math.max(...data) * 1.2;
+      const barWidth = 80;
+      const gap = 60;
+      const startX = (w - (barWidth * 3 + gap * 2)) / 2;
+      const chartBottom = h - 50;
+      const chartTop = 30;
+      const chartHeight = chartBottom - chartTop;
+
+      // Y axis
+      bctx.strokeStyle = '#2D3748';
+      bctx.lineWidth = 1;
+      bctx.beginPath();
+      bctx.moveTo(startX - 10, chartTop);
+      bctx.lineTo(startX - 10, chartBottom);
+      bctx.lineTo(w - 30, chartBottom);
+      bctx.stroke();
+
+      // Grid lines
+      for (let i = 0; i <= 4; i++) {
+        const y = chartBottom - (chartHeight * i / 4);
+        const val = (maxVal * i / 4).toFixed(0);
+        bctx.strokeStyle = 'rgba(45, 55, 72, 0.5)';
+        bctx.beginPath();
+        bctx.moveTo(startX - 10, y);
+        bctx.lineTo(w - 30, y);
+        bctx.stroke();
+
+        bctx.fillStyle = '#718096';
+        bctx.font = '10px sans-serif';
+        bctx.textAlign = 'right';
+        bctx.textBaseline = 'middle';
+        bctx.fillText(val + 's', startX - 15, y);
+      }
+
+      // Bars
+      data.forEach((val, i) => {
+        const x = startX + i * (barWidth + gap);
+        const barH = (val / maxVal) * chartHeight;
+        const y = chartBottom - barH;
+
+        // Bar gradient
+        const grad = bctx.createLinearGradient(x, y, x, chartBottom);
+        grad.addColorStop(0, colors[i]);
+        grad.addColorStop(1, colors[i] + '66');
+        bctx.fillStyle = grad;
+
+        // Rounded top bar
+        const r = 4;
+        bctx.beginPath();
+        bctx.moveTo(x + r, y);
+        bctx.lineTo(x + barWidth - r, y);
+        bctx.quadraticCurveTo(x + barWidth, y, x + barWidth, y + r);
+        bctx.lineTo(x + barWidth, chartBottom);
+        bctx.lineTo(x, chartBottom);
+        bctx.lineTo(x, y + r);
+        bctx.quadraticCurveTo(x, y, x + r, y);
+        bctx.closePath();
+        bctx.fill();
+
+        // Value on top
+        bctx.fillStyle = colors[i];
+        bctx.font = 'bold 13px sans-serif';
+        bctx.textAlign = 'center';
+        bctx.fillText(val.toFixed(1) + '초', x + barWidth / 2, y - 10);
+
+        // Label below
+        bctx.fillStyle = '#A0AEC0';
+        bctx.font = '11px sans-serif';
+        bctx.textAlign = 'center';
+        bctx.fillText(labels[i], x + barWidth / 2, chartBottom + 18);
+      });
+    }
+
+    // ===================================================================
+    // PASSENGER PANEL
+    // ===================================================================
+    function buildPassengerPanel() {
+      const panel = document.getElementById('passengerPanel');
+      let html = '<h3>\u{1F6B6} 승객 프로필 <span class="text-muted" style="font-size:0.75em;">Passengers</span></h3>';
+
+      passengers.forEach(pax => {
+        const mobilityPercent = Math.round(pax.mobility * 100);
+        const mobilityColor = pax.mobility >= 0.8 ? '#38A169' : pax.mobility >= 0.5 ? '#ED8936' : '#E53E3E';
+
+        html += '<div class="pax-card' + (pax.id === selectedPassenger ? ' selected' : '') + '" data-pax-id="' + pax.id + '">';
+        html += '  <div class="pax-header">';
+        html += '    <span class="pax-name">' + pax.icon + ' ' + pax.name + '</span>';
+        html += '    <span style="font-size:0.7rem; color:var(--text-muted);">' + pax.age + '세</span>';
+        html += '  </div>';
+        html += '  <div class="pax-details">';
+        html += '    <span>객실: ' + pax.cabin + '</span>';
+        html += '    <span>상태: ' + pax.health + '</span>';
+        html += '  </div>';
+        html += '  <div class="pax-mobility">';
+        html += '    <span style="font-size:0.7rem; color:var(--text-muted);">&mu;=' + pax.mobility.toFixed(2) + '</span>';
+        html += '    <div class="mobility-bar">';
+        html += '      <div class="mobility-fill" style="width:' + mobilityPercent + '%; background:' + mobilityColor + ';"></div>';
+        html += '    </div>';
+        html += '  </div>';
+
+        if (pax.needs.length > 0) {
+          html += '  <div class="pax-needs">';
+          pax.needs.forEach(need => {
+            const needLabels = { wheelchair: 'wheelchair', elderly: 'elderly', child: 'child', injured: 'injured' };
+            html += '    <span class="need-tag need-tag--' + need + '">' + needLabels[need] + '</span>';
+          });
+          html += '  </div>';
+        }
+
+        html += '</div>';
+      });
+
+      panel.innerHTML = html;
+
+      // Attach click handlers
+      panel.querySelectorAll('.pax-card').forEach(card => {
+        card.addEventListener('click', () => {
+          const id = parseInt(card.dataset.paxId);
+          selectedPassenger = (selectedPassenger === id) ? null : id;
+          showAllRoutes = false;
+          buildPassengerPanel();
+          if (selectedPassenger !== null) {
+            const pax = passengers[selectedPassenger];
+            const routes = computeAlternativeRoutes(pax, currentRouteMode);
+            if (routes.length > 0) {
+              updateRouteDetails(pax, routes);
+            }
+          } else {
+            document.getElementById('routeMetrics').innerHTML = '<p style="font-size:0.82rem; color:var(--text-muted);">승객을 선택하면 경로 상세 정보가 표시됩니다.</p>';
+          }
+        });
+      });
+    }
+
+    // ===================================================================
+    // EVENT HANDLERS
+    // ===================================================================
+    function initControls() {
+      // Fire set mode
+      document.getElementById('btnSetFire').addEventListener('click', () => {
+        fireSetMode = !fireSetMode;
+        const btn = document.getElementById('btnSetFire');
+        const indicator = document.getElementById('fireModeIndicator');
+        btn.classList.toggle('active-mode', fireSetMode);
+        indicator.classList.toggle('visible', fireSetMode);
+      });
+
+      // Canvas click (for fire setting)
+      canvas.addEventListener('click', (e) => {
+        if (!fireSetMode) return;
+
+        const rect = canvas.getBoundingClientRect();
+        const mx = (e.clientX - rect.left) / canvasScale;
+        const my = (e.clientY - rect.top) / canvasScale;
+
+        // Find closest node
+        let closestId = -1;
+        let closestDist = Infinity;
+        nodes.forEach(n => {
+          const dx = n.x - mx;
+          const dy = n.y - my;
+          const d = Math.sqrt(dx * dx + dy * dy);
+          if (d < closestDist && d < 30) {
+            closestDist = d;
+            closestId = n.id;
+          }
+        });
+
+        if (closestId >= 0 && !exitNodeIds.includes(closestId)) {
+          if (fireNodes.has(closestId)) {
+            fireNodes.delete(closestId);
+          } else {
+            fireNodes.add(closestId);
+          }
+          updateEdgeRisks();
+        }
+      });
+
+      // Optimize button
+      document.getElementById('btnOptimize').addEventListener('click', () => {
+        updateEdgeRisks();
+        if (showAllRoutes) {
+          const allR = computeAllRoutes(currentRouteMode);
+          allRoutes = allR;
+          const analysis = detectConflicts(allR);
+          updateStatistics(allR, analysis);
+        }
+        updateComparisonGrid();
+        drawBarChart();
+      });
+
+      // Show all routes
+      document.getElementById('btnShowAll').addEventListener('click', () => {
+        showAllRoutes = !showAllRoutes;
+        if (showAllRoutes) {
+          selectedPassenger = null;
+          buildPassengerPanel();
+          const allR = computeAllRoutes(currentRouteMode);
+          allRoutes = allR;
+          const analysis = detectConflicts(allR);
+          updateStatistics(allR, analysis);
+          document.getElementById('routeMetrics').innerHTML = '<p style="font-size:0.82rem; color:var(--info);">전체 대피 경로가 표시 중입니다. ' + passengers.length + '명의 승객 경로가 캔버스에 표시됩니다.</p>';
+        }
+        document.getElementById('btnShowAll').style.borderColor = showAllRoutes ? '#fff' : '';
+        document.getElementById('btnShowAll').style.color = showAllRoutes ? '#fff' : '';
+      });
+
+      // Sliders
+      document.getElementById('congestionPenalty').addEventListener('input', (e) => {
+        congestionPenalty = parseFloat(e.target.value);
+        document.getElementById('congValLabel').textContent = congestionPenalty.toFixed(2);
+      });
+
+      document.getElementById('riskPenalty').addEventListener('input', (e) => {
+        riskPenalty = parseFloat(e.target.value);
+        document.getElementById('riskValLabel').textContent = riskPenalty.toFixed(2);
+      });
+
+      // Checkboxes
+      document.getElementById('chkWheelchair').addEventListener('change', (e) => {
+        wheelchairOnly = e.target.checked;
+      });
+
+      document.getElementById('chkCollision').addEventListener('change', (e) => {
+        collisionMin = e.target.checked;
+      });
+
+      // Tabs
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const tabId = btn.dataset.tab;
+          if (tabId === 'tab-standard') currentRouteMode = 'standard';
+          else if (tabId === 'tab-health') currentRouteMode = 'health';
+          else if (tabId === 'tab-rl') currentRouteMode = 'rl';
+        });
+      });
+
+      // Window resize
+      window.addEventListener('resize', () => {
+        resizeCanvas();
+        drawBarChart();
+      });
+    }
+
+    // ===================================================================
+    // INITIALIZATION
+    // ===================================================================
+    function init() {
+      resizeCanvas();
+      updateEdgeRisks();
+      buildPassengerPanel();
+      initControls();
+      updateComparisonGrid();
+      drawBarChart();
+      requestAnimationFrame(render);
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', init);
+    } else {
+      init();
+    }
+  })();
+  </script>
+
+    <!-- FOOTER -->
+    <footer class="footer-premium">
+      <div class="footer-premium-inner">
+        <div class="footer-grid">
+          <div class="footer-col footer-col--brand">
+            <div class="footer-logo"><img src="firenavi-logo.svg" alt="FireNavi" style="height:40px;vertical-align:middle;"></div>
+            <p class="footer-tagline">AI 기반 실시간 생존 의사결정 플랫폼</p>
+            <p class="footer-desc">화재보다 빠르게 판단하는 AI.<br>길을 안내하는 것이 아니라 생존을 설계합니다.</p>
+            <div class="footer-badges">
+              <span class="footer-badge">Safety</span>
+              <span class="footer-badge">Security</span>
+              <span class="footer-badge">Operation</span>
+            </div>
+          </div>
+          <div class="footer-col">
+            <h4 class="footer-col-title">Core Modules</h4>
+            <ul class="footer-links">
+              <li><a href="a-technical-formulation.html">A. 기술 수식화</a></li>
+              <li><a href="b-industrial-architecture.html">B. 산업 아키텍처</a></li>
+              <li><a href="c-shipyard-proposal.html">C. 조선소 제안</a></li>
+              <li><a href="d-insurance-risk-model.html">D. 보험 리스크</a></li>
+            </ul>
+          </div>
+          <div class="footer-col">
+            <h4 class="footer-col-title">Interactive</h4>
+            <ul class="footer-links">
+              <li><a href="simulation.html">실시간 시뮬레이션</a></li>
+              <li><a href="risk-map.html">동적 위험지도</a></li>
+              <li><a href="route-optimizer.html">경로 최적화</a></li>
+            </ul>
+          </div>
+          <div class="footer-col">
+            <h4 class="footer-col-title">Resources</h4>
+            <ul class="footer-links">
+              <li><a href="../index.html">매뉴얼 페이지</a></li>
+              <li><a href="../technology.html">아키텍처 구조도</a></li>
+            </ul>
+            <h4 class="footer-col-title" style="margin-top:20px;">Contact</h4>
+            <ul class="footer-links">
+              <li><a href="mailto:jaiwshim@gmail.com">jaiwshim@gmail.com</a></li>
+            </ul>
+          </div>
+        </div>
+        <div class="footer-engines">
+          <div class="footer-engine"><span class="footer-engine-dot" style="background:#EF4444;"></span><span>Prediction Engine</span></div>
+          <div class="footer-engine"><span class="footer-engine-dot" style="background:#3B82F6;"></span><span>Behavior Engine</span></div>
+          <div class="footer-engine"><span class="footer-engine-dot" style="background:#7C3AED;"></span><span>Decision Engine</span></div>
+          <div class="footer-engine"><span class="footer-engine-dot" style="background:#EC4899;"></span><span>Priority Rescue AI</span></div>
+          <div class="footer-engine"><span class="footer-engine-dot" style="background:#06B6D4;"></span><span>WiFi Positioning</span></div>
+        </div>
+        <div class="footer-bottom">
+          <p>&copy; 2026 FireNavi. Patented Technology. All Rights Reserved.</p>
+          <p>9 Mathematical Models &middot; 29 Equations &middot; 5 Patents &middot; 3 AI Engines</p>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <script src="js/main.js"></script>
+<script src="js/common-nav-footer.js"></script>
+</body>
+</html>

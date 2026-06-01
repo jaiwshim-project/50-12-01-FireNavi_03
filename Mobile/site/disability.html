@@ -1,0 +1,1527 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FireNavi v3.0 — 핸디캡 30유형 정밀 보호 시스템</title>
+<meta name="description" content="신체·거동·부상·감각·인지·언어 6개 카테고리 30유형 핸디캡을 폰 OS 접근성 API로 자동 식별하여, 가장 약한 사람을 가장 먼저 살리는 Disability-Aware Adaptive Emergency Routing 시스템.">
+<link rel="stylesheet" href="css/theme.css">
+<style>
+  /* =============================================
+     30 Types — Page-specific styles
+     ============================================= */
+
+  /* Hero variation */
+  .hero.disability-hero {
+    background:
+      radial-gradient(circle at 20% 30%, rgba(236, 72, 153, 0.10), transparent 50%),
+      radial-gradient(circle at 80% 70%, rgba(139, 92, 246, 0.10), transparent 50%),
+      var(--grad-cream);
+  }
+  .hero-quote {
+    margin-top: 28px; max-width: 720px; margin-left: auto; margin-right: auto;
+    font-size: 1.05rem; color: var(--text-3);
+    font-style: italic;
+    padding: 18px 24px; border-left: 3px solid var(--gold);
+    background: rgba(255,255,255,0.55); border-radius: 8px;
+    text-align: left;
+  }
+
+  /* WHY 30 — vs 6 */
+  .why-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 24px;
+  }
+  .why-col {
+    background: white; border-radius: var(--r-lg); padding: 32px;
+    border: 1px solid var(--line); box-shadow: var(--shadow-sm);
+  }
+  .why-col.old { border-top: 4px solid var(--bordeaux); }
+  .why-col.new { border-top: 4px solid var(--success); }
+  .why-col h3 { font-size: 1.2rem; margin-bottom: 14px; }
+  .why-col.old h3 { color: var(--bordeaux); }
+  .why-col.new h3 { color: var(--success); }
+  .why-col ul { list-style: none; padding: 0; }
+  .why-col li {
+    padding: 10px 0; font-size: 0.92rem;
+    color: var(--text-2);
+    border-bottom: 1px dashed var(--line-soft);
+    display: flex; gap: 10px; align-items: flex-start;
+  }
+  .why-col li:last-child { border-bottom: 0; }
+  .why-col li .mark {
+    flex-shrink: 0; font-weight: 700; min-width: 18px;
+  }
+  .why-col.old .mark { color: var(--bordeaux); }
+  .why-col.new .mark { color: var(--success); }
+
+  /* Category cards */
+  .cat-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;
+  }
+  .cat-card {
+    background: white; border-radius: var(--r-lg);
+    border: 1px solid var(--line); box-shadow: var(--shadow-sm);
+    padding: 0; overflow: hidden;
+    transition: all 0.3s;
+  }
+  .cat-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-md); }
+  .cat-header {
+    padding: 18px 22px; color: white;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .cat-header .cat-letter {
+    font-size: 1.5rem; font-weight: 900;
+    background: rgba(255,255,255,0.22); width: 36px; height: 36px;
+    border-radius: 8px; display: flex; align-items: center; justify-content: center;
+  }
+  .cat-header .cat-title { font-size: 1.05rem; font-weight: 700; }
+  .cat-header .cat-count {
+    font-size: 0.74rem; padding: 3px 10px;
+    background: rgba(255,255,255,0.25); border-radius: 999px;
+    font-weight: 700;
+  }
+  .cat-body { padding: 18px 22px; }
+  .cat-body ul { list-style: none; padding: 0; }
+  .cat-body li {
+    font-size: 0.88rem; color: var(--text-2);
+    padding: 6px 0;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .cat-body li .dot {
+    width: 10px; height: 10px; border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .cat-A .cat-header { background: linear-gradient(135deg, #10B981 0%, #047857 100%); }
+  .cat-B .cat-header { background: linear-gradient(135deg, #EC4899 0%, #BE185D 100%); }
+  .cat-C .cat-header { background: linear-gradient(135deg, #EF4444 0%, #991B1B 100%); }
+  .cat-D .cat-header { background: linear-gradient(135deg, #06B6D4 0%, #0E7490 100%); }
+  .cat-E .cat-header { background: linear-gradient(135deg, #D946EF 0%, #A21CAF 100%); }
+  .cat-F .cat-header { background: linear-gradient(135deg, #84CC16 0%, #4D7C0F 100%); }
+
+  /* Full 30 table */
+  .table-30 {
+    width: 100%; border-collapse: collapse; font-size: 0.85rem;
+    background: white;
+  }
+  .table-30 thead th {
+    background: var(--navy); color: white;
+    padding: 12px 10px; text-align: left;
+    font-weight: 700; font-size: 0.78rem;
+    border-bottom: 2px solid var(--gold);
+    position: sticky; top: 0;
+    white-space: nowrap;
+  }
+  .table-30 tbody td {
+    padding: 9px 10px; border-bottom: 1px solid var(--line);
+    color: var(--text-2);
+    vertical-align: middle;
+  }
+  .table-30 tbody tr:hover td { background: rgba(201,169,97,0.06); }
+  .table-30 .num-cell {
+    font-family: ui-monospace, monospace;
+    font-weight: 700; color: var(--text-3);
+    width: 30px;
+  }
+  .table-30 .type-cell {
+    font-weight: 700; color: var(--navy);
+    display: flex; align-items: center; gap: 8px;
+    white-space: nowrap;
+  }
+  .table-30 .type-cell .color-dot {
+    width: 12px; height: 12px; border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .table-30 .icon-cell { text-align: center; font-size: 1rem; }
+  .table-30 .priority-cell {
+    font-weight: 800;
+    text-align: center;
+    width: 50px;
+  }
+  .table-30 .channel-cell {
+    color: var(--text-3); font-size: 0.78rem;
+  }
+
+  /* Category row backgrounds (subtle) */
+  .table-30 tbody tr.cat-row-A td { background: rgba(16, 185, 129, 0.03); }
+  .table-30 tbody tr.cat-row-B td { background: rgba(236, 72, 153, 0.03); }
+  .table-30 tbody tr.cat-row-C td { background: rgba(239, 68, 68, 0.03); }
+  .table-30 tbody tr.cat-row-D td { background: rgba(6, 182, 212, 0.03); }
+  .table-30 tbody tr.cat-row-E td { background: rgba(217, 70, 239, 0.03); }
+  .table-30 tbody tr.cat-row-F td { background: rgba(132, 204, 22, 0.03); }
+
+  .table-30 tbody tr.cat-row-A:hover td { background: rgba(16, 185, 129, 0.08); }
+  .table-30 tbody tr.cat-row-B:hover td { background: rgba(236, 72, 153, 0.08); }
+  .table-30 tbody tr.cat-row-C:hover td { background: rgba(239, 68, 68, 0.08); }
+  .table-30 tbody tr.cat-row-D:hover td { background: rgba(6, 182, 212, 0.08); }
+  .table-30 tbody tr.cat-row-E:hover td { background: rgba(217, 70, 239, 0.08); }
+  .table-30 tbody tr.cat-row-F:hover td { background: rgba(132, 204, 22, 0.08); }
+
+  /* Category section header in table */
+  .table-30 tr.cat-section td {
+    padding: 14px 14px;
+    font-weight: 800;
+    color: white;
+    font-size: 0.85rem;
+    letter-spacing: 0.02em;
+  }
+  .table-30 tr.cat-section-A td { background: linear-gradient(90deg, #10B981 0%, #047857 100%); }
+  .table-30 tr.cat-section-B td { background: linear-gradient(90deg, #EC4899 0%, #BE185D 100%); }
+  .table-30 tr.cat-section-C td { background: linear-gradient(90deg, #EF4444 0%, #991B1B 100%); }
+  .table-30 tr.cat-section-D td { background: linear-gradient(90deg, #06B6D4 0%, #0E7490 100%); }
+  .table-30 tr.cat-section-E td { background: linear-gradient(90deg, #D946EF 0%, #A21CAF 100%); }
+  .table-30 tr.cat-section-F td { background: linear-gradient(90deg, #84CC16 0%, #4D7C0F 100%); }
+
+  /* Identification cards */
+  .ident-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px;
+  }
+  .ident-card {
+    background: white; border-radius: var(--r-lg);
+    padding: 26px; border: 1px solid var(--line);
+    box-shadow: var(--shadow-sm); transition: all 0.3s;
+    position: relative; overflow: hidden;
+  }
+  .ident-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-md); border-color: var(--gold); }
+  .ident-card .ident-icon {
+    width: 50px; height: 50px; border-radius: 12px;
+    background: var(--gold-soft); display: flex; align-items: center; justify-content: center;
+    font-size: 1.6rem; margin-bottom: 16px;
+  }
+  .ident-card.primary .ident-icon { background: var(--bordeaux-soft); }
+  .ident-card.primary { border-top: 4px solid var(--bordeaux); }
+  .ident-card .ident-tag {
+    position: absolute; top: 16px; right: 16px;
+    font-size: 0.68rem; font-weight: 700;
+    padding: 3px 8px; border-radius: 999px;
+    background: var(--bg-soft); color: var(--text-3);
+  }
+  .ident-card.primary .ident-tag {
+    background: var(--bordeaux); color: white;
+  }
+  .ident-card h4 {
+    font-size: 1.05rem; color: var(--navy);
+    margin-bottom: 8px; font-weight: 700;
+  }
+  .ident-card p {
+    color: var(--text-3); font-size: 0.88rem;
+    line-height: 1.6;
+  }
+  .ident-card .ident-code {
+    margin-top: 12px;
+    font-family: ui-monospace, monospace;
+    font-size: 0.72rem;
+    background: var(--bg-soft); padding: 6px 10px;
+    border-radius: 4px; color: var(--text-2);
+    border: 1px solid var(--line);
+  }
+
+  /* Channel matrix */
+  .channel-matrix {
+    width: 100%; border-collapse: collapse;
+    background: white; font-size: 0.84rem;
+  }
+  .channel-matrix thead th {
+    background: var(--navy); color: white;
+    padding: 12px 10px; text-align: center;
+    font-weight: 700; font-size: 0.78rem;
+    border-bottom: 2px solid var(--gold);
+  }
+  .channel-matrix thead th:first-child { text-align: left; }
+  .channel-matrix tbody td {
+    padding: 10px; text-align: center;
+    border-bottom: 1px solid var(--line);
+    font-size: 1.05rem;
+  }
+  .channel-matrix tbody td:first-child {
+    text-align: left; font-weight: 700; color: var(--navy);
+    font-size: 0.88rem;
+  }
+  .channel-matrix tbody tr:hover td { background: var(--bg-soft); }
+  .ch-mark { color: var(--success); font-weight: 800; }
+  .ch-mark-strong { color: var(--bordeaux); font-weight: 800; }
+  .ch-none { color: var(--text-mute); }
+
+  /* Priority cards */
+  .priority-grid {
+    display: grid; grid-template-columns: 1fr; gap: 14px;
+  }
+  .priority-card {
+    background: white; border-radius: var(--r-lg);
+    border: 1px solid var(--line); box-shadow: var(--shadow-sm);
+    padding: 22px 26px;
+    display: grid; grid-template-columns: 80px 1fr auto; gap: 22px;
+    align-items: center;
+    transition: all 0.3s;
+    position: relative; overflow: hidden;
+  }
+  .priority-card:hover { transform: translateX(4px); box-shadow: var(--shadow-md); }
+  .priority-card::before {
+    content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 6px;
+  }
+  .priority-num {
+    font-size: 2.6rem; font-weight: 900; line-height: 1;
+    text-align: center;
+  }
+  .priority-info h4 {
+    font-size: 1.05rem; color: var(--navy);
+    margin-bottom: 4px; font-weight: 700;
+  }
+  .priority-info .types { color: var(--text-3); font-size: 0.88rem; }
+  .priority-tag {
+    font-size: 0.78rem; font-weight: 800;
+    padding: 6px 14px; border-radius: 999px;
+    white-space: nowrap;
+  }
+
+  .priority-card.p1::before { background: linear-gradient(180deg, #DC2626, #991B1B); }
+  .priority-card.p1 .priority-num { color: #DC2626; animation: blink 1.5s infinite; }
+  .priority-card.p1 .priority-tag { background: #FEE2E2; color: #991B1B; }
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+
+  .priority-card.p2::before { background: linear-gradient(180deg, #EA580C, #C2410C); }
+  .priority-card.p2 .priority-num { color: #EA580C; }
+  .priority-card.p2 .priority-tag { background: #FED7AA; color: #9A3412; }
+
+  .priority-card.p3::before { background: linear-gradient(180deg, #FACC15, #CA8A04); }
+  .priority-card.p3 .priority-num { color: #CA8A04; }
+  .priority-card.p3 .priority-tag { background: #FEF3C7; color: #854D0E; }
+
+  .priority-card.p4::before { background: linear-gradient(180deg, #A855F7, #7E22CE); }
+  .priority-card.p4 .priority-num { color: #A855F7; }
+  .priority-card.p4 .priority-tag { background: #F3E8FF; color: #6B21A8; }
+
+  .priority-card.p5::before { background: linear-gradient(180deg, #22C55E, #15803D); }
+  .priority-card.p5 .priority-num { color: #22C55E; }
+  .priority-card.p5 .priority-tag { background: #DCFCE7; color: #166534; }
+
+  .priority-card.p6::before { background: linear-gradient(180deg, #3B82F6, #1D4ED8); }
+  .priority-card.p6 .priority-num { color: #3B82F6; }
+  .priority-card.p6 .priority-tag { background: #DBEAFE; color: #1E40AF; }
+
+  .priority-card.p7::before { background: linear-gradient(180deg, #94A3B8, #475569); }
+  .priority-card.p7 .priority-num { color: #64748B; }
+  .priority-card.p7 .priority-tag { background: #E2E8F0; color: #475569; }
+
+  /* Case studies */
+  .case-grid {
+    display: grid; grid-template-columns: 1fr; gap: 22px;
+  }
+  .case-card {
+    background: white; border-radius: var(--r-lg);
+    border: 1px solid var(--line); box-shadow: var(--shadow-sm);
+    padding: 0; overflow: hidden;
+    display: grid; grid-template-columns: 140px 1fr;
+    transition: all 0.3s;
+  }
+  .case-card:hover { box-shadow: var(--shadow-md); }
+  .case-icon-pane {
+    background: var(--bg-soft);
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    padding: 24px 12px;
+    border-right: 1px solid var(--line);
+  }
+  .case-icon-pane .big-icon {
+    font-size: 3rem; line-height: 1; margin-bottom: 10px;
+  }
+  .case-icon-pane .case-tag {
+    font-size: 0.72rem; font-weight: 700;
+    color: var(--gold-dark);
+    text-transform: uppercase; letter-spacing: 0.06em;
+  }
+  .case-body { padding: 24px 28px; }
+  .case-body h4 {
+    font-size: 1.2rem; color: var(--navy);
+    margin-bottom: 6px; font-weight: 700;
+  }
+  .case-body .case-detect {
+    font-size: 0.82rem; color: var(--text-3);
+    font-family: ui-monospace, monospace;
+    margin-bottom: 14px;
+    background: var(--bg-soft); padding: 6px 10px;
+    border-radius: 4px; display: inline-block;
+    border: 1px solid var(--line);
+  }
+  .case-body .case-flow {
+    color: var(--text-2); font-size: 0.92rem;
+    margin-bottom: 14px; line-height: 1.7;
+  }
+  .case-body .case-effect {
+    display: inline-flex; align-items: center; gap: 14px;
+    background: linear-gradient(135deg, #FEF3C7 0%, #FFFFFF 100%);
+    border: 1px solid var(--gold);
+    padding: 10px 16px; border-radius: 8px;
+    font-size: 0.88rem; font-weight: 600;
+  }
+  .case-effect .effect-bad { color: var(--bordeaux); text-decoration: line-through; }
+  .case-effect .arrow { color: var(--gold-dark); font-weight: 800; }
+  .case-effect .effect-good { color: var(--success); font-weight: 800; }
+
+  .case-card.case-hearing .case-icon-pane { background: linear-gradient(135deg, #CFFAFE 0%, #ECFEFF 100%); }
+  .case-card.case-visual .case-icon-pane { background: linear-gradient(135deg, #EDE9FE 0%, #F5F3FF 100%); }
+  .case-card.case-cognitive .case-icon-pane { background: linear-gradient(135deg, #FCE7F3 0%, #FDF2F8 100%); }
+  .case-card.case-wheelchair .case-icon-pane { background: linear-gradient(135deg, #FCE7F3 0%, #FBCFE8 100%); }
+  .case-card.case-foreign .case-icon-pane { background: linear-gradient(135deg, #ECFCCB 0%, #F7FEE7 100%); }
+  .case-card.case-unconscious .case-icon-pane { background: linear-gradient(135deg, #FEE2E2 0%, #FEF2F2 100%); }
+
+  /* Legal section */
+  .legal-grid {
+    display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px;
+  }
+  .legal-card {
+    background: white; border-radius: var(--r-lg);
+    padding: 28px; border: 1px solid var(--line);
+    box-shadow: var(--shadow-sm);
+    border-left: 4px solid var(--gold);
+    transition: all 0.3s;
+  }
+  .legal-card:hover { box-shadow: var(--shadow-md); border-left-color: var(--bordeaux); }
+  .legal-card .legal-source {
+    display: inline-block;
+    font-size: 0.72rem; font-weight: 700;
+    color: var(--gold-dark);
+    text-transform: uppercase; letter-spacing: 0.06em;
+    background: var(--gold-soft);
+    padding: 4px 10px; border-radius: 4px;
+    margin-bottom: 12px;
+  }
+  .legal-card h4 {
+    font-size: 1.05rem; color: var(--navy);
+    margin-bottom: 8px; font-weight: 700;
+  }
+  .legal-card p {
+    color: var(--text-3); font-size: 0.9rem;
+    line-height: 1.6;
+  }
+  .legal-card .legal-clause {
+    margin-top: 12px; padding: 12px;
+    background: var(--bg-soft); border-radius: 6px;
+    font-size: 0.84rem; color: var(--text-2);
+    border-left: 3px solid var(--gold);
+    font-style: italic;
+  }
+
+  /* Academic paper card */
+  .paper-card {
+    background: linear-gradient(135deg, #FAFAF8 0%, #FFFFFF 100%);
+    border-radius: var(--r-xl);
+    padding: 40px;
+    border: 1px solid var(--line);
+    box-shadow: var(--shadow-md);
+    position: relative;
+    overflow: hidden;
+  }
+  .paper-card::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 5px;
+    background: var(--grad-premium);
+  }
+  .paper-card .paper-tag {
+    display: inline-block;
+    background: var(--navy); color: var(--gold);
+    padding: 6px 14px; border-radius: 999px;
+    font-size: 0.74rem; font-weight: 700;
+    margin-bottom: 18px;
+    letter-spacing: 0.05em;
+  }
+  .paper-card h3 {
+    font-size: 1.5rem; color: var(--navy);
+    margin-bottom: 12px; line-height: 1.3;
+    font-weight: 800;
+  }
+  .paper-card .paper-en {
+    font-size: 1rem; color: var(--text-3);
+    font-style: italic;
+    margin-bottom: 18px;
+  }
+  .paper-card .paper-desc {
+    font-size: 0.95rem; color: var(--text-2);
+    line-height: 1.7;
+  }
+  .paper-card .paper-meta {
+    margin-top: 20px;
+    display: flex; gap: 8px; flex-wrap: wrap;
+  }
+
+  /* CTA links section */
+  .related-links {
+    display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px;
+  }
+  .related-link {
+    display: block; padding: 28px;
+    background: white; border-radius: var(--r-lg);
+    border: 1px solid var(--line); box-shadow: var(--shadow-sm);
+    text-decoration: none; color: inherit;
+    transition: all 0.3s;
+    border-left: 4px solid var(--gold);
+  }
+  .related-link:hover {
+    transform: translateY(-4px); box-shadow: var(--shadow-lg);
+    border-left-color: var(--bordeaux);
+    color: inherit;
+  }
+  .related-link .rl-tag {
+    font-size: 0.72rem; font-weight: 700;
+    color: var(--gold-dark);
+    text-transform: uppercase; letter-spacing: 0.06em;
+    margin-bottom: 8px;
+  }
+  .related-link h4 {
+    font-size: 1.2rem; color: var(--navy);
+    margin-bottom: 8px;
+  }
+  .related-link p {
+    color: var(--text-3); font-size: 0.92rem;
+  }
+  .related-link .rl-arrow {
+    margin-top: 14px; font-weight: 800;
+    color: var(--bordeaux);
+  }
+
+  /* Impact stat band */
+  .impact-band {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px;
+    margin-bottom: 32px;
+  }
+  .impact-stat {
+    background: white; padding: 22px;
+    border-radius: var(--r-lg); border: 1px solid var(--line);
+    box-shadow: var(--shadow-sm);
+    text-align: center;
+    border-top: 4px solid var(--gold);
+  }
+  .impact-stat .before {
+    font-size: 0.84rem; color: var(--bordeaux);
+    text-decoration: line-through;
+    margin-bottom: 4px;
+  }
+  .impact-stat .after {
+    font-size: 1.9rem; font-weight: 900;
+    color: var(--success);
+    line-height: 1;
+    margin-bottom: 6px;
+  }
+  .impact-stat .label {
+    font-size: 0.84rem; color: var(--text-3);
+    font-weight: 600;
+  }
+
+  /* Fade in */
+  .fade-in { opacity: 0; transform: translateY(20px); transition: all 0.7s; }
+  .fade-in.visible { opacity: 1; transform: translateY(0); }
+
+  /* Responsive */
+  @media (max-width: 1024px) {
+    .cat-grid, .ident-grid { grid-template-columns: repeat(2, 1fr); }
+    .why-grid { grid-template-columns: 1fr; }
+    .legal-grid { grid-template-columns: 1fr; }
+    .related-links { grid-template-columns: 1fr; }
+    .impact-band { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 768px) {
+    .cat-grid, .ident-grid { grid-template-columns: 1fr; }
+    .case-card { grid-template-columns: 1fr; }
+    .case-icon-pane { border-right: 0; border-bottom: 1px solid var(--line); padding: 18px; }
+    .priority-card { grid-template-columns: 60px 1fr; }
+    .priority-card .priority-tag { grid-column: 1 / -1; justify-self: start; }
+    .paper-card { padding: 28px 22px; }
+    .paper-card h3 { font-size: 1.2rem; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="topnav"><div class="topnav-inner"></div></nav>
+
+<!-- ================= HERO ================= -->
+<section class="hero disability-hero">
+  <div class="hero-inner">
+    <div class="eyebrow">DISABILITY-AWARE · 핸디캡 30유형 정밀 보호</div>
+    <h1>
+      가장 약한 사람을<br>
+      <span class="bordeaux-text">가장 먼저</span>, <span class="gold-text">가장 안전하게</span>
+    </h1>
+    <p class="subtitle">
+      청각장애·시각장애·인지장애·언어장벽·휠체어·임산부·영유아·의식불명까지.<br>
+      신체·거동·부상·감각·인지·언어 6개 카테고리 30유형으로 정밀 분류하여,<br>
+      각자의 핸디캡에 맞는 차별화된 안내를 제공합니다.
+    </p>
+    <div class="hero-cta">
+      <a href="#table-30" class="btn btn-primary">30유형 전체 표 보기</a>
+      <a href="#cases" class="btn btn-navy">유형별 실제 사례</a>
+      <a href="#legal" class="btn btn-outline">법적·윤리적 의의</a>
+    </div>
+    <div class="hero-quote">
+      "AI 챔피언 대회의 사회적 임팩트 핵심은 — 가장 약한 사람을 가장 먼저 가장 안전하게 살리는 것입니다. 종래 화재 대피 시스템은 '모두에게 같은 알람·같은 안내'였습니다. 청각장애인은 사이렌을 못 듣고, 시각장애인은 비상구 표시가 무의미하며, 인지장애인은 복잡한 안내를 이해하지 못합니다."
+    </div>
+  </div>
+</section>
+
+<!-- ================= WHY 30 TYPES ================= -->
+<section class="alt-bg">
+  <div class="container">
+    <div class="text-center mb-12">
+      <div class="section-eyebrow">왜 6유형이 아니라 30유형인가</div>
+      <h2 class="section-title">종래 시스템은 <span class="bordeaux-text">청각·시각·인지장애를 빼놓고</span> 있었습니다</h2>
+      <p class="section-sub" style="margin-left:auto;margin-right:auto;">
+        IMO·NFPA·NCSCC가 정의한 종래 6유형은 "신체 분류" 중심이었습니다. 정작 가장 큰 격차가 발생하는 감각·인지·언어장벽은 명시적으로 빠져 있었습니다. v3.0은 이를 5배 확장하여 30유형 정밀 분류합니다.
+      </p>
+    </div>
+
+    <div class="why-grid fade-in">
+      <div class="why-col old">
+        <h3>종래 6유형 (IMO/NFPA 기준)</h3>
+        <ul>
+          <li><span class="mark">×</span><span>건강한 성인·고령자·어린이·임산부·휠체어·짐 — 신체 위주 분류</span></li>
+          <li><span class="mark">×</span><span>청각장애인 — 사이렌을 못 듣는데 따로 분류 없음</span></li>
+          <li><span class="mark">×</span><span>시각장애인 — 비상구 표시가 무의미한데 누락</span></li>
+          <li><span class="mark">×</span><span>인지장애인 (치매·자폐·발달장애) — 복잡 안내 이해 불가, 누락</span></li>
+          <li><span class="mark">×</span><span>외국인 — 모국어 안내 부재로 25%p 생존율 격차</span></li>
+          <li><span class="mark">×</span><span>의식불명·실어증 — 자력 대피 불가자 인지 메커니즘 0</span></li>
+          <li><span class="mark">×</span><span>안내 채널 = 모두 동일 (사이렌 + 텍스트 표지판)</span></li>
+        </ul>
+      </div>
+      <div class="why-col new">
+        <h3>v3.0 30유형 (FireNavi 정밀 확장)</h3>
+        <ul>
+          <li><span class="mark">✓</span><span>6개 카테고리 (A 신체 · B 거동 · C 부상 · D 감각 · E 인지 · F 언어)</span></li>
+          <li><span class="mark">✓</span><span>청각장애 → 완전농·난청 2단계 분리, 진동 패턴 차별</span></li>
+          <li><span class="mark">✓</span><span>시각장애 → 완전실명·저시력·색맹 3단계, TTS+햅틱</span></li>
+          <li><span class="mark">✓</span><span>인지장애 → 치매·자폐·발달·정신·약물 5유형, 보호자 동기화</span></li>
+          <li><span class="mark">✓</span><span>외국인 → 폰 OS 언어 자동 매칭 (12개국어 Whisper STT)</span></li>
+          <li><span class="mark">✓</span><span>의식불명 → IMU 정지 30초 자동 감지, 소방관 단말 #1</span></li>
+          <li><span class="mark">✓</span><span>안내 채널 = 30유형 × 6채널 매트릭스로 개별 맞춤</span></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="impact-band mt-12 fade-in">
+      <div class="impact-stat">
+        <div class="before">청각장애 생존율 -30%</div>
+        <div class="after">-3%</div>
+        <div class="label">진동·시각 안내로 정상 수준 회복</div>
+      </div>
+      <div class="impact-stat">
+        <div class="before">시각장애 생존율 -40%</div>
+        <div class="after">-5%</div>
+        <div class="label">VoiceOver TTS + 햅틱 방향 진동</div>
+      </div>
+      <div class="impact-stat">
+        <div class="before">인지장애 생존율 -50%</div>
+        <div class="after">-10%</div>
+        <div class="label">1단어 안내 + 보호자 동기화</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 6 CATEGORIES OVERVIEW ================= -->
+<section>
+  <div class="container">
+    <div class="text-center mb-12">
+      <div class="section-eyebrow">6개 카테고리 · 30유형</div>
+      <h2 class="section-title">신체·거동·부상·<span class="gold-text">감각·인지·언어</span></h2>
+      <p class="section-sub" style="margin-left:auto;margin-right:auto;">
+        의학적·기능적 관점에서 화재 대피에 영향을 주는 모든 변수를 6개 카테고리로 정밀 분류했습니다. 각 카테고리는 자체 식별 메커니즘과 차별화된 안내 채널을 보유합니다.
+      </p>
+    </div>
+
+    <div class="cat-grid fade-in">
+      <!-- Cat A 신체 -->
+      <div class="cat-card cat-A">
+        <div class="cat-header">
+          <div style="display:flex;align-items:center;gap:12px;">
+            <div class="cat-letter">A</div>
+            <div class="cat-title">신체 (Physical)</div>
+          </div>
+          <div class="cat-count">7유형</div>
+        </div>
+        <div class="cat-body">
+          <ul>
+            <li><span class="dot" style="background:#10B981"></span>1. 건강한 성인 (Baseline)</li>
+            <li><span class="dot" style="background:#F59E0B"></span>2. 고령자 (65세 이상)</li>
+            <li><span class="dot" style="background:#A78BFA"></span>3. 어린이 (6~12세)</li>
+            <li><span class="dot" style="background:#FBBF24"></span>4. 영유아 (0~5세, 자력 대피 불가)</li>
+            <li><span class="dot" style="background:#D97706"></span>5. 비만 (BMI 30+)</li>
+            <li><span class="dot" style="background:#14B8A6"></span>6. 임산부 초기 (1~2분기)</li>
+            <li><span class="dot" style="background:#0D9488"></span>7. 임산부 후기 (3분기)</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Cat B 거동 -->
+      <div class="cat-card cat-B">
+        <div class="cat-header">
+          <div style="display:flex;align-items:center;gap:12px;">
+            <div class="cat-letter">B</div>
+            <div class="cat-title">거동 보조 (Mobility)</div>
+          </div>
+          <div class="cat-count">5유형</div>
+        </div>
+        <div class="cat-body">
+          <ul>
+            <li><span class="dot" style="background:#EC4899"></span>8. 휠체어 전동</li>
+            <li><span class="dot" style="background:#DB2777"></span>9. 휠체어 수동</li>
+            <li><span class="dot" style="background:#FB923C"></span>10. 지팡이 사용</li>
+            <li><span class="dot" style="background:#F97316"></span>11. 보행기 사용</li>
+            <li><span class="dot" style="background:#EA580C"></span>12. 깁스·목발</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Cat C 부상 -->
+      <div class="cat-card cat-C">
+        <div class="cat-header">
+          <div style="display:flex;align-items:center;gap:12px;">
+            <div class="cat-letter">C</div>
+            <div class="cat-title">부상·응급 (Injury)</div>
+          </div>
+          <div class="cat-count">3유형</div>
+        </div>
+        <div class="cat-body">
+          <ul>
+            <li><span class="dot" style="background:#EF4444"></span>13. 경상 (자력 대피 가능)</li>
+            <li><span class="dot" style="background:#DC2626"></span>14. 중상 (응급 처치 필요)</li>
+            <li><span class="dot" style="background:#475569"></span>15. 의식불명 (자력 대피 불가)</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Cat D 감각 -->
+      <div class="cat-card cat-D">
+        <div class="cat-header">
+          <div style="display:flex;align-items:center;gap:12px;">
+            <div class="cat-letter">D</div>
+            <div class="cat-title">감각 장애 (Sensory)</div>
+          </div>
+          <div class="cat-count">5유형</div>
+        </div>
+        <div class="cat-body">
+          <ul>
+            <li><span class="dot" style="background:#06B6D4"></span>16. 청각 완전농</li>
+            <li><span class="dot" style="background:#0891B2"></span>17. 청각 난청 (보청기)</li>
+            <li><span class="dot" style="background:#8B5CF6"></span>18. 시각 완전실명</li>
+            <li><span class="dot" style="background:#7C3AED"></span>19. 시각 저시력</li>
+            <li><span class="dot" style="background:#6366F1"></span>20. 색맹</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Cat E 인지 -->
+      <div class="cat-card cat-E">
+        <div class="cat-header">
+          <div style="display:flex;align-items:center;gap:12px;">
+            <div class="cat-letter">E</div>
+            <div class="cat-title">인지·정신 (Cognitive)</div>
+          </div>
+          <div class="cat-count">5유형</div>
+        </div>
+        <div class="cat-body">
+          <ul>
+            <li><span class="dot" style="background:#F472B6"></span>21. 치매 (알츠하이머)</li>
+            <li><span class="dot" style="background:#E879F9"></span>22. 자폐 스펙트럼</li>
+            <li><span class="dot" style="background:#D946EF"></span>23. 발달장애</li>
+            <li><span class="dot" style="background:#C026D3"></span>24. 정신질환·PTSD</li>
+            <li><span class="dot" style="background:#A21CAF"></span>25. 약물복용 (인지 저하)</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Cat F 언어·외적 -->
+      <div class="cat-card cat-F">
+        <div class="cat-header">
+          <div style="display:flex;align-items:center;gap:12px;">
+            <div class="cat-letter">F</div>
+            <div class="cat-title">언어·외적 (Language/External)</div>
+          </div>
+          <div class="cat-count">5유형</div>
+        </div>
+        <div class="cat-body">
+          <ul>
+            <li><span class="dot" style="background:#84CC16"></span>26. 외국인 (한국어 미숙)</li>
+            <li><span class="dot" style="background:#65A30D"></span>27. 실어증 (음성 응답 불가)</li>
+            <li><span class="dot" style="background:#4D7C0F"></span>28. 호흡기 환자</li>
+            <li><span class="dot" style="background:#A3E635"></span>29. 반려동물 동반</li>
+            <li><span class="dot" style="background:#BEF264"></span>30. 대형 짐 보유</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= FULL 30 TABLE ================= -->
+<section class="alt-bg" id="table-30">
+  <div class="container">
+    <div class="text-center mb-12">
+      <div class="section-eyebrow">30유형 풀 매트릭스</div>
+      <h2 class="section-title">전체 <span class="gold-text">30유형</span> 이동 속도·계단·엘리베이터 매트릭스</h2>
+      <p class="section-sub" style="margin-left:auto;margin-right:auto;">
+        각 유형별 자유속도(m/s), 계단 사용 가능 여부, 엘리베이터 우선권, 경사로 적합도, 연기 노출 안전 마진, 핵심 안내 채널, 소방관 단말 우선순위를 매트릭스로 정리했습니다.
+      </p>
+    </div>
+
+    <div class="table-wrap fade-in" style="max-height: 800px; overflow-y: auto;">
+      <table class="table-30">
+        <thead>
+          <tr>
+            <th style="width:36px;">#</th>
+            <th style="min-width:180px;">유형</th>
+            <th>자유속도</th>
+            <th style="text-align:center;">계단</th>
+            <th style="text-align:center;">엘리베이터</th>
+            <th style="text-align:center;">경사로</th>
+            <th>연기 마진</th>
+            <th>핵심 안내 채널</th>
+            <th style="text-align:center;">소방관 #</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Cat A 신체 -->
+          <tr class="cat-section cat-section-A"><td colspan="9">A. 신체 (Physical) — 7유형</td></tr>
+          <tr class="cat-row-A">
+            <td class="num-cell">1</td>
+            <td class="type-cell"><span class="color-dot" style="background:#10B981"></span>건강한 성인</td>
+            <td>1.2 m/s</td><td class="icon-cell">✓</td><td class="icon-cell">—</td><td class="icon-cell">✓</td>
+            <td>1.0×</td><td class="channel-cell">텍스트 + AR</td>
+            <td class="priority-cell" style="color:#64748B;">#7</td>
+          </tr>
+          <tr class="cat-row-A">
+            <td class="num-cell">2</td>
+            <td class="type-cell"><span class="color-dot" style="background:#F59E0B"></span>고령자 (65+)</td>
+            <td>0.8 m/s</td><td class="icon-cell">△</td><td class="icon-cell">★</td><td class="icon-cell">✓</td>
+            <td>1.5×</td><td class="channel-cell">음성 + 큰 글씨</td>
+            <td class="priority-cell" style="color:#22C55E;">#5</td>
+          </tr>
+          <tr class="cat-row-A">
+            <td class="num-cell">3</td>
+            <td class="type-cell"><span class="color-dot" style="background:#A78BFA"></span>어린이 (6~12)</td>
+            <td>1.0 m/s</td><td class="icon-cell">✓</td><td class="icon-cell">—</td><td class="icon-cell">✓</td>
+            <td>1.3×</td><td class="channel-cell">이모지 + 보호자</td>
+            <td class="priority-cell" style="color:#3B82F6;">#6</td>
+          </tr>
+          <tr class="cat-row-A">
+            <td class="num-cell">4</td>
+            <td class="type-cell"><span class="color-dot" style="background:#FBBF24"></span>영유아 (0~5)</td>
+            <td>0 (안김)</td><td class="icon-cell">×</td><td class="icon-cell">★★</td><td class="icon-cell">—</td>
+            <td>2.0×</td><td class="channel-cell">보호자 단말로 통합</td>
+            <td class="priority-cell" style="color:#DC2626;">#1</td>
+          </tr>
+          <tr class="cat-row-A">
+            <td class="num-cell">5</td>
+            <td class="type-cell"><span class="color-dot" style="background:#D97706"></span>비만 (BMI 30+)</td>
+            <td>0.9 m/s</td><td class="icon-cell">△</td><td class="icon-cell">★</td><td class="icon-cell">✓</td>
+            <td>1.2×</td><td class="channel-cell">계단 우회 경로</td>
+            <td class="priority-cell" style="color:#3B82F6;">#6</td>
+          </tr>
+          <tr class="cat-row-A">
+            <td class="num-cell">6</td>
+            <td class="type-cell"><span class="color-dot" style="background:#14B8A6"></span>임산부 초기</td>
+            <td>1.0 m/s</td><td class="icon-cell">✓</td><td class="icon-cell">△</td><td class="icon-cell">✓</td>
+            <td>1.5×</td><td class="channel-cell">스트레스 회피 안내</td>
+            <td class="priority-cell" style="color:#22C55E;">#5</td>
+          </tr>
+          <tr class="cat-row-A">
+            <td class="num-cell">7</td>
+            <td class="type-cell"><span class="color-dot" style="background:#0D9488"></span>임산부 후기</td>
+            <td>0.7 m/s</td><td class="icon-cell">×</td><td class="icon-cell">★★</td><td class="icon-cell">✓</td>
+            <td>1.8×</td><td class="channel-cell">엘리베이터 + 부드러운 톤</td>
+            <td class="priority-cell" style="color:#EA580C;">#2</td>
+          </tr>
+
+          <!-- Cat B 거동 -->
+          <tr class="cat-section cat-section-B"><td colspan="9">B. 거동 보조 (Mobility) — 5유형</td></tr>
+          <tr class="cat-row-B">
+            <td class="num-cell">8</td>
+            <td class="type-cell"><span class="color-dot" style="background:#EC4899"></span>휠체어 전동</td>
+            <td>1.0 m/s</td><td class="icon-cell">×</td><td class="icon-cell">★★★</td><td class="icon-cell">✓</td>
+            <td>1.5×</td><td class="channel-cell">배리어프리 전용 경로</td>
+            <td class="priority-cell" style="color:#3B82F6;">#6</td>
+          </tr>
+          <tr class="cat-row-B">
+            <td class="num-cell">9</td>
+            <td class="type-cell"><span class="color-dot" style="background:#DB2777"></span>휠체어 수동</td>
+            <td>0.6 m/s</td><td class="icon-cell">×</td><td class="icon-cell">★★★</td><td class="icon-cell">✓</td>
+            <td>1.7×</td><td class="channel-cell">동행자 호출 + 엘리베이터</td>
+            <td class="priority-cell" style="color:#CA8A04;">#3</td>
+          </tr>
+          <tr class="cat-row-B">
+            <td class="num-cell">10</td>
+            <td class="type-cell"><span class="color-dot" style="background:#FB923C"></span>지팡이</td>
+            <td>0.7 m/s</td><td class="icon-cell">△</td><td class="icon-cell">★</td><td class="icon-cell">✓</td>
+            <td>1.4×</td><td class="channel-cell">단차 회피 경로</td>
+            <td class="priority-cell" style="color:#CA8A04;">#3</td>
+          </tr>
+          <tr class="cat-row-B">
+            <td class="num-cell">11</td>
+            <td class="type-cell"><span class="color-dot" style="background:#F97316"></span>보행기</td>
+            <td>0.5 m/s</td><td class="icon-cell">×</td><td class="icon-cell">★★</td><td class="icon-cell">✓</td>
+            <td>1.7×</td><td class="channel-cell">엘리베이터 + 폭넓은 경로</td>
+            <td class="priority-cell" style="color:#CA8A04;">#3</td>
+          </tr>
+          <tr class="cat-row-B">
+            <td class="num-cell">12</td>
+            <td class="type-cell"><span class="color-dot" style="background:#EA580C"></span>깁스·목발</td>
+            <td>0.6 m/s</td><td class="icon-cell">△</td><td class="icon-cell">★★</td><td class="icon-cell">✓</td>
+            <td>1.5×</td><td class="channel-cell">계단 우회 + 안전 마진</td>
+            <td class="priority-cell" style="color:#CA8A04;">#3</td>
+          </tr>
+
+          <!-- Cat C 부상 -->
+          <tr class="cat-section cat-section-C"><td colspan="9">C. 부상·응급 (Injury) — 3유형</td></tr>
+          <tr class="cat-row-C">
+            <td class="num-cell">13</td>
+            <td class="type-cell"><span class="color-dot" style="background:#EF4444"></span>경상</td>
+            <td>0.9 m/s</td><td class="icon-cell">△</td><td class="icon-cell">△</td><td class="icon-cell">✓</td>
+            <td>1.3×</td><td class="channel-cell">최단 경로 + 의료실 안내</td>
+            <td class="priority-cell" style="color:#22C55E;">#5</td>
+          </tr>
+          <tr class="cat-row-C">
+            <td class="num-cell">14</td>
+            <td class="type-cell"><span class="color-dot" style="background:#DC2626"></span>중상</td>
+            <td>0.3 m/s</td><td class="icon-cell">×</td><td class="icon-cell">★★★</td><td class="icon-cell">△</td>
+            <td>2.0×</td><td class="channel-cell">동행자 + 의료팀 우선 호출</td>
+            <td class="priority-cell" style="color:#EA580C;">#2</td>
+          </tr>
+          <tr class="cat-row-C">
+            <td class="num-cell">15</td>
+            <td class="type-cell"><span class="color-dot" style="background:#475569"></span>의식불명</td>
+            <td>0 (이송)</td><td class="icon-cell">×</td><td class="icon-cell">★★★</td><td class="icon-cell">—</td>
+            <td>3.0×</td><td class="channel-cell">소방관 직접 구조</td>
+            <td class="priority-cell" style="color:#DC2626;">#1</td>
+          </tr>
+
+          <!-- Cat D 감각 -->
+          <tr class="cat-section cat-section-D"><td colspan="9">D. 감각 장애 (Sensory) — 5유형</td></tr>
+          <tr class="cat-row-D">
+            <td class="num-cell">16</td>
+            <td class="type-cell"><span class="color-dot" style="background:#06B6D4"></span>청각 완전농</td>
+            <td>1.2 m/s</td><td class="icon-cell">✓</td><td class="icon-cell">—</td><td class="icon-cell">✓</td>
+            <td>1.0×</td><td class="channel-cell">진동 + AR 화살표 + 화면 깜빡임</td>
+            <td class="priority-cell" style="color:#A855F7;">#4</td>
+          </tr>
+          <tr class="cat-row-D">
+            <td class="num-cell">17</td>
+            <td class="type-cell"><span class="color-dot" style="background:#0891B2"></span>청각 난청</td>
+            <td>1.1 m/s</td><td class="icon-cell">✓</td><td class="icon-cell">—</td><td class="icon-cell">✓</td>
+            <td>1.0×</td><td class="channel-cell">큰 음량 TTS + 진동 + 자막</td>
+            <td class="priority-cell" style="color:#A855F7;">#4</td>
+          </tr>
+          <tr class="cat-row-D">
+            <td class="num-cell">18</td>
+            <td class="type-cell"><span class="color-dot" style="background:#8B5CF6"></span>시각 완전실명</td>
+            <td>0.6 m/s</td><td class="icon-cell">△</td><td class="icon-cell">✓</td><td class="icon-cell">✓</td>
+            <td>1.5×</td><td class="channel-cell">VoiceOver TTS + 방향 햅틱</td>
+            <td class="priority-cell" style="color:#A855F7;">#4</td>
+          </tr>
+          <tr class="cat-row-D">
+            <td class="num-cell">19</td>
+            <td class="type-cell"><span class="color-dot" style="background:#7C3AED"></span>시각 저시력</td>
+            <td>0.8 m/s</td><td class="icon-cell">△</td><td class="icon-cell">△</td><td class="icon-cell">✓</td>
+            <td>1.3×</td><td class="channel-cell">고대비 모드 + TTS</td>
+            <td class="priority-cell" style="color:#A855F7;">#4</td>
+          </tr>
+          <tr class="cat-row-D">
+            <td class="num-cell">20</td>
+            <td class="type-cell"><span class="color-dot" style="background:#6366F1"></span>색맹</td>
+            <td>1.2 m/s</td><td class="icon-cell">✓</td><td class="icon-cell">—</td><td class="icon-cell">✓</td>
+            <td>1.0×</td><td class="channel-cell">패턴·기호 (색상 의존 X)</td>
+            <td class="priority-cell" style="color:#64748B;">#7</td>
+          </tr>
+
+          <!-- Cat E 인지 -->
+          <tr class="cat-section cat-section-E"><td colspan="9">E. 인지·정신 (Cognitive) — 5유형</td></tr>
+          <tr class="cat-row-E">
+            <td class="num-cell">21</td>
+            <td class="type-cell"><span class="color-dot" style="background:#F472B6"></span>치매</td>
+            <td>0.6 m/s</td><td class="icon-cell">△</td><td class="icon-cell">★★</td><td class="icon-cell">✓</td>
+            <td>2.0×</td><td class="channel-cell">1단어 + 보호자 동시 호출</td>
+            <td class="priority-cell" style="color:#DC2626;">#1</td>
+          </tr>
+          <tr class="cat-row-E">
+            <td class="num-cell">22</td>
+            <td class="type-cell"><span class="color-dot" style="background:#E879F9"></span>자폐</td>
+            <td>0.8 m/s</td><td class="icon-cell">✓</td><td class="icon-cell">△</td><td class="icon-cell">✓</td>
+            <td>1.5×</td><td class="channel-cell">시각 픽토그램 + 조용한 톤</td>
+            <td class="priority-cell" style="color:#A855F7;">#4</td>
+          </tr>
+          <tr class="cat-row-E">
+            <td class="num-cell">23</td>
+            <td class="type-cell"><span class="color-dot" style="background:#D946EF"></span>발달장애</td>
+            <td>0.7 m/s</td><td class="icon-cell">△</td><td class="icon-cell">★</td><td class="icon-cell">✓</td>
+            <td>1.7×</td><td class="channel-cell">간단 문장 + 보호자 안내</td>
+            <td class="priority-cell" style="color:#A855F7;">#4</td>
+          </tr>
+          <tr class="cat-row-E">
+            <td class="num-cell">24</td>
+            <td class="type-cell"><span class="color-dot" style="background:#C026D3"></span>정신·PTSD</td>
+            <td>0.9 m/s</td><td class="icon-cell">✓</td><td class="icon-cell">—</td><td class="icon-cell">✓</td>
+            <td>1.4×</td><td class="channel-cell">차분한 톤 + 호흡 안내</td>
+            <td class="priority-cell" style="color:#22C55E;">#5</td>
+          </tr>
+          <tr class="cat-row-E">
+            <td class="num-cell">25</td>
+            <td class="type-cell"><span class="color-dot" style="background:#A21CAF"></span>약물복용</td>
+            <td>0.8 m/s</td><td class="icon-cell">△</td><td class="icon-cell">△</td><td class="icon-cell">✓</td>
+            <td>1.5×</td><td class="channel-cell">반복 안내 + 보호자 동기화</td>
+            <td class="priority-cell" style="color:#CA8A04;">#3</td>
+          </tr>
+
+          <!-- Cat F 언어 -->
+          <tr class="cat-section cat-section-F"><td colspan="9">F. 언어·외적 (Language/External) — 5유형</td></tr>
+          <tr class="cat-row-F">
+            <td class="num-cell">26</td>
+            <td class="type-cell"><span class="color-dot" style="background:#84CC16"></span>외국인</td>
+            <td>1.0 m/s</td><td class="icon-cell">✓</td><td class="icon-cell">—</td><td class="icon-cell">✓</td>
+            <td>1.2×</td><td class="channel-cell">12개국어 TTS + 픽토그램</td>
+            <td class="priority-cell" style="color:#3B82F6;">#6</td>
+          </tr>
+          <tr class="cat-row-F">
+            <td class="num-cell">27</td>
+            <td class="type-cell"><span class="color-dot" style="background:#65A30D"></span>실어증</td>
+            <td>1.0 m/s</td><td class="icon-cell">✓</td><td class="icon-cell">—</td><td class="icon-cell">✓</td>
+            <td>1.2×</td><td class="channel-cell">텍스트 + 이모지 응답</td>
+            <td class="priority-cell" style="color:#3B82F6;">#6</td>
+          </tr>
+          <tr class="cat-row-F">
+            <td class="num-cell">28</td>
+            <td class="type-cell"><span class="color-dot" style="background:#4D7C0F"></span>호흡기 환자</td>
+            <td>0.6 m/s</td><td class="icon-cell">×</td><td class="icon-cell">★★</td><td class="icon-cell">✓</td>
+            <td>3.0×</td><td class="channel-cell">연기 0% 경로 강제</td>
+            <td class="priority-cell" style="color:#EA580C;">#2</td>
+          </tr>
+          <tr class="cat-row-F">
+            <td class="num-cell">29</td>
+            <td class="type-cell"><span class="color-dot" style="background:#A3E635"></span>반려동물 동반</td>
+            <td>1.0 m/s</td><td class="icon-cell">✓</td><td class="icon-cell">—</td><td class="icon-cell">✓</td>
+            <td>1.1×</td><td class="channel-cell">동물 동반 가능 경로</td>
+            <td class="priority-cell" style="color:#64748B;">#7</td>
+          </tr>
+          <tr class="cat-row-F">
+            <td class="num-cell">30</td>
+            <td class="type-cell"><span class="color-dot" style="background:#BEF264"></span>대형 짐 보유</td>
+            <td>0.9 m/s</td><td class="icon-cell">△</td><td class="icon-cell">△</td><td class="icon-cell">✓</td>
+            <td>1.1×</td><td class="channel-cell">짐 폭 고려 경로</td>
+            <td class="priority-cell" style="color:#64748B;">#7</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="text-mute mt-4 text-center" style="font-size:0.82rem;">
+      ✓ 사용 가능 · △ 조건부 · × 사용 불가 · ★ 우선권 / 연기 마진: 정상 대비 안전 거리 배수 · 소방관 # = #1 최우선
+    </p>
+  </div>
+</section>
+
+<!-- ================= IDENTIFICATION ================= -->
+<section>
+  <div class="container">
+    <div class="text-center mb-12">
+      <div class="section-eyebrow">유형별 자동 식별 방법</div>
+      <h2 class="section-title">사전 등록 부담 <span class="gold-text">없이</span> 자동 식별</h2>
+      <p class="section-sub" style="margin-left:auto;margin-right:auto;">
+        사용자가 평소에 폰에서 사용하던 접근성 설정만으로 자동 핸디캡 유형을 식별합니다. 시설 등록·카메라 영상 분석은 보조 채널로만 활용합니다.
+      </p>
+    </div>
+
+    <div class="ident-grid fade-in">
+      <div class="ident-card primary">
+        <div class="ident-tag">PRIMARY</div>
+        <div class="ident-icon">📱</div>
+        <h4>1. 폰 OS 접근성 API (핵심)</h4>
+        <p>iOS Accessibility · Android Accessibility 설정을 자동 감지. VoiceOver/TalkBack 활성 → 시각장애. Live Caption → 청각장애. 글자 크기 200% → 저시력.</p>
+        <div class="ident-code">UIAccessibility.isVoiceOverRunning · AccessibilityService</div>
+      </div>
+
+      <div class="ident-card">
+        <div class="ident-tag">SETTINGS</div>
+        <div class="ident-icon">🌐</div>
+        <h4>2. 폰 언어 설정 자동 매칭</h4>
+        <p>시스템 언어를 즉시 감지하여 12개국어 (한·영·중·일·베·인니·태·스페·러·아·프·독) 중 모국어 TTS·텍스트로 안내 전환.</p>
+        <div class="ident-code">Locale.getDefault().getLanguage()</div>
+      </div>
+
+      <div class="ident-card">
+        <div class="ident-tag">REGISTRY</div>
+        <div class="ident-icon">🏨</div>
+        <h4>3. 시설 사전 등록</h4>
+        <p>객실키·환자팔찌·승선카드 발급 시 핸디캡 정보 자발 등록 가능. 병원·요양원·크루즈는 의료 기록과 연동.</p>
+        <div class="ident-code">clinic_id + handicap_type → 사전 매핑</div>
+      </div>
+
+      <div class="ident-card">
+        <div class="ident-tag">SENSOR</div>
+        <div class="ident-icon">👣</div>
+        <h4>4. IMU 보행 패턴 분석</h4>
+        <p>스마트폰 가속도·자이로 센서로 보행 속도·리듬 분석. 휠체어(미세 진동) vs 보행(0.7~1.2Hz) vs 정지(의식불명) 자동 분류.</p>
+        <div class="ident-code">Accelerometer + Gyroscope → 30s window</div>
+      </div>
+
+      <div class="ident-card">
+        <div class="ident-tag">SENSOR</div>
+        <div class="ident-icon">📷</div>
+        <h4>5. 카메라 영상 분석 (옵션)</h4>
+        <p>로비·통로 카메라로 휠체어·보행기·임산부·짐 등 외형 식별. 프라이버시 보호를 위해 익명 메타데이터만 추출.</p>
+        <div class="ident-code">YOLO v8 + Privacy Mask</div>
+      </div>
+
+      <div class="ident-card">
+        <div class="ident-tag">USER</div>
+        <div class="ident-icon">💬</div>
+        <h4>6. 마이크로 설문 자발 응답</h4>
+        <p>화재 발생 직후 5초 설문에서 "도움이 필요한가요?" 응답 시 핸디캡 유형 자체 신고. 시각장애인은 음성 응답.</p>
+        <div class="ident-code">3-question survey + Whisper STT</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= CHANNEL MATRIX ================= -->
+<section class="alt-bg">
+  <div class="container">
+    <div class="text-center mb-12">
+      <div class="section-eyebrow">핸디캡별 안내 채널 매트릭스</div>
+      <h2 class="section-title">6개 카테고리 × <span class="gold-text">6채널</span> 최적화</h2>
+      <p class="section-sub" style="margin-left:auto;margin-right:auto;">
+        푸시 텍스트·음성 TTS·진동 햅틱·AR 화살표·보호자 동기화·소방관 호출. 각 카테고리별로 가장 효과적인 채널 조합을 자동 선택합니다.
+      </p>
+    </div>
+
+    <div class="table-wrap fade-in">
+      <table class="channel-matrix">
+        <thead>
+          <tr>
+            <th>카테고리 (대표 유형)</th>
+            <th>📱 푸시 텍스트</th>
+            <th>🔊 음성 TTS</th>
+            <th>📳 진동 햅틱</th>
+            <th>🎯 AR 화살표</th>
+            <th>👨‍👩‍👧 보호자 동기화</th>
+            <th>🚒 소방관 호출</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>A. 신체 — 건강 성인·고령자</td>
+            <td><span class="ch-mark">●</span></td>
+            <td><span class="ch-mark">●</span></td>
+            <td><span class="ch-none">○</span></td>
+            <td><span class="ch-mark">●</span></td>
+            <td><span class="ch-none">○</span></td>
+            <td><span class="ch-none">○</span></td>
+          </tr>
+          <tr>
+            <td>A. 신체 — 영유아 (자력 불가)</td>
+            <td><span class="ch-none">○</span></td>
+            <td><span class="ch-none">○</span></td>
+            <td><span class="ch-none">○</span></td>
+            <td><span class="ch-none">○</span></td>
+            <td><span class="ch-mark-strong">★</span></td>
+            <td><span class="ch-mark-strong">★</span></td>
+          </tr>
+          <tr>
+            <td>B. 거동 — 휠체어·보행기</td>
+            <td><span class="ch-mark">●</span></td>
+            <td><span class="ch-mark">●</span></td>
+            <td><span class="ch-none">○</span></td>
+            <td><span class="ch-mark">●</span></td>
+            <td><span class="ch-mark">●</span></td>
+            <td><span class="ch-mark">●</span></td>
+          </tr>
+          <tr>
+            <td>C. 부상 — 의식불명</td>
+            <td><span class="ch-none">○</span></td>
+            <td><span class="ch-none">○</span></td>
+            <td><span class="ch-none">○</span></td>
+            <td><span class="ch-none">○</span></td>
+            <td><span class="ch-mark-strong">★</span></td>
+            <td><span class="ch-mark-strong">★</span></td>
+          </tr>
+          <tr>
+            <td>D. 감각 — 청각장애</td>
+            <td><span class="ch-mark-strong">★</span></td>
+            <td><span class="ch-none">○</span></td>
+            <td><span class="ch-mark-strong">★</span></td>
+            <td><span class="ch-mark-strong">★</span></td>
+            <td><span class="ch-none">○</span></td>
+            <td><span class="ch-none">○</span></td>
+          </tr>
+          <tr>
+            <td>D. 감각 — 시각장애</td>
+            <td><span class="ch-none">○</span></td>
+            <td><span class="ch-mark-strong">★</span></td>
+            <td><span class="ch-mark-strong">★</span></td>
+            <td><span class="ch-none">○</span></td>
+            <td><span class="ch-mark">●</span></td>
+            <td><span class="ch-none">○</span></td>
+          </tr>
+          <tr>
+            <td>E. 인지 — 치매·자폐·발달</td>
+            <td><span class="ch-none">○</span></td>
+            <td><span class="ch-mark">●</span> (1단어)</td>
+            <td><span class="ch-mark">●</span></td>
+            <td><span class="ch-mark">●</span> (픽토그램)</td>
+            <td><span class="ch-mark-strong">★</span></td>
+            <td><span class="ch-mark">●</span></td>
+          </tr>
+          <tr>
+            <td>F. 언어 — 외국인</td>
+            <td><span class="ch-mark">●</span> (모국어)</td>
+            <td><span class="ch-mark-strong">★</span> (모국어)</td>
+            <td><span class="ch-none">○</span></td>
+            <td><span class="ch-mark-strong">★</span></td>
+            <td><span class="ch-none">○</span></td>
+            <td><span class="ch-none">○</span></td>
+          </tr>
+          <tr>
+            <td>F. 언어 — 호흡기·실어증</td>
+            <td><span class="ch-mark">●</span></td>
+            <td><span class="ch-none">○</span></td>
+            <td><span class="ch-mark">●</span></td>
+            <td><span class="ch-mark">●</span></td>
+            <td><span class="ch-none">○</span></td>
+            <td><span class="ch-mark">●</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="text-mute mt-4 text-center" style="font-size:0.82rem;">
+      ★ 핵심 채널 (강제 활성화) · ● 활성화 · ○ 비활성화 / 한 유형이 다중 채널을 동시 사용 가능
+    </p>
+  </div>
+</section>
+
+<!-- ================= FIRE-FIGHTER PRIORITY ================= -->
+<section>
+  <div class="container">
+    <div class="text-center mb-12">
+      <div class="section-eyebrow">소방관 단말 우선순위</div>
+      <h2 class="section-title">소방관 진입 즉시 <span class="bordeaux-text">#1 최우선</span> 자동 호출</h2>
+      <p class="section-sub" style="margin-left:auto;margin-right:auto;">
+        소방관이 진입할 때 보는 태블릿에 핸디캡 유형별로 자동 우선순위가 #1~#7로 표시됩니다. 자력 대피 불가자(영유아·의식불명·치매)는 빨강+깜빡임으로 즉시 식별 가능합니다.
+      </p>
+    </div>
+
+    <div class="priority-grid fade-in">
+      <div class="priority-card p1">
+        <div class="priority-num">#1</div>
+        <div class="priority-info">
+          <h4>최우선 (자력 대피 불가)</h4>
+          <div class="types">영유아 (0~5세) · 의식불명 · 치매 (배회 위험)</div>
+        </div>
+        <div class="priority-tag">빨강 + 깜빡임</div>
+      </div>
+
+      <div class="priority-card p2">
+        <div class="priority-num">#2</div>
+        <div class="priority-info">
+          <h4>긴급 (응급 대응 필요)</h4>
+          <div class="types">중상 부상 · 임산부 후기 · 호흡기 환자</div>
+        </div>
+        <div class="priority-tag">주황</div>
+      </div>
+
+      <div class="priority-card p3">
+        <div class="priority-num">#3</div>
+        <div class="priority-info">
+          <h4>거동 보조 (속도 50% 이하)</h4>
+          <div class="types">휠체어 수동 · 지팡이 · 보행기 · 깁스/목발 · 약물복용</div>
+        </div>
+        <div class="priority-tag">노랑</div>
+      </div>
+
+      <div class="priority-card p4">
+        <div class="priority-num">#4</div>
+        <div class="priority-info">
+          <h4>감각·인지장애 (안내 채널 차별 필요)</h4>
+          <div class="types">시각·청각장애 · 자폐 · 발달장애 · 저시력</div>
+        </div>
+        <div class="priority-tag">보라</div>
+      </div>
+
+      <div class="priority-card p5">
+        <div class="priority-num">#5</div>
+        <div class="priority-info">
+          <h4>주의 (안전 마진 1.5×)</h4>
+          <div class="types">고령자 · 임산부 초기 · 경상 부상 · 정신질환</div>
+        </div>
+        <div class="priority-tag">초록</div>
+      </div>
+
+      <div class="priority-card p6">
+        <div class="priority-num">#6</div>
+        <div class="priority-info">
+          <h4>경미 보조 (이동 가능)</h4>
+          <div class="types">어린이 · 비만 · 휠체어 전동 · 외국인 · 실어증</div>
+        </div>
+        <div class="priority-tag">파랑</div>
+      </div>
+
+      <div class="priority-card p7">
+        <div class="priority-num">#7</div>
+        <div class="priority-info">
+          <h4>일반 (정상 대피)</h4>
+          <div class="types">건강한 성인 · 색맹 · 반려동물 동반 · 대형 짐</div>
+        </div>
+        <div class="priority-tag">회색</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= CASE STUDIES ================= -->
+<section class="alt-bg" id="cases">
+  <div class="container">
+    <div class="text-center mb-12">
+      <div class="section-eyebrow">유형별 핵심 사례</div>
+      <h2 class="section-title">생존율을 <span class="gold-text">정상 수준까지</span> 끌어올린 6개 사례</h2>
+      <p class="section-sub" style="margin-left:auto;margin-right:auto;">
+        종래 시스템에서 30~50% 떨어지던 취약계층 생존율을 v3.0이 어떻게 정상 수준까지 회복하는지, 6개 핵심 사례로 보여드립니다.
+      </p>
+    </div>
+
+    <div class="case-grid fade-in">
+      <!-- Case 1: 청각장애 -->
+      <div class="case-card case-hearing">
+        <div class="case-icon-pane">
+          <div class="big-icon">🦻</div>
+          <div class="case-tag">청각장애</div>
+        </div>
+        <div class="case-body">
+          <h4>완전농 청각장애인 — 사이렌이 안 들리는 사람</h4>
+          <div class="case-detect">iOS Live Caption 활성 + Android Accessibility 자동 감지</div>
+          <div class="case-flow">
+            화재 경보음 발생 → 폰이 자동 감지 → <strong>모스 부호식 진동 패턴</strong>(단·장·단)으로 위급도 전달 → <strong>화면 전체 적색 깜빡임</strong>(2Hz)으로 시각 알림 → <strong>AR 화살표</strong>로 출구 방향 카메라 오버레이 → 5초마다 새 진동 패턴.
+          </div>
+          <div class="case-effect">
+            <span class="effect-bad">종래 -30%</span>
+            <span class="arrow">→</span>
+            <span class="effect-good">-3% (정상 수준 회복)</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Case 2: 시각장애 -->
+      <div class="case-card case-visual">
+        <div class="case-icon-pane">
+          <div class="big-icon">🦯</div>
+          <div class="case-tag">시각장애</div>
+        </div>
+        <div class="case-body">
+          <h4>완전실명 시각장애인 — 비상구 표시가 무의미</h4>
+          <div class="case-detect">VoiceOver / TalkBack 활성 자동 감지</div>
+          <div class="case-flow">
+            <strong>TTS 음성으로 즉시 안내</strong> "북쪽으로 12미터, 우회전" → <strong>방향 햅틱 진동</strong>(좌측은 좌측만, 우측은 우측만 진동) → 마이크로 설문은 <strong>음성 응답(Whisper STT)</strong>으로 처리 → 보호자 폰에도 동시 전송.
+          </div>
+          <div class="case-effect">
+            <span class="effect-bad">종래 -40%</span>
+            <span class="arrow">→</span>
+            <span class="effect-good">-5% (TTS + 햅틱 방향)</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Case 3: 인지장애 -->
+      <div class="case-card case-cognitive">
+        <div class="case-icon-pane">
+          <div class="big-icon">🧠</div>
+          <div class="case-tag">치매·자폐</div>
+        </div>
+        <div class="case-body">
+          <h4>치매·자폐 인지장애인 — 복잡 안내 이해 불가</h4>
+          <div class="case-detect">사전 등록 + 보호자 디바이스 페어링 + IMU 배회 패턴</div>
+          <div class="case-flow">
+            <strong>"이쪽!"</strong> 단 1단어 음성으로만 안내 → 화면에 <strong>한 개의 큰 화살표 픽토그램</strong>만 표시 → <strong>보호자 폰에도 위치·방향 동시 전송</strong> → 손목밴드 진동으로 보호자가 직접 동반 가능 → 배회 시 즉시 #1 호출.
+          </div>
+          <div class="case-effect">
+            <span class="effect-bad">종래 -50%</span>
+            <span class="arrow">→</span>
+            <span class="effect-good">-10% (1단어 + 보호자)</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Case 4: 휠체어 -->
+      <div class="case-card case-wheelchair">
+        <div class="case-icon-pane">
+          <div class="big-icon">♿</div>
+          <div class="case-tag">휠체어</div>
+        </div>
+        <div class="case-body">
+          <h4>휠체어 사용자 — 계단 사용 불가</h4>
+          <div class="case-detect">IMU 미세 진동 패턴 + 사전 등록 + 카메라 영상</div>
+          <div class="case-flow">
+            <strong>배리어프리 단독 경로</strong> 자동 계산 (계단 100% 회피, 경사로 우선) → <strong>비상 엘리베이터 자동 확보</strong>(일반인 진입 차단) → 동행자 호출 → 소방관 단말 #3에 위치 즉시 표시 → 의식불명 시 #1 승격.
+          </div>
+          <div class="case-effect">
+            <span class="effect-bad">종래 -45%</span>
+            <span class="arrow">→</span>
+            <span class="effect-good">-7% (전용 경로 + 엘리베이터)</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Case 5: 외국인 -->
+      <div class="case-card case-foreign">
+        <div class="case-icon-pane">
+          <div class="big-icon">🌐</div>
+          <div class="case-tag">외국인</div>
+        </div>
+        <div class="case-body">
+          <h4>외국인 — 한국어 안내 이해 불가</h4>
+          <div class="case-detect">폰 OS 언어 설정 자동 매칭 (12개국어)</div>
+          <div class="case-flow">
+            폰 시스템 언어 즉시 감지 → <strong>모국어 TTS 음성</strong>으로 자동 전환 (영·중·일·베·인니·태·스페·러·아·프·독 등) → 마이크로 설문도 모국어 → 음성 응답은 <strong>Whisper STT</strong>로 12개국어 인식 → 픽토그램 보조.
+          </div>
+          <div class="case-effect">
+            <span class="effect-bad">종래 -25%</span>
+            <span class="arrow">→</span>
+            <span class="effect-good">-5% (모국어 자동)</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Case 6: 의식불명 -->
+      <div class="case-card case-unconscious">
+        <div class="case-icon-pane">
+          <div class="big-icon">😶</div>
+          <div class="case-tag">의식불명</div>
+        </div>
+        <div class="case-body">
+          <h4>의식불명 — 자력 대피 불가, 외부 구조 필수</h4>
+          <div class="case-detect">IMU 정지 30초 + 마이크로 설문 무응답 자동 감지</div>
+          <div class="case-flow">
+            가속도·자이로 센서로 <strong>30초 이상 정지</strong> 감지 → 마이크로 설문 무응답 → 자동 위급 상태 분류 → <strong>소방관 단말 #1 빨강 깜빡임</strong>으로 위치 즉시 표시 → WiFi 측위 좌표 1m 정확도 → 의료팀 동시 호출.
+          </div>
+          <div class="case-effect">
+            <span class="effect-bad">종래 발견 평균 8분</span>
+            <span class="arrow">→</span>
+            <span class="effect-good">즉시 (0초)</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= LEGAL & ETHICAL ================= -->
+<section id="legal">
+  <div class="container">
+    <div class="text-center mb-12">
+      <div class="section-eyebrow">법적·윤리적 의의</div>
+      <h2 class="section-title">국내외 <span class="gold-text">4개 법령</span>과 정면 부합</h2>
+      <p class="section-sub" style="margin-left:auto;margin-right:auto;">
+        장애인차별금지법·UN 장애인권리협약·재난안전법·소방기본법 — v3.0 30유형 보호 시스템은 단순 기술 혁신을 넘어 법적 의무 이행과 사회적 책임 실천의 도구입니다.
+      </p>
+    </div>
+
+    <div class="legal-grid fade-in">
+      <div class="legal-card">
+        <span class="legal-source">대한민국 법령</span>
+        <h4>장애인차별금지법 제15조 (정보접근권)</h4>
+        <p>장애인이 비장애인과 동등하게 정보에 접근할 권리. 화재 안내 시 청각·시각·인지 장애인에게 동등한 정보 제공 의무.</p>
+        <div class="legal-clause">"공공기관 등은 장애인이 장애인 아닌 사람과 동등하게 모든 정보에 접근할 수 있도록 필요한 수단을 제공하여야 한다." → v3.0이 진동·TTS·1단어 안내로 적극 준수.</div>
+      </div>
+
+      <div class="legal-card">
+        <span class="legal-source">UN 국제 협약</span>
+        <h4>UN 장애인권리협약 (CRPD) 제11조</h4>
+        <p>무력 충돌·인도적 위기·자연 재해 시 장애인 보호 의무. 화재·재난 상황에서 장애인의 안전을 보장할 국가·시설의 의무.</p>
+        <div class="legal-clause">"위험상황 및 인도적 비상사태에서 장애인의 보호와 안전을 보장하기 위해 필요한 모든 조치를 취한다." → v3.0이 30유형 정밀 분류로 부합.</div>
+      </div>
+
+      <div class="legal-card">
+        <span class="legal-source">대한민국 법령</span>
+        <h4>재난안전법 — 안전취약계층 보호</h4>
+        <p>고령자·장애인·어린이·임산부·외국인 등 안전취약계층의 재난 대응 능력 강화 의무. 매뉴얼 작성과 실효성 점검 의무.</p>
+        <div class="legal-clause">제3조 안전취약계층 정의 + 제66조 안전관리 책무 → v3.0이 자동 식별·맞춤 안내·소방관 우선순위로 실효성 확보.</div>
+      </div>
+
+      <div class="legal-card">
+        <span class="legal-source">대한민국 법령</span>
+        <h4>소방기본법 개정 방향</h4>
+        <p>최근 개정안은 IoT·AI 활용 화재 대응 시스템 구축을 장려. v3.0은 신규 인프라 0개로 즉시 도입 가능한 모범 사례.</p>
+        <div class="legal-clause">소방청 '스마트 소방안전 로드맵 2030' — 폰 기반 대피 안내·취약계층 자동 식별·소방관 단말 우선순위 표시 → v3.0이 이미 구현.</div>
+      </div>
+    </div>
+
+    <div class="mt-12 fade-in">
+      <div class="paper-card">
+        <span class="paper-tag">학술 논문 기회 · 세계 최초</span>
+        <h3>Disability-Aware Adaptive Emergency Routing<br>via Mobile Device Accessibility API</h3>
+        <p class="paper-en">"폰 OS 접근성 API를 활용한 30유형 핸디캡 자동 식별 및 차별화된 화재 대피 경로 생성 시스템"</p>
+        <p class="paper-desc">
+          폰 OS 접근성 설정(iOS Accessibility · Android Accessibility Service)을 재난 대피에 활용한 <strong>세계 최초 사례</strong>. 사전 등록 부담 없이 30유형 핸디캡을 자동 식별하고, 6채널 매트릭스로 차별화된 안내를 제공한다. 학계·산업계 모두에서 새로운 연구 영역을 개척한다.
+        </p>
+        <div class="paper-meta">
+          <span class="tag gold">IEEE Access 2026 투고 예정</span>
+          <span class="tag navy">IMO Safety Committee 발표</span>
+          <span class="tag bordeaux">국제장애인권리협약 부합</span>
+          <span class="tag success">최초 사례</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= RELATED LINKS ================= -->
+<section class="alt-bg">
+  <div class="container">
+    <div class="text-center mb-12">
+      <div class="section-eyebrow">연관 페이지</div>
+      <h2 class="section-title">기술과 특허로 <span class="gold-text">더 깊이</span> 이해하기</h2>
+    </div>
+
+    <div class="related-links fade-in">
+      <a href="technology.html" class="related-link">
+        <div class="rl-tag">5단계 파이프라인</div>
+        <h4>기술 페이지 — Stage 5 Decision AI</h4>
+        <p>30유형 안전 마진 α=2.0이 어떻게 베이지안 화재맵과 결합되어 개인별 경로를 생성하는지 알고리즘 상세 설명.</p>
+        <div class="rl-arrow">기술 자세히 보기 →</div>
+      </a>
+
+      <a href="patents.html" class="related-link">
+        <div class="rl-tag">PAT-03 · 핵심 특허</div>
+        <h4>특허 9건 — α=2.0 안전마진 특허</h4>
+        <p>취약계층 α=2.0 안전 마진 알고리즘은 PAT-03 특허로 보호받습니다. 30유형 시스템의 법적 기반을 구성합니다.</p>
+        <div class="rl-arrow">특허 9건 상세 →</div>
+      </a>
+    </div>
+
+    <div class="text-center mt-12">
+      <a href="../smartphone-poc.html" target="_blank" class="btn btn-primary">▶ PoC 데모로 직접 체험</a>
+      <a href="../pdf/FireNavi_AI_Champion_Master_Proposal.pdf" class="btn btn-outline" style="margin-left:8px;">📄 통합 기획서 PDF</a>
+    </div>
+  </div>
+</section>
+
+<!-- v2.0 Research Lab — 30유형 차별화 검증 -->
+<section style="background:#0F1729;color:white;padding:60px 28px;">
+  <div class="container">
+    <div style="text-align:center;margin-bottom:32px;">
+      <div style="display:inline-block;padding:5px 14px;background:rgba(201,169,97,0.2);color:#C9A961;border-radius:999px;font-size:0.78rem;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;">🧪 v2.0 Research Lab</div>
+      <h2 style="color:white;margin-top:14px;">α=2.0 안전 마진 실제 효과 시연</h2>
+      <p style="color:rgba(255,255,255,0.7);max-width:720px;margin:8px auto 0;">건강한 성인 vs 휠체어 사용자가 같은 위치에서 다른 경로를 받는 실제 작동 시뮬레이션</p>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:18px;max-width:700px;margin:0 auto;">
+      <a href="lab/route-optimizer.html" target="_blank" style="background:rgba(255,255,255,0.05);border:1px solid rgba(201,169,97,0.3);border-radius:14px;padding:24px;text-decoration:none;color:white;display:block;border-top:4px solid #C9A961;">
+        <div style="font-size:0.75rem;color:#C9A961;font-weight:700;margin-bottom:6px;">🛣️ 2,028줄 · 인터랙티브</div>
+        <h3 style="color:white;margin:0 0 8px;font-size:1.1rem;">경로 최적화 — 3종 경로 비교</h3>
+        <p style="color:rgba(255,255,255,0.65);font-size:0.85rem;margin:0 0 12px;">Standard(거리 우선) · Health-Aware(건강 반영) · AI Optimized(혼잡·연기·충돌 종합) 세 가지 경로를 같은 화면에서 비교. α=2.0 효과를 시각적으로 확인하세요.</p>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;">
+          <span style="background:rgba(201,169,97,0.2);color:#C9A961;padding:2px 8px;border-radius:999px;font-size:0.7rem;font-weight:600;">A*</span>
+          <span style="background:rgba(201,169,97,0.2);color:#C9A961;padding:2px 8px;border-radius:999px;font-size:0.7rem;font-weight:600;">α=2.0</span>
+          <span style="background:rgba(201,169,97,0.2);color:#C9A961;padding:2px 8px;border-radius:999px;font-size:0.7rem;font-weight:600;">CrowdPenalty</span>
+        </div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<footer class="site-footer"></footer>
+<script src="js/common.js"></script>
+</body>
+</html>

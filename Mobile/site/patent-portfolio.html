@@ -1,0 +1,78 @@
+﻿<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FireNavi 10대 특허 포트폴리오</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%); min-height: 100vh; padding: 40px 20px; }
+.container { max-width: 1400px; margin: 0 auto; }
+.header { text-align: center; margin-bottom: 60px; animation: slideDown 0.6s ease-out; }
+.header h1 { font-size: 3.5rem; color: #0F1E3D; margin-bottom: 15px; font-weight: 900; }
+.header .subtitle { font-size: 1.3rem; color: #555; line-height: 1.8; }
+.header .gold-text { color: #D4A574; font-weight: 700; }
+@keyframes slideDown { from { opacity: 0; transform: translateY(-30px); } to { opacity: 1; transform: translateY(0); } }
+.grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; margin-bottom: 60px; }
+.card { background: white; border-radius: 15px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.1); transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); animation: fadeInUp 0.6s ease-out; animation-fill-mode: both; }
+.card:hover { transform: translateY(-8px); box-shadow: 0 20px 50px rgba(0,0,0,0.15); }
+.card-image { width: 100%; height: 250px; background: linear-gradient(135deg, #0F1E3D, #2D3D5C); overflow: hidden; }
+.card-image img { width: 100%; height: 100%; object-fit: cover; }
+.card-content { padding: 25px; }
+.card-title { font-size: 1.3rem; color: #0F1E3D; margin-bottom: 10px; font-weight: 700; }
+.card-desc { font-size: 0.95rem; color: #666; margin-bottom: 20px; line-height: 1.6; }
+.card-buttons { display: flex; gap: 12px; flex-direction: column; }
+.card-button { background: linear-gradient(135deg, #0F1E3D, #2D3D5C); color: white; padding: 12px 30px; border-radius: 8px; font-weight: 600; cursor: pointer; width: 100%; border: none; text-align: center; transition: all 0.3s; }
+.card-button:hover { background: linear-gradient(135deg, #D4A574, #c99456); }
+.card-button.infographic { background: linear-gradient(135deg, #D4A574, #c99456); }
+.card-button.infographic:hover { background: linear-gradient(135deg, #0F1E3D, #2D3D5C); box-shadow: 0 4px 12px rgba(212, 165, 116, 0.3); }
+.patent-number { display: inline-block; background: #D4A574; color: white; padding: 6px 14px; border-radius: 20px; font-size: 0.85rem; font-weight: 700; margin-bottom: 12px; }
+.footer { text-align: center; padding: 40px; background: rgba(255,255,255,0.8); border-radius: 15px; margin-top: 60px; }
+.footer p { font-size: 1rem; color: #666; line-height: 1.8; }
+.footer .gold-text { color: #D4A574; font-weight: 700; }
+.modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1000; align-items: center; justify-content: center; }
+.modal.active { display: flex; }
+.modal-content { position: relative; max-width: 90%; max-height: 90vh; display: flex; flex-direction: column; }
+.modal-image { max-width: 100%; max-height: calc(90vh - 60px); object-fit: contain; border-radius: 10px; }
+.modal-buttons { display: flex; gap: 15px; justify-content: center; margin-top: 20px; }
+.modal-btn { background: white; color: #0F1E3D; padding: 12px 30px; border-radius: 8px; font-weight: 600; cursor: pointer; border: none; transition: all 0.3s; }
+.modal-btn:hover { background: #D4A574; color: white; }
+@media (max-width: 768px) { .header h1 { font-size: 2.2rem; } .grid { grid-template-columns: 1fr; } .modal-image { max-height: calc(90vh - 100px); } }
+@keyframes fadeInUp { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
+</style>
+</head>
+<body>
+<div class="container">
+<div class="header"><h1>FireNavi <span class="gold-text">10대 특허</span><br>포트폴리오</h1><p class="subtitle">온톨로지 기반 설명 가능한 AI 재난대피 기술<br><span class="gold-text">사람·공간·위험·센서·규정을 지식그래프로 연결</span></p></div>
+<div class="grid">
+<div class="card"><div class="card-image"><img src="patent-01.png"></div><div class="card-content"><div class="patent-number">특허 1/10</div><h3 class="card-title">온톨로지 공유 기반 삼중 엔진 동기 아키텍처</h3><p class="card-desc">Prediction · Behavior · Decision 엔진의 동시 처리</p><div class="card-buttons"><button class="card-button" onclick="goToSlide(1)">📊 슬라이드 보기</button><button class="card-button infographic" onclick="viewInfographic('patent-01.png')">🖼️ 인포그래픽 보기</button></div></div></div>
+<div class="card"><div class="card-image"><img src="patent-02.png"></div><div class="card-content"><div class="patent-number">특허 2/10</div><h3 class="card-title">온톨로지 기반 이원 경로 전환 시스템</h3><p class="card-desc">주경로와 대체경로의 의미 있는 구분</p><div class="card-buttons"><button class="card-button" onclick="goToSlide(2)">📊 슬라이드 보기</button><button class="card-button infographic" onclick="viewInfographic('patent-02.png')">🖼️ 인포그래픽 보기</button></div></div></div>
+<div class="card"><div class="card-image"><img src="patent-03.png"></div><div class="card-content"><div class="patent-number">특허 3/10</div><h3 class="card-title">취약계층 제약 온톨로지 기반 안전 마진 자동 적용</h3><p class="card-desc">개인별 안전 계수 (α = 1.0 ~ 3.0)</p><div class="card-buttons"><button class="card-button" onclick="goToSlide(3)">📊 슬라이드 보기</button><button class="card-button infographic" onclick="viewInfographic('patent-03.png')">🖼️ 인포그래픽 보기</button></div></div></div>
+<div class="card"><div class="card-image"><img src="patent-04.png"></div><div class="card-content"><div class="patent-number">특허 4/10</div><h3 class="card-title">음향 이벤트 온톨로지 기반 자동 재난 트리거</h3><p class="card-desc">스마트폰 마이크로 음향 자동 분류</p><div class="card-buttons"><button class="card-button" onclick="goToSlide(4)">📊 슬라이드 보기</button><button class="card-button infographic" onclick="viewInfographic('patent-04.png')">🖼️ 인포그래픽 보기</button></div></div></div>
+<div class="card"><div class="card-image"><img src="patent-05.png"></div><div class="card-content"><div class="patent-number">특허 5/10</div><h3 class="card-title">센서·인간보고 온톨로지 정규화 기반 화재맵</h3><p class="card-desc">56배 데이터 밀도 개선</p><div class="card-buttons"><button class="card-button" onclick="goToSlide(5)">📊 슬라이드 보기</button><button class="card-button infographic" onclick="viewInfographic('patent-05.png')">🖼️ 인포그래픽 보기</button></div></div></div>
+<div class="card"><div class="card-image"><img src="patent-06.png"></div><div class="card-content"><div class="patent-number">특허 6/10</div><h3 class="card-title">사용자 상태 온톨로지 기반 대화형 설문</h3><p class="card-desc">3초 마이크로 설문</p><div class="card-buttons"><button class="card-button" onclick="goToSlide(6)">📊 슬라이드 보기</button><button class="card-button infographic" onclick="viewInfographic('patent-06.png')">🖼️ 인포그래픽 보기</button></div></div></div>
+<div class="card"><div class="card-image"><img src="patent-07.png"></div><div class="card-content"><div class="patent-number">특허 7/10</div><h3 class="card-title">공간 온톨로지 기반 인프라프리 실내 다층 측위</h3><p class="card-desc">신규 하드웨어 0개</p><div class="card-buttons"><button class="card-button" onclick="goToSlide(7)">📊 슬라이드 보기</button><button class="card-button infographic" onclick="viewInfographic('patent-07.png')">🖼️ 인포그래픽 보기</button></div></div></div>
+<div class="card"><div class="card-image"><img src="patent-08.png"></div><div class="card-content"><div class="patent-number">특허 8/10</div><h3 class="card-title">사용자·위험·공간 온톨로지 기반 적응 경로 AI</h3><p class="card-desc">6,000명 = 6,000개의 다른 경로</p><div class="card-buttons"><button class="card-button" onclick="goToSlide(8)">📊 슬라이드 보기</button><button class="card-button infographic" onclick="viewInfographic('patent-08.png')">🖼️ 인포그래픽 보기</button></div></div></div>
+<div class="card"><div class="card-image"><img src="patent-09.png"></div><div class="card-content"><div class="patent-number">특허 9/10</div><h3 class="card-title">온톨로지 기반 개인별 대피 경로 추천 시스템</h3><p class="card-desc">설명 가능한 경로 + 근거</p><div class="card-buttons"><button class="card-button" onclick="goToSlide(9)">📊 슬라이드 보기</button><button class="card-button infographic" onclick="viewInfographic('patent-09.png')">🖼️ 인포그래픽 보기</button></div></div></div>
+<div class="card"><div class="card-image"><img src="patent-10.png"></div><div class="card-content"><div class="patent-number">특허 10/10</div><h3 class="card-title">스마트폰·온톨로지·AI 기반 통합 플랫폼</h3><p class="card-desc">감지 → 분석 → 안내 → 관제 → 구조</p><div class="card-buttons"><button class="card-button" onclick="goToSlide(10)">📊 슬라이드 보기</button><button class="card-button infographic" onclick="viewInfographic('patent-10.png')">🖼️ 인포그래픽 보기</button></div></div></div>
+</div>
+<div class="footer"><p><span class="gold-text">온톨로지 기반 10대 특허</span>는 "길을 찾는 기술"이 아닌 <strong>"사람·공간·위험·규정을 이해하고 개인에게 가장 안전한 생존 경로를 설명 가능하게 설계하는 AI 재난대피 지식그래프 기술"</strong></p></div>
+</div>
+
+<!-- 인포그래픽 모달 -->
+<div class="modal" id="infographicModal" onclick="if(event.target === this) closeInfographic()">
+  <div class="modal-content">
+    <img id="infographicImage" class="modal-image" src="">
+    <div class="modal-buttons">
+      <button class="modal-btn" onclick="closeInfographic()">← 돌아가기</button>
+    </div>
+  </div>
+</div>
+<script>
+function goToSlide(patentNum) { sessionStorage.setItem('targetPatent', patentNum); window.location.href = 'patents.html'; }
+function viewInfographic(filename) { const modal = document.getElementById('infographicModal'); const img = document.getElementById('infographicImage'); img.src = filename; modal.classList.add('active'); }
+function closeInfographic() { const modal = document.getElementById('infographicModal'); modal.classList.remove('active'); }
+window.addEventListener('load', function() { const target = sessionStorage.getItem('targetPatent'); if (target) { sessionStorage.removeItem('targetPatent'); if (window.goToPatent) { window.goToPatent(parseInt(target)); } } });
+</script>
+</body>
+</html>

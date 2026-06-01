@@ -1,0 +1,998 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FireNavi v3.0 — 시장·비즈니스·팀·로드맵 ($208B TAM · 2030 IPO)</title>
+<meta name="description" content="FireNavi v3.0의 시장 분석(TAM $208B), GTM 전략, SaaS 비즈니스 모델, Unit Economics, 데이터 플라이휠, 팀 구성(4인 리더십), 2030 IPO 로드맵 종합.">
+<link rel="stylesheet" href="css/theme.css">
+<style>
+  /* ===== Hero stats ===== */
+  .hero-stats {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px;
+    max-width: 820px; margin: 0 auto;
+  }
+  .hero-stat {
+    background: white; border-radius: 14px; padding: 22px;
+    border: 1px solid var(--line); box-shadow: var(--shadow-sm);
+    text-align: center;
+  }
+  .hero-stat .v { font-size: 2.2rem; font-weight: 900; color: var(--navy); line-height: 1; }
+  .hero-stat .v.gold { color: var(--gold-dark); }
+  .hero-stat .v.bordeaux { color: var(--bordeaux); }
+  .hero-stat .l { font-size: 0.82rem; color: var(--text-3); font-weight: 600; margin-top: 8px; }
+
+  /* ===== TAM Funnel ===== */
+  .tam-funnel {
+    display: grid; gap: 14px; max-width: 920px; margin: 0 auto;
+  }
+  .tam-row {
+    display: grid; grid-template-columns: 100px 1fr; gap: 18px; align-items: center;
+  }
+  .tam-label { text-align: right; font-weight: 800; color: var(--navy); font-size: 1.05rem; }
+  .tam-bar {
+    background: var(--grad-gold); color: var(--navy);
+    padding: 22px 28px; border-radius: var(--r-md);
+    font-weight: 800; box-shadow: var(--shadow-sm); position: relative;
+  }
+  .tam-row.tam .tam-bar { background: linear-gradient(135deg, #0F1E3D 0%, #1E3A8A 100%); color: white; width: 100%; font-size: 1.4rem; }
+  .tam-row.sam .tam-bar { background: var(--grad-gold); color: var(--navy); width: 70%; font-size: 1.25rem; }
+  .tam-row.som .tam-bar { background: var(--grad-bordeaux); color: white; width: 18%; font-size: 1.05rem; min-width: 200px; }
+  .tam-bar .tam-sub { font-size: 0.82rem; font-weight: 600; opacity: 0.85; margin-top: 4px; }
+
+  /* ===== Bar Chart (SAM) ===== */
+  .bar-chart {
+    background: white; border: 1px solid var(--line); border-radius: var(--r-lg);
+    padding: 32px; box-shadow: var(--shadow-sm);
+  }
+  .bar-row {
+    display: grid; grid-template-columns: 160px 1fr 80px; gap: 14px;
+    align-items: center; padding: 10px 0;
+  }
+  .bar-row + .bar-row { border-top: 1px dashed var(--line-soft); }
+  .bar-label { font-size: 0.92rem; font-weight: 700; color: var(--navy); }
+  .bar-track {
+    background: var(--bg-soft); height: 28px; border-radius: 6px; overflow: hidden;
+    position: relative;
+  }
+  .bar-fill {
+    height: 100%; background: var(--grad-gold);
+    border-radius: 6px; display: flex; align-items: center;
+    transition: width 1.2s ease;
+  }
+  .bar-fill.navy { background: var(--grad-navy); }
+  .bar-fill.bordeaux { background: var(--grad-bordeaux); }
+  .bar-value { font-size: 0.95rem; font-weight: 800; color: var(--gold-dark); text-align: right; }
+
+  /* ===== Korea facility tiles ===== */
+  .kr-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 14px;
+  }
+  .kr-tile {
+    background: white; border: 1px solid var(--line); border-radius: var(--r-md);
+    padding: 22px 20px; text-align: center; box-shadow: var(--shadow-sm);
+    border-top: 4px solid var(--gold);
+    transition: all 0.3s;
+  }
+  .kr-tile:hover { transform: translateY(-3px); box-shadow: var(--shadow-md); }
+  .kr-tile .kr-num { font-size: 2rem; font-weight: 900; color: var(--navy); line-height: 1; }
+  .kr-tile .kr-num .plus { color: var(--gold-dark); }
+  .kr-tile .kr-lbl { font-size: 0.85rem; color: var(--text-3); font-weight: 600; margin-top: 6px; }
+
+  /* ===== Channel Strategy donut bars ===== */
+  .channel-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 18px;
+  }
+  .channel-card {
+    background: white; border: 1px solid var(--line); border-radius: var(--r-lg);
+    padding: 24px; box-shadow: var(--shadow-sm); text-align: center;
+    position: relative; overflow: hidden;
+  }
+  .channel-card::before {
+    content: ''; position: absolute; left: 0; top: 0; bottom: 0;
+    width: 5px;
+  }
+  .channel-card.c1::before { background: var(--bordeaux); }
+  .channel-card.c2::before { background: var(--gold); }
+  .channel-card.c3::before { background: var(--navy); }
+  .channel-card.c4::before { background: var(--success); }
+  .channel-pct {
+    font-size: 2.6rem; font-weight: 900; color: var(--navy); line-height: 1;
+  }
+  .channel-card.c1 .channel-pct { color: var(--bordeaux); }
+  .channel-card.c2 .channel-pct { color: var(--gold-dark); }
+  .channel-card.c4 .channel-pct { color: var(--success); }
+  .channel-name { font-size: 0.95rem; font-weight: 700; color: var(--navy); margin-top: 8px; }
+  .channel-desc { font-size: 0.82rem; color: var(--text-3); margin-top: 6px; }
+
+  /* ===== Pricing cards ===== */
+  .pricing-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 18px;
+  }
+  .pricing-card {
+    background: white; border: 1px solid var(--line); border-radius: var(--r-lg);
+    padding: 28px 22px; box-shadow: var(--shadow-sm); text-align: center;
+    transition: all 0.3s; position: relative;
+  }
+  .pricing-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-md); border-color: var(--gold); }
+  .pricing-card .tier-name {
+    display: inline-block; padding: 4px 12px;
+    background: var(--bg-soft); color: var(--navy);
+    border-radius: 999px; font-size: 0.78rem; font-weight: 700;
+    margin-bottom: 14px;
+  }
+  .pricing-card.large .tier-name { background: var(--gold-soft); color: var(--gold-dark); }
+  .pricing-card .price-month {
+    font-size: 2.2rem; font-weight: 900; color: var(--navy); line-height: 1;
+  }
+  .pricing-card .price-month .unit { font-size: 1rem; color: var(--text-3); font-weight: 600; }
+  .pricing-card .capacity { font-size: 0.82rem; color: var(--text-3); margin-top: 8px; }
+  .pricing-card .setup {
+    border-top: 1px dashed var(--line); margin-top: 14px; padding-top: 14px;
+    font-size: 0.85rem; color: var(--text-2);
+  }
+  .pricing-card .setup b { color: var(--gold-dark); }
+
+  /* ===== Revenue Scenario ===== */
+  .rev-scenario {
+    display: grid; gap: 14px;
+  }
+  .rev-row {
+    display: grid; grid-template-columns: 80px 1fr 160px; gap: 16px;
+    align-items: center; background: white; border: 1px solid var(--line);
+    border-radius: var(--r-md); padding: 14px 20px; box-shadow: var(--shadow-sm);
+    transition: all 0.3s;
+  }
+  .rev-row:hover { box-shadow: var(--shadow-md); }
+  .rev-year { font-weight: 900; color: var(--navy); font-size: 1.15rem; }
+  .rev-year.peak { color: var(--bordeaux); }
+  .rev-bar {
+    background: var(--bg-soft); height: 36px; border-radius: 6px; overflow: hidden;
+    position: relative;
+  }
+  .rev-fill {
+    height: 100%; background: var(--grad-gold);
+    display: flex; align-items: center; padding: 0 14px;
+    color: var(--navy); font-weight: 700; font-size: 0.85rem;
+    transition: width 1.4s ease;
+  }
+  .rev-fill.peak { background: var(--grad-bordeaux); color: white; }
+  .rev-amount { font-weight: 800; color: var(--bordeaux); text-align: right; font-size: 1.05rem; }
+
+  /* ===== Flywheel diagram ===== */
+  .flywheel {
+    display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px;
+    align-items: center; position: relative;
+  }
+  .flywheel-step {
+    background: white; border: 1px solid var(--line); border-radius: var(--r-lg);
+    padding: 22px 16px; text-align: center; box-shadow: var(--shadow-sm);
+    position: relative; transition: all 0.3s;
+    border-top: 4px solid var(--gold);
+  }
+  .flywheel-step:hover { transform: translateY(-4px); box-shadow: var(--shadow-md); }
+  .flywheel-step .fw-num {
+    display: inline-block; width: 32px; height: 32px;
+    background: var(--grad-gold); color: var(--navy);
+    border-radius: 50%; line-height: 32px; font-weight: 900; font-size: 0.95rem;
+    margin-bottom: 10px;
+  }
+  .flywheel-step .fw-icon { font-size: 1.8rem; margin: 4px 0 8px; }
+  .flywheel-step .fw-title { font-size: 0.9rem; font-weight: 700; color: var(--navy); }
+  .flywheel-arrows {
+    display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px;
+    margin-top: 14px; text-align: center; color: var(--gold-dark); font-weight: 900;
+  }
+
+  /* ===== Insurance Bundle ===== */
+  .insurance-box {
+    background: var(--grad-warm); border-left: 5px solid var(--gold);
+    border-radius: var(--r-lg); padding: 36px 40px;
+    box-shadow: var(--shadow-sm);
+    display: grid; grid-template-columns: 1.4fr 1fr; gap: 36px; align-items: center;
+  }
+  .insurance-box h3 { color: var(--navy); font-size: 1.4rem; margin-bottom: 12px; font-weight: 800; }
+  .insurance-box p { color: var(--text-2); font-size: 0.95rem; margin-bottom: 12px; line-height: 1.7; }
+  .insurance-sim {
+    background: white; border: 1px solid var(--line); border-radius: var(--r-md);
+    padding: 22px; box-shadow: var(--shadow-sm);
+  }
+  .insurance-sim h4 {
+    font-size: 0.78rem; color: var(--gold-dark); text-transform: uppercase;
+    letter-spacing: 0.06em; margin-bottom: 12px; font-weight: 700;
+  }
+  .ins-row { display: flex; justify-content: space-between; padding: 8px 0;
+    border-bottom: 1px dashed var(--line-soft); font-size: 0.9rem; }
+  .ins-row:last-child { border-bottom: 0; }
+  .ins-row .from { color: var(--bordeaux); font-weight: 700; }
+  .ins-row .to { color: var(--success); font-weight: 800; }
+
+  /* ===== Team Cards ===== */
+  .team-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 22px;
+  }
+  .team-card {
+    background: white; border: 1px solid var(--line); border-radius: var(--r-lg);
+    padding: 28px; box-shadow: var(--shadow-sm);
+    transition: all 0.3s;
+    border-top: 4px solid var(--gold);
+  }
+  .team-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); border-color: var(--gold); }
+  .team-card.ceo { border-top-color: var(--bordeaux); }
+  .team-card.cto { border-top-color: var(--navy); }
+  .team-card.cbo { border-top-color: var(--gold); }
+  .team-card.cdo { border-top-color: var(--purple); }
+  .team-avatar {
+    width: 64px; height: 64px; border-radius: 50%;
+    background: var(--grad-gold); color: var(--navy);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.8rem; font-weight: 900;
+    margin-bottom: 16px; box-shadow: var(--shadow-sm);
+  }
+  .team-card.ceo .team-avatar { background: var(--grad-bordeaux); color: white; }
+  .team-card.cto .team-avatar { background: var(--grad-navy); color: white; }
+  .team-card.cdo .team-avatar { background: linear-gradient(135deg,#6D28D9,#4C1D95); color: white; }
+  .team-role {
+    display: inline-block; padding: 3px 10px;
+    background: var(--gold-soft); color: var(--gold-dark);
+    border-radius: 999px; font-size: 0.72rem; font-weight: 700;
+    margin-bottom: 8px; letter-spacing: 0.04em;
+  }
+  .team-card.ceo .team-role { background: var(--bordeaux-soft); color: var(--bordeaux); }
+  .team-card.cto .team-role { background: var(--navy-soft); color: var(--navy); }
+  .team-card.cdo .team-role { background: #EDE9FE; color: var(--purple); }
+  .team-name { font-size: 1.15rem; color: var(--navy); font-weight: 800; margin-bottom: 6px; }
+  .team-desc { font-size: 0.86rem; color: var(--text-3); margin-bottom: 12px; line-height: 1.6; }
+  .team-card ul { list-style: none; padding: 0; margin-top: 12px; }
+  .team-card ul li {
+    font-size: 0.82rem; color: var(--text-2); padding: 4px 0 4px 18px;
+    position: relative;
+  }
+  .team-card ul li::before {
+    content: '◆'; position: absolute; left: 0; top: 4px;
+    color: var(--gold); font-size: 0.7rem;
+  }
+  .team-card .contact {
+    margin-top: 14px; padding-top: 14px;
+    border-top: 1px dashed var(--line); font-size: 0.8rem;
+  }
+  .team-card .contact a { color: var(--bordeaux); font-weight: 700; }
+
+  .partners-box {
+    background: var(--bg-section); border: 1px solid var(--line);
+    border-radius: var(--r-lg); padding: 28px;
+  }
+  .partners-box h4 {
+    color: var(--navy); font-size: 0.78rem; text-transform: uppercase;
+    letter-spacing: 0.06em; font-weight: 700; margin-bottom: 14px;
+  }
+  .partner-pills { display: flex; flex-wrap: wrap; gap: 8px; }
+  .partner-pill {
+    background: white; border: 1px solid var(--line); padding: 8px 14px;
+    border-radius: 999px; font-size: 0.85rem; color: var(--navy); font-weight: 600;
+  }
+
+  /* ===== CTA section ===== */
+  .cta-section {
+    background: var(--grad-premium); color: white; padding: 80px 28px;
+    text-align: center;
+  }
+  .cta-section h2 { color: white; font-size: 2.2rem; font-weight: 900; margin-bottom: 14px; }
+  .cta-section p { color: rgba(255,255,255,0.85); margin-bottom: 28px; font-size: 1.05rem; }
+
+  /* Fade-in */
+  .fade-in { opacity: 0; transform: translateY(20px); transition: all 0.7s; }
+  .fade-in.visible { opacity: 1; transform: translateY(0); }
+
+  /* Responsive */
+  @media (max-width: 1024px) {
+    .hero-stats { grid-template-columns: repeat(3, 1fr); }
+    .flywheel { grid-template-columns: repeat(2, 1fr); }
+    .flywheel-arrows { display: none; }
+    .insurance-box { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 768px) {
+    .hero-stats { grid-template-columns: 1fr; }
+    .tam-row { grid-template-columns: 1fr; }
+    .tam-label { text-align: left; }
+    .bar-row { grid-template-columns: 130px 1fr 60px; gap: 8px; }
+    .rev-row { grid-template-columns: 60px 1fr; gap: 10px; padding: 12px; }
+    .rev-row .rev-amount { grid-column: 1 / -1; text-align: left; padding-top: 4px; }
+    .flywheel { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="topnav"><div class="topnav-inner"></div></nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-inner">
+    <div class="eyebrow">BUSINESS · TEAM · ROADMAP</div>
+    <h1>
+      <span class="gold-text">$208B TAM</span> · SaaS 모델로<br>
+      <span class="bordeaux-text">2030년 IPO</span>까지
+    </h1>
+    <p class="subtitle">
+      크루즈 한정에서 WiFi 보유 모든 공간으로 — 시장 11.5배 확대.<br>
+      LTV/CAC 20x · Payback 3개월 · Gross Margin 80%+. 4인 핵심 리더십이 한국발 글로벌 표준을 만듭니다.
+    </p>
+    <div class="hero-stats fade-in">
+      <div class="hero-stat">
+        <div class="v gold">$<span data-count="208">208</span><span class="text-mute" style="font-size:1rem;">B</span></div>
+        <div class="l">SAM (AI 대형시설 대피)</div>
+      </div>
+      <div class="hero-stat">
+        <div class="v"><span data-count="20">20</span><span class="text-mute" style="font-size:1rem;">x</span></div>
+        <div class="l">LTV / CAC (SaaS 기준 3x ↑)</div>
+      </div>
+      <div class="hero-stat">
+        <div class="v bordeaux"><span data-count="3">3</span><span class="text-mute" style="font-size:1rem;">개월</span></div>
+        <div class="l">Payback Period</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MARKET TAM/SAM/SOM -->
+<section>
+  <div class="container">
+    <div class="text-center mb-12">
+      <div class="section-eyebrow">시장 규모</div>
+      <h2 class="section-title">TAM · SAM · SOM <span class="gold-text">3-Tier</span> 시장 정의</h2>
+      <p class="section-sub" style="margin-left:auto;margin-right:auto;">글로벌 화재안전·재난대응 전체에서, AI 기반 대형시설 대피로, 한국·동남아·중동 도달까지 — 단계별 시장 규모.</p>
+    </div>
+
+    <div class="tam-funnel fade-in">
+      <div class="tam-row tam">
+        <div class="tam-label">TAM</div>
+        <div class="tam-bar">
+          $300B+
+          <div class="tam-sub">글로벌 화재안전·재난대응 전체 시장</div>
+        </div>
+      </div>
+      <div class="tam-row sam">
+        <div class="tam-label">SAM</div>
+        <div class="tam-bar">
+          $208B
+          <div class="tam-sub">AI 기반 대형시설 대피 (FireNavi 적용 가능)</div>
+        </div>
+      </div>
+      <div class="tam-row som">
+        <div class="tam-label">SOM 2030</div>
+        <div class="tam-bar">
+          $2B
+          <div class="tam-sub">한국·일본·동남아·중동 도달 목표</div>
+        </div>
+      </div>
+    </div>
+
+    <p class="text-center text-mute mt-8" style="font-size:0.85rem;">— FireNavi 시장 분석 · CAGR (SaaS 안전) +22.3% · CAGR (FireNavi 타깃) +20.4%</p>
+  </div>
+</section>
+
+<!-- SAM DOMAIN BAR CHART -->
+<section class="alt-bg">
+  <div class="container">
+    <div class="text-center mb-12">
+      <div class="section-eyebrow">SAM $208B 도메인 분포</div>
+      <h2 class="section-title">8개 도메인 — 모두 <span class="gold-text">WiFi 보유</span> 대형 시설</h2>
+      <p class="section-sub" style="margin-left:auto;margin-right:auto;">한 가지 기술 스택으로 8개 시장 모두 즉시 적용 가능. 도메인 간 데이터 학습 효과 누적.</p>
+    </div>
+
+    <div class="bar-chart fade-in">
+      <div class="bar-row">
+        <div class="bar-label">초고층 빌딩</div>
+        <div class="bar-track"><div class="bar-fill" style="width:100%;"></div></div>
+        <div class="bar-value">$40B</div>
+      </div>
+      <div class="bar-row">
+        <div class="bar-label">지하철·공항</div>
+        <div class="bar-track"><div class="bar-fill" style="width:87.5%;"></div></div>
+        <div class="bar-value">$35B</div>
+      </div>
+      <div class="bar-row">
+        <div class="bar-label">5성급 호텔</div>
+        <div class="bar-track"><div class="bar-fill" style="width:75%;"></div></div>
+        <div class="bar-value">$30B</div>
+      </div>
+      <div class="bar-row">
+        <div class="bar-label">종합병원·요양</div>
+        <div class="bar-track"><div class="bar-fill navy" style="width:62.5%;"></div></div>
+        <div class="bar-value">$25B</div>
+      </div>
+      <div class="bar-row">
+        <div class="bar-label">사무빌딩</div>
+        <div class="bar-track"><div class="bar-fill" style="width:62.5%;"></div></div>
+        <div class="bar-value">$25B</div>
+      </div>
+      <div class="bar-row">
+        <div class="bar-label">사립학교·대학</div>
+        <div class="bar-track"><div class="bar-fill" style="width:50%;"></div></div>
+        <div class="bar-value">$20B</div>
+      </div>
+      <div class="bar-row">
+        <div class="bar-label">호화 크루즈</div>
+        <div class="bar-track"><div class="bar-fill bordeaux" style="width:45%;"></div></div>
+        <div class="bar-value">$18B</div>
+      </div>
+      <div class="bar-row">
+        <div class="bar-label">경기장·공연장</div>
+        <div class="bar-track"><div class="bar-fill" style="width:37.5%;"></div></div>
+        <div class="bar-value">$15B</div>
+      </div>
+    </div>
+
+    <p class="text-center text-mute mt-4" style="font-size:0.82rem;">진한 색 = 1순위 진입 (종합병원) · 짙은 빨강 = 최후 진입 (크루즈 신조)</p>
+  </div>
+</section>
+
+<!-- KOREA FACILITIES -->
+<section>
+  <div class="container">
+    <div class="text-center mb-12">
+      <div class="section-eyebrow">한국 시장</div>
+      <h2 class="section-title">즉시 진입 가능 — <span class="gold-text">1,640+개 시설</span></h2>
+      <p class="section-sub" style="margin-left:auto;margin-right:auto;">국내 시설 데이터로 검증된 즉시 진입 풀. SOM 2030년 약 $300M 도달 목표.</p>
+    </div>
+
+    <div class="kr-grid fade-in">
+      <div class="kr-tile">
+        <div class="kr-num">350<span class="plus">+</span></div>
+        <div class="kr-lbl">종합병원 (300병상+)</div>
+      </div>
+      <div class="kr-tile">
+        <div class="kr-num">80<span class="plus">+</span></div>
+        <div class="kr-lbl">5성급 호텔</div>
+      </div>
+      <div class="kr-tile">
+        <div class="kr-num">60<span class="plus">+</span></div>
+        <div class="kr-lbl">초고층 빌딩 (50층+)</div>
+      </div>
+      <div class="kr-tile">
+        <div class="kr-num">200<span class="plus">+</span></div>
+        <div class="kr-lbl">대학 캠퍼스</div>
+      </div>
+      <div class="kr-tile">
+        <div class="kr-num">750<span class="plus">+</span></div>
+        <div class="kr-lbl">지하철 역사</div>
+      </div>
+      <div class="kr-tile">
+        <div class="kr-num">200<span class="plus">+</span></div>
+        <div class="kr-lbl">대형 쇼핑몰</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- GTM PRIORITY -->
+<section class="alt-bg">
+  <div class="container">
+    <div class="text-center mb-12">
+      <div class="section-eyebrow">Go-to-Market</div>
+      <h2 class="section-title">진입 우선순위 — <span class="gold-text">진입장벽 낮은 시장부터</span></h2>
+      <p class="section-sub" style="margin-left:auto;margin-right:auto;">크루즈는 최후. 환자팔찌·고객 폰 친화도가 높은 종합병원·호텔부터. 7단계 순차 진입.</p>
+    </div>
+
+    <div class="table-wrap fade-in">
+      <table class="pro">
+        <thead>
+          <tr>
+            <th style="width:80px;">단계</th>
+            <th>타깃 시장</th>
+            <th>진입장벽</th>
+            <th>시점</th>
+            <th>핵심 진입 근거</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><b style="color:var(--bordeaux);">1호</b></td>
+            <td><b>종합병원</b></td>
+            <td>⭐ 최저</td>
+            <td><span class="badge badge-bordeaux">Q4 2026</span></td>
+            <td>환자팔찌·전자차트 인프라 기존 보유, 의료 안전성 검증 동기</td>
+          </tr>
+          <tr>
+            <td><b>2호</b></td>
+            <td>5성급 호텔</td>
+            <td>⭐⭐ 낮음</td>
+            <td><span class="badge badge-gold">2027 Q2</span></td>
+            <td>고객 폰 친화도 + 브랜드 안전성 차별화 동기</td>
+          </tr>
+          <tr>
+            <td><b>3호</b></td>
+            <td>초고층 빌딩</td>
+            <td>⭐⭐ 낮음</td>
+            <td><span class="badge badge-gold">2027 Q4</span></td>
+            <td>다중 출구 동적 재배정 효과 극대화 · 보험료 절감</td>
+          </tr>
+          <tr>
+            <td><b>4호</b></td>
+            <td>학교·대학</td>
+            <td>⭐⭐⭐ 보통</td>
+            <td><span class="badge badge-navy">2028</span></td>
+            <td>교육부 시범 사업 + 학생 스마트폰 보급률 100%</td>
+          </tr>
+          <tr>
+            <td><b>5호</b></td>
+            <td>경기장·공연장</td>
+            <td>⭐⭐⭐ 보통</td>
+            <td><span class="badge badge-navy">2028</span></td>
+            <td>대규모 군중 압사 방지 + 이벤트성 도입</td>
+          </tr>
+          <tr>
+            <td><b>6호</b></td>
+            <td>지하철·공항</td>
+            <td>⭐⭐⭐⭐ 높음</td>
+            <td><span class="badge badge-purple">2029</span></td>
+            <td>국토교통부·공기업 입찰 사이클 (3~5년)</td>
+          </tr>
+          <tr>
+            <td><b>7호</b></td>
+            <td>크루즈 신조</td>
+            <td>⭐⭐⭐⭐⭐ 최고</td>
+            <td><span class="badge badge-warn">2028~2030</span></td>
+            <td>선급 인증·드라이독 1~2년 사이클 — 최후 진입</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- CHANNEL STRATEGY -->
+<section>
+  <div class="container">
+    <div class="text-center mb-12">
+      <div class="section-eyebrow">채널 전략</div>
+      <h2 class="section-title">4개 채널 <span class="gold-text">병렬 가동</span></h2>
+      <p class="section-sub" style="margin-left:auto;margin-right:auto;">단일 채널 의존도 제거. 직판·파트너십·보험·공공 4채널을 동시 가동하여 채널 리스크 분산.</p>
+    </div>
+
+    <div class="channel-grid fade-in">
+      <div class="channel-card c1">
+        <div class="channel-pct">40<span style="font-size:1.2rem;">%</span></div>
+        <div class="channel-name">직판 (Direct Sales)</div>
+        <div class="channel-desc">대형 시설 운영자 직접 영업 · CBO 트라이앵글 가동</div>
+      </div>
+      <div class="channel-card c2">
+        <div class="channel-pct">30<span style="font-size:1.2rem;">%</span></div>
+        <div class="channel-name">채널 파트너</div>
+        <div class="channel-desc">소방·보안·시설관리업체 협업 — 기존 영업망 활용</div>
+      </div>
+      <div class="channel-card c3">
+        <div class="channel-pct">20<span style="font-size:1.2rem;">%</span></div>
+        <div class="channel-name">보험사 번들</div>
+        <div class="channel-desc">보험상품 패키지 + 보험사 영업망 — 핵심 차별화</div>
+      </div>
+      <div class="channel-card c4">
+        <div class="channel-pct">10<span style="font-size:1.2rem;">%</span></div>
+        <div class="channel-name">공공 입찰</div>
+        <div class="channel-desc">병원·관공서 입찰 — 안정적 레퍼런스 확보</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING STRATEGY -->
+<section class="cream-bg">
+  <div class="container">
+    <div class="text-center mb-12">
+      <div class="section-eyebrow">가격 전략 · SaaS</div>
+      <h2 class="section-title">시설 규모별 <span class="gold-text">4 Tier</span> 구독</h2>
+      <p class="section-sub" style="margin-left:auto;margin-right:auto;">월 정액 + 초기 구축비. 시설당 평균 ARR $60K — 대형 50곳 운영 시 연 매출 $10M 도달.</p>
+    </div>
+
+    <div class="pricing-grid fade-in">
+      <div class="pricing-card">
+        <div class="tier-name">소형</div>
+        <div class="capacity">~500명</div>
+        <div class="price-month">$2K<span class="unit"> /월</span></div>
+        <div class="setup">초기 구축 <b>$20K</b></div>
+      </div>
+      <div class="pricing-card">
+        <div class="tier-name">중형</div>
+        <div class="capacity">500~2,000명</div>
+        <div class="price-month">$5K<span class="unit"> /월</span></div>
+        <div class="setup">초기 구축 <b>$50K</b></div>
+      </div>
+      <div class="pricing-card large">
+        <div class="tier-name">대형 ★</div>
+        <div class="capacity">2,000~6,000명</div>
+        <div class="price-month">$15K<span class="unit"> /월</span></div>
+        <div class="setup">초기 구축 <b>$100K</b></div>
+      </div>
+      <div class="pricing-card large">
+        <div class="tier-name">초대형 ★★</div>
+        <div class="capacity">6,000명+</div>
+        <div class="price-month">$50K<span class="unit"> /월</span></div>
+        <div class="setup">초기 구축 <b>$200K</b></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- UNIT ECONOMICS -->
+<section>
+  <div class="container">
+    <div class="text-center mb-12">
+      <div class="section-eyebrow">Unit Economics</div>
+      <h2 class="section-title">SaaS 우수 기준 <span class="gold-text">3배 초과</span></h2>
+      <p class="section-sub" style="margin-left:auto;margin-right:auto;">LTV/CAC 6.7배 = 우수, FireNavi = <b>20배</b>. Payback 3개월은 보험료 절감으로 자동 회수되는 구조의 효과.</p>
+    </div>
+
+    <div class="stat-grid fade-in">
+      <div class="stat-card">
+        <div class="v bordeaux">₩2,400<span style="font-size:1rem;">만</span></div>
+        <div class="l">CAC (고객 확보 비용)</div>
+        <div class="delta">B2B SaaS 평균 대비 우수</div>
+      </div>
+      <div class="stat-card">
+        <div class="v gold">₩6,000<span style="font-size:1rem;">만</span></div>
+        <div class="l">ARR per 시설</div>
+        <div class="delta">시설 규모별 평균</div>
+      </div>
+      <div class="stat-card">
+        <div class="v">₩4.8<span style="font-size:1rem;">억</span></div>
+        <div class="l">LTV (5년 누적)</div>
+        <div class="delta">갱신율 90%+ 가정</div>
+      </div>
+      <div class="stat-card">
+        <div class="v gold">20<span style="font-size:1rem;">x</span></div>
+        <div class="l">LTV / CAC</div>
+        <div class="delta">SaaS 우수 기준 6.7x</div>
+      </div>
+      <div class="stat-card">
+        <div class="v bordeaux">3<span style="font-size:1rem;">개월</span></div>
+        <div class="l">Payback Period</div>
+        <div class="delta">보험료 절감 기준</div>
+      </div>
+      <div class="stat-card">
+        <div class="v success">80%<span style="font-size:1rem;">+</span></div>
+        <div class="l">Gross Margin</div>
+        <div class="delta">순수 SaaS 구조</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- REVENUE STRUCTURE -->
+<section class="alt-bg">
+  <div class="container">
+    <div class="text-center mb-12">
+      <div class="section-eyebrow">다층 수익 구조</div>
+      <h2 class="section-title">SaaS 70% + <span class="gold-text">3개 부가 수익</span></h2>
+      <p class="section-sub" style="margin-left:auto;margin-right:auto;">구독 중심에 구축비·컨설팅·보험 셰어를 더해 단일 수익원 의존도 제거.</p>
+    </div>
+
+    <div class="channel-grid fade-in">
+      <div class="channel-card c2">
+        <div class="channel-pct">70<span style="font-size:1.2rem;">%</span></div>
+        <div class="channel-name">SaaS 구독</div>
+        <div class="channel-desc">월 정액 (시설 규모별 4 Tier) — 핵심 수익원</div>
+      </div>
+      <div class="channel-card c3">
+        <div class="channel-pct">15<span style="font-size:1.2rem;">%</span></div>
+        <div class="channel-name">초기 구축비</div>
+        <div class="channel-desc">Edge 서버 + 시설 통합 + 인증 매핑</div>
+      </div>
+      <div class="channel-card c1">
+        <div class="channel-pct">10<span style="font-size:1.2rem;">%</span></div>
+        <div class="channel-name">컨설팅·인증</div>
+        <div class="channel-desc">안전 진단·시뮬레이션 리포트</div>
+      </div>
+      <div class="channel-card c4">
+        <div class="channel-pct">5<span style="font-size:1.2rem;">%</span></div>
+        <div class="channel-name">보험 파트너십</div>
+        <div class="channel-desc">보험상품 공동개발 + 수익 셰어</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- REVENUE SCENARIO -->
+<section>
+  <div class="container">
+    <div class="text-center mb-12">
+      <div class="section-eyebrow">매출 시나리오</div>
+      <h2 class="section-title">2026~2030 — <span class="gold-text">5년간 600배</span> 성장</h2>
+      <p class="section-sub" style="margin-left:auto;margin-right:auto;">보수적 시나리오. 한국 + 동남아 진출 기준. 2030년 IPO 시점 매출 3,000억원 목표.</p>
+    </div>
+
+    <div class="rev-scenario fade-in">
+      <div class="rev-row">
+        <div class="rev-year">2026</div>
+        <div class="rev-bar"><div class="rev-fill" style="width:2%;">2 시설</div></div>
+        <div class="rev-amount">5,000만원</div>
+      </div>
+      <div class="rev-row">
+        <div class="rev-year">2027</div>
+        <div class="rev-bar"><div class="rev-fill" style="width:5%;">12 시설</div></div>
+        <div class="rev-amount">8억원</div>
+      </div>
+      <div class="rev-row">
+        <div class="rev-year">2028</div>
+        <div class="rev-bar"><div class="rev-fill" style="width:15%;">50 시설</div></div>
+        <div class="rev-amount">40억원</div>
+      </div>
+      <div class="rev-row">
+        <div class="rev-year">2029</div>
+        <div class="rev-bar"><div class="rev-fill" style="width:40%;">150 시설</div></div>
+        <div class="rev-amount">120억원</div>
+      </div>
+      <div class="rev-row">
+        <div class="rev-year peak">2030 ★</div>
+        <div class="rev-bar"><div class="rev-fill peak" style="width:100%;">400 시설 · IPO</div></div>
+        <div class="rev-amount" style="color:var(--bordeaux);font-size:1.2rem;">3,000억원</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DATA FLYWHEEL -->
+<section class="alt-bg">
+  <div class="container">
+    <div class="text-center mb-12">
+      <div class="section-eyebrow">데이터 플라이휠</div>
+      <h2 class="section-title">후발 진입자가 <span class="gold-text">따라잡기 어려운</span> 데이터 해자</h2>
+      <p class="section-sub" style="margin-left:auto;margin-right:auto;">시간이 갈수록 강해지는 5단계 순환 구조. 5년 누적 시 후발자 대비 30~50% 정확도 우위 예상.</p>
+    </div>
+
+    <div class="flywheel fade-in">
+      <div class="flywheel-step">
+        <div class="fw-num">1</div>
+        <div class="fw-icon">📊</div>
+        <div class="fw-title">시설 일상 동선 수집</div>
+      </div>
+      <div class="flywheel-step">
+        <div class="fw-num">2</div>
+        <div class="fw-icon">🧠</div>
+        <div class="fw-title">AI 학습 강화</div>
+      </div>
+      <div class="flywheel-step">
+        <div class="fw-num">3</div>
+        <div class="fw-icon">📈</div>
+        <div class="fw-title">정확도 ↑</div>
+      </div>
+      <div class="flywheel-step">
+        <div class="fw-num">4</div>
+        <div class="fw-icon">🤝</div>
+        <div class="fw-title">고객 신뢰 ↑</div>
+      </div>
+      <div class="flywheel-step">
+        <div class="fw-num">5</div>
+        <div class="fw-icon">🏢</div>
+        <div class="fw-title">도입 시설 확대</div>
+      </div>
+    </div>
+    <div class="flywheel-arrows">
+      <div>↓</div><div>↓</div><div>↓</div><div>↓</div><div>↻ 순환</div>
+    </div>
+
+    <div class="grid-2 mt-12">
+      <div class="card card-bordered-left">
+        <div class="card-eyebrow">자동 학습 항목</div>
+        <h3>매일 누적 데이터</h3>
+        <ul style="list-style:none;padding:0;margin-top:10px;">
+          <li style="padding:6px 0;font-size:0.9rem;">◆ 시설별 WiFi 핑거프린트 자동 갱신 (매일)</li>
+          <li style="padding:6px 0;font-size:0.9rem;">◆ 시설별 화재훈련 데이터 누적</li>
+          <li style="padding:6px 0;font-size:0.9rem;">◆ 시설별 군중 흐름 패턴 학습</li>
+          <li style="padding:6px 0;font-size:0.9rem;">◆ 다국적 사용자 응답 패턴 정규화 보강</li>
+        </ul>
+      </div>
+      <div class="card card-bordered-left">
+        <div class="card-eyebrow">경쟁사 차별 (해자)</div>
+        <h3>모방 불가능 격차</h3>
+        <ul style="list-style:none;padding:0;margin-top:10px;">
+          <li style="padding:6px 0;font-size:0.9rem;">◆ 후발 진입자가 데이터 0에서 시작 → 정확도 격차</li>
+          <li style="padding:6px 0;font-size:0.9rem;">◆ 시설별 맞춤 진화 → 단일 모델로 따라잡기 불가</li>
+          <li style="padding:6px 0;font-size:0.9rem;">◆ 5년 누적 시 30~50% 정확도 우위 예상</li>
+          <li style="padding:6px 0;font-size:0.9rem;">◆ 특허 9건 + 데이터 해자 = 이중 방어</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- INSURANCE BUNDLE -->
+<section>
+  <div class="container">
+    <div class="text-center mb-12">
+      <div class="section-eyebrow">핵심 차별화</div>
+      <h2 class="section-title">보험사 번들 — <span class="gold-text">자동 ROI 회수</span> 구조</h2>
+      <p class="section-sub" style="margin-left:auto;margin-right:auto;">보험사가 직접 사지 않습니다. 보험사가 "FireNavi 탑재 시 보험료 25% 인하"를 약정 → 시설 운영자가 보험료 절감으로 도입비를 자동 회수.</p>
+    </div>
+
+    <div class="insurance-box fade-in">
+      <div>
+        <h3>🛡️ 운영자 도입 결정 합리성 ★★★★★</h3>
+        <p>전통적 안전 솔루션은 운영자에게 "비용"입니다. FireNavi는 보험료 절감액으로 도입비를 자동 회수하는 <b>금융 상품</b>으로 작동합니다. Monte Carlo 10만 시뮬 결과, 보험사 입장에서도 기대손실 -40% 감소로 보험료 인하 수익성 검증 완료.</p>
+        <p style="margin-top:14px;"><span class="tag bordeaux">국내 대형 보험사 공동개발 협의 중</span></p>
+      </div>
+      <div class="insurance-sim">
+        <h4>📊 보험 시뮬레이션</h4>
+        <div class="ins-row">
+          <span>기대 손실</span>
+          <span><span class="from">$47.3M</span> → <span class="to">$28.4M</span></span>
+        </div>
+        <div class="ins-row">
+          <span>VaR (95%)</span>
+          <span><span class="from">$182M</span> → <span class="to">$109M</span></span>
+        </div>
+        <div class="ins-row">
+          <span>TVaR (95%)</span>
+          <span><span class="from">$267M</span> → <span class="to">$158M</span></span>
+        </div>
+        <div class="ins-row">
+          <span><b>보험료 인하율</b></span>
+          <span class="to"><b>-40%</b></span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TEAM -->
+<section class="alt-bg">
+  <div class="container">
+    <div class="text-center mb-12">
+      <div class="section-eyebrow">팀 구성</div>
+      <h2 class="section-title">4인 핵심 리더십 + <span class="gold-text">협력 파트너 네트워크</span></h2>
+      <p class="section-sub" style="margin-left:auto;margin-right:auto;">AI 알고리즘 + 재난과학 + 사업 개발 + 디자인 = 풀스택 커버리지. 경력 합산 100년+. 학술·산업·정책 삼위일체.</p>
+    </div>
+
+    <div class="team-grid fade-in">
+      <div class="team-card ceo">
+        <div class="team-avatar">🧠</div>
+        <div class="team-role">CEO · FOUNDER</div>
+        <div class="team-name">심재우</div>
+        <div class="team-desc">AI Architect · 5단계 파이프라인 설계자</div>
+        <ul>
+          <li>9건 특허 발명자 (알고리즘 5 + 시스템 4)</li>
+          <li>AI/소프트웨어 플랫폼 다수 구축 경험</li>
+          <li>한국저작권위원회 등록 저작물 4건</li>
+        </ul>
+        <div class="contact">
+          📧 <a href="mailto:jaiwshim@gmail.com">jaiwshim@gmail.com</a><br>
+          📞 010-2397-5734
+        </div>
+      </div>
+
+      <div class="team-card cto">
+        <div class="team-avatar">🚒</div>
+        <div class="team-role">CTO</div>
+        <div class="team-name">서병근</div>
+        <div class="team-desc">재난과학 박사 (Ph.D., Disaster Science)</div>
+        <ul>
+          <li>존슨콘트롤즈(Johnson Controls) 출신 — 글로벌 빌딩 솔루션 실무</li>
+          <li>소방기술심의위원 — 국가 화재안전 정책·표준 제정 참여</li>
+          <li>안전공학·소방·인증 영역 총괄</li>
+        </ul>
+      </div>
+
+      <div class="team-card cbo">
+        <div class="team-avatar">🤝</div>
+        <div class="team-role">CBO · 3인 트라이앵글</div>
+        <div class="team-name">서한균 · 선웅규 · 정필완</div>
+        <div class="team-desc">Business Development Triangle — 4채널 병렬 가동</div>
+        <ul>
+          <li><b>서한균</b> — 금융·보험사 네트워크</li>
+          <li><b>선웅규</b> — 시공사·시설 운영자 네트워크</li>
+          <li><b>정필완</b> — 공공·입찰 네트워크</li>
+        </ul>
+      </div>
+
+      <div class="team-card cdo">
+        <div class="team-avatar">🎨</div>
+        <div class="team-role">CDO</div>
+        <div class="team-name">이강수</div>
+        <div class="team-desc">Design · Brand · UI/UX 총괄</div>
+        <ul>
+          <li>시설 관리자 콘솔·소방관 단말·거주자 디바이스 UI/UX</li>
+          <li>위기 상황용 직관적 안전 인터페이스 설계</li>
+          <li>럭셔리 디자인 시스템 (Bordeaux × Royal Navy × Champagne Gold)</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="partners-box mt-12 fade-in">
+      <h4>🤝 협력 파트너 / 자문 네트워크</h4>
+      <div class="partner-pills">
+        <span class="partner-pill">한국선급(KR) · 자문 검토 중</span>
+        <span class="partner-pill">NFPA 한국지부 · 기술 자문</span>
+        <span class="partner-pill">국내 대형 보험사 · 보험상품 공동개발 협의</span>
+        <span class="partner-pill">종합병원 임상 자문 · 협력 검토 중</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ROADMAP -->
+<section>
+  <div class="container">
+    <div class="text-center mb-12">
+      <div class="section-eyebrow">로드맵 ~2030</div>
+      <h2 class="section-title">v3.0 피벗 완료 → <span class="gold-text">2030년 IPO</span></h2>
+      <p class="section-sub" style="margin-left:auto;margin-right:auto;">6개 마일스톤. 매 단계마다 검증된 매출·시설 수 데이터로 다음 단계 진입.</p>
+    </div>
+
+    <div class="tl fade-in" style="max-width:820px;margin:0 auto;">
+      <div class="tl-item done">
+        <div class="date">2026 Q1~Q2 ✓ 완료</div>
+        <div class="ttl">v2.0 기술 검증 + v3.0 피벗 완료</div>
+        <div class="desc">알고리즘 PoC + 특허 9건 작성 + 시뮬레이션 데모 완성 + Smartphone-First 전략 확정</div>
+      </div>
+      <div class="tl-item active">
+        <div class="date">2026 Q3 ▶ 진행 중</div>
+        <div class="ttl">모바일 SDK + Edge 백엔드 개발</div>
+        <div class="desc">iOS/Android 베타 + Python FastAPI Edge 서버 + 시설 콘솔 UI/UX</div>
+      </div>
+      <div class="tl-item">
+        <div class="date">2026 Q4</div>
+        <div class="ttl">종합병원 1호 파일럿</div>
+        <div class="desc">국내 종합병원 1곳 시범 도입 + 사상자 0명 데이터 확보 + 첫 매출 5,000만원</div>
+      </div>
+      <div class="tl-item">
+        <div class="date">2027 Q1~Q4</div>
+        <div class="ttl">국내 확산 — 매출 8억원</div>
+        <div class="desc">호텔 5곳 · 빌딩 3곳 · 병원 10곳 진입 + 보험사 공동상품 출시</div>
+      </div>
+      <div class="tl-item">
+        <div class="date">2028</div>
+        <div class="ttl">동남아 진출 — 매출 50억원</div>
+        <div class="desc">싱가포르 · 일본 · UAE 진입 · 50개 시설 · 학교·경기장 시장 진입</div>
+      </div>
+      <div class="tl-item">
+        <div class="date">2029</div>
+        <div class="ttl">글로벌 SaaS — 매출 120억원</div>
+        <div class="desc">유럽 · 북미 진입 + SOLAS 표준 채택 추진 + 150개 시설</div>
+      </div>
+      <div class="tl-item">
+        <div class="date" style="color:var(--gold-dark);">★ 2030</div>
+        <div class="ttl" style="color:var(--bordeaux);">IPO + 글로벌 확산 — 매출 3,000억원</div>
+        <div class="desc">500개 시설 운영 · 한국발 글로벌 표준 ISO 제정 논의 · 한국거래소 IPO</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section">
+  <h2>다음으로 보실 페이지</h2>
+  <p>FireNavi v3.0 — 시장·비즈니스·팀·로드맵을 모두 확인하셨습니다.<br>홈으로 돌아가거나, 5단계 기술 파이프라인을 자세히 살펴보세요.</p>
+  <div class="hero-cta" style="justify-content:center;">
+    <a href="index.html" class="btn btn-gold">🏠 홈으로 돌아가기</a>
+    <a href="technology.html" class="btn btn-outline" style="background:rgba(255,255,255,0.1);color:white;border-color:rgba(255,255,255,0.3);">⚙️ 기술 페이지 (5단계 파이프라인)</a>
+    <a href="../smartphone-poc.html" target="_blank" class="btn btn-outline" style="background:rgba(255,255,255,0.1);color:white;border-color:rgba(255,255,255,0.3);">▶ PoC 데모 실행</a>
+  </div>
+</section>
+
+<!-- v2.0 Research Lab — 보험 정량 근거 -->
+<section style="background:#0F1729;color:white;padding:60px 28px;">
+  <div class="container">
+    <div style="text-align:center;margin-bottom:32px;">
+      <div style="display:inline-block;padding:5px 14px;background:rgba(201,169,97,0.2);color:#C9A961;border-radius:999px;font-size:0.78rem;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;">🧪 v2.0 Research Lab</div>
+      <h2 style="color:white;margin-top:14px;">보험사 번들 ROI — Monte Carlo 정량 근거</h2>
+      <p style="color:rgba(255,255,255,0.7);max-width:720px;margin:8px auto 0;">10만 회 시뮬레이션으로 검증된 동적 보험료 모델</p>
+    </div>
+    <div style="max-width:700px;margin:0 auto;">
+      <a href="lab/d-insurance-risk-model.html" target="_blank" style="background:rgba(255,255,255,0.05);border:1px solid rgba(201,169,97,0.3);border-radius:14px;padding:24px;text-decoration:none;color:white;display:block;border-top:4px solid #C9A961;">
+        <div style="font-size:0.75rem;color:#C9A961;font-weight:700;margin-bottom:6px;">📊 1,317줄</div>
+        <h3 style="color:white;margin:0 0 8px;font-size:1.1rem;">D. 보험 리스크 모델 페이지</h3>
+        <p style="color:rgba(255,255,255,0.65);font-size:0.85rem;margin:0 0 12px;">Monte Carlo 10만 회 + 동적 보험료. 기대손실 $47.3M → $28.4M (-40%), VaR(95%) $182M → $109M (-40%), TVaR(95%) $267M → $158M (-41%).</p>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;">
+          <span style="background:rgba(201,169,97,0.2);color:#C9A961;padding:2px 8px;border-radius:999px;font-size:0.7rem;font-weight:600;">Monte Carlo</span>
+          <span style="background:rgba(201,169,97,0.2);color:#C9A961;padding:2px 8px;border-radius:999px;font-size:0.7rem;font-weight:600;">10만회</span>
+          <span style="background:rgba(201,169,97,0.2);color:#C9A961;padding:2px 8px;border-radius:999px;font-size:0.7rem;font-weight:600;">VaR/TVaR</span>
+        </div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<footer class="site-footer"></footer>
+<script src="js/common.js"></script>
+</body>
+</html>
