@@ -1,0 +1,1481 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FireNavi v3.0 — Smartphone-First PoC Demo (Grid Layout)</title>
+<style>
+  :root {
+    --bg: #0B1220; --panel: #131C2E; --panel-2: #1A2540;
+    --line: rgba(255,255,255,0.08); --text: #E2E8F0; --muted: #94A3B8;
+    --accent: #38BDF8; --red: #EF4444; --orange: #F59E0B;
+    --green: #10B981; --purple: #A78BFA; --gold: #C9A961;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--text);
+    font-family: -apple-system, "Segoe UI", "Pretendard", "Noto Sans KR", sans-serif;
+    overflow-x: hidden; }
+  header { background: linear-gradient(135deg, #0B1220 0%, #1A2540 100%);
+    padding: 14px 24px; border-bottom: 1px solid var(--line);
+    display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; }
+  h1 { margin: 0; font-size: 1.2rem; color: var(--accent); }
+  h1 .sub { color: var(--muted); font-size: 0.8rem; font-weight: 400; margin-left: 8px; }
+  .badge { display: inline-block; background: var(--red); color: white;
+    padding: 2px 10px; border-radius: 999px; font-size: 0.72rem; font-weight: 700; }
+  .badge-green { background: var(--green); } .badge-purple { background: var(--purple); }
+  .badge-orange { background: var(--orange); }
+  main { display: grid; grid-template-columns: 300px 1fr 340px;
+    gap: 10px; padding: 10px; min-height: calc(100vh - 60px); }
+  @media (max-width: 1280px) { main { grid-template-columns: 1fr; } }
+  .panel { background: var(--panel); border: 1px solid var(--line);
+    border-radius: 12px; padding: 14px; }
+  .panel h2 { margin: 0 0 10px; font-size: 0.92rem; color: var(--accent);
+    display: flex; justify-content: space-between; align-items: center; }
+  .stage { background: var(--panel-2); border-radius: 8px;
+    padding: 8px 10px; margin-bottom: 6px; border-left: 3px solid var(--muted); font-size: 0.78rem; }
+  .stage.active { border-left-color: var(--green); background: rgba(16,185,129,0.08); }
+  .stage.processing { border-left-color: var(--orange); background: rgba(245,158,11,0.08); }
+  .stage-title { font-size: 0.78rem; font-weight: 600;
+    display: flex; justify-content: space-between; }
+  .stage-desc { font-size: 0.68rem; color: var(--muted); margin-top: 3px; }
+  .stat { display: flex; justify-content: space-between; padding: 5px 0;
+    font-size: 0.82rem; border-bottom: 1px solid var(--line); }
+  .stat:last-child { border-bottom: none; }
+  .stat .v { font-family: ui-monospace, monospace; color: var(--accent); font-weight: 600; }
+  .stat .v.red { color: var(--red); } .stat .v.orange { color: var(--orange); }
+  .stat .v.green { color: var(--green); }
+  button { background: var(--accent); color: #0B1220; border: 0;
+    padding: 9px 14px; border-radius: 8px; font-weight: 700;
+    cursor: pointer; font-size: 0.85rem; width: 100%; margin-top: 5px; }
+  button:hover { filter: brightness(1.1); }
+  button:disabled { background: #444; color: #888; cursor: not-allowed; }
+  button.btn-danger { background: var(--red); color: white; }
+  canvas { background: #0F1729; border-radius: 12px; display: block;
+    width: 100%; height: 100%; cursor: crosshair; }
+  .canvas-wrap { position: relative; background: var(--panel);
+    border: 1px solid var(--line); border-radius: 12px; padding: 10px; min-height: 600px; }
+  .canvas-legend { position: absolute; bottom: 14px; left: 14px;
+    background: rgba(11,18,32,0.92); border: 1px solid var(--line);
+    border-radius: 8px; padding: 6px 10px; font-size: 0.68rem; max-width: 250px; }
+  .canvas-legend > div { display: flex; align-items: center; gap: 5px; margin: 1px 0; }
+  .canvas-legend .grp { font-weight: 700; color: var(--muted); margin-top: 4px; margin-bottom: 2px; }
+  .dot { width: 9px; height: 9px; border-radius: 50%; display: inline-block; flex-shrink: 0; }
+  .sq { width: 10px; height: 10px; display: inline-block; flex-shrink: 0; border: 1px solid #fff3; }
+  .survey { position: fixed; bottom: 24px; right: 24px; width: 320px;
+    background: var(--panel); border: 2px solid var(--red);
+    border-radius: 12px; padding: 16px;
+    box-shadow: 0 8px 32px rgba(239,68,68,0.4); z-index: 100;
+    transform: translateX(420px); transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1); }
+  .survey.show { transform: translateX(0); }
+  .survey h3 { margin: 0 0 4px; color: var(--red); font-size: 1rem; }
+  .survey .loc { color: var(--muted); font-size: 0.75rem; margin-bottom: 10px; }
+  .survey .q { font-size: 0.85rem; margin: 10px 0 6px; font-weight: 600; }
+  .survey .opts { display: flex; gap: 6px; }
+  .survey .opt { flex: 1; background: var(--panel-2);
+    border: 1px solid var(--line); padding: 8px 4px;
+    border-radius: 6px; text-align: center; cursor: pointer; font-size: 0.75rem; }
+  .survey .opt:hover { background: var(--accent); color: #0B1220; }
+  .survey .opt.danger:hover { background: var(--red); color: white; }
+  .log { font-family: ui-monospace, monospace; font-size: 0.68rem;
+    max-height: 160px; overflow-y: auto; }
+  .log .entry { padding: 2px 0; border-bottom: 1px solid var(--line);
+    display: flex; gap: 5px; }
+  .log .t { color: var(--muted); flex-shrink: 0; }
+  .log .e.fire { color: var(--red); } .log .e.smoke { color: var(--orange); }
+  .log .e.decide { color: var(--accent); } .log .e.survey { color: var(--purple); }
+  .log .e.done { color: var(--green); } .log .e.system { color: var(--gold); }
+  .ctrl-row { display: flex; gap: 8px; align-items: center; margin-top: 6px;
+    font-size: 0.78rem; }
+  .ctrl-row input[type=range] { flex: 1; }
+  .ctrl-row select { flex: 1; background: var(--panel-2); color: var(--text);
+    border: 1px solid var(--line); padding: 5px; border-radius: 6px; font-size: 0.78rem; }
+  .speed-display { display: inline-block; min-width: 36px; text-align: right;
+    font-family: ui-monospace; color: var(--accent); font-weight: 700; }
+  .handicap-stats { font-size: 0.66rem; max-height: 200px;
+    overflow-y: auto; padding-right: 4px; }
+  .handicap-row { display: flex; justify-content: space-between; align-items: center;
+    padding: 2px 0; border-bottom: 1px solid #1A2540; }
+  .handicap-row .lbl { display: flex; align-items: center; gap: 5px; }
+  .handicap-row .num { font-family: ui-monospace; font-weight: 700; }
+  .cat-header { color: var(--muted); font-weight: 700; margin: 4px 0 2px;
+    font-size: 0.66rem; padding: 2px 0; border-bottom: 1px solid var(--line); }
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <h1>🚒 FireNavi v3.0<span class="sub">— Grid Layout · 30 Disability Types · Real-time</span></h1>
+  </div>
+  <div>
+    <span class="badge badge-orange">PoC</span>
+    <span class="badge badge-purple">Hardware-Free</span>
+    <span class="badge badge-green">30 Types</span>
+  </div>
+</header>
+
+<main>
+
+  <!-- LEFT: Pipeline + Controls -->
+  <section class="panel">
+    <h2>📡 5단계 파이프라인</h2>
+    <div class="stage" id="stage1"><div class="stage-title">1. 음향 트리거 <span id="s1status">대기</span></div><div class="stage-desc">SOLAS 패턴 자동 감지</div></div>
+    <div class="stage" id="stage2"><div class="stage-title">2. 분산 측위 <span id="s2status">대기</span></div><div class="stage-desc">WiFi+IMU+Graph SLAM</div></div>
+    <div class="stage" id="stage3"><div class="stage-title">3. 마이크로 설문 <span id="s3status">대기</span></div><div class="stage-desc">3문항×3초 + 음성</div></div>
+    <div class="stage" id="stage4"><div class="stage-title">4. 폰 센서 <span id="s4status">대기</span></div><div class="stage-desc">IMU·마이크·조도·기압</div></div>
+    <div class="stage" id="stage5"><div class="stage-title">5. 화재맵+경로 <span id="s5status">대기</span></div><div class="stage-desc">Bayesian+A*+α=2.0</div></div>
+
+    <h2 style="margin-top:16px;">⚙️ 시뮬레이션 제어</h2>
+    <div class="ctrl-row">
+      <span style="min-width:60px;">승객수</span>
+      <select id="passengerCount">
+        <option value="80">80명</option>
+        <option value="150" selected>150명</option>
+        <option value="250">250명</option>
+        <option value="400">400명</option>
+      </select>
+    </div>
+    <div class="ctrl-row">
+      <span style="min-width:60px;">레이아웃</span>
+      <select id="scenario">
+        <option value="cruise" selected>🚢 크루즈 5층</option>
+        <option value="building">🏙️ 빌딩 30층</option>
+        <option value="hospital">🏥 병원</option>
+      </select>
+    </div>
+    <div class="ctrl-row">
+      <span style="min-width:60px;">속도</span>
+      <input type="range" id="speedSlider" min="0.25" max="5" step="0.25" value="1">
+      <span class="speed-display" id="speedDisplay">1.0×</span>
+    </div>
+    <div class="ctrl-row" style="font-size:0.7rem;color:var(--muted);">
+      0.25× ~ 5×로 시뮬레이션 진행 속도 실시간 조절
+    </div>
+    <button id="btnSpawn" style="background:var(--accent);">① 승객 배치</button>
+    <button id="btnFirePicking" disabled style="background:#F59E0B;color:white;opacity:1;">② 캔버스 클릭으로 화재 발화점 선택 (최대 3개)</button>
+    <button id="btnStart" class="btn-danger" disabled>③ 🚨 시뮬레이션 시작</button>
+    <button id="btnPause" style="background:var(--orange);color:white;display:none;">⏸ 일시정지</button>
+    <button id="btnReset" style="background:var(--muted);">⟲ 초기화</button>
+    <div id="phaseStatus" style="font-size:0.72rem;color:var(--green);margin-top:6px;text-align:center;font-weight:600;">
+      페이지 로드됨 — ①승객 배치부터 시작하세요
+    </div>
+
+    <h2 style="margin-top:14px;">🔊 음향 트리거 시연</h2>
+    <button id="btnMicTest" style="background:var(--panel-2);color:var(--accent);border:1px solid var(--accent);">🎙️ 마이크 권한 + 음량 감지</button>
+    <div style="font-size:0.7rem;color:var(--muted);margin-top:4px;line-height:1.6;">
+      ✓ 마이크 허용 → 음량 감지 + 음성 인식<br>
+      ✓ "불이야", "화재" 음성 감지 시 자동 시작<br>
+      ✓ GPS 위치 기반으로 화재 발생<br>
+      ✓ 3단계 자동 진행: 배치→발생→시뮬시작
+    </div>
+    <div id="micStatus" style="font-size:0.75rem;color:var(--green);margin-top:6px;padding:6px;background:rgba(16,185,129,0.1);border-radius:4px;display:none;">
+      🎤 마이크 활성화 | 📍 GPS 준비 | 🎤 음성 인식 중
+    </div>
+
+    <h2 style="margin-top:14px;">🧪 테스트</h2>
+    <button id="btnAutoTest" style="background:#8B5CF6;color:white;">🧪 자동 테스트 (15초)</button>
+    <div style="font-size:0.7rem;color:var(--muted);margin-top:4px;">
+      승객배치 → 화재선택 → 시뮬시작 → 이동확인 자동 실행
+    </div>
+  </section>
+
+  <!-- CENTER: Canvas -->
+  <section class="canvas-wrap">
+    <canvas id="cv" width="900" height="650"></canvas>
+    <div class="canvas-legend">
+      <div class="grp">레이아웃</div>
+      <div><span class="sq" style="background:#374151;"></span> 벽</div>
+      <div><span class="sq" style="background:#1E293B;"></span> 복도</div>
+      <div><span class="sq" style="background:#0F2A44;"></span> 객실/공간</div>
+      <div><span class="sq" style="background:#92400E;"></span> 문 (출입구)</div>
+      <div><span class="sq" style="background:#10B981;"></span> 비상구/계단</div>
+      <div class="grp">보고 상태</div>
+      <div><span class="dot" style="background:#10B981;"></span> 평온</div>
+      <div><span class="dot" style="background:#F59E0B;"></span> 연기 보고</div>
+      <div><span class="dot" style="background:#EF4444;"></span> 불꽃 보고</div>
+      <div class="grp">30유형 그룹 (색조)</div>
+      <div><span class="dot" style="background:#10B981;"></span> A 신체 (녹-주황)</div>
+      <div><span class="dot" style="background:#EC4899;"></span> B 거동보조 (분홍)</div>
+      <div><span class="dot" style="background:#EF4444;"></span> C 부상/응급 (빨강)</div>
+      <div><span class="dot" style="background:#06B6D4;"></span> D 감각장애 (청-보라)</div>
+      <div><span class="dot" style="background:#F472B6;"></span> E 인지/정신 (마젠타)</div>
+      <div><span class="dot" style="background:#84CC16;"></span> F 언어/외적 (라임)</div>
+    </div>
+  </section>
+
+  <!-- RIGHT: Stats + Handicap Distribution + Log -->
+  <section class="panel">
+    <h2>📊 실시간 통계</h2>
+    <div class="stat"><span>경과 시간 (시뮬)</span><span class="v" id="statTime">0.0s</span></div>
+    <div class="stat"><span>활성화 단말</span><span class="v green" id="statActive">0 / 0</span></div>
+    <div class="stat"><span>응답 수집</span><span class="v" id="statResponse">0</span></div>
+    <div class="stat"><span>센서 자동 추정</span><span class="v" id="statSensor">0</span></div>
+    <div class="stat"><span>대피 완료</span><span class="v green" id="statEvac">0</span></div>
+    <div class="stat"><span>위험 인원</span><span class="v red" id="statDanger">0</span></div>
+    <div class="stat"><span>v3 데이터 포인트</span><span class="v" id="statV3pts">0</span></div>
+    <div class="stat"><span>IoT 500개 대비</span><span class="v" id="statRatio">×0</span></div>
+
+    <h2 style="margin-top:14px;">♿ 핸디캡 30유형 분포</h2>
+    <div class="handicap-stats" id="handicapStats"></div>
+
+    <h2 style="margin-top:14px;">📜 AI 의사결정 로그</h2>
+    <div class="log" id="aiLog"></div>
+  </section>
+
+</main>
+
+<div class="survey" id="surveyBox">
+  <h3>🚨 FireNavi 긴급</h3>
+  <div class="loc" id="surveyLoc">현재 위치 인근으로 추정</div>
+  <div class="q">Q1. 🔥 불꽃이 보이나요?</div>
+  <div class="opts">
+    <div class="opt danger" onclick="ans('fire','yes')">예</div>
+    <div class="opt" onclick="ans('fire','no')">아니오</div>
+    <div class="opt" onclick="ans('fire','unknown')">모름</div>
+  </div>
+  <div class="q">Q2. 💨 연기 보임 / 냄새?</div>
+  <div class="opts">
+    <div class="opt" onclick="ans('smoke','smell')">냄새만</div>
+    <div class="opt danger" onclick="ans('smoke','visible')">보임</div>
+    <div class="opt" onclick="ans('smoke','none')">없음</div>
+  </div>
+  <div class="q">Q3. 👥 주변 상태?</div>
+  <div class="opts">
+    <div class="opt" onclick="ans('crowd','calm')">평온</div>
+    <div class="opt" onclick="ans('crowd','running')">달림</div>
+    <div class="opt danger" onclick="ans('crowd','panic')">패닉</div>
+  </div>
+</div>
+
+<script>
+/* ===================================================================
+   FireNavi v3.0 — Grid-based Layout + 30 Handicap Types + Speed
+   =================================================================== */
+
+const cv = document.getElementById('cv');
+const ctx = cv.getContext('2d');
+function resizeCanvas() {
+  const wrap = cv.parentElement;
+  cv.width = wrap.clientWidth - 20;
+  cv.height = Math.max(620, wrap.clientHeight - 20);
+}
+window.addEventListener('resize', () => { resizeCanvas(); if (state.gridW) buildLayout(); render(); });
+resizeCanvas();
+
+const W = () => cv.width, H = () => cv.height;
+
+/* ---------- 30유형 핸디캡 정의 ---------- */
+const TYPES_30 = [
+  // A. 신체 (7유형) — 녹/주황 계열
+  { id: 1,  cat:'A', name:'normal',       label:'건강한 성인',     color:'#10B981', speed:1.4, weight:30, prio:7 },
+  { id: 2,  cat:'A', name:'elderly',      label:'고령자',          color:'#F59E0B', speed:0.7, weight:12, prio:5 },
+  { id: 3,  cat:'A', name:'child',        label:'어린이',          color:'#A78BFA', speed:1.0, weight:5,  prio:6 },
+  { id: 4,  cat:'A', name:'toddler',      label:'영유아',          color:'#FBBF24', speed:0.0, weight:1,  prio:1 },
+  { id: 5,  cat:'A', name:'obese',        label:'비만',            color:'#D97706', speed:0.6, weight:3,  prio:6 },
+  { id: 6,  cat:'A', name:'pregEarly',    label:'임산부 초기',     color:'#14B8A6', speed:1.0, weight:1,  prio:5 },
+  { id: 7,  cat:'A', name:'pregLate',     label:'임산부 후기',     color:'#0D9488', speed:0.8, weight:1,  prio:2 },
+  // B. 거동보조 (5유형) — 분홍/장미 계열
+  { id: 8,  cat:'B', name:'wcElec',       label:'휠체어-전동',     color:'#EC4899', speed:1.2, weight:1,  prio:6 },
+  { id: 9,  cat:'B', name:'wcMan',        label:'휠체어-수동',     color:'#DB2777', speed:0.8, weight:1,  prio:3 },
+  { id:10,  cat:'B', name:'cane',         label:'지팡이',          color:'#FB923C', speed:0.6, weight:2,  prio:3 },
+  { id:11,  cat:'B', name:'walker',       label:'보행기',          color:'#F97316', speed:0.5, weight:1,  prio:3 },
+  { id:12,  cat:'B', name:'crutch',       label:'깁스/목발',       color:'#EA580C', speed:0.5, weight:1,  prio:3 },
+  // C. 부상/응급 (3유형) — 적색
+  { id:13,  cat:'C', name:'minor',        label:'부상 경상',       color:'#EF4444', speed:0.8, weight:1,  prio:5 },
+  { id:14,  cat:'C', name:'major',        label:'부상 중상',       color:'#DC2626', speed:0.3, weight:1,  prio:2 },
+  { id:15,  cat:'C', name:'unconscious',  label:'의식불명',        color:'#475569', speed:0.0, weight:1,  prio:1 },
+  // D. 감각장애 (5유형) — 청/보라
+  { id:16,  cat:'D', name:'deafFull',     label:'청각 완전농',     color:'#06B6D4', speed:1.4, weight:1,  prio:4 },
+  { id:17,  cat:'D', name:'deafPartial',  label:'난청',            color:'#0891B2', speed:1.4, weight:2,  prio:4 },
+  { id:18,  cat:'D', name:'blindFull',    label:'시각 완전실명',   color:'#8B5CF6', speed:1.0, weight:1,  prio:4 },
+  { id:19,  cat:'D', name:'blindLow',     label:'저시력/야맹',     color:'#7C3AED', speed:1.0, weight:1,  prio:4 },
+  { id:20,  cat:'D', name:'colorblind',   label:'색맹/색약',       color:'#6366F1', speed:1.4, weight:2,  prio:7 },
+  // E. 인지/정신 (5유형) — 마젠타
+  { id:21,  cat:'E', name:'dementia',     label:'치매',            color:'#F472B6', speed:0.9, weight:2,  prio:1 },
+  { id:22,  cat:'E', name:'autism',       label:'자폐 스펙트럼',   color:'#E879F9', speed:1.0, weight:1,  prio:4 },
+  { id:23,  cat:'E', name:'developmental',label:'발달장애',        color:'#D946EF', speed:1.1, weight:1,  prio:4 },
+  { id:24,  cat:'E', name:'panic',        label:'정신/PTSD',       color:'#C026D3', speed:0.8, weight:1,  prio:5 },
+  { id:25,  cat:'E', name:'medicated',    label:'약물복용',        color:'#A21CAF', speed:0.7, weight:1,  prio:3 },
+  // F. 언어/외적 (5유형) — 라임/올리브
+  { id:26,  cat:'F', name:'foreign',      label:'언어장벽 외국인', color:'#84CC16', speed:1.2, weight:4,  prio:6 },
+  { id:27,  cat:'F', name:'aphasia',      label:'실어증',          color:'#65A30D', speed:1.3, weight:1,  prio:6 },
+  { id:28,  cat:'F', name:'asthma',       label:'호흡기(천식)',    color:'#4D7C0F', speed:0.9, weight:2,  prio:2 },
+  { id:29,  cat:'F', name:'petOwner',     label:'반려동물 동반',   color:'#A3E635', speed:0.9, weight:2,  prio:7 },
+  { id:30,  cat:'F', name:'luggage',      label:'대형 짐',         color:'#BEF264', speed:0.8, weight:2,  prio:7 },
+];
+
+const weightedPick = () => {
+  const total = TYPES_30.reduce((s,t)=>s+t.weight, 0);
+  let r = Math.random() * total;
+  for (const t of TYPES_30) {
+    r -= t.weight;
+    if (r <= 0) return t;
+  }
+  return TYPES_30[0];
+};
+
+/* ---------- 격자 셀 정의 ---------- */
+const CELL = 12; // px per grid cell
+const TILE = { WALL:1, CORRIDOR:2, ROOM:3, DOOR:4, EXIT:5 };
+const tileColor = {
+  1: '#374151',  // WALL
+  2: '#1E293B',  // CORRIDOR
+  3: '#0F2A44',  // ROOM
+  4: '#92400E',  // DOOR
+  5: '#10B981',  // EXIT
+};
+
+/* ---------- 시뮬레이션 상태 ---------- */
+let state = {
+  running: false, paused: false, time: 0, speedMul: 1.0,
+  phase: 'idle',  // idle → spawned → firePicking → running
+  grid: null, gridW: 0, gridH: 0,
+  rooms: [], exits: [], wifiAPs: [],
+  passengers: [], fires: [], pendingFires: [], bayesGrid: null,
+  log: [],
+};
+const MAX_FIRES = 3;
+
+function setPhase(phase, msg) {
+  state.phase = phase;
+  const el = document.getElementById('phaseStatus');
+  if (el && msg) el.textContent = msg;
+}
+
+/* ---------- 레이아웃 생성 ---------- */
+function buildLayout() {
+  const gw = Math.floor((W() - 40) / CELL);
+  const gh = Math.floor((H() - 40) / CELL);
+  state.gridW = gw; state.gridH = gh;
+  state.grid = new Uint8Array(gw * gh);
+  state.rooms = []; state.exits = []; state.wifiAPs = [];
+
+  // 외벽
+  for (let x = 0; x < gw; x++) { setT(x, 0, TILE.WALL); setT(x, gh-1, TILE.WALL); }
+  for (let y = 0; y < gh; y++) { setT(0, y, TILE.WALL); setT(gw-1, y, TILE.WALL); }
+
+  // 모든 내부를 복도로 초기화
+  for (let y = 1; y < gh-1; y++)
+    for (let x = 1; x < gw-1; x++)
+      setT(x, y, TILE.CORRIDOR);
+
+  // 🚢 5층 평면 도면: 좌측 객실 | 복도 | 우측 객실
+  const roomW = 5;   // 객실 너비
+  const roomH = 3;   // 객실 높이 (얇게)
+
+  // 좌우 경계
+  const leftMax = Math.floor(gw * 0.44);   // 좌측 끝
+  const rightMin = Math.floor(gw * 0.56);  // 우측 시작
+
+  let y = 2;
+
+  // 5층 배치 (모두 한 화면에 보이기)
+  for (let floor = 0; floor < 5 && y + roomH < gh - 2; floor++) {
+    // ✅ 좌측 객실들: 우측(복도)에만 문
+    for (let x = 2; x + roomW < leftMax; x += roomW) {
+      placeRoom(x, y, roomW, roomH, 'right');
+    }
+
+    // ✅ 우측 객실들: 좌측(복도)에만 문
+    for (let x = rightMin; x + roomW < gw - 2; x += roomW) {
+      placeRoom(x, y, roomW, roomH, 'left');
+    }
+
+    // ✅ 비상구: 좌우 끝에 각각 배치 (각 층마다 2개씩)
+    const mid = y + Math.floor(roomH / 2);
+    state.exits.push({ x: 0, y: mid, label: `L${floor+1}` });
+    setT(0, mid, TILE.EXIT);
+    state.exits.push({ x: 1, y: mid, label: `L${floor+1}` });
+    setT(1, mid, TILE.EXIT);
+
+    state.exits.push({ x: gw-1, y: mid, label: `R${floor+1}` });
+    setT(gw-1, mid, TILE.EXIT);
+    state.exits.push({ x: gw-2, y: mid, label: `R${floor+1}` });
+    setT(gw-2, mid, TILE.EXIT);
+
+    y += roomH + 1;  // 다음 층
+  }
+
+  console.log(`✅ 5층 평면 도면: ${gw}×${gh}, 방 ${state.rooms.length}개, 비상구 ${state.exits.length}개`);
+}
+
+function placeRoom(x, y, w, h, doorSide) {
+  for (let i = 0; i < w; i++) { setT(x+i, y, TILE.WALL); setT(x+i, y+h-1, TILE.WALL); }
+  for (let i = 0; i < h; i++) { setT(x, y+i, TILE.WALL); setT(x+w-1, y+i, TILE.WALL); }
+  for (let i = 1; i < h-1; i++)
+    for (let j = 1; j < w-1; j++)
+      setT(x+j, y+i, TILE.ROOM);
+  let dx, dy;
+  if (doorSide === 'right') { dx = x + w - 1; dy = y + Math.floor(h/2); }
+  else if (doorSide === 'left') { dx = x; dy = y + Math.floor(h/2); }
+  setT(dx, dy, TILE.DOOR);
+  state.rooms.push({ x, y, w, h, doorX: dx, doorY: dy, doorSide });
+}
+
+function setT(x, y, v) { if (x>=0 && y>=0 && x<state.gridW && y<state.gridH) state.grid[y*state.gridW+x] = v; }
+function getT(x, y) { if (x<0||y<0||x>=state.gridW||y>=state.gridH) return TILE.WALL; return state.grid[y*state.gridW+x]; }
+
+/* ---------- 승객 스폰 (객실·복도에 균등 분포) ---------- */
+function spawnPassengers(N) {
+  state.passengers = [];
+  // 객실 70%, 복도 30%로 분포 — 각 객실에 균등 배분
+  const inRoomCount = Math.floor(N * 0.7);
+  const inCorridorCount = N - inRoomCount;
+  // 객실별 평균 인원 (모든 객실에 가능한 한 균등 분배)
+  const perRoom = state.rooms.length > 0 ? Math.ceil(inRoomCount / state.rooms.length) : 0;
+  let placed = 0;
+  // 객실 순회 균등 배분
+  for (const r of state.rooms) {
+    const count = Math.min(perRoom, inRoomCount - placed);
+    for (let k = 0; k < count; k++) {
+      const px = r.x + 1 + Math.random()*(r.w-2);
+      const py = r.y + 1 + Math.random()*(r.h-2);
+      pushPassenger(px, py);
+      placed++;
+    }
+    if (placed >= inRoomCount) break;
+  }
+  // 복도 균등 분포
+  for (let k = 0; k < inCorridorCount; k++) {
+    let px, py, tries = 0;
+    do {
+      px = 1 + Math.random()*(state.gridW-2);
+      py = 1 + Math.random()*(state.gridH-2);
+      tries++;
+    } while (getT(Math.floor(px), Math.floor(py)) !== TILE.CORRIDOR && tries < 50);
+    pushPassenger(px, py);
+  }
+}
+
+function pushPassenger(px, py) {
+  const type = weightedPick();
+  state.passengers.push({
+    id: state.passengers.length, x: px*CELL+CELL/2 + 20, y: py*CELL+CELL/2 + 20,
+    type, phoneActive:false, locEstimated:false, surveyed:false,
+    report:null, sensorReport:null, target:null, path:[], pathFailCount:0,
+    evacuated:false, dead:false,
+    reactDelay: 0.5 + Math.random()*8,
+    surveyDelay: 1 + Math.random()*10,
+  });
+}
+
+/* ---------- A* 경로 탐색 (격자 기반) ---------- */
+function isWalkable(gx, gy) {
+  const t = getT(gx, gy);
+  // ✅ 복도, 문, 출구만 이동 가능
+  // ❌ 벽(WALL=1)과 방 내부(ROOM=3)는 절대 통과 불가
+  // 📋 가능: 복도(CORRIDOR=2), 문(DOOR=4), 출구(EXIT=5)
+  return t === TILE.CORRIDOR || t === TILE.DOOR || t === TILE.EXIT;
+}
+
+function aStar(sx, sy, tx, ty) {
+  // 격자 좌표
+  let sx0 = Math.floor(sx), sy0 = Math.floor(sy);
+  let tx0 = Math.floor(tx), ty0 = Math.floor(ty);
+
+  // ✅ 방(ROOM) 내부에서 시작하면, 가장 가까운 문(DOOR)으로 이동
+  let actualStart = { x: sx0, y: sy0 };
+  const startType = getT(sx0, sy0);
+  if (startType === TILE.ROOM) {
+    // 방 내 가장 가까운 문 찾기
+    let bestDist = Infinity, bestDoor = null;
+    for (let dy = -3; dy <= 3; dy++) {
+      for (let dx = -3; dx <= 3; dx++) {
+        const nx = sx0 + dx, ny = sy0 + dy;
+        if (getT(nx, ny) === TILE.DOOR) {
+          const d = Math.abs(dx) + Math.abs(dy);
+          if (d < bestDist) { bestDist = d; bestDoor = { x: nx, y: ny }; }
+        }
+      }
+    }
+    if (bestDoor) actualStart = bestDoor;
+  }
+
+  // ✅ 목표점이 방(ROOM) 내부면, 출구 쪽 경로 찾기
+  let actualTarget = { x: tx0, y: ty0 };
+  const endType = getT(tx0, ty0);
+  if (endType === TILE.ROOM) {
+    // 방 근처의 문 찾기
+    let bestDist = Infinity, bestDoor = null;
+    for (let dy = -3; dy <= 3; dy++) {
+      for (let dx = -3; dx <= 3; dx++) {
+        const nx = tx0 + dx, ny = ty0 + dy;
+        if (getT(nx, ny) === TILE.DOOR) {
+          const d = Math.abs(dx) + Math.abs(dy);
+          if (d < bestDist) { bestDist = d; bestDoor = { x: nx, y: ny }; }
+        }
+      }
+    }
+    if (bestDoor) actualTarget = bestDoor;
+  }
+
+  const startWalkable = isWalkable(actualStart.x, actualStart.y);
+  const endWalkable = isWalkable(actualTarget.x, actualTarget.y);
+
+  if (!startWalkable || !endWalkable) {
+    if (!startWalkable) console.warn(`⚠️ A* 시작점 불가: (${actualStart.x},${actualStart.y}) 타입:${getT(actualStart.x, actualStart.y)}`);
+    if (!endWalkable) console.warn(`⚠️ A* 목표점 불가: (${actualTarget.x},${actualTarget.y}) 타입:${getT(actualTarget.x, actualTarget.y)}`);
+    return [];
+  }
+
+  sx0 = actualStart.x;
+  sy0 = actualStart.y;
+  tx0 = actualTarget.x;
+  ty0 = actualTarget.y;
+  const key = (x,y) => y*state.gridW + x;
+  const open = new Map();
+  const came = new Map();
+  const gScore = new Map();
+  const fScore = new Map();
+  const startK = key(sx0, sy0);
+  gScore.set(startK, 0);
+  fScore.set(startK, Math.abs(sx0-tx0) + Math.abs(sy0-ty0));
+  open.set(startK, [sx0, sy0]);
+
+  let safety = 0;
+  while (open.size > 0 && safety++ < 10000) {
+    // 최소 f 노드 추출
+    let bestK = null, bestF = Infinity;
+    for (const [k, _] of open) {
+      const f = fScore.get(k) ?? Infinity;
+      if (f < bestF) { bestF = f; bestK = k; }
+    }
+    if (bestK === null) break;
+    const [cx, cy] = open.get(bestK);
+    open.delete(bestK);
+    if (cx === tx0 && cy === ty0) {
+      // 경로 복원 — offset 20 추가 필수!
+      const path = [];
+      let cur = bestK;
+      while (cur !== undefined) {
+        const x = cur % state.gridW, y = Math.floor(cur / state.gridW);
+        // 렌더링 offset 20 포함해서 반환
+        path.unshift({ x: x*CELL + CELL/2 + 20, y: y*CELL + CELL/2 + 20 });
+        cur = came.get(cur);
+      }
+      return path;
+    }
+    const dirs = [[1,0],[-1,0],[0,1],[0,-1]];
+    for (const [dx, dy] of dirs) {
+      const nx = cx + dx, ny = cy + dy;
+      if (!isWalkable(nx, ny)) continue;
+      const nk = key(nx, ny);
+      // 화재 회피 페널티
+      const cellWorldX = nx*CELL+CELL/2;
+      const cellWorldY = ny*CELL+CELL/2;
+      let firePen = 0;
+      for (const f of state.fires) {
+        const d = Math.hypot(cellWorldX - f.x, cellWorldY - f.y);
+        if (d < f.radius) firePen += 100;
+        else if (d < f.smokeRadius) firePen += 20;
+      }
+      const tentG = (gScore.get(bestK) ?? Infinity) + 1 + firePen;
+      if (tentG < (gScore.get(nk) ?? Infinity)) {
+        came.set(nk, bestK);
+        gScore.set(nk, tentG);
+        fScore.set(nk, tentG + Math.abs(nx-tx0) + Math.abs(ny-ty0));
+        if (!open.has(nk)) open.set(nk, [nx, ny]);
+      }
+    }
+  }
+  return [];
+}
+
+function pickSafeExit(p) {
+  const gx = Math.floor(p.x/CELL), gy = Math.floor(p.y/CELL);
+  let best = null, bestScore = Infinity;
+  for (const e of state.exits) {
+    const ex = e.x*CELL + CELL/2;
+    const ey = e.y*CELL + CELL/2;
+    const dist = Math.hypot(p.x-ex, p.y-ey);
+    let fireRisk = 0;
+    for (const f of state.fires) {
+      const midx = (p.x+ex)/2, midy = (p.y+ey)/2;
+      const md = Math.hypot(midx-f.x, midy-f.y);
+      if (md < f.smokeRadius) fireRisk += 800;
+    }
+    const crowd = state.passengers.filter(pp => pp.target === e).length * 6;
+    const alpha = (p.type.prio <= 3) ? 2.0 : 1.0; // α=2.0 우선구조
+    const score = dist + fireRisk*alpha + crowd;
+    if (score < bestScore) { bestScore = score; best = e; }
+  }
+  return best;
+}
+
+/* ---------- 베이지안 격자 ---------- */
+function updateBayesGrid() {
+  if (!state.bayesGrid) return;
+  for (let i = 0; i < state.bayesGrid.length; i++) state.bayesGrid[i] *= 0.92;
+  for (const p of state.passengers) {
+    if (!p.report) continue;
+    const gx = Math.floor((p.x-20)/CELL), gy = Math.floor((p.y-20)/CELL);
+    if (gx<0||gy<0||gx>=state.gridW||gy>=state.gridH) continue;
+    const idx = gy*state.gridW + gx;
+    let w = 0;
+    if (p.report === 'fire') w = 1.0;
+    else if (p.report === 'smoke') w = 0.7;
+    else if (p.report === 'panic') w = 0.5;
+    else if (p.sensorReport === 'running') w = 0.4;
+    if (w > 0) state.bayesGrid[idx] = Math.min(1.0, state.bayesGrid[idx] + w*0.15);
+  }
+}
+
+/* ---------- 파이프라인 ---------- */
+function updatePipeline(dt) {
+  state.time += dt;
+
+  // Stage 1
+  if (state.time < 3) {
+    const ratio = state.time / 3;
+    let activated = 0;
+    for (const p of state.passengers) {
+      if (!p.phoneActive && Math.random() < ratio * 0.15) p.phoneActive = true;
+      if (p.phoneActive) activated++;
+    }
+    setStage(1, 'processing', `${activated}/${state.passengers.length}`);
+  } else {
+    for (const p of state.passengers) p.phoneActive = true;
+    setStage(1, 'active', '✓');
+  }
+
+  // Stage 2
+  if (state.time > 1) {
+    for (const p of state.passengers) {
+      if (p.phoneActive && !p.locEstimated && state.time > 1 + p.reactDelay*0.3) p.locEstimated = true;
+    }
+    const located = state.passengers.filter(p => p.locEstimated).length;
+    if (located === state.passengers.length) setStage(2, 'active', '✓');
+    else setStage(2, 'processing', `${located}/${state.passengers.length}`);
+  }
+
+  // Stage 3
+  if (state.time > 5) {
+    for (const p of state.passengers) {
+      if (!p.locEstimated || p.surveyed) continue;
+      if (state.time > 5 + p.surveyDelay*0.3) {
+        // 화재 근접도 기반 자동 응답
+        const distToFire = state.fires.length ? Math.hypot(p.x-state.fires[0].x, p.y-state.fires[0].y) : 9999;
+        let r;
+        if (distToFire < 60) r = 'fire';
+        else if (distToFire < 140) r = 'smoke';
+        else if (distToFire < 240 && Math.random() < 0.4) r = 'panic';
+        else r = 'calm';
+        if (Math.random() < 0.7) { p.report = r; p.surveyed = true; }
+        else { p.sensorReport = (distToFire < 100) ? 'running' : 'still'; p.surveyed = true; }
+      }
+    }
+    const resp = state.passengers.filter(p => p.surveyed && p.report).length;
+    const sens = state.passengers.filter(p => p.surveyed && !p.report).length;
+    setStage(3, 'processing', `응답${resp}/센서${sens}`);
+    if (resp + sens === state.passengers.length) setStage(3, 'active', '✓ 100%');
+  }
+
+  // Stage 4
+  if (state.time > 3) setStage(4, 'active', `×${state.passengers.length*7}`);
+
+  // Stage 5 — 화재맵 + 경로
+  if (state.time > 6) {
+    updateBayesGrid();
+    setStage(5, 'active', 'Bayesian');
+    for (const p of state.passengers) {
+      if (!p.locEstimated || p.evacuated || p.dead) continue;
+
+      // 경로가 없거나 경로 찾기 실패한 경우
+      if (p.path.length === 0) {
+        // 경로 찾기 실패 3회 이상이면 다른 출구 시도
+        if (p.pathFailCount >= 3) {
+          p.target = null;
+          p.pathFailCount = 0;
+        }
+
+        if (!p.target) {
+          p.target = pickSafeExit(p);
+        }
+
+        if (p.target) {
+          // p.target.x, p.target.y는 이미 격자 좌표이므로 직접 사용 가능
+          // 주의: p.x, p.y는 픽셀좌표 (offset 20 포함)
+          const gx = Math.floor((p.x - 20)/CELL);
+          const gy = Math.floor((p.y - 20)/CELL);
+          const tgx = p.target.x;  // 이미 격자 좌표
+          const tgy = p.target.y;  // 이미 격자 좌표
+
+          const pathResult = aStar(gx, gy, tgx, tgy);
+          p.path = pathResult;
+
+          // 경로 찾기 결과
+          if (p.path.length === 0) {
+            p.pathFailCount++;
+            // 디버그: 경로 실패 로그
+            if (p.pathFailCount === 1) {
+              const startType = getT(gx, gy);
+              const endType = getT(tgx, tgy);
+              const walkStart = isWalkable(gx, gy);
+              const walkEnd = isWalkable(tgx, tgy);
+              console.warn(`🔴 A*실패 ID:${p.id}(${p.type.name}) 위치:(${gx},${gy})${walkStart?'✓':'✗'} 목표:(${tgx},${tgy})${walkEnd?'✓':'✗'}`);
+            }
+            if (p.pathFailCount >= 3) {
+              p.target = null;
+              p.pathFailCount = 0;
+            }
+          } else {
+            p.pathFailCount = 0; // 성공하면 리셋
+            if (p.path.length > 0 && state.time < 10) { // 초기 몇 초만 로깅
+              console.log(`🟢 A*성공 ID:${p.id} 경로길이:${p.path.length}`);
+            }
+          }
+        }
+      }
+
+      movePassenger(p, dt);
+    }
+  }
+
+  // 화재 성장
+  if (state.fires.length > 0) {
+    state.fires[0].radius = Math.min(50, state.fires[0].radius + dt*3);
+    state.fires[0].smokeRadius = Math.min(140, state.fires[0].smokeRadius + dt*6);
+  }
+
+  // 사망 처리
+  for (const p of state.passengers) {
+    if (p.evacuated || p.dead) continue;
+    for (const f of state.fires) {
+      const d = Math.hypot(p.x-f.x, p.y-f.y);
+      if (d < f.radius*0.5) p.dead = true;
+    }
+  }
+}
+
+function movePassenger(p, dt) {
+  if (p.path.length === 0) return;
+  const target = p.path[0];
+  const dx = target.x - p.x, dy = target.y - p.y;
+  const d = Math.hypot(dx, dy);
+  if (d < 4) {
+    p.path.shift();
+    if (p.path.length === 0) {
+      // 출구 도달?
+      const tx = p.target.x*CELL+CELL/2, ty = p.target.y*CELL+CELL/2;
+      if (Math.hypot(p.x-tx, p.y-ty) < 16) p.evacuated = true;
+    }
+    return;
+  }
+  // 속도 0인 경우 최소 속도 0.2 적용 (영유아, 의식불명 느린 이동)
+  const baseSpeed = Math.max(0.2, p.type.speed);
+  const sp = 30 * baseSpeed;
+  p.x += (dx/d) * sp * dt;
+  p.y += (dy/d) * sp * dt;
+}
+
+function setStage(n, status, label) {
+  const el = document.getElementById('stage'+n);
+  el.classList.remove('active', 'processing');
+  if (status) el.classList.add(status);
+  document.getElementById('s'+n+'status').textContent = label || '';
+}
+
+/* ---------- 렌더링 ---------- */
+function render() {
+  ctx.fillStyle = '#0F1729';
+  ctx.fillRect(0, 0, W(), H());
+
+  const offX = 20, offY = 20;
+  // 격자 셀
+  for (let y = 0; y < state.gridH; y++) {
+    for (let x = 0; x < state.gridW; x++) {
+      const t = state.grid[y*state.gridW+x];
+      if (t === 0) continue;
+      ctx.fillStyle = tileColor[t] || '#222';
+      ctx.fillRect(offX + x*CELL, offY + y*CELL, CELL, CELL);
+    }
+  }
+
+  // 베이지안 화재맵 오버레이
+  if (state.bayesGrid && state.time > 6) {
+    for (let y = 0; y < state.gridH; y++) {
+      for (let x = 0; x < state.gridW; x++) {
+        const v = state.bayesGrid[y*state.gridW+x];
+        if (v > 0.1) {
+          ctx.fillStyle = `rgba(${Math.floor(255*v)},${Math.floor(60*(1-v))},0,${v*0.35})`;
+          ctx.fillRect(offX + x*CELL, offY + y*CELL, CELL, CELL);
+        }
+      }
+    }
+  }
+
+  // WiFi AP
+  for (const ap of state.wifiAPs) {
+    ctx.fillStyle = '#94A3B8';
+    ctx.beginPath();
+    ctx.arc(offX + ap.x*CELL + CELL/2, offY + ap.y*CELL + CELL/2, 4, 0, Math.PI*2);
+    ctx.fill();
+    ctx.strokeStyle = 'white';
+    ctx.lineWidth = 1;
+    ctx.stroke();
+  }
+
+  // 출구 라벨
+  for (const e of state.exits) {
+    const ex = offX + e.x*CELL + CELL/2, ey = offY + e.y*CELL + CELL/2;
+    ctx.fillStyle = 'white';
+    ctx.font = 'bold 11px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('EXIT ' + e.label, ex + (e.x === 0 ? 20 : -20), ey + 4);
+  }
+
+  // 선택된 발화점 마커 (시뮬 시작 전)
+  if (state.phase === 'spawned' || state.phase === 'firePicking') {
+    for (let i = 0; i < state.pendingFires.length; i++) {
+      const f = state.pendingFires[i];
+      const fx = f.x + offX, fy = f.y + offY;
+      // 외곽 펄스
+      const pulse = (Math.sin(performance.now()*0.005) + 1) / 2;
+      ctx.strokeStyle = `rgba(239,68,68,${0.4 + pulse*0.4})`;
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.arc(fx, fy, 18 + pulse*4, 0, Math.PI*2);
+      ctx.stroke();
+      // 십자 마커
+      ctx.strokeStyle = '#EF4444';
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.moveTo(fx-9, fy); ctx.lineTo(fx+9, fy);
+      ctx.moveTo(fx, fy-9); ctx.lineTo(fx, fy+9);
+      ctx.stroke();
+      // 번호
+      ctx.fillStyle = '#EF4444';
+      ctx.font = 'bold 12px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('🔥' + (i+1), fx, fy - 22);
+    }
+  }
+
+  // 화재 + 연기
+  for (const f of state.fires) {
+    const sg = ctx.createRadialGradient(f.x+offX, f.y+offY, 0, f.x+offX, f.y+offY, f.smokeRadius);
+    sg.addColorStop(0, 'rgba(100,100,100,0.5)');
+    sg.addColorStop(1, 'rgba(100,100,100,0)');
+    ctx.fillStyle = sg;
+    ctx.beginPath();
+    ctx.arc(f.x+offX, f.y+offY, f.smokeRadius, 0, Math.PI*2);
+    ctx.fill();
+    const fg = ctx.createRadialGradient(f.x+offX, f.y+offY, 0, f.x+offX, f.y+offY, f.radius);
+    fg.addColorStop(0, '#FCD34D');
+    fg.addColorStop(0.5, '#F97316');
+    fg.addColorStop(1, '#DC2626');
+    ctx.fillStyle = fg;
+    ctx.beginPath();
+    ctx.arc(f.x+offX, f.y+offY, f.radius, 0, Math.PI*2);
+    ctx.fill();
+  }
+
+  // 승객
+  for (const p of state.passengers) {
+    if (p.dead) {
+      ctx.fillStyle = '#444';
+      ctx.beginPath();
+      ctx.arc(p.x+offX, p.y+offY, 2.5, 0, Math.PI*2);
+      ctx.fill();
+      continue;
+    }
+    if (p.evacuated) continue;
+
+    // 보고 상태 보더 우선, 본체는 핸디캡 유형 색
+    let outerColor = null;
+    if (p.report === 'fire') outerColor = '#EF4444';
+    else if (p.report === 'smoke') outerColor = '#F59E0B';
+    else if (p.report === 'panic') outerColor = '#A78BFA';
+
+    // 본체
+    ctx.fillStyle = p.type.color;
+    ctx.beginPath();
+    ctx.arc(p.x+offX, p.y+offY, p.type.prio <= 3 ? 4 : 3, 0, Math.PI*2);
+    ctx.fill();
+
+    if (outerColor) {
+      ctx.strokeStyle = outerColor;
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.arc(p.x+offX, p.y+offY, 5, 0, Math.PI*2);
+      ctx.stroke();
+    }
+
+    // 활성화된 폰 표시 (시작 시 잠깐)
+    if (p.phoneActive && state.time < 4) {
+      ctx.strokeStyle = 'rgba(56,189,248,0.4)';
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.arc(p.x+offX, p.y+offY, 6 + Math.sin(state.time*8)*1.5, 0, Math.PI*2);
+      ctx.stroke();
+    }
+
+    // 우선순위 #1: 빨간 깜빡임
+    if (p.type.prio === 1 && state.time > 5 && Math.sin(state.time*4) > 0) {
+      ctx.strokeStyle = 'rgba(239,68,68,0.9)';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.arc(p.x+offX, p.y+offY, 7, 0, Math.PI*2);
+      ctx.stroke();
+    }
+  }
+}
+
+/* ---------- 통계 ---------- */
+function updateStats() {
+  document.getElementById('statTime').textContent = state.time.toFixed(1) + 's';
+  const active = state.passengers.filter(p => p.phoneActive).length;
+  document.getElementById('statActive').textContent = `${active} / ${state.passengers.length}`;
+  document.getElementById('statResponse').textContent = state.passengers.filter(p => p.report).length;
+  document.getElementById('statSensor').textContent = state.passengers.filter(p => p.sensorReport).length;
+  document.getElementById('statEvac').textContent = state.passengers.filter(p => p.evacuated).length;
+  document.getElementById('statDanger').textContent = state.passengers.filter(p => p.dead).length;
+  const v3pts = state.passengers.length*7 + state.passengers.filter(p=>p.report).length*3;
+  document.getElementById('statV3pts').textContent = v3pts + ' pts';
+  document.getElementById('statRatio').textContent = `×${(v3pts/500).toFixed(1)}`;
+
+  // 30유형 분포
+  const counts = {};
+  for (const p of state.passengers) counts[p.type.id] = (counts[p.type.id] || 0) + 1;
+  const cats = { A:[], B:[], C:[], D:[], E:[], F:[] };
+  for (const t of TYPES_30) cats[t.cat].push(t);
+  const catLabels = {
+    A:'A. 신체 (7)', B:'B. 거동보조 (5)', C:'C. 부상/응급 (3)',
+    D:'D. 감각장애 (5)', E:'E. 인지/정신 (5)', F:'F. 언어/외적 (5)'
+  };
+  const tot = state.passengers.length || 1;
+  let html = '';
+  for (const cat of ['A','B','C','D','E','F']) {
+    html += `<div class="cat-header">${catLabels[cat]}</div>`;
+    for (const t of cats[cat]) {
+      const c = counts[t.id] || 0;
+      const pct = (c/tot*100).toFixed(0);
+      html += `<div class="handicap-row">
+        <span class="lbl"><span class="dot" style="background:${t.color}"></span>${t.label}${t.prio===1?' 🔴':''}</span>
+        <span class="num" style="color:${t.color}">${c} <span style="color:var(--muted);font-weight:400">(${pct}%)</span></span>
+      </div>`;
+    }
+  }
+  document.getElementById('handicapStats').innerHTML = html;
+}
+
+/* ---------- 로그 ---------- */
+function pushLog(text, type='decide') {
+  const t = state.time.toFixed(1);
+  state.log.unshift({ t, text, type });
+  if (state.log.length > 25) state.log.pop();
+  document.getElementById('aiLog').innerHTML = state.log.map(l =>
+    `<div class="entry"><span class="t">[${l.t}s]</span><span class="e ${l.type}">${l.text}</span></div>`
+  ).join('');
+}
+
+let lastLogT = 0;
+function logAI() {
+  if (state.time - lastLogT < 1.5) return;
+  lastLogT = state.time;
+  if (state.time < 1) pushLog('Stage 1: 폰 마이크 SOLAS 패턴 청취 시작', 'system');
+  else if (state.time < 3) pushLog('음향 패턴 감지 → 단말 활성화', 'fire');
+  else if (state.time < 5) pushLog('Stage 2: WiFi+IMU 측위 + Graph SLAM 보정', 'decide');
+  else if (state.time < 7) pushLog('Stage 3: 마이크로 설문 푸시 — 응답 수집', 'survey');
+  else if (state.time < 9) pushLog('Stage 5: 베이지안 화재맵 융합 갱신', 'smoke');
+  else {
+    const prioOnes = state.passengers.filter(p => p.type.prio === 1 && !p.evacuated && !p.dead).length;
+    const r = Math.random();
+    if (prioOnes > 0 && r < 0.3) pushLog(`🔴 우선구조 #1 ${prioOnes}명 — 소방관 단말 표시`, 'fire');
+    else if (r < 0.5) pushLog(`A* 경로 재계산 — 화재 회피 경로 ${Math.floor(Math.random()*30+5)}건`, 'decide');
+    else if (r < 0.7) pushLog(`출구 ${['A','B','C','D'][Math.floor(Math.random()*4)]} 혼잡 분산`, 'decide');
+    else if (r < 0.85) pushLog(`핸디캡 유형별 차별 안내 — α=2.0 적용 ${Math.floor(Math.random()*10+3)}명`, 'survey');
+    else pushLog(`대피 완료 +${Math.floor(Math.random()*5+1)}명`, 'done');
+  }
+}
+
+/* ---------- 메인 루프 ---------- */
+let lastT = 0;
+function loop(t) {
+  if (!state.running) return;
+  if (state.paused) { lastT = t; requestAnimationFrame(loop); return; }
+  const dt = Math.min(0.05, (t - lastT) / 1000) * state.speedMul;
+  lastT = t;
+  updatePipeline(dt);
+  render();
+  updateStats();
+  logAI();
+  requestAnimationFrame(loop);
+}
+
+/* ---------- 3단계 흐름 컨트롤 ---------- */
+// ① 승객 배치
+function spawnOnly() {
+  const N = parseInt(document.getElementById('passengerCount').value);
+  buildLayout();
+  spawnPassengers(N);
+  state.bayesGrid = new Float32Array(state.gridW * state.gridH);
+  state.pendingFires = [];
+  state.fires = [];
+  state.time = 0;
+  state.running = false;
+  state.log = [];
+  setPhase('spawned', `✓ ${N}명 배치됨 — ② 캔버스 클릭으로 화재 발화점 선택 (최대 ${MAX_FIRES}개)`);
+  document.getElementById('btnFirePicking').disabled = false;
+  document.getElementById('btnFirePicking').style.background = '#F59E0B';
+  document.getElementById('btnStart').disabled = true;
+  document.getElementById('btnStart').style.opacity = 0.5;
+  document.getElementById('aiLog').innerHTML = '';
+  pushLog(`✓ 승객 ${N}명 배치 완료 — 화재 발화점 선택 대기`, 'system');
+  render();
+  updateStats();
+}
+
+// ② 캔버스 클릭으로 발화점 추가
+function addFireAt(canvasX, canvasY) {
+  if (state.phase !== 'spawned' && state.phase !== 'firePicking') return;
+  if (state.pendingFires.length >= MAX_FIRES) {
+    pushLog(`⚠ 발화점 최대 ${MAX_FIRES}개 도달 — 추가 불가`, 'fire');
+    return;
+  }
+  // 캔버스 좌표 → 격자 좌표 → 벽 위치는 거부
+  const offX = 20, offY = 20;
+  const worldX = canvasX - offX;
+  const worldY = canvasY - offY;
+  const gx = Math.floor(worldX / CELL);
+  const gy = Math.floor(worldY / CELL);
+  if (getT(gx, gy) === TILE.WALL || getT(gx, gy) === 0) {
+    pushLog('⚠ 벽에는 발화점을 둘 수 없음', 'fire');
+    return;
+  }
+  state.pendingFires.push({ x: worldX, y: worldY });
+  setPhase('firePicking', `✓ 발화점 ${state.pendingFires.length}/${MAX_FIRES} 선택됨 — ③ 시작 가능`);
+  pushLog(`🔥 발화점 ${state.pendingFires.length}: (${gx}, ${gy})`, 'fire');
+  document.getElementById('btnStart').disabled = false;
+  document.getElementById('btnStart').style.opacity = 1;
+  render();
+}
+
+// ③ 시뮬레이션 시작
+function startSim() {
+  if (state.pendingFires.length === 0) {
+    pushLog('⚠ 화재 발화점을 최소 1개 클릭해주세요', 'fire');
+    return;
+  }
+  // 발화점 → 실제 화재
+  state.fires = state.pendingFires.map(f => ({
+    x: f.x, y: f.y, radius: 15, smokeRadius: 40,
+  }));
+  state.time = 0;
+  state.running = true;
+  state.paused = false;
+  setPhase('running', `▶ 시뮬레이션 진행 중 — 화재 ${state.fires.length}곳`);
+  document.getElementById('btnSpawn').disabled = true;
+  document.getElementById('btnSpawn').style.opacity = 0.5;
+  document.getElementById('btnFirePicking').disabled = true;
+  document.getElementById('btnFirePicking').style.background = '#6B7280';
+  document.getElementById('btnStart').style.display = 'none';
+  document.getElementById('btnPause').style.display = 'block';
+  pushLog(`🚨 시뮬레이션 시작 — 화재 ${state.fires.length}곳 발생 (Stage 1 트리거)`, 'fire');
+  setTimeout(() => { if (state.running) document.getElementById('surveyBox').classList.add('show'); }, 4500);
+  lastT = performance.now();
+  requestAnimationFrame(loop);
+}
+
+function resetSim() {
+  state.running = false; state.paused = false; state.time = 0;
+  state.passengers = []; state.fires = []; state.pendingFires = []; state.log = [];
+  setPhase('idle', '페이지 로드됨 — ①승객 배치부터 시작하세요');
+  document.getElementById('btnSpawn').disabled = false;
+  document.getElementById('btnSpawn').style.opacity = 1;
+  document.getElementById('btnFirePicking').disabled = true;
+  document.getElementById('btnFirePicking').style.background = '#6B7280';
+  document.getElementById('btnStart').disabled = true;
+  document.getElementById('btnStart').style.opacity = 0.5;
+  document.getElementById('btnStart').style.display = 'block';
+  document.getElementById('btnPause').style.display = 'none';
+  document.getElementById('btnPause').textContent = '⏸ 일시정지';
+  document.getElementById('aiLog').innerHTML = '';
+  document.getElementById('surveyBox').classList.remove('show');
+  for (let i = 1; i <= 5; i++) setStage(i, '', '대기');
+  buildLayout();
+  render();
+  updateStats();
+}
+
+function togglePause() {
+  state.paused = !state.paused;
+  document.getElementById('btnPause').textContent = state.paused ? '▶ 재개' : '⏸ 일시정지';
+  setPhase('running', state.paused ? '⏸ 일시정지' : '▶ 시뮬레이션 진행 중');
+}
+
+document.getElementById('btnSpawn').addEventListener('click', spawnOnly);
+document.getElementById('btnFirePicking').addEventListener('click', () => {
+  if (state.phase === 'spawned' || state.phase === 'firePicking') {
+    pushLog('💡 캔버스를 클릭하여 화재 발화점을 선택하세요 (최대 3개)', 'system');
+  }
+});
+document.getElementById('btnStart').addEventListener('click', startSim);
+document.getElementById('btnPause').addEventListener('click', togglePause);
+document.getElementById('btnReset').addEventListener('click', resetSim);
+document.getElementById('btnAutoTest').addEventListener('click', window.testNow);
+
+// 속도 슬라이더
+const speedSlider = document.getElementById('speedSlider');
+const speedDisplay = document.getElementById('speedDisplay');
+speedSlider.addEventListener('input', (e) => {
+  state.speedMul = parseFloat(e.target.value);
+  speedDisplay.textContent = state.speedMul.toFixed(2) + '×';
+});
+
+// 캔버스 클릭 — phase별 동작
+cv.addEventListener('click', (e) => {
+  const rect = cv.getBoundingClientRect();
+  const cx = (e.clientX - rect.left) * (cv.width / rect.width);
+  const cy = (e.clientY - rect.top) * (cv.height / rect.height);
+  if (state.phase === 'spawned' || state.phase === 'firePicking') {
+    addFireAt(cx, cy);
+  } else if (state.phase === 'running' && state.fires.length > 0) {
+    // 시뮬 진행 중에는 가장 가까운 화재 위치 이동
+    const wx = cx - 20, wy = cy - 20;
+    let best = 0, bestD = Infinity;
+    for (let i = 0; i < state.fires.length; i++) {
+      const d = Math.hypot(state.fires[i].x - wx, state.fires[i].y - wy);
+      if (d < bestD) { bestD = d; best = i; }
+    }
+    state.fires[best].x = wx;
+    state.fires[best].y = wy;
+    pushLog(`🔥 화재 #${best+1} 위치 변경`, 'fire');
+    for (const p of state.passengers) { p.target = null; p.path = []; }
+  }
+});
+
+function ans(q, v) {
+  pushLog(`사용자 응답: ${q}=${v}`, 'survey');
+  document.getElementById('surveyBox').classList.remove('show');
+}
+
+/* ---------- 콘솔 로그 캡처 ---------- */
+window.consoleLogs = [];
+const originalLog = console.log;
+const originalWarn = console.warn;
+const originalError = console.error;
+
+console.log = function(...args) {
+  originalLog.apply(console, args);
+  window.consoleLogs.push('LOG: ' + args.map(a => typeof a === 'string' ? a : JSON.stringify(a)).join(' '));
+};
+console.warn = function(...args) {
+  originalWarn.apply(console, args);
+  window.consoleLogs.push('WARN: ' + args.map(a => typeof a === 'string' ? a : JSON.stringify(a)).join(' '));
+};
+console.error = function(...args) {
+  originalError.apply(console, args);
+  window.consoleLogs.push('ERROR: ' + args.map(a => typeof a === 'string' ? a : JSON.stringify(a)).join(' '));
+};
+
+/* ---------- 자동 테스트 모드 ---------- */
+window.autoTest = function() {
+  window.consoleLogs = [];
+  console.log('🧪 자동 테스트 시작...');
+
+  // 3초 후 승객 배치
+  setTimeout(() => {
+    console.log('✓ Step 1: 승객 배치');
+    spawnOnly();
+  }, 2000);
+
+  // 6초 후 화재 발화점 선택
+  setTimeout(() => {
+    console.log('✓ Step 2: 화재 발화점 선택');
+    const offX = 20, offY = 20;
+    // 캔버스 중앙과 우측에 2개 선택
+    addFireAt(cv.width*0.4, cv.height*0.4);
+    setTimeout(() => addFireAt(cv.width*0.7, cv.height*0.6), 500);
+  }, 6000);
+
+  // 8초 후 시뮬레이션 시작
+  setTimeout(() => {
+    console.log('✓ Step 3: 시뮬레이션 시작');
+    startSim();
+  }, 8000);
+
+  // 20초 후 테스트 결과 확인
+  setTimeout(() => {
+    window.testLogsDisplayed = true;
+    const notMoving = state.passengers.filter(p => !p.evacuated && !p.dead && p.path.length === 0 && p.target).length;
+    const moving = state.passengers.filter(p => !p.evacuated && !p.dead && (p.path.length > 0 || p.target === null)).length;
+    const evacuated = state.passengers.filter(p => p.evacuated).length;
+    const dead = state.passengers.filter(p => p.dead).length;
+
+    const msg = `📊 테스트결과 | 총${state.passengers.length} | 이동${moving} | 멈춤${notMoving}⚠️ | 완료${evacuated} | 사망${dead}`;
+
+    console.log(msg);
+    console.log(`총 승객: ${state.passengers.length}명`);
+    console.log(`이동 중: ${moving}명`);
+    console.log(`경로없이멈춤: ${notMoving}명 ⚠️`);
+    console.log(`대피완료: ${evacuated}명`);
+    console.log(`사망: ${dead}명`);
+
+    // 페이지 제목에 결과 표시
+    document.title = `FireNavi Test | 멈춤${notMoving}/${state.passengers.length}`;
+
+    // phaseStatus에 결과 표시
+    const el = document.getElementById('phaseStatus');
+    if (el) el.textContent = msg;
+
+    // 상세 정보
+    const details = state.passengers
+      .filter(p => !p.evacuated && !p.dead && p.path.length === 0 && p.target)
+      .map(p => {
+        const gx = Math.floor((p.x-20)/12);
+        const gy = Math.floor((p.y-20)/12);
+        return `ID:${p.id} 타입:${p.type.name} 위치:(${gx},${gy}) 타겟:${p.target.label}`;
+      });
+
+    if (notMoving > 0) {
+      console.warn(`❌ 경로 찾기 실패한 승객: ${notMoving}명`);
+      console.warn('상세:', details);
+      pushLog(`⚠️ 테스트결과: ${notMoving}명이 경로를 찾지 못했습니다`, 'fire');
+    } else {
+      console.log('✅ 모든 승객이 이동 중');
+      pushLog('✅ 테스트 성공: 모든 승객이 이동 중입니다', 'done');
+    }
+  }, 20000);
+};
+
+// 페이지 로드 후 자동 테스트 실행
+document.addEventListener('DOMContentLoaded', () => {
+  console.log('📄 페이지 로드 완료. 2초 후 자동 테스트 시작...');
+  setTimeout(() => {
+    try {
+      autoTest();
+    } catch(e) {
+      console.error('자동 테스트 오류:', e);
+    }
+  }, 2000);
+});
+
+// 수동 테스트: window.testNow() 또는 window.autoTest() 호출
+window.testNow = function() {
+  console.log('🧪 즉시 테스트 시작...');
+  spawnOnly();
+  setTimeout(() => { addFireAt(cv.width*0.4, cv.height*0.4); }, 1000);
+  setTimeout(() => { startSim(); }, 2000);
+  setTimeout(() => { checkMovement(); }, 15000);
+};
+
+window.checkMovement = function() {
+  const notMoving = state.passengers.filter(p => !p.evacuated && !p.dead && p.path.length === 0 && p.target).length;
+  const moving = state.passengers.filter(p => !p.evacuated && !p.dead && (p.path.length > 0 || p.target === null)).length;
+  const total = state.passengers.length;
+
+  const result = `총${total}명 | 이동${moving}명 | 멈춤${notMoving}명`;
+  console.log('📊 ' + result);
+  document.getElementById('phaseStatus').textContent = result;
+
+  if (notMoving > 0) {
+    const stuckPassengers = state.passengers.filter(p => !p.evacuated && !p.dead && p.path.length === 0 && p.target);
+
+    // 멈춘 승객 상세 정보
+    console.warn(`❌ 멈춘 승객 ${notMoving}명:`);
+    stuckPassengers.forEach((p, idx) => {
+      const gx = Math.floor((p.x-20)/12);
+      const gy = Math.floor((p.y-20)/12);
+      const startType = getT(gx, gy);
+      const endType = getT(p.target.x, p.target.y);
+      console.warn(`  ${idx+1}. ID:${p.id} 타입:${p.type.name} 위치:(${gx},${gy})타입${startType} 목표:(${p.target.x},${p.target.y})타입${endType}`);
+    });
+
+    // 화면에도 표시
+    const summary = stuckPassengers.slice(0, 5).map(p => `#${p.id}`).join(',');
+    const moreText = stuckPassengers.length > 5 ? `... 외${stuckPassengers.length-5}명` : '';
+    document.getElementById('phaseStatus').textContent = `⚠️ 멈춤${notMoving}명: ${summary}${moreText}`;
+  } else {
+    console.log('✅ 모두 이동 중!');
+    document.getElementById('phaseStatus').textContent = `✅ 완료! 전원 이동`;
+  }
+};
+
+/* ---------- 마이크 권한 + 음성 인식 + 자동 3단계 ---------- */
+window.micState = {
+  stream: null,
+  recognition: null,
+  isListening: false,
+  micDetectionOccurred: false,
+};
+
+document.getElementById('btnMicTest').addEventListener('click', async () => {
+  try {
+    // 1️⃣ 마이크 권한 + 음량 감지
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    window.micState.stream = stream;
+
+    const ac = new (window.AudioContext || window.webkitAudioContext)();
+    const src = ac.createMediaStreamSource(stream);
+    const an = ac.createAnalyser();
+    an.fftSize = 2048;
+    src.connect(an);
+    const buf = new Uint8Array(an.frequencyBinCount);
+    let pulse = 0;
+    const tick = () => {
+      an.getByteFrequencyData(buf);
+      const lo = Math.floor(500 * an.frequencyBinCount / (ac.sampleRate/2));
+      const hi = Math.floor(1000 * an.frequencyBinCount / (ac.sampleRate/2));
+      let sum = 0;
+      for (let i = lo; i < hi; i++) sum += buf[i];
+      const avg = sum / (hi - lo);
+      pulse = Math.max(pulse*0.9, avg);
+      document.getElementById('btnMicTest').textContent = `🎙️ 음압: ${Math.round(pulse)} ${pulse>80?'🔥':''}`;
+      // 음량 트리거 (음성 인식과 동시에 감지)
+      if (pulse > 130 && !state.running && !window.micState.micDetectionOccurred) {
+        window.micState.micDetectionOccurred = true;
+        triggerAutoStart('음량(사이렌)');
+      }
+      requestAnimationFrame(tick);
+    };
+    tick();
+    pushLog('마이크 ✓ — 실제 음향 감지 + 음성 인식 작동', 'system');
+
+    // 2️⃣ 음성 인식 (Web Speech API)
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (SpeechRecognition) {
+      const recognition = new SpeechRecognition();
+      recognition.lang = 'ko-KR';
+      recognition.continuous = true;
+      recognition.interimResults = false;
+
+      recognition.onstart = () => {
+        window.micState.isListening = true;
+        console.log('🎤 음성 인식 시작');
+        document.getElementById('micStatus').style.display = 'block';
+        document.getElementById('micStatus').innerHTML = '🎤 마이크 활성화 | 📍 GPS 준비 | 🎤 음성 인식 중...';
+      };
+
+      recognition.onresult = (event) => {
+        for (let i = event.resultIndex; i < event.results.length; i++) {
+          const transcript = event.results[i][0].transcript.toLowerCase();
+          console.log(`🗣️ 감지: "${transcript}"`);
+
+          // "불이야" 키워드 감지
+          if ((transcript.includes('불이야') ||
+               transcript.includes('화재') ||
+               transcript.includes('불') ||
+               transcript.includes('fire') ||
+               transcript.includes('siren')) &&
+              !state.running && !window.micState.micDetectionOccurred) {
+            window.micState.micDetectionOccurred = true;
+            document.getElementById('micStatus').innerHTML = `🚨 "${transcript}" 감지! 자동 3단계 시작...`;
+            document.getElementById('micStatus').style.color = 'var(--red)';
+            triggerAutoStart(`음성인식("${transcript}")`);
+          }
+        }
+      };
+
+      recognition.onerror = (event) => {
+        console.warn('음성 인식 오류:', event.error);
+      };
+
+      recognition.start();
+      window.micState.recognition = recognition;
+      pushLog('🎤 음성 인식 활성화 — "불이야" 말씀하세요', 'system');
+    } else {
+      pushLog('⚠️ 음성 인식 미지원 (음량 감지만 작동)', 'system');
+    }
+  } catch (e) {
+    alert('마이크 권한 거부. PoC는 시뮬레이션 트리거로 진행.');
+  }
+});
+
+/* ---------- 자동 3단계 진행 함수 ---------- */
+window.triggerAutoStart = function(source) {
+  console.log(`🚨 ${source} 감지! 자동 3단계 시작...`);
+  pushLog(`🚨 ${source} 감지!`, 'fire');
+
+  // ① 승객 배치 (자동)
+  setTimeout(() => {
+    console.log('✓ Step 1: 자동 승객 배치');
+    pushLog('✓ 승객 150명 배치', 'system');
+    spawnOnly();
+  }, 500);
+
+  // ② 화재 발생 (모바일 GPS 위치 또는 예상 위치 기반)
+  setTimeout(() => {
+    console.log('✓ Step 2: 자동 화재 발생');
+
+    let fireX, fireY;
+
+    // GPS 위치 요청 (모바일 폰의 실제 위치)
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const lat = position.coords.latitude;
+          const lng = position.coords.longitude;
+          const accuracy = position.coords.accuracy; // 정확도 (미터)
+
+          console.log(`📍 GPS 위치: (${lat}, ${lng}) ±${Math.round(accuracy)}m`);
+          pushLog(`📍 GPS 위치: 위도${lat.toFixed(4)}, 경도${lng.toFixed(4)}`, 'system');
+
+          // GPS 좌표 → 캔버스 좌표 변환
+          // 간단히: 위도/경도의 소수점 활용
+          fireX = ((lng + 180) / 360) * cv.width;
+          fireY = ((lat + 90) / 180) * cv.height;
+
+          // 범위 내 조정
+          fireX = Math.max(50, Math.min(cv.width - 50, fireX));
+          fireY = Math.max(50, Math.min(cv.height - 50, fireY));
+
+          console.log(`🔥 화재 위치 (GPS 기반): (${Math.round(fireX)}, ${Math.round(fireY)})`);
+          pushLog(`🔥 화재 발생: GPS 위치 기준`, 'fire');
+          addFireAt(fireX, fireY);
+        },
+        (error) => {
+          // GPS 실패 시 → 화면 중앙 근처
+          console.warn('GPS 오류:', error.message);
+          pushLog('📍 GPS 미지원 — 화면 중앙에 화재 발생', 'system');
+
+          const centerX = cv.width * 0.5;
+          const centerY = cv.height * 0.5;
+          const variance = 0.2;
+          fireX = centerX * (0.8 + Math.random() * variance);
+          fireY = centerY * (0.8 + Math.random() * variance);
+
+          console.log(`🔥 화재 위치 (중앙 기반): (${Math.round(fireX)}, ${Math.round(fireY)})`);
+          addFireAt(fireX, fireY);
+        }
+      );
+    } else {
+      // Geolocation 미지원 시 → 중앙에 설정
+      console.log('Geolocation 미지원');
+      const centerX = cv.width * 0.5;
+      const centerY = cv.height * 0.5;
+      const variance = 0.2;
+      fireX = centerX * (0.8 + Math.random() * variance);
+      fireY = centerY * (0.8 + Math.random() * variance);
+      addFireAt(fireX, fireY);
+    }
+  }, 2000);
+
+  // ③ 시뮬레이션 시작
+  setTimeout(() => {
+    if (state.pendingFires.length > 0) {
+      console.log('✓ Step 3: 시뮬레이션 시작');
+      pushLog('▶ 시뮬레이션 시작', 'system');
+      startSim();
+    } else {
+      console.warn('화재 위치 설정 재시도...');
+      pushLog('⚠️ 화재 위치 설정 중... 5초 후 시작', 'fire');
+      // 5초 더 대기
+      setTimeout(() => {
+        if (state.pendingFires.length > 0) {
+          startSim();
+        }
+      }, 5000);
+    }
+  }, 3500);
+};
+
+// 초기
+buildLayout();
+render();
+updateStats();
+pushLog('💤 시뮬레이션 대기 — "화재 발생 시뮬레이션 시작" 클릭', 'system');
+
+</script>
+</body>
+</html>

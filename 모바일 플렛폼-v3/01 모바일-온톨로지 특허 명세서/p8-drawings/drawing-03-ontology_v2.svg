@@ -1,0 +1,158 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1600">
+  <!-- 도 3. 온톨로지 지식그래프 구조도 (v2 - Patent Standard) -->
+
+  <!-- 제목 -->
+  <text x="600" y="40" text-anchor="middle" font-family="Malgun Gothic" font-size="28" font-weight="bold" fill="black">
+    도 3. 온톨로지 지식그래프 구조도
+  </text>
+
+  <!-- 전체 외곽 박스 -->
+  <rect x="50" y="80" width="1100" height="1300" fill="none" stroke="black" stroke-width="3"/>
+
+  <!-- 제목 -->
+  <text x="600" y="115" text-anchor="middle" font-family="Malgun Gothic" font-size="16" font-weight="bold">
+    온톨로지 지식그래프 (210)
+  </text>
+
+  <!-- 사용자 온톨로지 (211) -->
+  <rect x="100" y="160" width="250" height="180" fill="none" stroke="black" stroke-width="2"/>
+  <text x="225" y="185" text-anchor="middle" font-family="Malgun Gothic" font-size="14" font-weight="bold">
+    사용자 온톨로지 (211)
+  </text>
+  <text x="120" y="215" font-family="Malgun Gothic" font-size="11">• 일반 사용자</text>
+  <text x="120" y="235" font-family="Malgun Gothic" font-size="11">• 고령자</text>
+  <text x="120" y="255" font-family="Malgun Gothic" font-size="11">• 어린이</text>
+  <text x="120" y="275" font-family="Malgun Gothic" font-size="11">• 휠체어 사용자</text>
+  <text x="120" y="295" font-family="Malgun Gothic" font-size="11">• 시각장애인</text>
+  <text x="120" y="315" font-family="Malgun Gothic" font-size="11">• 호흡기 환자</text>
+
+  <!-- 공간 온톨로지 (212) -->
+  <rect x="475" y="160" width="250" height="180" fill="none" stroke="black" stroke-width="2"/>
+  <text x="600" y="185" text-anchor="middle" font-family="Malgun Gothic" font-size="14" font-weight="bold">
+    공간 온톨로지 (212)
+  </text>
+  <text x="495" y="215" font-family="Malgun Gothic" font-size="11">• 객실</text>
+  <text x="495" y="235" font-family="Malgun Gothic" font-size="11">• 복도</text>
+  <text x="495" y="255" font-family="Malgun Gothic" font-size="11">• 비상구</text>
+  <text x="495" y="275" font-family="Malgun Gothic" font-size="11">• 계단</text>
+  <text x="495" y="295" font-family="Malgun Gothic" font-size="11">• 피난구역</text>
+  <text x="495" y="315" font-family="Malgun Gothic" font-size="11">• 엘리베이터 홀</text>
+
+  <!-- 관계: 211 → 212 (located at) -->
+  <line x1="350" y1="250" x2="475" y2="250" stroke="black" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+  <text x="400" y="245" font-family="Malgun Gothic" font-size="10">located at</text>
+
+  <!-- 위험 온톨로지 (213) -->
+  <rect x="100" y="420" width="250" height="180" fill="none" stroke="black" stroke-width="2"/>
+  <text x="225" y="445" text-anchor="middle" font-family="Malgun Gothic" font-size="14" font-weight="bold">
+    위험 온톨로지 (213)
+  </text>
+  <text x="120" y="475" font-family="Malgun Gothic" font-size="11">• 화재 (Fire)</text>
+  <text x="120" y="495" font-family="Malgun Gothic" font-size="11">• 연기 (Smoke)</text>
+  <text x="120" y="515" font-family="Malgun Gothic" font-size="11">• 혼잡 (Congestion)</text>
+  <text x="120" y="535" font-family="Malgun Gothic" font-size="11">• 출구 폐쇄 (ExitClosure)</text>
+  <text x="120" y="555" font-family="Malgun Gothic" font-size="11">• 정전 (PowerFailure)</text>
+  <text x="120" y="575" font-family="Malgun Gothic" font-size="11">• 확산 방향</text>
+
+  <!-- 센서 온톨로지 (214) -->
+  <rect x="475" y="420" width="250" height="180" fill="none" stroke="black" stroke-width="2"/>
+  <text x="600" y="445" text-anchor="middle" font-family="Malgun Gothic" font-size="14" font-weight="bold">
+    센서 온톨로지 (214)
+  </text>
+  <text x="495" y="475" font-family="Malgun Gothic" font-size="11">• 화재감지기</text>
+  <text x="495" y="495" font-family="Malgun Gothic" font-size="11">• 연기감지기</text>
+  <text x="495" y="515" font-family="Malgun Gothic" font-size="11">• 스마트폰 센서</text>
+  <text x="495" y="535" font-family="Malgun Gothic" font-size="11">• 방화문 센서</text>
+  <text x="495" y="555" font-family="Malgun Gothic" font-size="11">• WiFi AP</text>
+  <text x="495" y="575" font-family="Malgun Gothic" font-size="11">• BLE 비콘</text>
+
+  <!-- 관계: 211 → 213 (affected by) -->
+  <line x1="225" y1="340" x2="225" y2="420" stroke="black" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+  <text x="235" y="380" font-family="Malgun Gothic" font-size="10">affected by</text>
+
+  <!-- 관계: 212 → 214 (contains) -->
+  <line x1="600" y1="340" x2="600" y2="420" stroke="black" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+  <text x="610" y="380" font-family="Malgun Gothic" font-size="10">contains</text>
+
+  <!-- 관계: 213 ← 214 (detected by) -->
+  <line x1="475" y1="510" x2="350" y2="510" stroke="black" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+  <text x="380" y="505" font-family="Malgun Gothic" font-size="10">detected by</text>
+
+  <!-- 경로 온톨로지 (215) -->
+  <rect x="100" y="680" width="250" height="180" fill="none" stroke="black" stroke-width="2"/>
+  <text x="225" y="705" text-anchor="middle" font-family="Malgun Gothic" font-size="14" font-weight="bold">
+    경로 온톨로지 (215)
+  </text>
+  <text x="120" y="735" font-family="Malgun Gothic" font-size="11">• 주경로</text>
+  <text x="120" y="755" font-family="Malgun Gothic" font-size="11">• 대체경로</text>
+  <text x="120" y="775" font-family="Malgun Gothic" font-size="11">• 우회경로</text>
+  <text x="120" y="795" font-family="Malgun Gothic" font-size="11">• 구조경로</text>
+  <text x="120" y="815" font-family="Malgun Gothic" font-size="11">• 비용 함수</text>
+  <text x="120" y="835" font-family="Malgun Gothic" font-size="11">• 제약조건</text>
+
+  <!-- 규정 온톨로지 (216) -->
+  <rect x="475" y="680" width="250" height="180" fill="none" stroke="black" stroke-width="2"/>
+  <text x="600" y="705" text-anchor="middle" font-family="Malgun Gothic" font-size="14" font-weight="bold">
+    규정 온톨로지 (216)
+  </text>
+  <text x="495" y="735" font-family="Malgun Gothic" font-size="11">• 계단 사용 규정</text>
+  <text x="495" y="755" font-family="Malgun Gothic" font-size="11">• 연기 회피 규정</text>
+  <text x="495" y="775" font-family="Malgun Gothic" font-size="11">• 구조 우선순위</text>
+  <text x="495" y="795" font-family="Malgun Gothic" font-size="11">• 보호자 동행</text>
+  <text x="495" y="815" font-family="Malgun Gothic" font-size="11">• 피난구역 규정</text>
+  <text x="495" y="835" font-family="Malgun Gothic" font-size="11">• 안전 마진 계수</text>
+
+  <!-- 관계: 213 → 215 (avoided by) -->
+  <line x1="225" y1="600" x2="225" y2="680" stroke="black" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+  <text x="235" y="640" font-family="Malgun Gothic" font-size="10">avoided by</text>
+
+  <!-- 관계: 214 → 215 (guides) -->
+  <line x1="600" y1="600" x2="600" y2="650" stroke="black" stroke-width="1"/>
+  <line x1="600" y1="650" x2="225" y2="650" stroke="black" stroke-width="1"/>
+  <line x1="225" y1="650" x2="225" y2="680" stroke="black" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+  <text x="360" y="645" font-family="Malgun Gothic" font-size="10">guides</text>
+
+  <!-- 관계: 215 → 216 (complies with) -->
+  <line x1="350" y1="770" x2="475" y2="770" stroke="black" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+  <text x="375" y="765" font-family="Malgun Gothic" font-size="10">complies with</text>
+
+  <!-- 상호작용 화살표 추가 (212 → 215, 211 → 215) -->
+  <line x1="600" y1="340" x2="600" y2="650" stroke="black" stroke-width="1" stroke-dasharray="5,3"/>
+  <line x1="225" y1="340" x2="225" y2="650" stroke="black" stroke-width="1" stroke-dasharray="5,3"/>
+
+  <!-- 부호 설명 박스 -->
+  <rect x="100" y="920" width="1000" height="420" fill="none" stroke="black" stroke-width="1" stroke-dasharray="8,5"/>
+  <text x="600" y="950" text-anchor="middle" font-family="Malgun Gothic" font-size="14" font-weight="bold">
+    부호 설명
+  </text>
+
+  <text x="120" y="980" font-family="Malgun Gothic" font-size="12" font-weight="bold">(210): 온톨로지 지식그래프</text>
+
+  <text x="120" y="1010" font-family="Malgun Gothic" font-size="12">(211): 사용자 온톨로지</text>
+  <text x="140" y="1030" font-family="Malgun Gothic" font-size="11">     - 사용자 유형과 특성 (일반, 고령자, 어린이, 휠체어, 시각장애, 호흡기)</text>
+  <text x="140" y="1050" font-family="Malgun Gothic" font-size="11">     - 이동능력, 감각 제약, 건강상태 속성 포함</text>
+
+  <text x="120" y="1080" font-family="Malgun Gothic" font-size="12">(212): 공간 온톨로지</text>
+  <text x="140" y="1100" font-family="Malgun Gothic" font-size="11">     - 공간 노드와 연결 관계 (객실, 복도, 비상구, 계단, 피난구역)</text>
+  <text x="140" y="1120" font-family="Malgun Gothic" font-size="11">     - 거리, 폭, 용량 속성 포함</text>
+
+  <text x="120" y="1150" font-family="Malgun Gothic" font-size="12">(213): 위험 온톨로지</text>
+  <text x="140" y="1170" font-family="Malgun Gothic" font-size="11">     - 위험 유형과 확산 관계 (화재, 연기, 혼잡, 출구 폐쇄, 정전)</text>
+  <text x="140" y="1190" font-family="Malgun Gothic" font-size="11">     - 위험도 레벨, 확산 방향, 시간 속성 포함</text>
+
+  <text x="120" y="1220" font-family="Malgun Gothic" font-size="12">(214): 센서 온톨로지</text>
+  <text x="140" y="1240" font-family="Malgun Gothic" font-size="11">     - 센서 유형과 감지 대상 (화재감지기, 연기감지기, 스마트폰, WiFi AP)</text>
+
+  <text x="120" y="1270" font-family="Malgun Gothic" font-size="12">(215): 경로 온톨로지</text>
+  <text x="140" y="1290" font-family="Malgun Gothic" font-size="11">     - 경로 유형과 비용 함수 (주경로, 대체경로, 우회경로, 구조경로)</text>
+
+  <text x="120" y="1320" font-family="Malgun Gothic" font-size="12">(216): 규정 온톨로지</text>
+  <text x="140" y="1340" font-family="Malgun Gothic" font-size="11">     - 규정과 제약 (계단 사용, 연기 회피, 구조 우선순위, 보호자 동행)</text>
+
+  <!-- 화살표 마커 정의 -->
+  <defs>
+    <marker id="arrowhead" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+      <polygon points="0 0, 10 3, 0 6" fill="black"/>
+    </marker>
+  </defs>
+</svg>

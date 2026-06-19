@@ -1,0 +1,332 @@
+<svg width="1400" height="1800" xmlns="http://www.w3.org/2000/svg">
+  <!-- 정의 -->
+  <defs>
+    <linearGradient id="gradHeader" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#1e3a8a;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#3b82f6;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="gradStage" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#fef3c7;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#fbbf24;stop-opacity:1" />
+    </linearGradient>
+    <filter id="shadow">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-opacity="0.3"/>
+    </filter>
+  </defs>
+
+  <!-- 배경 -->
+  <rect width="1400" height="1800" fill="#f8fafc"/>
+
+  <!-- 헤더 -->
+  <rect width="1400" height="100" fill="url(#gradHeader)"/>
+  <text x="700" y="40" font-family="Arial, sans-serif" font-size="32" font-weight="bold" fill="white" text-anchor="middle">
+    FireNavi v3.0 Architecture
+  </text>
+  <text x="700" y="70" font-family="Arial, sans-serif" font-size="16" fill="#e0e7ff" text-anchor="middle">
+    스마트폰·온톨로지·AI 기반 재난대피 통합 플랫폼
+  </text>
+
+  <!-- 5단계 AI 파이프라인 -->
+  <text x="50" y="140" font-family="Arial, sans-serif" font-size="22" font-weight="bold" fill="#1e3a8a">
+    5단계 AI 파이프라인
+  </text>
+
+  <!-- Stage 1: 음향 자동 트리거 -->
+  <rect x="50" y="160" width="250" height="120" rx="8" fill="url(#gradStage)" filter="url(#shadow)"/>
+  <text x="175" y="185" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#78350f" text-anchor="middle">
+    Stage 1: 음향 자동 트리거
+  </text>
+  <text x="175" y="210" font-family="Arial, sans-serif" font-size="12" fill="#451a03" text-anchor="middle">
+    🔊 화재경보음·비명·폭발음
+  </text>
+  <text x="175" y="230" font-family="Arial, sans-serif" font-size="11" fill="#451a03" text-anchor="middle">
+    온톨로지 노드 매핑
+  </text>
+  <text x="175" y="250" font-family="Arial, sans-serif" font-size="11" fill="#451a03" text-anchor="middle">
+    → 자동 대피 모드 활성화
+  </text>
+  <text x="175" y="270" font-family="Arial, sans-serif" font-size="10" font-weight="bold" fill="#dc2626" text-anchor="middle">
+    0.3초 이내 감지
+  </text>
+
+  <!-- Stage 2: 인프라프리 측위 -->
+  <rect x="330" y="160" width="250" height="120" rx="8" fill="url(#gradStage)" filter="url(#shadow)"/>
+  <text x="455" y="185" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#78350f" text-anchor="middle">
+    Stage 2: 인프라프리 측위
+  </text>
+  <text x="455" y="210" font-family="Arial, sans-serif" font-size="12" fill="#451a03" text-anchor="middle">
+    📍 WiFi + IMU + 기압계
+  </text>
+  <text x="455" y="230" font-family="Arial, sans-serif" font-size="11" fill="#451a03" text-anchor="middle">
+    공간 온톨로지 매핑
+  </text>
+  <text x="455" y="250" font-family="Arial, sans-serif" font-size="11" fill="#451a03" text-anchor="middle">
+    → "4층 동쪽 복도"
+  </text>
+  <text x="455" y="270" font-family="Arial, sans-serif" font-size="10" font-weight="bold" fill="#dc2626" text-anchor="middle">
+    신규 비콘 불필요
+  </text>
+
+  <!-- Stage 3: 마이크로 설문 -->
+  <rect x="610" y="160" width="250" height="120" rx="8" fill="url(#gradStage)" filter="url(#shadow)"/>
+  <text x="735" y="185" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#78350f" text-anchor="middle">
+    Stage 3: 마이크로 설문
+  </text>
+  <text x="735" y="210" font-family="Arial, sans-serif" font-size="12" fill="#451a03" text-anchor="middle">
+    💬 3문항 이하 대화형 질의
+  </text>
+  <text x="735" y="230" font-family="Arial, sans-serif" font-size="11" fill="#451a03" text-anchor="middle">
+    사용자 상태 온톨로지 기반
+  </text>
+  <text x="735" y="250" font-family="Arial, sans-serif" font-size="11" fill="#451a03" text-anchor="middle">
+    → 시각장애인 음성 중심
+  </text>
+  <text x="735" y="270" font-family="Arial, sans-serif" font-size="10" font-weight="bold" fill="#dc2626" text-anchor="middle">
+    맞춤형 질문 생성
+  </text>
+
+  <!-- Stage 4: 센서 융합 -->
+  <rect x="890" y="160" width="250" height="120" rx="8" fill="url(#gradStage)" filter="url(#shadow)"/>
+  <text x="1015" y="185" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#78350f" text-anchor="middle">
+    Stage 4: 패시브 센서 융합
+  </text>
+  <text x="1015" y="210" font-family="Arial, sans-serif" font-size="12" fill="#451a03" text-anchor="middle">
+    📊 조도·기압·IMU·마이크
+  </text>
+  <text x="1015" y="230" font-family="Arial, sans-serif" font-size="11" fill="#451a03" text-anchor="middle">
+    + 크라우드소싱 보고
+  </text>
+  <text x="1015" y="250" font-family="Arial, sans-serif" font-size="11" fill="#451a03" text-anchor="middle">
+    → 온톨로지 정규화
+  </text>
+  <text x="1015" y="270" font-family="Arial, sans-serif" font-size="10" font-weight="bold" fill="#dc2626" text-anchor="middle">
+    고정 센서 사각지대 보완
+  </text>
+
+  <!-- Stage 5: 베이지안 화재맵 -->
+  <rect x="50" y="310" width="250" height="120" rx="8" fill="url(#gradStage)" filter="url(#shadow)"/>
+  <text x="175" y="335" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#78350f" text-anchor="middle">
+    Stage 5: 베이지안 화재맵
+  </text>
+  <text x="175" y="360" font-family="Arial, sans-serif" font-size="12" fill="#451a03" text-anchor="middle">
+    🔥 4채널 동적 위험지도
+  </text>
+  <text x="175" y="380" font-family="Arial, sans-serif" font-size="11" fill="#451a03" text-anchor="middle">
+    화재·연기·군중·출구 장애
+  </text>
+  <text x="175" y="400" font-family="Arial, sans-serif" font-size="11" fill="#451a03" text-anchor="middle">
+    → 실시간 갱신
+  </text>
+  <text x="175" y="420" font-family="Arial, sans-serif" font-size="10" font-weight="bold" fill="#dc2626" text-anchor="middle">
+    신뢰도 기반 베이지안 융합
+  </text>
+
+  <!-- 연결선 (Stage 1→2→3→4→5) -->
+  <path d="M 300 220 L 330 220" stroke="#3b82f6" stroke-width="3" fill="none" marker-end="url(#arrowblue)"/>
+  <path d="M 580 220 L 610 220" stroke="#3b82f6" stroke-width="3" fill="none" marker-end="url(#arrowblue)"/>
+  <path d="M 860 220 L 890 220" stroke="#3b82f6" stroke-width="3" fill="none" marker-end="url(#arrowblue)"/>
+  <path d="M 1015 280 L 1015 310 L 175 310" stroke="#3b82f6" stroke-width="3" fill="none" marker-end="url(#arrowblue)"/>
+
+  <!-- 삼중 AI 엔진 -->
+  <text x="50" y="480" font-family="Arial, sans-serif" font-size="22" font-weight="bold" fill="#1e3a8a">
+    삼중 AI 엔진 (온톨로지 공유 동기 아키텍처)
+  </text>
+
+  <!-- 중앙 온톨로지 -->
+  <ellipse cx="700" cy="650" rx="180" ry="120" fill="#e0f2fe" stroke="#0369a1" stroke-width="3" filter="url(#shadow)"/>
+  <text x="700" y="630" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#0c4a6e" text-anchor="middle">
+    재난대피 온톨로지
+  </text>
+  <text x="700" y="655" font-family="Arial, sans-serif" font-size="13" fill="#0c4a6e" text-anchor="middle">
+    지식그래프
+  </text>
+  <text x="700" y="675" font-family="Arial, sans-serif" font-size="11" fill="#0c4a6e" text-anchor="middle">
+    Person·Location·Hazard
+  </text>
+  <text x="700" y="695" font-family="Arial, sans-serif" font-size="11" fill="#0c4a6e" text-anchor="middle">
+    Route·Sensor·Regulation
+  </text>
+
+  <!-- Prediction Engine -->
+  <rect x="350" y="520" width="200" height="80" rx="8" fill="#fecaca" stroke="#dc2626" stroke-width="2" filter="url(#shadow)"/>
+  <text x="450" y="545" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#7f1d1d" text-anchor="middle">
+    Prediction Engine
+  </text>
+  <text x="450" y="565" font-family="Arial, sans-serif" font-size="11" fill="#7f1d1d" text-anchor="middle">
+    화재·연기 확산 예측
+  </text>
+  <text x="450" y="585" font-family="Arial, sans-serif" font-size="11" fill="#7f1d1d" text-anchor="middle">
+    출구 폐쇄 가능성
+  </text>
+
+  <!-- Behavior Engine -->
+  <rect x="850" y="520" width="200" height="80" rx="8" fill="#fed7aa" stroke="#ea580c" stroke-width="2" filter="url(#shadow)"/>
+  <text x="950" y="545" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#7c2d12" text-anchor="middle">
+    Behavior Engine
+  </text>
+  <text x="950" y="565" font-family="Arial, sans-serif" font-size="11" fill="#7c2d12" text-anchor="middle">
+    군중 행동·병목 예측
+  </text>
+  <text x="950" y="585" font-family="Arial, sans-serif" font-size="11" fill="#7c2d12" text-anchor="middle">
+    패닉·출구 쏠림
+  </text>
+
+  <!-- Decision Engine -->
+  <rect x="600" y="800" width="200" height="80" rx="8" fill="#bbf7d0" stroke="#16a34a" stroke-width="2" filter="url(#shadow)"/>
+  <text x="700" y="825" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#14532d" text-anchor="middle">
+    Decision Engine
+  </text>
+  <text x="700" y="845" font-family="Arial, sans-serif" font-size="11" fill="#14532d" text-anchor="middle">
+    개인별 대피 경로 결정
+  </text>
+  <text x="700" y="865" font-family="Arial, sans-serif" font-size="11" fill="#14532d" text-anchor="middle">
+    주경로 + 대체경로
+  </text>
+
+  <!-- 엔진 간 연결 -->
+  <path d="M 550 560 L 600 620" stroke="#3b82f6" stroke-width="2" fill="none" stroke-dasharray="5,5"/>
+  <path d="M 850 560 L 800 620" stroke="#3b82f6" stroke-width="2" fill="none" stroke-dasharray="5,5"/>
+  <path d="M 700 770 L 700 800" stroke="#3b82f6" stroke-width="2" fill="none" marker-end="url(#arrowblue)"/>
+
+  <!-- 취약계층 안전 마진 -->
+  <text x="50" y="950" font-family="Arial, sans-serif" font-size="22" font-weight="bold" fill="#1e3a8a">
+    취약계층 제약 온톨로지 기반 안전 마진
+  </text>
+
+  <rect x="50" y="970" width="280" height="220" rx="8" fill="#f3e8ff" stroke="#9333ea" stroke-width="2" filter="url(#shadow)"/>
+  <text x="190" y="995" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#581c87" text-anchor="middle">
+    사용자 유형별 안전 마진 (α)
+  </text>
+  <text x="70" y="1020" font-family="Arial, sans-serif" font-size="11" fill="#581c87">
+    • 고령자: α 1.5 (완만한 경로)
+  </text>
+  <text x="70" y="1040" font-family="Arial, sans-serif" font-size="11" fill="#581c87">
+    • 어린이: α 2.0 (보호자 동기화)
+  </text>
+  <text x="70" y="1060" font-family="Arial, sans-serif" font-size="11" fill="#581c87">
+    • 휠체어: 계단 페널티 ∞
+  </text>
+  <text x="70" y="1080" font-family="Arial, sans-serif" font-size="11" fill="#581c87">
+    • 호흡기 환자: 연기 가중치 3.0
+  </text>
+  <text x="70" y="1100" font-family="Arial, sans-serif" font-size="11" fill="#581c87">
+    • 시각장애인: 음성·진동 안내
+  </text>
+  <text x="70" y="1120" font-family="Arial, sans-serif" font-size="11" fill="#581c87">
+    • 청각장애인: 시각·진동 안내
+  </text>
+  <text x="70" y="1145" font-family="Arial, sans-serif" font-size="10" font-style="italic" fill="#6b21a8">
+    → 보호자 동기화 + 구조 우선순위 자동 산정
+  </text>
+  <text x="70" y="1165" font-family="Arial, sans-serif" font-size="10" font-style="italic" fill="#6b21a8">
+    → 경로 비용 함수 개인별 자동 조정
+  </text>
+
+  <!-- 출력 인터페이스 -->
+  <text x="50" y="1240" font-family="Arial, sans-serif" font-size="22" font-weight="bold" fill="#1e3a8a">
+    출력 인터페이스 (3채널)
+  </text>
+
+  <!-- 사용자 앱 -->
+  <rect x="50" y="1260" width="380" height="100" rx="8" fill="#dbeafe" stroke="#2563eb" stroke-width="2" filter="url(#shadow)"/>
+  <text x="240" y="1285" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#1e3a8a" text-anchor="middle">
+    📱 사용자 앱 (개인별 맞춤 안내)
+  </text>
+  <text x="70" y="1310" font-family="Arial, sans-serif" font-size="11" fill="#1e40af">
+    • 주경로 + 대체경로 (실시간 갱신)
+  </text>
+  <text x="70" y="1330" font-family="Arial, sans-serif" font-size="11" fill="#1e40af">
+    • 다국어 안내 (30개 언어)
+  </text>
+  <text x="70" y="1350" font-family="Arial, sans-serif" font-size="11" fill="#1e40af">
+    • 설명 가능한 추천 이유 제공
+  </text>
+
+  <!-- 관제센터 -->
+  <rect x="460" y="1260" width="380" height="100" rx="8" fill="#fef3c7" stroke="#f59e0b" stroke-width="2" filter="url(#shadow)"/>
+  <text x="650" y="1285" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#78350f" text-anchor="middle">
+    🎛️ 관제센터 (전체 상황 모니터링)
+  </text>
+  <text x="480" y="1310" font-family="Arial, sans-serif" font-size="11" fill="#78350f">
+    • 4채널 위험지도 (화재·연기·군중·출구)
+  </text>
+  <text x="480" y="1330" font-family="Arial, sans-serif" font-size="11" fill="#78350f">
+    • 취약계층 위치 + 구조 우선순위
+  </text>
+  <text x="480" y="1350" font-family="Arial, sans-serif" font-size="11" fill="#78350f">
+    • 출구별 혼잡도 + 스태프 배치 지원
+  </text>
+
+  <!-- 구조대 단말 -->
+  <rect x="870" y="1260" width="380" height="100" rx="8" fill="#fee2e2" stroke="#ef4444" stroke-width="2" filter="url(#shadow)"/>
+  <text x="1060" y="1285" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#7f1d1d" text-anchor="middle">
+    🚒 구조대 단말 (구조 자원 최적 배분)
+  </text>
+  <text x="890" y="1310" font-family="Arial, sans-serif" font-size="11" fill="#7f1d1d">
+    • 미응답자 위치 + 낙상자 위치
+  </text>
+  <text x="890" y="1330" font-family="Arial, sans-serif" font-size="11" fill="#7f1d1d">
+    • 취약계층 우선순위 + 최적 접근 경로
+  </text>
+  <text x="890" y="1350" font-family="Arial, sans-serif" font-size="11" fill="#7f1d1d">
+    • 현장 조치 결과 → 관제센터 공유
+  </text>
+
+  <!-- 핵심 특허 5개 -->
+  <text x="50" y="1420" font-family="Arial, sans-serif" font-size="22" font-weight="bold" fill="#1e3a8a">
+    핵심 특허 출원 대상 5개
+  </text>
+
+  <rect x="50" y="1440" width="1300" height="320" rx="8" fill="#f0fdf4" stroke="#22c55e" stroke-width="2" filter="url(#shadow)"/>
+
+  <text x="70" y="1470" font-family="Arial, sans-serif" font-size="13" font-weight="bold" fill="#14532d">
+    ⚡ 1. 음향 이벤트 온톨로지 기반 자동 재난 트리거
+  </text>
+  <text x="90" y="1490" font-family="Arial, sans-serif" font-size="11" fill="#166534">
+    → 로컬 음향 감지 (0.3초) → 온톨로지 매핑 → 네트워크 장애 시에도 자동 활성화
+  </text>
+
+  <text x="70" y="1520" font-family="Arial, sans-serif" font-size="13" font-weight="bold" fill="#14532d">
+    🔥 2. 스마트폰 센서·인간보고 온톨로지 정규화 기반 동적 화재맵
+  </text>
+  <text x="90" y="1540" font-family="Arial, sans-serif" font-size="11" fill="#166534">
+    → 센서값 + 크라우드소싱 → 온톨로지 의미 노드 → 4채널 화재맵 (화재·연기·군중·출구)
+  </text>
+
+  <text x="70" y="1570" font-family="Arial, sans-serif" font-size="13" font-weight="bold" fill="#14532d">
+    📍 3. 공간 온톨로지 기반 인프라프리 실내 다층 측위
+  </text>
+  <text x="90" y="1590" font-family="Arial, sans-serif" font-size="11" fill="#166534">
+    → WiFi + IMU + 기압계 → 좌표가 아닌 "대피 의미 공간" (4층 복도 → 계단 A 연결 → 연기 위험)
+  </text>
+
+  <text x="70" y="1620" font-family="Arial, sans-serif" font-size="13" font-weight="bold" fill="#14532d">
+    🛡️ 4. 취약계층 제약 온톨로지 기반 개인별 안전 마진 자동 적용
+  </text>
+  <text x="90" y="1640" font-family="Arial, sans-serif" font-size="11" fill="#166534">
+    → 사용자 유형별 안전 마진 (α) 자동 산출 → 보호자 동기화 + 구조 우선순위 자동 산정
+  </text>
+
+  <text x="70" y="1670" font-family="Arial, sans-serif" font-size="13" font-weight="bold" fill="#14532d">
+    🤖 5. 온톨로지 공유 기반 삼중 AI 엔진 동기 아키텍처
+  </text>
+  <text x="90" y="1690" font-family="Arial, sans-serif" font-size="11" fill="#166534">
+    → Prediction·Behavior·Decision 엔진이 동일한 온톨로지 공유 → 판단 충돌 감소 + 설명 가능성
+  </text>
+
+  <text x="70" y="1730" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#dc2626">
+    💡 핵심 차별점: 단순 길찾기가 아닌 "사람·공간·위험·규정을 이해하는 설명 가능한 AI 재난대피 플랫폼"
+  </text>
+
+  <!-- 화살표 마커 정의 -->
+  <defs>
+    <marker id="arrowblue" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#3b82f6" />
+    </marker>
+  </defs>
+
+  <!-- 푸터 -->
+  <text x="700" y="1790" font-family="Arial, sans-serif" font-size="12" fill="#64748b" text-anchor="middle">
+    FireNavi v3.0 | 2026-06-02 | Patent Application Architecture v1
+  </text>
+</svg>

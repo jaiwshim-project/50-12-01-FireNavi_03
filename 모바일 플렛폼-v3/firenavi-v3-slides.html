@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FireNavi v3.0 — 발표 슬라이드 (AI 챔피언)</title>
+<style>
+:root {
+  --bg: #0B1220;
+  --bg-2: #131C2E;
+  --bg-3: #1A2540;
+  --line: rgba(255,255,255,0.08);
+  --text: #E2E8F0;
+  --muted: #94A3B8;
+  --accent: #38BDF8;
+  --red: #EF4444;
+  --orange: #F59E0B;
+  --green: #10B981;
+  --purple: #A78BFA;
+  --gold: #C9A961;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body {
+  height: 100%; background: var(--bg); color: var(--text);
+  font-family: "Pretendard", -apple-system, "Segoe UI", "Noto Sans KR", sans-serif;
+  overflow: hidden;
+}
+.deck { position: relative; width: 100vw; height: 100vh; }
+.slide {
+  position: absolute; inset: 0;
+  display: flex; flex-direction: column; justify-content: center; align-items: center;
+  padding: 60px 80px;
+  opacity: 0; transform: translateX(40px) scale(0.98);
+  transition: opacity 0.5s, transform 0.5s;
+  pointer-events: none;
+}
+.slide.active { opacity: 1; transform: translateX(0) scale(1); pointer-events: auto; }
+.slide.prev { transform: translateX(-40px) scale(0.98); }
+
+h1 {
+  font-size: clamp(2.5rem, 5vw, 4rem); font-weight: 900; line-height: 1.1;
+  margin-bottom: 16px; text-align: center;
+  background: linear-gradient(135deg, var(--accent), var(--purple), var(--gold));
+  -webkit-background-clip: text; background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+h2 {
+  font-size: clamp(1.8rem, 3vw, 2.4rem); font-weight: 800; margin-bottom: 32px;
+  text-align: center; color: var(--accent);
+}
+.subtitle { font-size: 1.4rem; color: var(--muted); margin-bottom: 28px; text-align: center; max-width: 1000px; }
+
+/* Counter Grid */
+.cgrid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; width: 100%; max-width: 1100px; }
+.cgrid.c3 { grid-template-columns: repeat(3, 1fr); }
+.cgrid.c2 { grid-template-columns: repeat(2, 1fr); }
+.ccard {
+  background: var(--bg-2); border: 1px solid var(--line); border-radius: 16px;
+  padding: 26px; text-align: center;
+}
+.ccard .v {
+  font-size: 2.6rem; font-weight: 900;
+  background: linear-gradient(135deg, var(--accent), var(--purple));
+  -webkit-background-clip: text; background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.ccard .l { font-size: 0.9rem; color: var(--muted); margin-top: 4px; }
+.ccard .vs { font-size: 0.78rem; color: var(--gold); margin-top: 4px; }
+
+/* Comparison */
+.compare {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 24px;
+  width: 100%; max-width: 1100px;
+}
+.compare-col {
+  background: var(--bg-2); border-radius: 18px; padding: 32px;
+  border: 1px solid var(--line);
+}
+.compare-col.bad { border-top: 4px solid var(--red); }
+.compare-col.good { border-top: 4px solid var(--green); }
+.compare-col h3 { font-size: 1.4rem; margin-bottom: 16px; }
+.compare-col.bad h3 { color: var(--red); }
+.compare-col.good h3 { color: var(--green); }
+.compare-col ul { list-style: none; padding: 0; }
+.compare-col li { padding: 8px 0; font-size: 1rem; color: var(--text); }
+.compare-col li::before { content: '•'; color: inherit; margin-right: 8px; }
+
+/* Stage Cards */
+.stages-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; width: 100%; max-width: 1300px; }
+.s-card {
+  background: var(--bg-2); border: 1px solid var(--line); border-radius: 14px;
+  padding: 18px; text-align: center; position: relative; border-top: 4px solid;
+}
+.s-card .n { font-size: 2.2rem; font-weight: 900; color: var(--bg-3); -webkit-text-stroke: 2px var(--accent); }
+.s-card .ttl { font-size: 0.95rem; font-weight: 700; margin: 6px 0; }
+.s-card .desc { font-size: 0.78rem; color: var(--muted); }
+.s-card.c1 { border-top-color: #EF4444; }
+.s-card.c1 .n { -webkit-text-stroke-color: #EF4444; }
+.s-card.c2 { border-top-color: #F59E0B; }
+.s-card.c2 .n { -webkit-text-stroke-color: #F59E0B; }
+.s-card.c3 { border-top-color: #A78BFA; }
+.s-card.c3 .n { -webkit-text-stroke-color: #A78BFA; }
+.s-card.c4 { border-top-color: #10B981; }
+.s-card.c4 .n { -webkit-text-stroke-color: #10B981; }
+.s-card.c5 { border-top-color: #38BDF8; }
+.s-card.c5 .n { -webkit-text-stroke-color: #38BDF8; }
+
+/* Lists */
+.bullets { font-size: 1.15rem; line-height: 2.2; max-width: 900px; }
+.bullets li { padding-left: 28px; position: relative; }
+.bullets li::before {
+  content: '→'; position: absolute; left: 0; color: var(--accent); font-weight: 900;
+}
+
+/* 30 Types Visual */
+.types-grid {
+  display: grid; grid-template-columns: repeat(6, 1fr); gap: 6px; max-width: 1200px;
+}
+.type-mini {
+  background: var(--bg-2); border-radius: 8px; padding: 8px;
+  display: flex; align-items: center; gap: 6px; font-size: 0.7rem;
+}
+.type-mini .dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+
+/* Patent Grid */
+.pgrid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; max-width: 1200px; }
+.pcard {
+  background: var(--bg-2); border: 1px solid var(--line); border-radius: 12px;
+  padding: 18px; border-top: 3px solid var(--accent);
+}
+.pcard.v3 { border-top-color: var(--green); }
+.pcard.v2 { border-top-color: var(--purple); }
+.pcard .code {
+  background: var(--bg-3); padding: 2px 8px; border-radius: 4px;
+  font-family: ui-monospace; font-size: 0.72rem; font-weight: 700;
+  color: var(--accent); display: inline-block; margin-bottom: 6px;
+}
+.pcard h4 { font-size: 0.9rem; margin-bottom: 4px; }
+.pcard p { font-size: 0.76rem; color: var(--muted); }
+
+/* Roadmap Timeline */
+.tl { display: grid; grid-template-columns: repeat(7, 1fr); gap: 12px; max-width: 1200px; align-items: stretch; }
+.tl-item {
+  background: var(--bg-2); border-radius: 12px; padding: 16px;
+  border-top: 3px solid var(--accent); text-align: center;
+}
+.tl-item.done { border-top-color: var(--green); }
+.tl-item.active { border-top-color: var(--orange); }
+.tl-item .yr { font-weight: 700; color: var(--accent); font-size: 0.85rem; }
+.tl-item .ttl2 { margin: 6px 0; font-size: 0.82rem; font-weight: 700; }
+.tl-item .desc2 { font-size: 0.7rem; color: var(--muted); }
+
+/* Quote */
+.quote {
+  font-size: 1.6rem; font-style: italic; text-align: center;
+  max-width: 900px; color: var(--text); line-height: 1.6;
+  padding: 0 40px; position: relative;
+}
+.quote::before, .quote::after { font-size: 4rem; color: var(--accent); opacity: 0.3; }
+.quote::before { content: '"'; position: absolute; left: 0; top: -20px; }
+.quote::after { content: '"'; position: absolute; right: 0; bottom: -40px; }
+.author { margin-top: 28px; color: var(--gold); font-size: 1rem; font-weight: 600; }
+
+/* Nav */
+.nav-bar {
+  position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
+  background: rgba(11,18,32,0.92); backdrop-filter: blur(8px);
+  border: 1px solid var(--line); border-radius: 999px; padding: 8px 18px;
+  display: flex; align-items: center; gap: 12px; z-index: 10;
+}
+.nav-bar button {
+  background: var(--bg-3); color: var(--text); border: 0;
+  width: 36px; height: 36px; border-radius: 50%; cursor: pointer;
+  font-size: 1.1rem;
+}
+.nav-bar button:hover { background: var(--accent); color: var(--bg); }
+.nav-bar .progress {
+  font-family: ui-monospace; font-size: 0.85rem;
+  font-weight: 700; color: var(--accent); min-width: 70px; text-align: center;
+}
+.slide-num {
+  position: fixed; top: 20px; right: 24px;
+  font-family: ui-monospace; font-size: 0.85rem; color: var(--muted);
+  background: rgba(11,18,32,0.7); padding: 4px 10px; border-radius: 6px;
+  border: 1px solid var(--line);
+}
+.brand {
+  position: fixed; top: 20px; left: 24px;
+  font-size: 0.95rem; font-weight: 700; color: var(--accent);
+}
+.brand .v { color: var(--gold); margin-left: 6px; font-size: 0.78rem; }
+
+/* Pulse for emphasis */
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+.pulse { animation: pulse 2s infinite; }
+
+.hint { font-size: 0.78rem; color: var(--muted); margin-top: 14px; }
+</style>
+</head>
+<body>
+
+<div class="brand">🚒 FireNavi <span class="v">v3.0</span></div>
+<div class="slide-num" id="slideNum">01 / 20</div>
+
+<div class="deck" id="deck">
+
+<!-- SLIDE 1: 표지 -->
+<div class="slide active">
+  <h1 style="font-size: 5rem;">FireNavi v3.0</h1>
+  <p class="subtitle" style="font-size: 1.6rem;">AI가 4,000명의 인간 센서를 매 순간 융합합니다</p>
+  <p style="color: var(--muted); margin-top: 14px;">Smartphone-First · AI-Driven · Crowdsourced Survival</p>
+  <div style="margin-top: 60px; display: flex; gap: 12px; flex-wrap: wrap; justify-content: center;">
+    <span style="background:var(--red);color:white;padding:8px 18px;border-radius:999px;font-weight:700;">AI 챔피언 2026 출품</span>
+    <span style="background:var(--accent);color:var(--bg);padding:8px 18px;border-radius:999px;font-weight:700;">피지컬AI · 재난대응 · 모빌리티 · AI에이전트</span>
+  </div>
+  <p style="margin-top: 60px; color: var(--gold);">심재우 · jaiwshim@gmail.com · 010-2397-5734</p>
+</div>
+
+<!-- SLIDE 2: 문제 -->
+<div class="slide">
+  <h2>왜 사람들이 죽는가</h2>
+  <p class="subtitle">대형 시설 화재 사망의 80%는 직접 화염이 아닌 시스템 한계</p>
+  <div class="cgrid c3">
+    <div class="ccard"><div class="v" style="color:var(--red);">70%</div><div class="l">연기 흡입 사망</div><div class="vs">90초 후 가시거리 1m↓</div></div>
+    <div class="ccard"><div class="v" style="color:var(--orange);">15%</div><div class="l">군중 압사</div><div class="vs">동일 출구 병목</div></div>
+    <div class="ccard"><div class="v" style="color:var(--purple);">10%</div><div class="l">잘못된 경로 안내</div><div class="vs">정적 대피도의 한계</div></div>
+  </div>
+  <p class="hint">— NFPA 2024 화재안전 백서</p>
+</div>
+
+<!-- SLIDE 3: 종래 한계 -->
+<div class="slide">
+  <h2>종래 시스템의 5대 한계</h2>
+  <ul class="bullets">
+    <li>정적 대피도 — 화재 위치 변화 미반영, 사람들을 불 가까이로 안내</li>
+    <li>일률적 안내 — 6,000명에게 같은 출구 → 병목·압사</li>
+    <li>정전·연기 시 비상구 표시 무력 (가시거리 1m 이하)</li>
+    <li>취약계층 무대응 — 고령자·장애인·어린이 별도 안내 부재</li>
+    <li>사후 대응 — 인간은 30초 후 행동, AI는 0.5초마다 갱신 가능</li>
+  </ul>
+</div>
+
+<!-- SLIDE 4: 솔루션 한 줄 -->
+<div class="slide">
+  <h2 style="color: var(--green);">FireNavi v3.0의 본질</h2>
+  <p class="quote">시설에 새 하드웨어를 설치하지 않습니다.<br>거주자가 이미 들고 있는 스마트폰을 분산 인간센서로 활용하여,<br>4,000명 한 명 한 명에게 개인별 최적 대피 경로를 매 순간 다시 설계합니다.</p>
+  <p class="author">— FireNavi v3.0 Vision Statement</p>
+</div>
+
+<!-- SLIDE 5: 5단계 파이프라인 -->
+<div class="slide">
+  <h2>5단계 파이프라인</h2>
+  <div class="stages-grid">
+    <div class="s-card c1"><div class="n">01</div><div class="ttl">🔊 음향 트리거</div><div class="desc">SOLAS 패턴 자동 감지<br>4,000대 동시 활성화</div></div>
+    <div class="s-card c2"><div class="n">02</div><div class="ttl">📍 인프라프리 측위</div><div class="desc">WiFi+IMU+Graph SLAM<br>1~3m 정확도</div></div>
+    <div class="s-card c3"><div class="n">03</div><div class="ttl">💬 마이크로 설문</div><div class="desc">3문항×3초+음성<br>100% 커버</div></div>
+    <div class="s-card c4"><div class="n">04</div><div class="ttl">📱 폰 센서 융합</div><div class="desc">7센서 자동 수집<br>28,000+ 포인트</div></div>
+    <div class="s-card c5"><div class="n">05</div><div class="ttl">🗺️ 화재맵+경로</div><div class="desc">Bayesian + A*<br>α=2.0 우선</div></div>
+  </div>
+  <p class="hint" style="margin-top: 32px;">화재 발생 → 3초 내 4,000대 활성화 → 5초마다 화재맵 갱신 → 개인별 경로 즉시 보정</p>
+</div>
+
+<!-- SLIDE 6: v2 vs v3 -->
+<div class="slide">
+  <h2>v2.0 Hardware → v3.0 Smartphone-First</h2>
+  <div class="compare">
+    <div class="compare-col bad">
+      <h3>❌ v2.0 Hardware Model</h3>
+      <ul>
+        <li>설치비 $1.1~1.7M / 시설</li>
+        <li>드라이독·공사 14~30일</li>
+        <li>선급 재인증 1~2년</li>
+        <li>고정 IoT 500개</li>
+        <li>크루즈 30척/년 한정</li>
+        <li>시장 진입 5~10년</li>
+        <li>TAM $18B</li>
+      </ul>
+    </div>
+    <div class="compare-col good">
+      <h3>✅ v3.0 Smartphone-First</h3>
+      <ul>
+        <li>설치비 $50K (-95%)</li>
+        <li>드라이독 0일</li>
+        <li>선급 재인증 불필요</li>
+        <li>이동 폰 28,000+ 포인트 (×56)</li>
+        <li>WiFi 보유 모든 공간</li>
+        <li>시장 진입 6~12개월</li>
+        <li>TAM $208B (×11.5)</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 7: USP -->
+<div class="slide">
+  <h2>6대 차별점 (USP)</h2>
+  <div class="cgrid">
+    <div class="ccard"><div class="v">1</div><div class="l"><strong>Zero-Hardware</strong></div><div class="vs">신규 디바이스 0개</div></div>
+    <div class="ccard"><div class="v">2</div><div class="l"><strong>Human-as-Sensor</strong></div><div class="vs">4,000명 눈·코</div></div>
+    <div class="ccard"><div class="v">3</div><div class="l"><strong>Zero-Touch 활성화</strong></div><div class="vs">음향 자동</div></div>
+    <div class="ccard"><div class="v">4</div><div class="l"><strong>Personalized</strong></div><div class="vs">개인별 경로</div></div>
+    <div class="ccard"><div class="v">5</div><div class="l"><strong>Universal</strong></div><div class="vs">전 도메인</div></div>
+    <div class="ccard"><div class="v">6</div><div class="l"><strong>Self-Evolving</strong></div><div class="vs">데이터 플라이휠</div></div>
+    <div class="ccard"><div class="v">★</div><div class="l"><strong>30유형 핸디캡</strong></div><div class="vs">α=2.0 우선구조</div></div>
+    <div class="ccard"><div class="v">★</div><div class="l"><strong>특허 9건</strong></div><div class="vs">알고리즘+시스템</div></div>
+  </div>
+</div>
+
+<!-- SLIDE 8: Human-as-Sensor -->
+<div class="slide">
+  <h2 style="color: var(--gold);">인간 = 가장 강력한 센서</h2>
+  <div class="cgrid c2">
+    <div class="ccard"><div class="v" style="color:var(--red);">500</div><div class="l">고정 IoT 센서</div><div class="vs">시각·후각 불가</div></div>
+    <div class="ccard"><div class="v" style="color:var(--green);">28,000+</div><div class="l">v3.0 분산 데이터</div><div class="vs">4,000명 × 7센서</div></div>
+  </div>
+  <p style="margin-top: 32px; font-size: 1.3rem; text-align: center; max-width: 900px; color: var(--text);">
+    인접 객실 거주자의 <strong style="color:var(--green);">후각</strong>이 기계 센서보다<br>
+    <strong style="color:var(--gold); font-size: 1.6rem;">30~120초 앞서</strong> 화재를 인지합니다.
+  </p>
+</div>
+
+<!-- SLIDE 9: 30유형 도입 -->
+<div class="slide">
+  <h2 style="color: var(--purple);">가장 약한 사람을 가장 먼저</h2>
+  <p class="subtitle">핸디캡 30유형 정밀 분류 — 6개 카테고리 · α=2.0 우선구조</p>
+  <div class="cgrid c3">
+    <div class="ccard"><div class="v">A·B<br>12종</div><div class="l">신체·거동</div><div class="vs">고령·휠체어·임산부·영유아 등</div></div>
+    <div class="ccard"><div class="v">C·D<br>8종</div><div class="l">부상·감각</div><div class="vs">의식불명·청각·시각·색맹</div></div>
+    <div class="ccard"><div class="v">E·F<br>10종</div><div class="l">인지·정신·언어</div><div class="vs">치매·자폐·외국인·반려동물</div></div>
+  </div>
+</div>
+
+<!-- SLIDE 10: 30유형 전체 -->
+<div class="slide">
+  <h2 style="font-size: 1.6rem;">30유형 — 카테고리별 색조</h2>
+  <div class="types-grid" id="types30"></div>
+</div>
+
+<!-- SLIDE 11: 핸디캡 효과 -->
+<div class="slide">
+  <h2>30유형 적용 — 생존율 효과</h2>
+  <div class="cgrid c3">
+    <div class="ccard"><div class="v" style="color:var(--green);">+27%</div><div class="l">청각장애인</div><div class="vs">진동·시각 안내</div></div>
+    <div class="ccard"><div class="v" style="color:var(--green);">+35%</div><div class="l">시각장애인</div><div class="vs">TTS·햅틱 방향</div></div>
+    <div class="ccard"><div class="v" style="color:var(--green);">+40%</div><div class="l">인지장애인</div><div class="vs">1단어·보호자</div></div>
+    <div class="ccard"><div class="v" style="color:var(--green);">+38%</div><div class="l">휠체어 사용자</div><div class="vs">배리어프리 강제</div></div>
+    <div class="ccard"><div class="v" style="color:var(--green);">+20%</div><div class="l">외국인</div><div class="vs">모국어 12개국어</div></div>
+    <div class="ccard"><div class="v" style="color:var(--gold);">즉시</div><div class="l">의식불명 발견</div><div class="vs">IMU 자동 감지</div></div>
+  </div>
+</div>
+
+<!-- SLIDE 12: 특허 9건 -->
+<div class="slide">
+  <h2>특허 9건 — 알고리즘 + 시스템 이중 방어</h2>
+  <h3 style="color:var(--purple); margin-top: 20px;">v2.0 알고리즘 (5건)</h3>
+  <div class="pgrid">
+    <div class="pcard v2"><span class="code">PAT-01</span><h4>삼중 엔진 동기 아키텍처</h4><p>3개 AI 동기 작동 + 순환 입출력</p></div>
+    <div class="pcard v2"><span class="code">PAT-02</span><h4>이원 경로 시스템</h4><p>주+대체경로 동시 + 자동 전환</p></div>
+    <div class="pcard v2"><span class="code">PAT-03</span><h4>α=2.0 안전 마진</h4><p>30유형 분류 + 보호자 동기화</p></div>
+    <div class="pcard v2"><span class="code">PAT-04</span><h4>동적 출구 재배정</h4><p>CrowdPenalty 자동 분산</p></div>
+    <div class="pcard v2"><span class="code">PAT-05</span><h4>이중 경로 예측 보정</h4><p>두 엔진 상호 검증</p></div>
+  </div>
+  <h3 style="color:var(--green); margin-top: 28px;">v3.0 시스템 (4건) ★ 신규</h3>
+  <div class="pgrid">
+    <div class="pcard v3"><span class="code">v3-P-A</span><h4>음향 자동 트리거</h4><p>다수 폰 SOLAS 패턴 + 공간 일치</p></div>
+    <div class="pcard v3"><span class="code">v3-P-B</span><h4>크라우드소싱 화재맵</h4><p>인간+센서 베이지안 융합</p></div>
+    <div class="pcard v3"><span class="code">v3-P-C</span><h4>마이크로 설문 군중상태</h4><p>3문항 + 미응답자 추정</p></div>
+    <div class="pcard v3"><span class="code">v3-P-D</span><h4>인프라프리 측위</h4><p>WiFi+IMU+SLAM, 하드웨어 0</p></div>
+  </div>
+</div>
+
+<!-- SLIDE 13: 시장 -->
+<div class="slide">
+  <h2>시장 TAM $208B (×11.5 확대)</h2>
+  <div class="cgrid c3">
+    <div class="ccard"><div class="v">$25B</div><div class="l">종합병원·요양</div><div class="vs">1순위 진입</div></div>
+    <div class="ccard"><div class="v">$30B</div><div class="l">5성급 호텔</div><div class="vs">2순위 진입</div></div>
+    <div class="ccard"><div class="v">$40B</div><div class="l">초고층 빌딩</div><div class="vs">3순위 진입</div></div>
+    <div class="ccard"><div class="v">$20B</div><div class="l">학교·대학</div><div class="vs">4순위</div></div>
+    <div class="ccard"><div class="v">$15B</div><div class="l">경기장·공연장</div><div class="vs">5순위</div></div>
+    <div class="ccard"><div class="v">$35B</div><div class="l">지하철·공항</div><div class="vs">6순위</div></div>
+  </div>
+  <p style="margin-top: 28px; color: var(--gold); font-size: 1.1rem;">진입장벽 낮은 시장(병원·호텔)부터 → 크루즈는 최종 단계</p>
+</div>
+
+<!-- SLIDE 14: 비즈니스 모델 -->
+<div class="slide">
+  <h2>비즈니스 모델 — SaaS</h2>
+  <div class="cgrid">
+    <div class="ccard"><div class="v">70%</div><div class="l">SaaS 구독</div><div class="vs">월 정액</div></div>
+    <div class="ccard"><div class="v">15%</div><div class="l">초기 구축비</div><div class="vs">Edge + 통합</div></div>
+    <div class="ccard"><div class="v">10%</div><div class="l">컨설팅·인증</div><div class="vs">진단·시뮬</div></div>
+    <div class="ccard"><div class="v">5%</div><div class="l">보험 파트너</div><div class="vs">상품 셰어</div></div>
+  </div>
+  <div class="cgrid c2" style="margin-top: 28px;">
+    <div class="ccard"><div class="v">20x</div><div class="l">LTV / CAC</div><div class="vs">SaaS 우수 기준 6.7배</div></div>
+    <div class="ccard"><div class="v">3개월</div><div class="l">Payback Period</div><div class="vs">보험료 절감으로 회수</div></div>
+  </div>
+</div>
+
+<!-- SLIDE 15: 로드맵 -->
+<div class="slide">
+  <h2>로드맵 ~2030</h2>
+  <div class="tl">
+    <div class="tl-item done"><div class="yr">2026 Q1~Q2 ✓</div><div class="ttl2">v3.0 피벗 완료</div><div class="desc2">PoC + 9건 특허</div></div>
+    <div class="tl-item active"><div class="yr">2026 Q3 ▶</div><div class="ttl2">모바일 SDK</div><div class="desc2">iOS/Android</div></div>
+    <div class="tl-item"><div class="yr">2026 Q4</div><div class="ttl2">병원 1호 파일럿</div><div class="desc2">사상자 0 데이터</div></div>
+    <div class="tl-item"><div class="yr">2027</div><div class="ttl2">국내 확산</div><div class="desc2">매출 8억원</div></div>
+    <div class="tl-item"><div class="yr">2028</div><div class="ttl2">동남아 진출</div><div class="desc2">매출 50억원</div></div>
+    <div class="tl-item"><div class="yr">2029</div><div class="ttl2">글로벌 SaaS</div><div class="desc2">SOLAS 표준화</div></div>
+    <div class="tl-item"><div class="yr">2030 ★</div><div class="ttl2">IPO</div><div class="desc2">시설 500곳·3,000억</div></div>
+  </div>
+</div>
+
+<!-- SLIDE 16: 팀 -->
+<div class="slide">
+  <h2>4인 핵심 리더십</h2>
+  <div class="cgrid">
+    <div class="ccard">
+      <div style="font-size: 2.5rem;">🧠</div>
+      <div style="font-weight: 800; color: var(--accent); margin-top: 6px;">CEO 심재우</div>
+      <div class="vs" style="color:var(--text);">Founder · AI Architect<br>9건 특허 발명자</div>
+    </div>
+    <div class="ccard">
+      <div style="font-size: 2.5rem;">🚒</div>
+      <div style="font-weight: 800; color: var(--accent); margin-top: 6px;">CTO 서병근</div>
+      <div class="vs" style="color:var(--text);">재난과학 박사<br>Johnson Controls 출신</div>
+    </div>
+    <div class="ccard">
+      <div style="font-size: 2.5rem;">🤝</div>
+      <div style="font-weight: 800; color: var(--accent); margin-top: 6px;">CBO 3인 체제</div>
+      <div class="vs" style="color:var(--text);">서한균·선웅규·정필완<br>4채널 BD 트라이앵글</div>
+    </div>
+    <div class="ccard">
+      <div style="font-size: 2.5rem;">🎨</div>
+      <div style="font-weight: 800; color: var(--accent); margin-top: 6px;">CDO 이강수</div>
+      <div class="vs" style="color:var(--text);">Design · Brand<br>위기 UI/UX 총괄</div>
+    </div>
+  </div>
+  <p class="hint" style="margin-top: 24px;">합산 경력 100년+ · 학술(박사) + 산업(글로벌) + 정책(심의위원)</p>
+</div>
+
+<!-- SLIDE 17: PoC 실증 -->
+<div class="slide">
+  <h2 style="color:var(--green);">즉시 시연 가능</h2>
+  <p class="subtitle">노트북·휴대폰 브라우저에서 PoC가 작동합니다</p>
+  <ul class="bullets" style="font-size: 1.2rem;">
+    <li>격자 기반 실내 설계도 (벽·객실·복도·출입구·계단)</li>
+    <li>승객 위치 균등 분포 · 화재 발화점 최대 3개 클릭 선택</li>
+    <li>5단계 파이프라인 실시간 작동</li>
+    <li>Web Audio API로 실제 마이크 음향 감지 검증</li>
+    <li>30유형 색상 시각화 + 핸디캡 분포 실시간 통계</li>
+    <li>시뮬레이션 속도 0.25× ~ 5× 슬라이더 조절</li>
+  </ul>
+  <p class="hint" style="margin-top: 28px;">→ <code style="color:var(--accent); background:var(--bg-3); padding:4px 10px; border-radius:4px;">smartphone-poc.html</code></p>
+</div>
+
+<!-- SLIDE 18: AI 챔피언 적합성 -->
+<div class="slide">
+  <h2>AI 챔피언 대회 평가 적합성</h2>
+  <div class="cgrid">
+    <div class="ccard"><div class="v">⭐⭐⭐⭐⭐</div><div class="l">AI 핵심성</div><div class="vs">5단계 모두 AI</div></div>
+    <div class="ccard"><div class="v">⭐⭐⭐⭐⭐</div><div class="l">즉시 시연</div><div class="vs">PoC 작동</div></div>
+    <div class="ccard"><div class="v">⭐⭐⭐⭐⭐</div><div class="l">사회 임팩트</div><div class="vs">30유형 보호</div></div>
+    <div class="ccard"><div class="v">⭐⭐⭐⭐⭐</div><div class="l">시장성</div><div class="vs">$208B TAM</div></div>
+    <div class="ccard"><div class="v">⭐⭐⭐⭐⭐</div><div class="l">정직성</div><div class="vs">구현 매트릭스 공개</div></div>
+    <div class="ccard"><div class="v">⭐⭐⭐⭐⭐</div><div class="l">특허 강도</div><div class="vs">9건 이중 방어</div></div>
+    <div class="ccard"><div class="v">⭐⭐⭐⭐⭐</div><div class="l">팀 강도</div><div class="vs">4인 + 박사 + 산업</div></div>
+    <div class="ccard"><div class="v">⭐⭐⭐⭐</div><div class="l">학술 깊이</div><div class="vs">13 수학 모델</div></div>
+  </div>
+</div>
+
+<!-- SLIDE 19: 핵심 한 문장 -->
+<div class="slide">
+  <h2 style="color:var(--gold);">FireNavi의 약속</h2>
+  <p class="quote" style="font-size: 1.8rem;">
+    우리는 화재 대피 시스템을 시설에 설치하지 않습니다.<br><br>
+    거주자의 주머니 속 폰을 가장 강력한 안전망으로 바꿉니다.<br><br>
+    <span style="color:var(--accent);">AI가 4,000명의 인간 센서를 매 순간 융합하여,</span><br>
+    <span style="color:var(--green);">가장 취약한 사람을 가장 먼저, 가장 안전하게 살립니다.</span>
+  </p>
+</div>
+
+<!-- SLIDE 20: 결론 / 연락처 -->
+<div class="slide">
+  <h1 style="font-size: 4rem;">Thank You</h1>
+  <p style="font-size: 1.3rem; color: var(--text); margin-top: 14px;">FireNavi v3.0 — Smartphone-First · AI-Driven · Crowdsourced Survival</p>
+  <div style="margin-top: 40px; display:flex; gap: 14px; flex-wrap: wrap; justify-content:center;">
+    <a href="firenavi-v3-master.html" style="background:var(--accent); color:var(--bg); padding: 12px 22px; border-radius: 10px; text-decoration:none; font-weight:700;">📄 통합 마스터 HTML</a>
+    <a href="smartphone-poc.html" style="background:var(--red); color:white; padding: 12px 22px; border-radius: 10px; text-decoration:none; font-weight:700;">▶ PoC 데모 실행</a>
+    <a href="FireNavi_AI_Champion_Master_Proposal.md" style="background:var(--bg-3); color:var(--text); padding: 12px 22px; border-radius: 10px; text-decoration:none; font-weight:700; border:1px solid var(--line);">📋 기획서 (50p)</a>
+  </div>
+  <p style="margin-top: 56px; color: var(--gold); font-size: 1.05rem;">대표 심재우 · jaiwshim@gmail.com · 010-2397-5734</p>
+  <p style="color: var(--muted); font-size: 0.85rem; margin-top: 8px;">© 2026 FireNavi · 9 Patents · 13 Mathematical Models · 30 Disability Types</p>
+</div>
+
+</div>
+
+<!-- Nav -->
+<div class="nav-bar">
+  <button onclick="prev()">◀</button>
+  <span class="progress" id="progress">1 / 20</span>
+  <button onclick="next()">▶</button>
+</div>
+
+<script>
+const TYPES_30 = [
+  ['1.건강한 성인','#10B981'],['2.고령자','#F59E0B'],['3.어린이','#A78BFA'],['4.영유아','#FBBF24'],['5.비만','#D97706'],['6.임산부 초기','#14B8A6'],
+  ['7.임산부 후기','#0D9488'],['8.휠체어 전동','#EC4899'],['9.휠체어 수동','#DB2777'],['10.지팡이','#FB923C'],['11.보행기','#F97316'],['12.깁스/목발','#EA580C'],
+  ['13.부상 경상','#EF4444'],['14.부상 중상','#DC2626'],['15.의식불명','#475569'],['16.청각 완전농','#06B6D4'],['17.난청','#0891B2'],['18.시각 실명','#8B5CF6'],
+  ['19.저시력','#7C3AED'],['20.색맹','#6366F1'],['21.치매','#F472B6'],['22.자폐','#E879F9'],['23.발달장애','#D946EF'],['24.정신/PTSD','#C026D3'],
+  ['25.약물복용','#A21CAF'],['26.언어장벽','#84CC16'],['27.실어증','#65A30D'],['28.호흡기','#4D7C0F'],['29.반려동물','#A3E635'],['30.대형 짐','#BEF264'],
+];
+const grid = document.getElementById('types30');
+TYPES_30.forEach(([n, c]) => {
+  const el = document.createElement('div');
+  el.className = 'type-mini';
+  el.innerHTML = `<span class="dot" style="background:${c}"></span>${n}`;
+  grid.appendChild(el);
+});
+
+const slides = document.querySelectorAll('.slide');
+const TOTAL = slides.length;
+let cur = 0;
+function show(i) {
+  cur = Math.max(0, Math.min(TOTAL - 1, i));
+  slides.forEach((s, idx) => {
+    s.classList.toggle('active', idx === cur);
+    s.classList.toggle('prev', idx < cur);
+  });
+  const n = String(cur + 1).padStart(2, '0');
+  document.getElementById('slideNum').textContent = `${n} / ${TOTAL}`;
+  document.getElementById('progress').textContent = `${cur + 1} / ${TOTAL}`;
+}
+function next() { show(cur + 1); }
+function prev() { show(cur - 1); }
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') { e.preventDefault(); next(); }
+  if (e.key === 'ArrowLeft' || e.key === 'PageUp') { e.preventDefault(); prev(); }
+  if (e.key === 'Home') show(0);
+  if (e.key === 'End') show(TOTAL - 1);
+});
+// 마우스 휠/스와이프
+let touchStartX = 0;
+document.addEventListener('touchstart', e => { touchStartX = e.touches[0].clientX; });
+document.addEventListener('touchend', e => {
+  const dx = e.changedTouches[0].clientX - touchStartX;
+  if (dx < -50) next();
+  if (dx > 50) prev();
+});
+show(0);
+</script>
+</body>
+</html>

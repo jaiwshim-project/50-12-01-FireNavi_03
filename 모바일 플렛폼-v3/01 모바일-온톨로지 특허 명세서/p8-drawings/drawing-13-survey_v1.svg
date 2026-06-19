@@ -1,0 +1,159 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 1400">
+  <!-- 도 13. 대화형 마이크로 설문 흐름도 -->
+
+  <!-- 제목 -->
+  <text x="400" y="40" text-anchor="middle" font-family="Malgun Gothic" font-size="28" font-weight="bold" fill="black">
+    도 13. 대화형 마이크로 설문 흐름도
+  </text>
+
+  <!-- S131: 재난 모드 활성화 감지 -->
+  <rect x="250" y="80" width="300" height="60" fill="none" stroke="black" stroke-width="2" rx="10"/>
+  <text x="400" y="110" text-anchor="middle" font-family="Malgun Gothic" font-size="14" font-weight="bold">
+    S131: 재난 모드 활성화 감지
+  </text>
+  <text x="400" y="128" text-anchor="middle" font-family="Malgun Gothic" font-size="11">
+    (외부 자극 수집부 110)
+  </text>
+
+  <!-- 화살표 1 -->
+  <line x1="400" y1="140" x2="400" y2="170" stroke="black" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+
+  <!-- S132: 사용자 상태 온톨로지 조회 -->
+  <rect x="250" y="170" width="300" height="60" fill="none" stroke="black" stroke-width="2"/>
+  <text x="400" y="195" text-anchor="middle" font-family="Malgun Gothic" font-size="14" font-weight="bold">
+    S132: 사용자 상태 온톨로지 조회
+  </text>
+  <text x="400" y="213" text-anchor="middle" font-family="Malgun Gothic" font-size="11">
+    (온톨로지 관리부 210)
+  </text>
+  <text x="560" y="205" text-anchor="start" font-family="Consolas" font-size="12">(500)</text>
+
+  <!-- 화살표 2 -->
+  <line x1="400" y1="230" x2="400" y2="270" stroke="black" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+
+  <!-- S133: 질문 내용·개수·응답 방식 자동 결정 -->
+  <rect x="200" y="270" width="400" height="80" fill="none" stroke="black" stroke-width="2"/>
+  <text x="400" y="295" text-anchor="middle" font-family="Malgun Gothic" font-size="14" font-weight="bold">
+    S133: 질문 내용·개수·응답 방식
+  </text>
+  <text x="400" y="313" text-anchor="middle" font-family="Malgun Gothic" font-size="14" font-weight="bold">
+    자동 결정 (3문항 이하)
+  </text>
+  <text x="400" y="331" text-anchor="middle" font-family="Malgun Gothic" font-size="11">
+    질문 생성 엔진 (510) + 응답 방식 결정부 (520)
+  </text>
+
+  <!-- 화살표 3 -->
+  <line x1="400" y1="350" x2="400" y2="390" stroke="black" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+
+  <!-- S134: 설문 전송 -->
+  <rect x="250" y="390" width="300" height="80" fill="none" stroke="black" stroke-width="2"/>
+  <text x="400" y="415" text-anchor="middle" font-family="Malgun Gothic" font-size="14" font-weight="bold">
+    S134: 설문 전송
+  </text>
+  <text x="400" y="433" text-anchor="middle" font-family="Malgun Gothic" font-size="11">
+    응답 방식별 출력:
+  </text>
+  <text x="400" y="451" text-anchor="middle" font-family="Malgun Gothic" font-size="11">
+    터치/음성/화면/진동
+  </text>
+
+  <!-- 화살표 4 -->
+  <line x1="400" y1="470" x2="400" y2="510" stroke="black" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+
+  <!-- S135: 응답 수집 -->
+  <rect x="200" y="510" width="400" height="80" fill="none" stroke="black" stroke-width="2"/>
+  <text x="400" y="535" text-anchor="middle" font-family="Malgun Gothic" font-size="14" font-weight="bold">
+    S135: 응답 수집
+  </text>
+  <text x="400" y="553" text-anchor="middle" font-family="Malgun Gothic" font-size="11">
+    터치/음성/진동/비명 감지
+  </text>
+  <text x="400" y="571" text-anchor="middle" font-family="Malgun Gothic" font-size="11">
+    (응답 수집부 530)
+  </text>
+
+  <!-- 화살표 5 -->
+  <line x1="400" y1="590" x2="400" y2="630" stroke="black" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+
+  <!-- S136: 응답 수신 여부 판단 -->
+  <path d="M 400 630 L 500 680 L 400 730 L 300 680 Z" fill="none" stroke="black" stroke-width="2"/>
+  <text x="400" y="675" text-anchor="middle" font-family="Malgun Gothic" font-size="13" font-weight="bold">
+    S136: 응답
+  </text>
+  <text x="400" y="693" text-anchor="middle" font-family="Malgun Gothic" font-size="13" font-weight="bold">
+    수신?
+  </text>
+
+  <!-- 응답 없음 → S137 대체 방식 -->
+  <line x1="300" y1="680" x2="120" y2="680" stroke="black" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+  <text x="200" y="670" text-anchor="middle" font-family="Malgun Gothic" font-size="11">응답 없음</text>
+
+  <rect x="20" y="650" width="200" height="60" fill="none" stroke="black" stroke-width="2"/>
+  <text x="120" y="675" text-anchor="middle" font-family="Malgun Gothic" font-size="13" font-weight="bold">
+    S137: 대체 응답
+  </text>
+  <text x="120" y="693" text-anchor="middle" font-family="Malgun Gothic" font-size="13" font-weight="bold">
+    방식으로 재시도
+  </text>
+
+  <!-- S137 → S134 루프백 -->
+  <line x1="120" y1="650" x2="120" y2="430" stroke="black" stroke-width="1.5" stroke-dasharray="5,4"/>
+  <line x1="120" y1="430" x2="250" y2="430" stroke="black" stroke-width="1.5" stroke-dasharray="5,4" marker-end="url(#arrowhead)"/>
+  <text x="140" y="540" text-anchor="start" font-family="Malgun Gothic" font-size="10">재시도</text>
+
+  <!-- 응답 수신 → S138 -->
+  <line x1="400" y1="730" x2="400" y2="780" stroke="black" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+  <text x="410" y="760" text-anchor="start" font-family="Malgun Gothic" font-size="11">응답 수신</text>
+
+  <!-- S138: 사용자 상태 정보 업데이트 -->
+  <rect x="200" y="780" width="400" height="80" fill="none" stroke="black" stroke-width="2"/>
+  <text x="400" y="805" text-anchor="middle" font-family="Malgun Gothic" font-size="14" font-weight="bold">
+    S138: 수집 데이터를
+  </text>
+  <text x="400" y="823" text-anchor="middle" font-family="Malgun Gothic" font-size="14" font-weight="bold">
+    사용자 상태 온톨로지에 반영
+  </text>
+  <text x="400" y="841" text-anchor="middle" font-family="Malgun Gothic" font-size="11">
+    (상태 업데이트부 540)
+  </text>
+
+  <!-- 화살표 6 -->
+  <line x1="400" y1="860" x2="400" y2="900" stroke="black" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+
+  <!-- S139: 경로 추천부로 전달 -->
+  <rect x="250" y="900" width="300" height="60" fill="none" stroke="black" stroke-width="2" rx="10"/>
+  <text x="400" y="925" text-anchor="middle" font-family="Malgun Gothic" font-size="14" font-weight="bold">
+    S139: 경로 추천부(240)로 전달
+  </text>
+  <text x="400" y="943" text-anchor="middle" font-family="Malgun Gothic" font-size="11">
+    업데이트된 사용자 상태 정보
+  </text>
+
+  <!-- 부호 설명 박스 -->
+  <rect x="50" y="1000" width="700" height="320" fill="none" stroke="black" stroke-width="1" stroke-dasharray="8,5"/>
+  <text x="400" y="1030" text-anchor="middle" font-family="Malgun Gothic" font-size="14" font-weight="bold">
+    부호 설명
+  </text>
+
+  <text x="70" y="1060" font-family="Malgun Gothic" font-size="12">(500): 대화형 마이크로 설문부</text>
+  <text x="70" y="1085" font-family="Malgun Gothic" font-size="12">(510): 질문 생성 엔진</text>
+  <text x="70" y="1110" font-family="Malgun Gothic" font-size="12">        - 사용자 상태 온톨로지 기반 질문 내용 자동 생성</text>
+  <text x="70" y="1135" font-family="Malgun Gothic" font-size="12">        - 3문항 이하로 개수 자동 조정</text>
+
+  <text x="70" y="1165" font-family="Malgun Gothic" font-size="12">(520): 응답 방식 결정부</text>
+  <text x="70" y="1190" font-family="Malgun Gothic" font-size="12">        - 사용자 제약 조건에 따라 터치/음성/화면/진동 선택</text>
+
+  <text x="70" y="1220" font-family="Malgun Gothic" font-size="12">(530): 응답 수집부</text>
+  <text x="70" y="1245" font-family="Malgun Gothic" font-size="12">        - 터치 입력, 음성 인식, 진동 패턴, 비명 감지</text>
+
+  <text x="70" y="1275" font-family="Malgun Gothic" font-size="12">(540): 상태 업데이트부</text>
+  <text x="70" y="1300" font-family="Malgun Gothic" font-size="12">        - 수집 데이터를 사용자 상태 온톨로지에 반영</text>
+
+  <!-- 화살표 마커 정의 -->
+  <defs>
+    <marker id="arrowhead" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+      <polygon points="0 0, 10 3, 0 6" fill="black"/>
+    </marker>
+  </defs>
+</svg>

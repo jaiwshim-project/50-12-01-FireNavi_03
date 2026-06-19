@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="760" viewBox="0 0 1200 760">
+<defs><linearGradient id="g" x1="0%" x2="100%"><stop offset="0%" stop-color="#0b63f6"/><stop offset="100%" stop-color="#6b35d8"/></linearGradient><filter id="s"><feDropShadow dx="0" dy="4" stdDeviation="5" flood-color="#003080" flood-opacity=".18"/></filter><marker id="arrow" markerWidth="10" markerHeight="10" refX="7" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="#0b63f6"/></marker><marker id="arrow2" markerWidth="10" markerHeight="10" refX="7" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="#6b35d8"/></marker></defs>
+<rect width="100%" height="100%" fill="#ffffff"/>
+<text x="60" y="70" font-family="Arial, Noto Sans CJK KR" font-size="34" font-weight="700" fill="#0b63f6">FireNavi</text>
+<text x="60" y="125" font-family="Arial, Noto Sans CJK KR" font-size="42" font-weight="800" fill="#071b4d">도 2. 핵심 알고리즘 플로우차트</text>
+<rect x="70" y="185" width="250" height="72" rx="18" fill="#f7faff" stroke="#d8e4ff" filter="url(#s)"/><text x="92" y="229" font-family="Arial, Noto Sans CJK KR" font-size="21" font-weight="700" fill="#071b4d">모바일 단말</text>
+<path d="M330 221.0 C380 221.0,400 340,460 340" fill="none" stroke="#0b63f6" stroke-width="4" marker-end="url(#arrow)"/>
+<rect x="70" y="277" width="250" height="72" rx="18" fill="#f7faff" stroke="#d8e4ff" filter="url(#s)"/><text x="92" y="321" font-family="Arial, Noto Sans CJK KR" font-size="21" font-weight="700" fill="#071b4d">엣지 서버</text>
+<path d="M330 313.0 C380 313.0,400 340,460 340" fill="none" stroke="#0b63f6" stroke-width="4" marker-end="url(#arrow)"/>
+<rect x="70" y="369" width="250" height="72" rx="18" fill="#f7faff" stroke="#d8e4ff" filter="url(#s)"/><text x="92" y="413" font-family="Arial, Noto Sans CJK KR" font-size="21" font-weight="700" fill="#071b4d">온톨로지</text>
+<path d="M330 405.0 C380 405.0,400 340,460 340" fill="none" stroke="#0b63f6" stroke-width="4" marker-end="url(#arrow)"/>
+<rect x="70" y="461" width="250" height="72" rx="18" fill="#f7faff" stroke="#d8e4ff" filter="url(#s)"/><text x="92" y="505" font-family="Arial, Noto Sans CJK KR" font-size="21" font-weight="700" fill="#071b4d">AI 엔진</text>
+<path d="M330 497.0 C380 497.0,400 340,460 340" fill="none" stroke="#0b63f6" stroke-width="4" marker-end="url(#arrow)"/>
+<rect x="70" y="553" width="250" height="72" rx="18" fill="#f7faff" stroke="#d8e4ff" filter="url(#s)"/><text x="92" y="597" font-family="Arial, Noto Sans CJK KR" font-size="21" font-weight="700" fill="#071b4d">관제·구조대</text>
+<path d="M330 589.0 C380 589.0,400 340,460 340" fill="none" stroke="#0b63f6" stroke-width="4" marker-end="url(#arrow)"/>
+<rect x="460" y="235" width="280" height="210" rx="26" fill="url(#g)" opacity=".95" filter="url(#s)"/><text x="600" y="295" text-anchor="middle" font-family="Arial, Noto Sans CJK KR" font-size="28" font-weight="800" fill="#fff">Ontology</text><text x="600" y="342" text-anchor="middle" font-family="Arial, Noto Sans CJK KR" font-size="23" font-weight="700" fill="#fff">지식그래프</text><text x="600" y="392" text-anchor="middle" font-family="Arial, Noto Sans CJK KR" font-size="18" fill="#eaf2ff">사람·공간·위험·센서·규정</text><rect x="870" y="220" width="250" height="72" rx="18" fill="#fff" stroke="#b9ccff" filter="url(#s)"/><text x="892" y="264" font-family="Arial, Noto Sans CJK KR" font-size="21" font-weight="700" fill="#071b4d">위험지도 생성</text>
+<path d="M740 340 C800 340,810 256.0,870 256.0" fill="none" stroke="#6b35d8" stroke-width="4" marker-end="url(#arrow2)"/>
+<rect x="870" y="316" width="250" height="72" rx="18" fill="#fff" stroke="#b9ccff" filter="url(#s)"/><text x="892" y="360" font-family="Arial, Noto Sans CJK KR" font-size="21" font-weight="700" fill="#071b4d">개인별 경로 산출</text>
+<path d="M740 340 C800 340,810 352.0,870 352.0" fill="none" stroke="#6b35d8" stroke-width="4" marker-end="url(#arrow2)"/>
+<rect x="870" y="412" width="250" height="72" rx="18" fill="#fff" stroke="#b9ccff" filter="url(#s)"/><text x="892" y="456" font-family="Arial, Noto Sans CJK KR" font-size="21" font-weight="700" fill="#071b4d">취약계층 안전마진</text>
+<path d="M740 340 C800 340,810 448.0,870 448.0" fill="none" stroke="#6b35d8" stroke-width="4" marker-end="url(#arrow2)"/>
+<rect x="870" y="508" width="250" height="72" rx="18" fill="#fff" stroke="#b9ccff" filter="url(#s)"/><text x="892" y="552" font-family="Arial, Noto Sans CJK KR" font-size="21" font-weight="700" fill="#071b4d">관제·구조대 연계</text>
+<path d="M740 340 C800 340,810 544.0,870 544.0" fill="none" stroke="#6b35d8" stroke-width="4" marker-end="url(#arrow2)"/>
+<rect x="60" y="660" width="1080" height="56" rx="16" fill="#071b4d"/><text x="600" y="696" text-anchor="middle" font-family="Arial, Noto Sans CJK KR" font-size="22" font-weight="700" fill="#fff">핵심: 스마트폰 신호를 온톨로지로 의미화하고 AI가 설명 가능한 개인별 대피 결정을 수행</text></svg>

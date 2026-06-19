@@ -1,0 +1,105 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1600">
+  <!-- 도 7. 역할별 권한 관리 구조도 (v2 - Patent Standard) -->
+
+  <!-- 제목 -->
+  <text x="500" y="40" text-anchor="middle" font-family="Malgun Gothic" font-size="28" font-weight="bold" fill="black">
+    도 7. 역할별 권한 관리 구조도
+  </text>
+
+  <!-- 전체 외곽 박스 -->
+  <rect x="50" y="80" width="900" height="1300" fill="none" stroke="black" stroke-width="3"/>
+
+  <!-- 제목 -->
+  <text x="500" y="115" text-anchor="middle" font-family="Malgun Gothic" font-size="16" font-weight="bold">
+    역할 관리부 (250)
+  </text>
+
+  <!-- 일반 사용자 (251) -->
+  <rect x="100" y="150" width="800" height="120" fill="none" stroke="black" stroke-width="2"/>
+  <text x="150" y="175" font-family="Malgun Gothic" font-size="14" font-weight="bold">
+    일반 사용자 (251)
+  </text>
+  <text x="150" y="200" font-family="Malgun Gothic" font-size="11">권한: 본인 위치·경로 조회</text>
+  <text x="150" y="220" font-family="Malgun Gothic" font-size="11">제한: 타인 정보 접근 불가</text>
+  <text x="150" y="240" font-family="Malgun Gothic" font-size="11">UI: 개인 경로 안내 화면</text>
+
+  <!-- 화살표 1 -->
+  <line x1="500" y1="270" x2="500" y2="310" stroke="black" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+
+  <!-- 보호자 (252) -->
+  <rect x="100" y="310" width="800" height="120" fill="none" stroke="black" stroke-width="2"/>
+  <text x="150" y="335" font-family="Malgun Gothic" font-size="14" font-weight="bold">
+    보호자 (252)
+  </text>
+  <text x="150" y="360" font-family="Malgun Gothic" font-size="11">권한: 본인 + 피보호자 위치·경로 조회</text>
+  <text x="150" y="380" font-family="Malgun Gothic" font-size="11">제한: 지정된 피보호자만 접근 (어린이, 고령자, 장애인)</text>
+  <text x="150" y="400" font-family="Malgun Gothic" font-size="11">UI: 가족 위치 추적 화면</text>
+
+  <!-- 화살표 2 -->
+  <line x1="500" y1="430" x2="500" y2="470" stroke="black" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+
+  <!-- 승무원 (253) -->
+  <rect x="100" y="470" width="800" height="140" fill="none" stroke="black" stroke-width="2"/>
+  <text x="150" y="495" font-family="Malgun Gothic" font-size="14" font-weight="bold">
+    승무원 (253)
+  </text>
+  <text x="150" y="520" font-family="Malgun Gothic" font-size="11">권한: 담당 구역 내 모든 사용자 조회</text>
+  <text x="150" y="540" font-family="Malgun Gothic" font-size="11">제한: 담당 구역 외 접근 불가</text>
+  <text x="150" y="560" font-family="Malgun Gothic" font-size="11">UI: 구역 상황 요약 화면 (취약계층, 미응답자)</text>
+  <text x="150" y="580" font-family="Malgun Gothic" font-size="11">기능: 일부 경로 수동 변경 가능</text>
+
+  <!-- 화살표 3 -->
+  <line x1="500" y1="610" x2="500" y2="650" stroke="black" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+
+  <!-- 관제센터 (254) -->
+  <rect x="100" y="650" width="800" height="140" fill="none" stroke="black" stroke-width="2"/>
+  <text x="150" y="675" font-family="Malgun Gothic" font-size="14" font-weight="bold">
+    관제센터 (254)
+  </text>
+  <text x="150" y="700" font-family="Malgun Gothic" font-size="11">권한: 전체 위험지도, 모든 사용자 조회</text>
+  <text x="150" y="720" font-family="Malgun Gothic" font-size="11">제한: 없음 (최고 권한)</text>
+  <text x="150" y="740" font-family="Malgun Gothic" font-size="11">UI: 전체 상황 대시보드</text>
+  <text x="150" y="760" font-family="Malgun Gothic" font-size="11">기능: 구조 우선순위 관리, 구조대 파견</text>
+
+  <!-- 화살표 4 -->
+  <line x1="500" y1="790" x2="500" y2="830" stroke="black" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+
+  <!-- 구조대 (255) -->
+  <rect x="100" y="830" width="800" height="140" fill="none" stroke="black" stroke-width="2"/>
+  <text x="150" y="855" font-family="Malgun Gothic" font-size="14" font-weight="bold">
+    구조대 (255)
+  </text>
+  <text x="150" y="880" font-family="Malgun Gothic" font-size="11">권한: 구조 대상자 위치, 접근 경로 조회</text>
+  <text x="150" y="900" font-family="Malgun Gothic" font-size="11">제한: 구조 관련 정보만 접근</text>
+  <text x="150" y="920" font-family="Malgun Gothic" font-size="11">UI: 구조 대상자 및 경로 화면</text>
+  <text x="150" y="940" font-family="Malgun Gothic" font-size="11">기능: 필요 장비 정보 조회, 구조 완료 보고</text>
+
+  <!-- JWT 토큰 기반 역할 검증부 (256) -->
+  <rect x="100" y="1010" width="800" height="140" fill="none" stroke="black" stroke-width="2"/>
+  <text x="500" y="1035" text-anchor="middle" font-family="Malgun Gothic" font-size="14" font-weight="bold">
+    JWT 토큰 기반 역할 검증부 (256)
+  </text>
+  <text x="150" y="1065" font-family="Malgun Gothic" font-size="11">• 토큰 발급 시 역할 정보 포함 (role: user/guardian/crew/control/rescue)</text>
+  <text x="150" y="1088" font-family="Malgun Gothic" font-size="11">• API 호출 시 역할 검증 (JWT 서명 검증 + 권한 확인)</text>
+  <text x="150" y="1111" font-family="Malgun Gothic" font-size="11">• 권한 없는 요청 거부 (403 Forbidden)</text>
+  <text x="150" y="1134" font-family="Malgun Gothic" font-size="11">• 토큰 만료 시간: 7일 (자동 갱신)</text>
+
+  <!-- 부호 설명 박스 -->
+  <rect x="100" y="1200" width="800" height="160" fill="none" stroke="black" stroke-width="1" stroke-dasharray="8,5"/>
+  <text x="500" y="1230" text-anchor="middle" font-family="Malgun Gothic" font-size="14" font-weight="bold">
+    부호 설명
+  </text>
+
+  <text x="120" y="1260" font-family="Malgun Gothic" font-size="12">(250): 역할 관리부</text>
+  <text x="120" y="1285" font-family="Malgun Gothic" font-size="12">(251): 일반 사용자, (252): 보호자, (253): 승무원, (254): 관제센터, (255): 구조대</text>
+  <text x="120" y="1310" font-family="Malgun Gothic" font-size="12">(256): JWT 토큰 기반 역할 검증부</text>
+
+  <text x="120" y="1340" font-family="Malgun Gothic" font-size="11" font-weight="bold">본 도면은 청구항 11, 12, 17 (역할별 권한 차등)을 나타낸다.</text>
+
+  <!-- 화살표 마커 정의 -->
+  <defs>
+    <marker id="arrowhead" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+      <polygon points="0 0, 10 3, 0 6" fill="black"/>
+    </marker>
+  </defs>
+</svg>

@@ -1,0 +1,1169 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FireNavi v3.0 - Problem-Solution Pitch Deck</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background: #0a0a0a;
+            color: #ffffff;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        .slide {
+            width: 100vw;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 60px 80px;
+            page-break-after: always;
+            position: relative;
+            overflow: auto;
+        }
+
+        /* 슬라이드 번호 */
+        .slide-number {
+            position: absolute;
+            bottom: 30px;
+            right: 40px;
+            font-size: 14px;
+            opacity: 0.5;
+        }
+
+        /* 1. Cover */
+        .slide-cover {
+            background: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
+            text-align: center;
+        }
+
+        .logo {
+            font-size: 72px;
+            font-weight: 900;
+            margin-bottom: 30px;
+            letter-spacing: -2px;
+        }
+
+        .tagline {
+            font-size: 32px;
+            font-weight: 300;
+            margin: 30px 0;
+            opacity: 0.9;
+        }
+
+        .hero-tagline {
+            font-size: 28px;
+            font-weight: 500;
+            padding: 25px 50px;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-radius: 50px;
+            margin: 50px 0;
+            background: rgba(255,255,255,0.1);
+            max-width: 900px;
+        }
+
+        /* 2-10. Content Slides */
+        .slide-content {
+            background: #1a1a1a;
+        }
+
+        .slide-title {
+            font-size: 48px;
+            font-weight: 900;
+            margin-bottom: 40px;
+            text-align: center;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1.2;
+        }
+
+        .slide-subtitle {
+            font-size: 28px;
+            font-weight: 600;
+            margin-bottom: 40px;
+            color: #667eea;
+        }
+
+        /* Big Numbers */
+        .big-stat {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 60px;
+            margin: 40px 0;
+            flex-wrap: wrap;
+        }
+
+        .stat-item {
+            text-align: center;
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .stat-number {
+            font-size: 72px;
+            font-weight: 900;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 15px;
+            line-height: 1;
+        }
+
+        .stat-label {
+            font-size: 22px;
+            color: #e0e0e0;
+            font-weight: 500;
+            line-height: 1.5;
+        }
+
+        /* Content Box */
+        .content-box {
+            background: rgba(255,255,255,0.05);
+            border: 2px solid rgba(255,255,255,0.1);
+            border-radius: 20px;
+            padding: 30px 40px;
+            margin: 20px 0;
+            width: 100%;
+            max-width: 1200px;
+        }
+
+        .content-box h3 {
+            font-size: 28px;
+            margin-bottom: 20px;
+            color: #667eea;
+            line-height: 1.3;
+        }
+
+        .content-box p,
+        .content-box li {
+            font-size: 22px;
+            line-height: 1.8;
+            color: #f0f0f0;
+            margin: 12px 0;
+            font-weight: 400;
+        }
+
+        .content-box ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .content-box li:before {
+            content: "✓ ";
+            color: #66bb6a;
+            font-weight: bold;
+            font-size: 30px;
+            margin-right: 18px;
+        }
+
+        .content-box strong {
+            font-weight: 700;
+            color: #ffffff;
+        }
+
+        /* Highlight Box */
+        .highlight {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 20px;
+            padding: 35px 55px;
+            margin: 30px 0;
+            font-size: 26px;
+            font-weight: 700;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(102, 126, 234, 0.5);
+            line-height: 1.6;
+            color: #ffffff;
+        }
+
+        /* Two Column */
+        .two-column {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            width: 100%;
+            max-width: 1400px;
+        }
+
+        .column {
+            background: rgba(255,255,255,0.05);
+            border: 2px solid rgba(255,255,255,0.1);
+            border-radius: 20px;
+            padding: 30px;
+        }
+
+        .column h4 {
+            font-size: 26px;
+            margin-bottom: 20px;
+            color: #667eea;
+            line-height: 1.3;
+        }
+
+        .column p,
+        .column li {
+            font-size: 20px;
+            line-height: 1.8;
+            color: #f0f0f0;
+            font-weight: 400;
+        }
+
+        .column.bad {
+            border-color: #f5576c;
+        }
+
+        .column.bad h4 {
+            color: #f5576c;
+        }
+
+        .column.good {
+            border-color: #4caf50;
+        }
+
+        .column.good h4 {
+            color: #4caf50;
+        }
+
+        /* Image */
+        .slide-image {
+            max-width: 95%;
+            max-height: 80vh;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+            margin: 20px 0;
+            object-fit: contain;
+        }
+
+        /* Table */
+        table {
+            width: 100%;
+            max-width: 1200px;
+            border-collapse: collapse;
+            margin: 30px 0;
+            font-size: 19px;
+        }
+
+        th {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 18px;
+            font-weight: 700;
+            font-size: 21px;
+            line-height: 1.4;
+            color: #ffffff;
+        }
+
+        td {
+            padding: 18px;
+            border-bottom: 1px solid rgba(255,255,255,0.15);
+            background: rgba(255,255,255,0.03);
+            line-height: 1.5;
+            color: #f0f0f0;
+        }
+
+        td.highlight-cell {
+            color: #4caf50;
+            font-weight: 700;
+        }
+
+        /* Contact */
+        .contact-info {
+            margin-top: 60px;
+            font-size: 22px;
+            line-height: 2;
+            opacity: 0.9;
+        }
+
+        /* Timeline */
+        .timeline {
+            display: flex;
+            justify-content: space-around;
+            align-items: flex-start;
+            width: 100%;
+            max-width: 1400px;
+            margin: 30px 0;
+            gap: 15px;
+        }
+
+        .timeline-item {
+            text-align: center;
+            flex: 1;
+            padding: 25px 20px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 15px;
+        }
+
+        .timeline-year {
+            font-size: 32px;
+            font-weight: 900;
+            color: #667eea;
+            margin-bottom: 15px;
+            line-height: 1;
+        }
+
+        .timeline-content {
+            font-size: 18px;
+            color: #f0f0f0;
+            line-height: 1.6;
+            font-weight: 400;
+        }
+
+        .timeline-content strong {
+            color: #ffffff;
+            font-weight: 700;
+        }
+
+        /* Badge */
+        .badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            padding: 10px 25px;
+            border-radius: 25px;
+            font-size: 18px;
+            font-weight: 600;
+            margin: 10px;
+        }
+
+        @media print {
+            .slide {
+                page-break-after: always;
+            }
+
+            body {
+                print-color-adjust: exact;
+                -webkit-print-color-adjust: exact;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Slide 1: Cover -->
+<div class="slide slide-cover">
+    <div class="logo">FireNavi v3.0</div>
+    <div class="tagline">스마트폰 기반 AI 화재 대피 플랫폼</div>
+    <div class="hero-tagline">"이미 들고 있는 폰이 가장 강력한 안전 센서다"</div>
+    <div class="contact-info">
+        <div><strong>대표:</strong> 심재우</div>
+        <div>jaiwshim@gmail.com | 010-2397-5734</div>
+        <div style="margin-top: 20px; font-size: 18px; opacity: 0.7;">2026년 6월 10일</div>
+    </div>
+</div>
+
+<!-- Slide 2: AI 챔피언 본선 진출 -->
+<div class="slide slide-content">
+    <div class="slide-title">🏆 AI 챔피언 본선 진출</div>
+    <img src="images/ai-champion (1).png" alt="AI 챔피언" class="slide-image">
+    <div class="highlight">
+        전국민 AI 경진대회 본선 100개 팀 선정<br>
+        상금 총 26억원 | 2026년 1위 목표
+    </div>
+    <div class="slide-number">2</div>
+</div>
+
+<!-- Slide 3: Problem -->
+<div class="slide slide-content">
+    <div class="slide-title">💥 Problem: 화재 대피의 치명적 문제</div>
+
+    <div class="big-stat">
+        <div class="stat-item">
+            <div class="stat-number">70%</div>
+            <div class="stat-label">대피 지연으로 사망</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-number">15억원</div>
+            <div class="stat-label">기존 시스템 설치 비용</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-number">12개월</div>
+            <div class="stat-label">도입 기간</div>
+        </div>
+    </div>
+
+    <img src="images/화이어내비_02.png" alt="FireNavi 필요성" class="slide-image">
+
+    <div class="slide-number">3</div>
+</div>
+
+<!-- Slide 4: Problem Details -->
+<div class="slide slide-content">
+    <div class="slide-title">기존 시스템의 한계</div>
+
+    <div class="two-column">
+        <div class="column bad">
+            <h4>❌ 기존 시스템</h4>
+            <ul>
+                <li>정적 대피도 (화재 변화 반영 X)</li>
+                <li>고정 IoT 센서 500개 한계</li>
+                <li>취약계층 별도 대응 없음</li>
+                <li>시각·후각 감지 불가</li>
+                <li>15억~30억원 설치 비용</li>
+                <li>12~24개월 도입 기간</li>
+            </ul>
+        </div>
+
+        <div class="column good">
+            <h4>✓ FireNavi v3.0</h4>
+            <ul>
+                <li>실시간 동적 경로 (5초 갱신)</li>
+                <li>28,000+ 데이터 포인트 (56배)</li>
+                <li>30개 유형 맞춤 대응</li>
+                <li>4,000명의 눈·코 = 센서</li>
+                <li>5천만원 (95% 절감)</li>
+                <li>1~3개월 즉시 배포</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="slide-number">4</div>
+</div>
+
+<!-- Slide 5: Solution -->
+<div class="slide slide-content">
+    <div class="slide-title">💡 Solution: 크라우드소싱 AI 대피</div>
+
+    <img src="images/화이어내비_01.png" alt="FireNavi 개요" class="slide-image">
+
+    <div class="highlight">
+        신규 하드웨어 0개 | 승객 스마트폰 + 기존 WiFi = 최강 안전망
+    </div>
+
+    <div class="slide-number">5</div>
+</div>
+
+<!-- Slide 6: How It Works -->
+<div class="slide slide-content">
+    <div class="slide-title">⚙️ 5단계 AI 파이프라인</div>
+
+    <div class="content-box">
+        <h3>Stage 1: 음향 자동 트리거</h3>
+        <p>4,000개 폰이 SOLAS 사이렌 동시 감지 → 자동 활성화</p>
+    </div>
+
+    <div class="content-box">
+        <h3>Stage 2: 인프라프리 측위</h3>
+        <p>WiFi + IMU + 기압계 → Graph SLAM 집단 보정 (1~3m)</p>
+    </div>
+
+    <div class="content-box">
+        <h3>Stage 3: 마이크로 설문</h3>
+        <p>3문항 3초 → 응답률 70% → LLM 정규화</p>
+    </div>
+
+    <div class="content-box">
+        <h3>Stage 4: 센서 융합</h3>
+        <p>마이크 + IMU + 조도 + 기압 → Kalman Filter</p>
+    </div>
+
+    <div class="content-box">
+        <h3>Stage 5: 베이지안 화재맵 + 적응 경로</h3>
+        <p>4채널 융합 → 5초 갱신 → A* 동적 라우팅 → 30개 유형 맞춤</p>
+    </div>
+
+    <div class="slide-number">6</div>
+</div>
+
+<!-- Slide 7: Product - AI Technology -->
+<div class="slide slide-content">
+    <div class="slide-title">🤖 Product: AI 기술 핵심</div>
+
+    <img src="images/화이어내비_05.png" alt="FCS 알고리즘" class="slide-image">
+
+    <div class="two-column">
+        <div class="column">
+            <h4>세계 최초 9가지</h4>
+            <ul>
+                <li>크라우드소싱 화재 감지</li>
+                <li>음향 자동 트리거</li>
+                <li>인프라프리 측위 (1~3m)</li>
+                <li>패닉 마이크로 설문</li>
+                <li>베이지안 화재맵</li>
+            </ul>
+        </div>
+
+        <div class="column">
+            <h4>특허 포트폴리오</h4>
+            <ul>
+                <li>v2.0 알고리즘 특허 5건</li>
+                <li>v3.0 시스템 특허 4건</li>
+                <li><strong>총 9건</strong> 국내 출원</li>
+                <li>PCT 국제 출원 (2027)</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="highlight" style="margin-top: 40px;">
+        <strong>🏰 강력한 해자(Moat) 완성</strong><br>
+        특허 9건 + 상표권 등록 + 저작권 등록<br>
+        → 기술·브랜드·콘텐츠 3중 보호막
+    </div>
+
+    <div class="slide-number">7</div>
+</div>
+
+<!-- Slide 8: Market -->
+<div class="slide slide-content">
+    <div class="slide-title">📊 Market: $208B 시장</div>
+
+    <div class="content-box" style="margin-bottom: 30px; max-width: 1000px;">
+        <h3>🌍 시장 규모 (TAM-SAM-SOM)</h3>
+        <div style="display: flex; flex-direction: column; gap: 20px; margin-top: 25px;">
+            <div style="background: rgba(102,126,234,0.15); padding: 20px 30px; border-radius: 12px; display: flex; align-items: center; justify-content: space-between;">
+                <div style="flex: 1;">
+                    <div style="font-size: 22px; font-weight: 700; color: #ffffff; margin-bottom: 5px;">TAM</div>
+                    <div style="font-size: 16px; color: #e0e0e0;">Total Addressable Market<br>글로벌 화재 안전 시장</div>
+                </div>
+                <div style="font-size: 56px; font-weight: 900; color: #667eea;">$208B</div>
+            </div>
+            <div style="background: rgba(118,75,162,0.15); padding: 20px 30px; border-radius: 12px; display: flex; align-items: center; justify-content: space-between;">
+                <div style="flex: 1;">
+                    <div style="font-size: 22px; font-weight: 700; color: #ffffff; margin-bottom: 5px;">SAM</div>
+                    <div style="font-size: 16px; color: #e0e0e0;">Serviceable Available Market<br>WiFi 보유 다중이용시설</div>
+                </div>
+                <div style="font-size: 56px; font-weight: 900; color: #764ba2;">$21B</div>
+            </div>
+            <div style="background: rgba(76,175,80,0.15); padding: 20px 30px; border-radius: 12px; display: flex; align-items: center; justify-content: space-between;">
+                <div style="flex: 1;">
+                    <div style="font-size: 22px; font-weight: 700; color: #ffffff; margin-bottom: 5px;">SOM (2030)</div>
+                    <div style="font-size: 16px; color: #e0e0e0;">Serviceable Obtainable Market<br>1,000개 시설 목표</div>
+                </div>
+                <div style="font-size: 56px; font-weight: 900; color: #4caf50;">$500M</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="big-stat">
+        <div class="stat-item">
+            <div class="stat-number">18%</div>
+            <div class="stat-label">CAGR<br>연평균 성장률</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-number">2.4%</div>
+            <div class="stat-label">SOM/SAM 비율<br>(2030년 목표)</div>
+        </div>
+    </div>
+
+    <div class="content-box">
+        <h3>1차 시장 (2026~2027): 한국</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>시장</th>
+                    <th>규모</th>
+                    <th>우선순위</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>종합병원</td>
+                    <td class="highlight-cell">300억원</td>
+                    <td>1순위 (취약계층 다수)</td>
+                </tr>
+                <tr>
+                    <td>5성급 호텔</td>
+                    <td class="highlight-cell">100억원</td>
+                    <td>2순위 (외국인 대응)</td>
+                </tr>
+                <tr>
+                    <td>초고층 빌딩</td>
+                    <td class="highlight-cell">400억원</td>
+                    <td>3순위 (수직 대피)</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="slide-number">8</div>
+</div>
+
+<!-- Slide 9: Business Model -->
+<div class="slide slide-content">
+    <div class="slide-title">💰 Business Model: B2B SaaS</div>
+
+    <div class="content-box">
+        <h3>수익 구조</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>항목</th>
+                    <th>가격</th>
+                    <th>비고</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>초기 도입비 (1회)</td>
+                    <td class="highlight-cell">5천만원</td>
+                    <td>Edge Server 1~2대</td>
+                </tr>
+                <tr>
+                    <td>월 구독료 (소형)</td>
+                    <td>500만원</td>
+                    <td>병원 (500~1,000명)</td>
+                </tr>
+                <tr>
+                    <td>월 구독료 (중형)</td>
+                    <td>1,500만원</td>
+                    <td>호텔 (1,000~2,000명)</td>
+                </tr>
+                <tr>
+                    <td>월 구독료 (대형)</td>
+                    <td>3,000만원</td>
+                    <td>빌딩 (2,000~4,000명)</td>
+                </tr>
+                <tr>
+                    <td>월 구독료 (초대형)</td>
+                    <td>5,000만원</td>
+                    <td>크루즈 (4,000~6,000명)</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="highlight">
+        ROI 회수 기간: 3~6개월 (화재 보험료 15~20% 절감)
+    </div>
+
+    <div class="slide-number">9</div>
+</div>
+
+<!-- Slide 10: Competition -->
+<div class="slide slide-content">
+    <div class="slide-title">🎯 Competition: 압도적 우위</div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>항목</th>
+                <th style="color: #f5576c;">기존 시스템</th>
+                <th style="color: #4caf50;">FireNavi v3.0</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>초기 비용</td>
+                <td>15억~30억원</td>
+                <td class="highlight-cell">5천만원 (95% 절감)</td>
+            </tr>
+            <tr>
+                <td>도입 기간</td>
+                <td>12~24개월</td>
+                <td class="highlight-cell">1~3개월 (80% 단축)</td>
+            </tr>
+            <tr>
+                <td>데이터 포인트</td>
+                <td>500개 (고정 IoT)</td>
+                <td class="highlight-cell">28,000+ (56배 증가)</td>
+            </tr>
+            <tr>
+                <td>조기 감지</td>
+                <td>센서 트리거 후</td>
+                <td class="highlight-cell">30~120초 앞서</td>
+            </tr>
+            <tr>
+                <td>취약계층 대응</td>
+                <td>없음</td>
+                <td class="highlight-cell">30개 유형 맞춤</td>
+            </tr>
+            <tr>
+                <td>시장 범위</td>
+                <td>신축 시설만</td>
+                <td class="highlight-cell">모든 WiFi 시설</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="highlight">
+        직접 경쟁자: 없음 (세계 최초)
+    </div>
+
+    <div class="content-box" style="margin-top: 30px;">
+        <h3>🏰 경쟁 우위 보호 전략</h3>
+        <div class="two-column" style="gap: 30px;">
+            <div style="background: rgba(102,126,234,0.1); padding: 20px; border-radius: 10px;">
+                <p style="font-size: 18px;"><strong>✓ 특허 9건</strong> (알고리즘 5 + 시스템 4)</p>
+                <p style="font-size: 16px; margin-top: 10px;">→ 핵심 기술 보호</p>
+            </div>
+            <div style="background: rgba(102,126,234,0.1); padding: 20px; border-radius: 10px;">
+                <p style="font-size: 18px;"><strong>✓ 상표권 등록</strong> (FireNavi™)</p>
+                <p style="font-size: 16px; margin-top: 10px;">→ 브랜드 보호</p>
+            </div>
+            <div style="background: rgba(102,126,234,0.1); padding: 20px; border-radius: 10px;">
+                <p style="font-size: 18px;"><strong>✓ 저작권 등록</strong> (UI/알고리즘)</p>
+                <p style="font-size: 16px; margin-top: 10px;">→ 콘텐츠 보호</p>
+            </div>
+            <div style="background: rgba(102,126,234,0.1); padding: 20px; border-radius: 10px;">
+                <p style="font-size: 18px;"><strong>✓ 데이터 플라이휠</strong></p>
+                <p style="font-size: 16px; margin-top: 10px;">→ 후발 주자 진입 장벽</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="slide-number">10</div>
+</div>
+
+<!-- Slide 11: Traction -->
+<div class="slide slide-content">
+    <div class="slide-title">📈 Traction: 검증된 기술</div>
+
+    <div class="two-column">
+        <div class="column">
+            <h4>현재 상태 (TRL 5~6)</h4>
+            <ul>
+                <li>5단계 파이프라인 PoC 작동</li>
+                <li>Web Audio API 사이렌 감지</li>
+                <li>Canvas 2D 시뮬레이션 (800명)</li>
+                <li>A*, Beer-Lambert 검증</li>
+                <li>9건 특허 명세서 완료</li>
+            </ul>
+        </div>
+
+        <div class="column">
+            <h4>시뮬레이션 검증</h4>
+            <ul>
+                <li><strong>대피 시간 40% 단축</strong></li>
+                <li>콘서트홀: 8:30 → 5:10</li>
+                <li>병원: 6:40 → 4:20</li>
+                <li>크루즈: 12:10 → 7:30</li>
+                <li><strong>취약계층 생존율 +32%p</strong></li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="slide-number">11</div>
+</div>
+
+<!-- Slide 11-1: BTS 공연장 시뮬레이션 (신규) -->
+<div class="slide slide-content">
+    <div class="slide-title">🎤 실증 사례: BTS 공연장 (60,000명)</div>
+
+    <div class="two-column">
+        <div class="column bad">
+            <h4>❌ 패닉 모드 (기존 시스템)</h4>
+            <img src="images/BTS 공연장 - 패닉모드.png" alt="패닉 모드" style="width: 100%; border-radius: 10px; margin: 15px 0;">
+            <div style="background: rgba(245,87,108,0.2); padding: 15px; border-radius: 10px; margin-top: 15px;">
+                <p style="font-size: 18px; line-height: 1.6;">
+                    <strong style="color: #f5576c;">🚨 빨간색 = 압사 사고 발생</strong><br>
+                    • 출구 집중으로 병목 현상<br>
+                    • 평균 대피 시간: <strong>8분 30초</strong><br>
+                    • 사망자: <strong>440명 (11%)</strong><br>
+                    • 부상자: <strong>800명 (20%)</strong>
+                </p>
+            </div>
+        </div>
+
+        <div class="column good">
+            <h4>✓ FireNavi 모드 (AI 분산 대피)</h4>
+            <img src="images/BTS 공연장 - 화이어네비 모드.png" alt="FireNavi 모드" style="width: 100%; border-radius: 10px; margin: 15px 0;">
+            <div style="background: rgba(76,175,80,0.2); padding: 15px; border-radius: 10px; margin-top: 15px;">
+                <p style="font-size: 18px; line-height: 1.6;">
+                    <strong style="color: #4caf50;">✅ 출구 균등 분산 성공</strong><br>
+                    • 4개 출구 자동 밸런싱<br>
+                    • 평균 대피 시간: <strong>5분 10초</strong><br>
+                    • 사망자: <strong>0명 (0%)</strong><br>
+                    • 부상자: <strong>0명 (0%)</strong>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div class="highlight">
+        사망자 100% 감소 (440명 → 0명) | 부상자 100% 감소 (800명 → 0명)
+    </div>
+
+    <div class="slide-number">11-1</div>
+</div>
+
+<!-- Slide 12: Team -->
+<div class="slide slide-content">
+    <div class="slide-title">👥 Team: 전문가 구성</div>
+
+    <div class="content-box">
+        <h3>대표이사 / CEO: 심재우</h3>
+        <p>• FireNavi 창업자</p>
+        <p>• AI 챔피언 대회 본선 진출 기획</p>
+        <p>• 비전, 전략, 투자 유치, 파트너십 총괄</p>
+    </div>
+
+    <div class="content-box">
+        <h3>CTO (기술이사): 서병근 박사</h3>
+        <p>• <strong>인하대 재난과학 박사</strong></p>
+        <p>• <strong>Johnson Controls 아시아 R&D 센터 (10년)</strong></p>
+        <p>• 한국화재기술사회 기술심의위원</p>
+        <p>• 소방기술심의위원 (인천광역시)</p>
+        <p>• 전문: 화재 물리학, CFD 시뮬레이션, SOLAS 표준</p>
+    </div>
+
+    <div class="content-box">
+        <h3>CDO (디자인이사): 이강수</h3>
+        <p>• <strong>디자인 & UI 전문가</strong></p>
+        <p>• <strong>경력 25년</strong></p>
+        <p>• UX/UI 디자인 시스템 설계</p>
+        <p>• 모바일 앱 인터페이스 총괄</p>
+        <p>• 전문: 사용자 경험, 인터랙션 디자인, 브랜드 아이덴티티</p>
+    </div>
+
+    <div class="two-column" style="margin-top: 40px;">
+        <div class="column">
+            <h4>2026: 5명</h4>
+            <p>CEO, CTO, CDO, AI 1명, 모바일 1명</p>
+        </div>
+        <div class="column">
+            <h4>2027: 15명</h4>
+            <p>경영 3, 기술 8, 디자인 2, QA 1, 영업 1</p>
+        </div>
+    </div>
+
+    <div class="slide-number">17</div>
+</div>
+
+<!-- Slide 13: Roadmap -->
+<div class="slide slide-content">
+    <div class="slide-title">🗺️ Roadmap: 3년 계획</div>
+
+    <div class="timeline">
+        <div class="timeline-item">
+            <div class="timeline-year">2026 Q4</div>
+            <div class="timeline-content">
+                <strong>병원 3호 + TIPS</strong><br>
+                파일럿 3개 동시 진행<br>
+                <strong>TIPS 프로그램 선정</strong><br>
+                국가 R&D 과제 신청<br>
+                매출 <strong>3억원</strong>
+            </div>
+        </div>
+
+        <div class="timeline-item">
+            <div class="timeline-year">2027</div>
+            <div class="timeline-content">
+                <strong>호텔·빌딩 15개</strong><br>
+                <strong>국가 R&D 과제 선정</strong><br>
+                NFPA/ISO 인증<br>
+                BEP 달성 (Q2)<br>
+                매출 <strong>20억원</strong>
+            </div>
+        </div>
+
+        <div class="timeline-item">
+            <div class="timeline-year">2028</div>
+            <div class="timeline-content">
+                <strong>글로벌 100개</strong><br>
+                10개국 진출<br>
+                SOLAS 인증<br>
+                시리즈 B 완료<br>
+                매출 <strong>150억원</strong>
+            </div>
+        </div>
+
+        <div class="timeline-item">
+            <div class="timeline-year">2030</div>
+            <div class="timeline-content">
+                <strong>국내 표준 채택</strong><br>
+                1,000개 시설<br>
+                IPO 성공<br>
+                매출 <strong>500억원</strong>
+            </div>
+        </div>
+    </div>
+
+    <div class="highlight">
+        2027년 Q2 손익분기점 (BEP) | 2027년 Q4 흑자 전환<br>
+        <strong>TIPS + 국가 R&D로 R&D 비용 50% 정부 지원</strong>
+    </div>
+
+    <div class="slide-number">17</div>
+</div>
+
+<!-- Slide 14: Financials -->
+<div class="slide slide-content">
+    <div class="slide-title">💵 Financials: 3개년 재무</div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>항목</th>
+                <th>2026</th>
+                <th>2027</th>
+                <th>2028</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr style="background: rgba(76, 175, 80, 0.1);">
+                <td><strong>총 매출</strong></td>
+                <td>3억원</td>
+                <td class="highlight-cell">20억원</td>
+                <td class="highlight-cell">150억원</td>
+            </tr>
+            <tr>
+                <td>초기 도입비</td>
+                <td>1.8억원</td>
+                <td>9억원</td>
+                <td>60억원</td>
+            </tr>
+            <tr>
+                <td>월 구독료 (MRR × 12)</td>
+                <td>1.2억원</td>
+                <td>11억원</td>
+                <td>90억원</td>
+            </tr>
+            <tr style="background: rgba(255, 152, 0, 0.1);">
+                <td><strong>총 비용</strong></td>
+                <td>8억원</td>
+                <td>15억원</td>
+                <td>90억원</td>
+            </tr>
+            <tr>
+                <td>인건비</td>
+                <td>3억원</td>
+                <td>7억원</td>
+                <td>40억원</td>
+            </tr>
+            <tr>
+                <td>R&D (정부 50% 지원)</td>
+                <td>2억원</td>
+                <td>4억원</td>
+                <td>20억원</td>
+            </tr>
+            <tr>
+                <td>마케팅</td>
+                <td>1억원</td>
+                <td>2억원</td>
+                <td>15억원</td>
+            </tr>
+            <tr>
+                <td>운영비</td>
+                <td>2억원</td>
+                <td>2억원</td>
+                <td>15억원</td>
+            </tr>
+            <tr style="background: rgba(33, 150, 243, 0.1);">
+                <td><strong>영업이익</strong></td>
+                <td style="color: #f5576c;">-5억원</td>
+                <td class="highlight-cell">+5억원</td>
+                <td class="highlight-cell">+60억원</td>
+            </tr>
+            <tr>
+                <td><strong>영업이익률</strong></td>
+                <td>-167%</td>
+                <td class="highlight-cell">+25%</td>
+                <td class="highlight-cell">+40%</td>
+            </tr>
+            <tr>
+                <td><strong>시설 수</strong></td>
+                <td>3개</td>
+                <td>15개 (누적)</td>
+                <td class="highlight-cell">100개 (누적)</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="content-box" style="margin-top: 30px;">
+        <h3>💰 정부 지원 확보 전략</h3>
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;">
+            <div style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); padding: 25px; border-radius: 10px;">
+                <p style="font-size: 22px; font-weight: 700;"><strong>🏆 AI 챔피언 1등 (2026)</strong></p>
+                <p style="font-size: 20px; margin-top: 10px; font-weight: 600;">상금 5억원<br>+ 후속 지원</p>
+            </div>
+            <div style="background: rgba(102,126,234,0.1); padding: 25px; border-radius: 10px;">
+                <p style="font-size: 20px;"><strong>✓ TIPS 프로그램 (2026)</strong></p>
+                <p style="font-size: 18px; margin-top: 10px;">최대 5억원 투자 매칭<br>+ 운영비 지원 3년</p>
+            </div>
+            <div style="background: rgba(102,126,234,0.1); padding: 25px; border-radius: 10px;">
+                <p style="font-size: 20px;"><strong>✓ 국가 R&D 과제 (2027)</strong></p>
+                <p style="font-size: 18px; margin-top: 10px;">AI 안전 기술 개발<br>3년 최대 30억원</p>
+            </div>
+            <div style="background: rgba(102,126,234,0.1); padding: 25px; border-radius: 10px;">
+                <p style="font-size: 20px;"><strong>✓ K-Startup (2026~)</strong></p>
+                <p style="font-size: 18px; margin-top: 10px;">사회 혁신 트랙<br>최대 3억원</p>
+            </div>
+            <div style="background: rgba(102,126,234,0.1); padding: 25px; border-radius: 10px;">
+                <p style="font-size: 20px;"><strong>✓ 스마트시티 (2027)</strong></p>
+                <p style="font-size: 18px; margin-top: 10px;">안전 플랫폼 구축<br>최대 10억원</p>
+            </div>
+            <div style="background: rgba(76,175,80,0.15); padding: 25px; border-radius: 10px; display: flex; align-items: center; justify-content: center;">
+                <p style="font-size: 28px; font-weight: 700; text-align: center; color: #4caf50;">총 <strong>53억원</strong><br>정부 지원 목표</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="slide-number">17</div>
+</div>
+
+<!-- Slide 15: Ask -->
+<div class="slide slide-content">
+    <div class="slide-title">🎯 Ask: 투자 요청</div>
+
+    <div class="big-stat">
+        <div class="stat-item">
+            <div class="stat-number">17억원</div>
+            <div class="stat-label">1차 자금 (2026)</div>
+        </div>
+    </div>
+
+    <div class="content-box">
+        <h3>자금 출처</h3>
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 25px; margin-top: 20px;">
+            <div style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); padding: 25px; border-radius: 12px; text-align: center;">
+                <div style="font-size: 42px; font-weight: 900; margin-bottom: 10px;">5억원</div>
+                <div style="font-size: 20px; font-weight: 600;">🏆 AI 챔피언<br>우승 상금</div>
+            </div>
+            <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 25px; border-radius: 12px; text-align: center;">
+                <div style="font-size: 42px; font-weight: 900; margin-bottom: 10px;">10억원</div>
+                <div style="font-size: 20px; font-weight: 600;">💼 TIPS<br>프로그램</div>
+            </div>
+            <div style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); padding: 25px; border-radius: 12px; text-align: center;">
+                <div style="font-size: 42px; font-weight: 900; margin-bottom: 10px;">2억원</div>
+                <div style="font-size: 20px; font-weight: 600;">👥 엔젤<br>투자</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="content-box">
+        <h3>자금 사용 계획</h3>
+        <table style="margin: 20px 0;">
+            <thead>
+                <tr>
+                    <th>항목</th>
+                    <th>금액</th>
+                    <th>비율</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>팀 확충 (8명 → 15명)</td>
+                    <td class="highlight-cell">7억원</td>
+                    <td>41%</td>
+                </tr>
+                <tr>
+                    <td>SDK 개발 (iOS/Android)</td>
+                    <td class="highlight-cell">4억원</td>
+                    <td>24%</td>
+                </tr>
+                <tr>
+                    <td>병원 3호 파일럿</td>
+                    <td class="highlight-cell">3억원</td>
+                    <td>18%</td>
+                </tr>
+                <tr>
+                    <td>마케팅 & 영업</td>
+                    <td class="highlight-cell">2억원</td>
+                    <td>12%</td>
+                </tr>
+                <tr>
+                    <td>운영비 (6개월)</td>
+                    <td class="highlight-cell">1억원</td>
+                    <td>6%</td>
+                </tr>
+                <tr style="background: rgba(76,175,80,0.15); font-weight: 700;">
+                    <td><strong>총계</strong></td>
+                    <td><strong>17억원</strong></td>
+                    <td><strong>100%</strong></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="content-box">
+        <h3>투자 조건 (엔젤 투자 2억원)</h3>
+        <ul>
+            <li>지분 희석: <strong>5%</strong> (엔젤 2억원만 해당)</li>
+            <li>기업가치: <strong>40억원</strong> (Pre-money)</li>
+            <li>투자 형태: 전환사채 또는 지분 투자</li>
+            <li>Exit 목표: 2030년 IPO (기업가치 5,000억원)</li>
+        </ul>
+    </div>
+
+    <div class="highlight">
+        AI 챔피언 1등 + TIPS 확보 시 총 15억원 비희석 자금 확보<br>
+        엔젤 투자 2억원만 지분 5% 제공 (우호적 조건)
+    </div>
+
+    <div class="slide-number">17</div>
+</div>
+
+<!-- Slide 16: Social Impact -->
+<div class="slide slide-content">
+    <div class="slide-title">🌍 Social Impact: 사회적 가치</div>
+
+    <div class="big-stat">
+        <div class="stat-item">
+            <div class="stat-number">740명</div>
+            <div class="stat-label">10년 누적 구조</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-number">+32%p</div>
+            <div class="stat-label">취약계층 생존율</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-number">2,400억원</div>
+            <div class="stat-label">연 재산 피해 절감</div>
+        </div>
+    </div>
+
+    <div class="content-box">
+        <h3>정부 정책 연계</h3>
+        <ul>
+            <li><strong>K-Startup 2026:</strong> AI 기반 사회 혁신 트랙</li>
+            <li><strong>AI 기술 개발 지원:</strong> 온디바이스 AI, 안전·국방 AI</li>
+            <li><strong>스마트시티 챌린지:</strong> 다중이용시설 안전 통합</li>
+            <li><strong>재난안전부 협력:</strong> 신규 안전 표준 제정 제안</li>
+        </ul>
+    </div>
+
+    <div class="highlight">
+        한국발 글로벌 안전 표준 | BTS 야외공연, 학교·지하철·쇼핑몰 시범 도입
+    </div>
+
+    <div class="slide-number">17</div>
+</div>
+
+<!-- Slide 17: Closing -->
+<div class="slide slide-cover">
+    <div class="logo" style="font-size: 64px;">FireNavi v3.0</div>
+
+    <div class="hero-tagline" style="font-size: 36px; padding: 30px 60px;">
+        화재 대피 시스템을 "설치"하는 것이 아니라,<br>
+        "배포"합니다.
+    </div>
+
+    <div class="big-stat" style="margin-top: 80px;">
+        <div class="stat-item">
+            <div class="stat-number" style="font-size: 72px;">95%</div>
+            <div class="stat-label">비용 절감</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-number" style="font-size: 72px;">56배</div>
+            <div class="stat-label">데이터 증가</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-number" style="font-size: 72px;">80%</div>
+            <div class="stat-label">기간 단축</div>
+        </div>
+    </div>
+
+    <div class="contact-info" style="margin-top: 100px;">
+        <div style="font-size: 28px; margin-bottom: 20px;"><strong>Contact</strong></div>
+        <div>심재우 (대표이사)</div>
+        <div>jaiwshim@gmail.com</div>
+        <div>010-2397-5734</div>
+    </div>
+
+    <div class="slide-number">18</div>
+</div>
+
+</body>
+</html>

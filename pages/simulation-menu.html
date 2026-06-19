@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FireNavi - 시뮬레이션 메뉴</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <style>
+    .sim-menu-hero {
+      padding: 72px 0 36px;
+      background:
+        linear-gradient(135deg, rgba(15,30,61,0.96), rgba(30,64,175,0.9)),
+        radial-gradient(circle at 80% 20%, rgba(201,169,97,0.22), transparent 32%);
+      color: white;
+    }
+
+    .sim-menu-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 14px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.18);
+      font-size: 0.78rem;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #F8E7B0;
+    }
+
+    .sim-menu-title {
+      margin-top: 22px;
+      max-width: 880px;
+      font-size: clamp(2rem, 4vw, 4.2rem);
+      line-height: 1.08;
+      letter-spacing: 0;
+      color: white;
+    }
+
+    .sim-menu-copy {
+      max-width: 760px;
+      margin-top: 18px;
+      color: rgba(255,255,255,0.78);
+      font-size: 1.02rem;
+      line-height: 1.8;
+    }
+
+    .sim-menu-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 18px;
+      margin: 42px 0 70px;
+    }
+
+    .sim-menu-card {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      min-height: 260px;
+      padding: 28px;
+      border-radius: var(--radius-lg);
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow-card);
+      text-decoration: none;
+      color: var(--text-primary);
+      overflow: hidden;
+      transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+    }
+
+    .sim-menu-card::before {
+      content: '';
+      position: absolute;
+      inset: 0 0 auto;
+      height: 5px;
+      background: var(--gradient-fire);
+    }
+
+    .sim-menu-card:hover {
+      transform: translateY(-5px);
+      box-shadow: var(--shadow-card-hover);
+      border-color: var(--border-gold);
+    }
+
+    .sim-menu-card--blue::before { background: var(--gradient-royal); }
+    .sim-menu-card--concert::before { background: linear-gradient(135deg, #7C3AED, #DB2777); }
+    .sim-menu-card--gold::before { background: var(--gradient-gold); }
+    .sim-menu-card--time::before { background: linear-gradient(135deg, #EA580C, #B91C1C); }
+    .sim-menu-card--safe::before { background: var(--gradient-safe); }
+
+    .sim-menu-icon {
+      width: 54px;
+      height: 54px;
+      display: grid;
+      place-items: center;
+      border-radius: 16px;
+      background: var(--gradient-fire-soft);
+      font-size: 1.8rem;
+      margin-bottom: 20px;
+    }
+
+    .sim-menu-card h2 {
+      font-size: 1.35rem;
+      color: var(--navy);
+      margin-bottom: 10px;
+      letter-spacing: 0;
+    }
+
+    .sim-menu-card p {
+      color: var(--text-muted);
+      font-size: 0.94rem;
+      line-height: 1.7;
+      margin-bottom: 22px;
+    }
+
+    .sim-menu-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: auto;
+    }
+
+    .sim-menu-tags span {
+      padding: 5px 10px;
+      border-radius: 999px;
+      background: var(--bg-secondary);
+      color: var(--text-tertiary);
+      font-size: 0.74rem;
+      font-weight: 700;
+    }
+
+    .sim-menu-action {
+      margin-top: 22px;
+      font-weight: 800;
+      color: var(--fire-red);
+    }
+
+    .sim-menu-note {
+      margin: 0 0 64px;
+      padding: 24px;
+      border-radius: var(--radius-lg);
+      background: var(--gradient-glass-gold);
+      border: 1px solid var(--border-gold);
+      box-shadow: var(--shadow-sm);
+      color: var(--text-secondary);
+    }
+
+    @media (max-width: 900px) {
+      .sim-menu-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 640px) {
+      .sim-menu-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page-wrapper">
+    <nav class="top-nav"></nav>
+
+    <section class="sim-menu-hero">
+      <div class="container">
+        <div class="sim-menu-eyebrow">FireNavi Simulation Lab</div>
+        <h1 class="sim-menu-title">상황별 대피 시뮬레이션을 한 곳에서 실행합니다</h1>
+        <p class="sim-menu-copy">
+          크루즈선, 초고층빌딩, BTS 대형 공연장, 동적 위험지도, 군중 분산, 경로 최적화 화면을 독립 메뉴로 분리했습니다.
+          각 페이지는 FireNavi의 Prediction, Behavior, Decision 엔진이 어떻게 위험을 예측하고
+          사람별 대피 경로를 산출하는지 확인하는 실행형 데모입니다.
+        </p>
+      </div>
+    </section>
+
+    <main class="container">
+      <section class="sim-menu-grid" aria-label="시뮬레이션 실행 메뉴">
+        <a class="sim-menu-card" href="simulation.html">
+          <div class="sim-menu-icon">&#x1F6A2;</div>
+          <h2>크루즈선 화재 대피 시뮬레이션</h2>
+          <p>유람선 내부 화재 발생 지점, 승객 분포, 연기 확산, 취약계층 우선 대피 흐름을 통합적으로 확인합니다.</p>
+          <div class="sim-menu-tags">
+            <span>화재 확산</span><span>승객 에이전트</span><span>취약계층 우선</span>
+          </div>
+          <div class="sim-menu-action">실행하기 &rarr;</div>
+        </a>
+
+        <a class="sim-menu-card sim-menu-card--blue" href="simulation-building.html">
+          <div class="sim-menu-icon">&#x1F3D9;</div>
+          <h2>초고층빌딩 대피 시뮬레이션</h2>
+          <p>층별 대피, 계단 부하, 피난안전구역, 이동 취약자의 보조 대피 흐름을 빌딩 환경에서 검증합니다.</p>
+          <div class="sim-menu-tags">
+            <span>층별 대피</span><span>계단 용량</span><span>피난안전구역</span>
+          </div>
+          <div class="sim-menu-action">실행하기 &rarr;</div>
+        </a>
+
+        <a class="sim-menu-card sim-menu-card--concert" href="simulation-concert.html">
+          <div class="sim-menu-icon">&#x1F3B5;</div>
+          <h2>BTS 대형 공연장 화재 대피 시뮬레이션</h2>
+          <p>야외 스타디움 공연장의 관객 밀집, 무대 주변 화재, 바람 방향, 출입구 분산 대피 흐름을 확인합니다.</p>
+          <div class="sim-menu-tags">
+            <span>공연장</span><span>관객 밀집</span><span>바람 영향</span>
+          </div>
+          <div class="sim-menu-action">실행하기 &rarr;</div>
+        </a>
+
+        <a class="sim-menu-card sim-menu-card--gold" href="risk-map.html">
+          <div class="sim-menu-icon">&#x1F5FA;</div>
+          <h2>동적 위험지도</h2>
+          <p>화재, 연기, 군중 밀집, 구조 손상 위험을 레이어로 합성하여 실시간 위험 점수로 시각화합니다.</p>
+          <div class="sim-menu-tags">
+            <span>Risk Map</span><span>가중합</span><span>실시간 갱신</span>
+          </div>
+          <div class="sim-menu-action">보기 &rarr;</div>
+        </a>
+
+        <a class="sim-menu-card sim-menu-card--time" href="evacuation-time-optimizer.html">
+          <div class="sim-menu-icon">&#x23F1;&#xFE0F;</div>
+          <h2>군중 분산 기반 평균 대피시간 최소화</h2>
+          <p>출구별 부하와 통로 밀집도를 균등화해 병목을 줄이고 전체 평균 대피 완료 시간을 최소화합니다.</p>
+          <div class="sim-menu-tags">
+            <span>PAT-04</span><span>군중 분산</span><span>대피시간 최소화</span>
+          </div>
+          <div class="sim-menu-action">분산 최적화하기 &rarr;</div>
+        </a>
+
+        <a class="sim-menu-card sim-menu-card--safe" href="route-optimizer.html">
+          <div class="sim-menu-icon">&#x1F9ED;</div>
+          <h2>경로 최적화</h2>
+          <p>A* 기반 경로 탐색과 건강 상태별 제약을 결합해 가장 빠른 길이 아니라 가장 안전한 길을 계산합니다.</p>
+          <div class="sim-menu-tags">
+            <span>A*</span><span>Health-Aware</span><span>충돌 최소화</span>
+          </div>
+          <div class="sim-menu-action">최적화하기 &rarr;</div>
+        </a>
+      </section>
+
+      <section class="sim-menu-note">
+        <strong>운영 기준:</strong> 이 페이지는 시뮬레이션 계열 화면의 독립 진입점입니다.
+        대시보드에서는 간략 소개만 유지하고, 실제 실행은 이 메뉴를 거쳐 상황별 페이지로 이동하도록 구성했습니다.
+      </section>
+    </main>
+  </div>
+
+  <script src="../js/main.js"></script>
+  <script src="../js/common-nav-footer.js"></script>
+</body>
+</html>

@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>[초고층빌딩] FireNavi 3개 층 대피 시뮬레이션</title>
+<link rel="stylesheet" href="css/style.css">
+<style>
+  *{box-sizing:border-box}
+  .sim-wrap{max-width:1920px;margin:0 auto;padding:22px 12px 70px}
+  .sim-head{text-align:center;margin-bottom:16px}
+  .sim-head .label{display:inline-block;padding:5px 14px;border-radius:999px;background:rgba(185,28,28,.08);border:1px solid rgba(185,28,28,.22);color:#b91c1c;font-size:.7rem;font-weight:800;letter-spacing:1.5px}
+  .sim-head h1{font-size:clamp(1.7rem,2.7vw,2.5rem);font-weight:900;color:#111827;margin:8px 0 4px}
+  .sim-head p{color:#64748b;font-size:.9rem}
+  .control-bar{display:grid;grid-template-columns:repeat(5,minmax(120px,1fr)) auto;gap:9px;align-items:end;background:#fff;border:1px solid #e5e7eb;border-radius:13px;padding:11px 13px;margin-bottom:12px;box-shadow:0 5px 18px rgba(15,23,42,.06)}
+  .ctrl label{display:block;font-size:.68rem;font-weight:800;color:#64748b;margin-bottom:4px}
+  .ctrl input,.ctrl select{width:100%;height:34px;border:1px solid #dbe2ea;border-radius:8px;background:#f8fafc;padding:0 9px;color:#172033;font-weight:700}
+  .ctrl .fixed{display:flex;align-items:center;height:34px;border:1px solid #fecaca;border-radius:8px;background:#fff1f2;padding:0 9px;color:#b91c1c;font-weight:900}
+  .speed-control{height:34px;display:flex;align-items:center;gap:8px;padding:0 8px;border:1px solid #dbe2ea;border-radius:8px;background:#f8fafc}
+  .speed-control input[type=range]{flex:1;width:auto;height:5px;padding:0;border:0;border-radius:999px;background:linear-gradient(90deg,#2563eb 0%,#06b6d4 34%,#f59e0b 67%,#dc2626 100%);appearance:none;-webkit-appearance:none;cursor:pointer}
+  .speed-control input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:19px;height:19px;border-radius:50%;background:#fff;border:3px solid #2563eb;box-shadow:0 2px 7px rgba(37,99,235,.38)}
+  .speed-control input[type=range]::-moz-range-thumb{width:15px;height:15px;border-radius:50%;background:#fff;border:3px solid #2563eb;box-shadow:0 2px 7px rgba(37,99,235,.38)}
+  .speed-value{min-width:32px;text-align:center;color:#1d4ed8;font-size:.78rem;font-weight:900}
+  .btn-row{display:flex;gap:6px}
+  .btn{height:34px;border:0;border-radius:8px;padding:0 12px;font-weight:800;cursor:pointer;white-space:nowrap}
+  .btn-start{background:linear-gradient(135deg,#b91c1c,#ea580c);color:#fff}
+  .btn-pause,.btn-reset{background:#e2e8f0;color:#334155}
+  .btn:disabled{opacity:.45;cursor:not-allowed}
+  .layout{display:grid;grid-template-columns:minmax(0,1fr) minmax(430px,470px);gap:12px;align-items:start}
+  .canvas-panel{background:#101827;border:1px solid #26354b;border-radius:14px;padding:10px;box-shadow:0 8px 25px rgba(15,23,42,.18)}
+  .engine-bar{display:flex;gap:8px;align-items:center;margin-bottom:8px;color:#cbd5e1;font-size:.72rem;font-weight:800}
+  .engine{padding:6px 10px;border:1px solid #334155;border-radius:7px;background:#1e293b}
+  .engine.active{color:#67e8f9;border-color:#0891b2;background:rgba(8,145,178,.16)}
+  .engine-status{margin-left:auto;color:#86efac}
+  .floor-stack{display:grid;gap:8px}
+  .floor-card{position:relative;border:1px solid #334155;border-radius:10px;overflow:hidden;background:#0b1220}
+  .floor-card.fire-floor{border-color:#ef4444;box-shadow:inset 0 0 25px rgba(239,68,68,.08)}
+  .floor-head{position:absolute;z-index:2;top:7px;left:9px;display:flex;align-items:center;gap:7px;padding:4px 8px;border-radius:7px;background:rgba(2,6,23,.82);color:#fff;font-size:.73rem;font-weight:800;pointer-events:none}
+  .floor-badge{padding:2px 6px;border-radius:5px;background:#2563eb}
+  .fire-floor .floor-badge{background:#dc2626}
+  .floor-summary{color:#cbd5e1;font-weight:600}
+  canvas{display:block;width:100%;height:auto;aspect-ratio:3.2/1}
+  .canvas-legend{display:flex;gap:11px;flex-wrap:wrap;padding:8px 2px 0;color:#cbd5e1;font-size:.68rem}
+  .legend-dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:4px;vertical-align:-1px}
+  .side{display:grid;grid-template-columns:1fr 1fr;grid-template-areas:"mode live" "types types" "floors floors" "log log";gap:9px}
+  .panel{background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:10px 11px;box-shadow:0 4px 15px rgba(15,23,42,.05)}
+  .panel h3{font-size:.8rem;font-weight:900;color:#1e293b;margin:0 0 7px;padding-bottom:6px;border-bottom:1px solid #e5e7eb}
+  .panel-mode{grid-area:mode}.panel-live{grid-area:live}.panel-types{grid-area:types}.panel-floors{grid-area:floors}.panel-log{grid-area:log}
+  .mode-card{display:flex;gap:6px;padding:7px;border:1px solid #e2e8f0;border-radius:8px;margin-bottom:6px;cursor:pointer}
+  .mode-card.selected{border-color:#2563eb;background:#eff6ff}
+  .mode-title{font-size:.72rem;font-weight:900}.mode-desc{font-size:.61rem;line-height:1.4;color:#64748b;margin-top:2px}
+  .mode-note{font-size:.62rem;font-weight:800;color:#be185d;background:#fdf2f8;border:1px solid #fbcfe8;border-radius:7px;padding:6px}
+  .stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:5px}
+  .stat{background:#f8fafc;border-radius:7px;padding:6px 7px}
+  .stat-label{font-size:.59rem;color:#64748b}.stat-value{font-size:.88rem;font-weight:900;color:#0f172a;margin-top:1px}
+  .stat-value.danger{color:#dc2626}.stat-value.safe{color:#059669}
+  table{width:100%;border-collapse:collapse;font-size:.65rem}
+  th,td{padding:5px 4px;border-bottom:1px solid #edf0f4;text-align:right;white-space:nowrap}
+  th:first-child,td:first-child{text-align:left}th{color:#64748b;font-size:.59rem}
+  .type-dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:4px}
+  .floor-type-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}
+  .floor-type-card{border:1px solid #e2e8f0;border-radius:9px;overflow:hidden;background:#fff}
+  .floor-type-card.fire{border-color:#fca5a5}
+  .floor-type-title{display:flex;justify-content:space-between;align-items:center;padding:6px 7px;background:#eff6ff;color:#1e40af;font-size:.68rem;font-weight:900}
+  .floor-type-card.fire .floor-type-title{background:#fff1f2;color:#b91c1c}
+  .floor-type-total{font-size:.58rem;color:#64748b}
+  .floor-type-card table{font-size:.58rem}
+  .floor-type-card th,.floor-type-card td{padding:4px 3px}
+  .floor-type-card th{font-size:.52rem}
+  .floor-stat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+  .floor-stat{padding:7px;border-radius:8px;background:#f8fafc;border-top:3px solid #2563eb}
+  .floor-stat.fire{border-color:#dc2626}.floor-stat strong{font-size:.7rem}.floor-stat div{font-size:.59rem;color:#64748b;line-height:1.55}
+  .ai-log{height:112px;overflow-y:auto;background:#07101f;border-radius:8px;padding:7px;font-family:Consolas,monospace}
+  .log-line{font-size:.62rem;color:#67e8f9;line-height:1.55}.log-line.fire{color:#fca5a5}.log-line.panic{color:#fdba74}.log-line.safe{color:#86efac}
+  @media(max-width:1200px){.layout{grid-template-columns:1fr}.side{grid-template-columns:1fr 1fr}.control-bar{grid-template-columns:repeat(3,1fr)}}
+  @media(max-width:700px){.control-bar,.side{grid-template-columns:1fr}.side{grid-template-areas:"mode" "live" "types" "floors" "log"}.floor-stat-grid,.floor-type-grid{grid-template-columns:1fr}.btn-row{grid-column:1/-1}}
+</style>
+</head>
+<body>
+<div class="page-wrapper">
+  <nav class="top-nav"></nav>
+  <main class="sim-wrap">
+    <div class="sim-head">
+      <span class="label">50F HIGH-RISE · THREE-FLOOR EVACUATION</span>
+      <h1>초고층 빌딩 화재 대피 시뮬레이션</h1>
+      <p>50층 빌딩 19층 화재 · 화재 아래층 18F / 화재층 19F / 화재 위층 20F 동시 대피</p>
+    </div>
+
+    <section class="control-bar">
+      <div class="ctrl"><label>빌딩 높이</label><div class="fixed">50층</div></div>
+      <div class="ctrl"><label>화재 발생층</label><div class="fixed">19층 고정</div></div>
+      <div class="ctrl"><label>총 재실자 수</label><input id="populationInput" type="number" min="30" max="1800" step="30" value="600"></div>
+      <div class="ctrl">
+        <label>시뮬레이션 속도 <span id="speedLabel">4×</span></label>
+        <div class="speed-control">
+          <input id="speedInput" type="range" min="1" max="10" step="1" value="4" aria-label="시뮬레이션 속도">
+          <span class="speed-value" id="speedValue">4×</span>
+        </div>
+      </div>
+      <div class="ctrl"><label>현재 대피 모드</label><select id="modeSelect"><option value="ai">FireNavi AI</option><option value="panic">패닉 모드</option></select></div>
+      <div class="btn-row">
+        <button class="btn btn-start" id="startBtn">화재 발생</button>
+        <button class="btn btn-pause" id="pauseBtn" disabled>일시정지</button>
+        <button class="btn btn-reset" id="resetBtn">리셋</button>
+      </div>
+    </section>
+
+    <div class="layout">
+      <section class="canvas-panel">
+        <div class="engine-bar">
+          <span class="engine" id="predictionEngine">Prediction AI</span>
+          <span class="engine" id="behaviorEngine">Behavior AI</span>
+          <span class="engine" id="decisionEngine">Decision AI</span>
+          <span class="engine-status" id="engineStatus">대기 중 · WiFi 위치추적 정상</span>
+        </div>
+        <div class="floor-stack">
+          <div class="floor-card" data-floor="20">
+            <div class="floor-head"><span class="floor-badge">20F</span><span>화재 위층</span><span class="floor-summary" id="summary20"></span></div>
+            <canvas id="canvas20" width="1120" height="350"></canvas>
+          </div>
+          <div class="floor-card fire-floor" data-floor="19">
+            <div class="floor-head"><span class="floor-badge">19F</span><span>화재 발생층</span><span class="floor-summary" id="summary19"></span></div>
+            <canvas id="canvas19" width="1120" height="350"></canvas>
+          </div>
+          <div class="floor-card" data-floor="18">
+            <div class="floor-head"><span class="floor-badge">18F</span><span>화재 아래층</span><span class="floor-summary" id="summary18"></span></div>
+            <canvas id="canvas18" width="1120" height="350"></canvas>
+          </div>
+        </div>
+        <div class="canvas-legend">
+          <span><i class="legend-dot" style="background:#4a90d9"></i>건강한 성인</span>
+          <span><i class="legend-dot" style="background:#8b5cf6"></i>어린이</span>
+          <span><i class="legend-dot" style="background:#f59e0b"></i>고령자</span>
+          <span><i class="legend-dot" style="background:#ec4899"></i>휠체어</span>
+          <span><i class="legend-dot" style="background:#14b8a6"></i>임산부</span>
+          <span><i class="legend-dot" style="background:#ef4444"></i>부상자</span>
+          <span>점 1개 = 실제 재실자 1명</span>
+        </div>
+      </section>
+
+      <aside class="side">
+        <section class="panel panel-mode">
+          <h3>대피 안내 모드</h3>
+          <div class="mode-card selected" id="aiModeCard" data-mode="ai">
+            <div><div class="mode-title">FireNavi AI 모드</div><div class="mode-desc">취약자 우선, 19층 회피, 안전 계단 분산, 방화문·밀집도 반영</div></div>
+          </div>
+          <div class="mode-card" id="panicModeCard" data-mode="panic">
+            <div><div class="mode-title">패닉 모드</div><div class="mode-desc">자유의지 이동. 18F·20F 일부가 19F로 진입하여 연기·화염·압박 피해 발생</div></div>
+          </div>
+          <div class="mode-note">취약자 우선대피와 화재층 회피는 FireNavi AI 모드에서만 적용</div>
+        </section>
+
+        <section class="panel panel-live">
+          <h3>실시간 현황</h3>
+          <div class="stats-grid">
+            <div class="stat"><div class="stat-label">경과 시간</div><div class="stat-value" id="elapsedStat">00:00</div></div>
+            <div class="stat"><div class="stat-label">총 재실자</div><div class="stat-value" id="totalStat">600</div></div>
+            <div class="stat"><div class="stat-label">대피 완료</div><div class="stat-value safe" id="doneStat">0</div></div>
+            <div class="stat"><div class="stat-label">대피 중</div><div class="stat-value" id="activeStat">600</div></div>
+            <div class="stat"><div class="stat-label">19층 오진입</div><div class="stat-value danger" id="wrongStat">0</div></div>
+            <div class="stat"><div class="stat-label">피해 인원</div><div class="stat-value danger" id="casualtyStat">0</div></div>
+            <div class="stat"><div class="stat-label">취약자 대피완료</div><div class="stat-value safe" id="priorityStat">0/0</div></div>
+            <div class="stat"><div class="stat-label">평균 대피시간</div><div class="stat-value" id="averageStat">--</div></div>
+          </div>
+        </section>
+
+        <section class="panel panel-types">
+          <h3>층별 재실자 유형 (6종)</h3>
+          <div class="floor-type-grid">
+            <div class="floor-type-card">
+              <div class="floor-type-title"><span>20F 화재 위층</span><span class="floor-type-total" id="typeTotal20"></span></div>
+              <table><thead><tr><th>유형</th><th>인원</th><th>완료</th><th>대피중</th><th>피해</th></tr></thead><tbody id="typeTableBody20"></tbody></table>
+            </div>
+            <div class="floor-type-card fire">
+              <div class="floor-type-title"><span>19F 화재층</span><span class="floor-type-total" id="typeTotal19"></span></div>
+              <table><thead><tr><th>유형</th><th>인원</th><th>완료</th><th>대피중</th><th>피해</th></tr></thead><tbody id="typeTableBody19"></tbody></table>
+            </div>
+            <div class="floor-type-card">
+              <div class="floor-type-title"><span>18F 화재 아래층</span><span class="floor-type-total" id="typeTotal18"></span></div>
+              <table><thead><tr><th>유형</th><th>인원</th><th>완료</th><th>대피중</th><th>피해</th></tr></thead><tbody id="typeTableBody18"></tbody></table>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel panel-floors">
+          <h3>층별 대피 현황</h3>
+          <div class="floor-stat-grid">
+            <div class="floor-stat" id="floorStat20"><strong>20F 화재 위층</strong><div></div></div>
+            <div class="floor-stat fire" id="floorStat19"><strong>19F 화재층</strong><div></div></div>
+            <div class="floor-stat" id="floorStat18"><strong>18F 화재 아래층</strong><div></div></div>
+          </div>
+        </section>
+
+        <section class="panel panel-log">
+          <h3>의사결정 로그</h3>
+          <div class="ai-log" id="logPanel"></div>
+        </section>
+      </aside>
+    </div>
+  </main>
+  <footer class="footer-premium"></footer>
+</div>
+<script src="js/common-nav-footer.js"></script>
+<script>
+(() => {
+  const FLOOR_IDS = [20, 19, 18];
+  const FIRE_FLOOR = 19;
+  const W = 1120, H = 350;
+  const CORRIDOR_TOP = 110;
+  const CORRIDOR_BOTTOM = 240;
+  const CORRIDOR_CENTER_X = 560;
+  const STAIRS = [
+    { id:'LT', x:55, y:72, w:92, h:76, side:'left', corridorY:CORRIDOR_TOP, name:'좌상 비상계단' },
+    { id:'LB', x:55, y:202, w:92, h:76, side:'left', corridorY:CORRIDOR_BOTTOM, name:'좌하 비상계단' },
+    { id:'RT', x:973, y:72, w:92, h:76, side:'right', corridorY:CORRIDOR_TOP, name:'우상 비상계단' },
+    { id:'RB', x:973, y:202, w:92, h:76, side:'right', corridorY:CORRIDOR_BOTTOM, name:'우하 비상계단' }
+  ];
+  const FIRE = { x: 560, y: 176, radius: 48 };
+  const REFUGE_POINTS = STAIRS.map(stair => ({
+    id: 'REF-' + stair.id,
+    stairId: stair.id,
+    x: stair.side === 'left' ? stair.x + stair.w + 34 : stair.x - 34,
+    y: stair.corridorY + (stair.corridorY === CORRIDOR_TOP ? 18 : -18),
+    name: stair.name + ' 피난안전구역'
+  }));
+  const TYPE_DEFS = {
+    normal:     { label:'건강한 성인', color:'#4A90D9', ratio:.50, speed:1.05, priority:4, mark:'' },
+    elderly:    { label:'고령자', color:'#F59E0B', ratio:.15, speed:.70, priority:2, mark:'E' },
+    child:      { label:'어린이', color:'#8B5CF6', ratio:.12, speed:.82, priority:3, mark:'C' },
+    wheelchair: { label:'휠체어', color:'#EC4899', ratio:.05, speed:.52, priority:0, mark:'W' },
+    pregnant:   { label:'임산부', color:'#14B8A6', ratio:.08, speed:.66, priority:2, mark:'P' },
+    injured:    { label:'부상자', color:'#EF4444', ratio:.10, speed:.58, priority:1, mark:'I' }
+  };
+  const canvases = Object.fromEntries(FLOOR_IDS.map(f => [f, document.getElementById('canvas' + f)]));
+  const contexts = Object.fromEntries(FLOOR_IDS.map(f => [f, canvases[f].getContext('2d')]));
+  const state = {
+    mode:'ai', population:600, speed:4, running:false, paused:false, elapsed:0,
+    people:[], lastTime:0, raf:0, logClock:-1, completionTimes:[]
+  };
+
+  function assignType(index, total) {
+    const point = (index + .5) / total;
+    let sum = 0;
+    for (const [key, type] of Object.entries(TYPE_DEFS)) {
+      sum += type.ratio;
+      if (point <= sum) return key;
+    }
+    return 'normal';
+  }
+
+  function roomSpawn(floor, index) {
+    const roomCols = 6;
+    const room = index % 12;
+    const col = room % roomCols;
+    const top = room < roomCols;
+    return {
+      x: 202 + col * 120 + Math.random() * 62,
+      y: top ? 48 + Math.random() * 34 : 274 + Math.random() * 34,
+      corridorY: top ? CORRIDOR_TOP : CORRIDOR_BOTTOM,
+      originFloor: floor
+    };
+  }
+
+  function spawnPeople() {
+    state.people = [];
+    const base = Math.floor(state.population / 3);
+    const counts = {20:base, 19:base, 18:state.population - base * 2};
+    let globalIndex = 0;
+    for (const floor of FLOOR_IDS) {
+      for (let i = 0; i < counts[floor]; i++, globalIndex++) {
+        const typeKey = assignType(i, counts[floor]);
+        const type = TYPE_DEFS[typeKey];
+        const pos = roomSpawn(floor, i);
+        state.people.push({
+          id:globalIndex, floor, originFloor:floor, x:pos.x, y:pos.y,
+          corridorY:pos.corridorY,
+          typeKey, priority:type.priority, speed:type.speed * (.88 + Math.random() * .24),
+          phase:'waiting', target:null, targetFloor:null, stair:null, refuge:null, route:[],
+          releaseTime:0, evacuated:false, evacuatedAt:null, casualty:false,
+          exposure:0, wrongEntry:false, crushExposure:0, refugeEnteredAt:null, assistedReadyAt:0, opacity:1
+        });
+      }
+    }
+    updateAllStats();
+  }
+
+  function isVulnerable(p) {
+    return p.priority < 4;
+  }
+
+  function refugeForStair(stair) {
+    return REFUGE_POINTS.find(point => point.stairId === stair.id) || null;
+  }
+
+  function prepareRoutes() {
+    const sorted = [...state.people].sort((a,b) => a.priority - b.priority || a.id - b.id);
+    sorted.forEach((p, order) => {
+      const sameWingStairs = STAIRS.filter(stair => stair.corridorY === p.corridorY);
+      const preferred = p.x < CORRIDOR_CENTER_X ? sameWingStairs[0] : sameWingStairs[1];
+      if (state.mode === 'ai') {
+        p.stair = preferred;
+        p.releaseTime = p.priority * .55 + order * .002;
+        if (p.floor === 20) p.targetFloor = 21;
+        else p.targetFloor = 17;
+        if (isVulnerable(p)) {
+          p.refuge = refugeForStair(p.stair);
+          p.assistedReadyAt = p.releaseTime + (p.priority === 0 ? 4.5 : 2.2);
+        }
+      } else {
+        p.releaseTime = Math.random() * 5.5;
+        p.stair = Math.random() < .68
+          ? preferred
+          : STAIRS[Math.floor(Math.random() * STAIRS.length)];
+        if (p.floor === 18 && Math.random() < .36) p.targetFloor = 19;
+        else if (p.floor === 20 && Math.random() < .42) p.targetFloor = 19;
+        else if (p.floor === 19) p.targetFloor = Math.random() < .5 ? 18 : 20;
+        else p.targetFloor = p.floor < 19 ? 17 : 21;
+      }
+      p.route = buildHRoute(p, p.refuge || stairEntry(p.stair));
+      p.phase = 'followRoute';
+      p.target = p.route[0];
+    });
+  }
+
+  function stairEntry(stair) {
+    return {
+      x: stair.side === 'left' ? stair.x + stair.w + 4 : stair.x - 4,
+      y: stair.corridorY
+    };
+  }
+
+  function buildHRoute(person, destination) {
+    const route = [{ x:person.x, y:person.corridorY }];
+    if (person.corridorY !== destination.y) {
+      route.push({ x:CORRIDOR_CENTER_X, y:person.corridorY });
+      route.push({ x:CORRIDOR_CENTER_X, y:destination.y });
+    }
+    route.push(destination);
+    return route;
+  }
+
+  function drawFloor(floor) {
+    const ctx = contexts[floor];
+    ctx.clearRect(0,0,W,H);
+    const fire = floor === FIRE_FLOOR;
+    ctx.fillStyle = '#101827'; ctx.fillRect(0,0,W,H);
+    ctx.fillStyle = '#1d2a3b'; ctx.fillRect(32,34,W-64,H-68);
+    ctx.strokeStyle = fire ? '#7f1d1d' : '#3b4d66'; ctx.lineWidth = 3; ctx.strokeRect(32,34,W-64,H-68);
+
+    STAIRS.forEach(stair => drawStair(ctx, stair, floor));
+    if (state.mode === 'ai') drawRefugePoints(ctx);
+    drawRooms(ctx);
+    ctx.fillStyle = '#334155';
+    ctx.fillRect(148,82,824,56);
+    ctx.fillRect(148,212,824,56);
+    ctx.fillRect(526,82,68,186);
+    ctx.strokeStyle = '#64748b'; ctx.setLineDash([10,8]);
+    ctx.beginPath();ctx.moveTo(152,CORRIDOR_TOP);ctx.lineTo(968,CORRIDOR_TOP);ctx.stroke();
+    ctx.beginPath();ctx.moveTo(152,CORRIDOR_BOTTOM);ctx.lineTo(968,CORRIDOR_BOTTOM);ctx.stroke();
+    ctx.beginPath();ctx.moveTo(CORRIDOR_CENTER_X,CORRIDOR_TOP);ctx.lineTo(CORRIDOR_CENTER_X,CORRIDOR_BOTTOM);ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle='#94a3b8';ctx.font='bold 11px sans-serif';
+    ctx.fillText('H형 상부 피난복도',480,104);ctx.fillText('H형 하부 피난복도',480,234);
+    ctx.save();ctx.translate(550,188);ctx.rotate(-Math.PI/2);ctx.fillText('중앙 연결복도',0,0);ctx.restore();
+    drawDoors(ctx);
+
+    if (fire) {
+      const pulse = 1 + Math.sin(state.elapsed * 5) * .12;
+      const gradient = ctx.createRadialGradient(FIRE.x,FIRE.y,8,FIRE.x,FIRE.y,120);
+      gradient.addColorStop(0,'rgba(254,240,138,.95)');
+      gradient.addColorStop(.28,'rgba(249,115,22,.85)');
+      gradient.addColorStop(.55,'rgba(220,38,38,.62)');
+      gradient.addColorStop(1,'rgba(31,41,55,0)');
+      ctx.fillStyle=gradient;ctx.beginPath();ctx.arc(FIRE.x,FIRE.y,120*pulse,0,Math.PI*2);ctx.fill();
+      ctx.fillStyle='#fff';ctx.font='900 15px sans-serif';ctx.fillText('화재·연기 위험구역',493,119);
+    }
+
+    if (state.running && state.mode === 'ai') drawAIRoutes(ctx, floor);
+    for (const p of state.people) if (p.floor === floor && (!p.evacuated || state.elapsed-p.evacuatedAt<1.5)) drawPerson(ctx,p);
+  }
+
+  function drawRooms(ctx) {
+    const labels = ['사무실','회의실','업무공간','휴게실','서버실','사무실'];
+    for (let row=0;row<2;row++) for(let col=0;col<6;col++) {
+      const x=176+col*126, y=row===0?38:270;
+      ctx.fillStyle='#26364a';ctx.fillRect(x,y,112,45);
+      ctx.strokeStyle='#52657d';ctx.lineWidth=1.5;ctx.strokeRect(x,y,112,45);
+      ctx.fillStyle='#8294aa';ctx.font='9px sans-serif';ctx.fillText(labels[col],x+8,y+14);
+      ctx.fillStyle='#3b5068';ctx.fillRect(x+10,y+22,38,14);ctx.fillRect(x+63,y+22,38,14);
+    }
+  }
+
+  function drawDoors(ctx) {
+    ctx.fillStyle='#fbbf24';
+    for(let col=0;col<6;col++){const x=220+col*126;ctx.fillRect(x,79,18,4);ctx.fillRect(x,267,18,4)}
+  }
+
+  function drawStair(ctx,s,floor){
+    ctx.fillStyle='#0f3d35';ctx.fillRect(s.x,s.y,s.w,s.h);
+    ctx.strokeStyle='#34d399';ctx.lineWidth=2;ctx.strokeRect(s.x,s.y,s.w,s.h);
+    ctx.fillStyle='#a7f3d0';ctx.font='900 11px sans-serif';ctx.fillText(s.name,s.x+7,s.y+16);
+    ctx.font='9px sans-serif';
+    const direction = state.mode==='ai' ? (floor===20?'↑ 21F 피난방향':'↓ 17F 피난방향') : '↑↓ 자유 이동';
+    ctx.fillText(direction,s.x+8,s.y+32);
+    for(let i=0;i<4;i++){ctx.strokeStyle='#5eead4';ctx.beginPath();ctx.moveTo(s.x+14,s.y+43+i*7);ctx.lineTo(s.x+s.w-14,s.y+43+i*7);ctx.stroke()}
+  }
+
+  function drawRefugePoints(ctx){
+    for (const point of REFUGE_POINTS) {
+      ctx.fillStyle = 'rgba(236,72,153,.18)';
+      ctx.strokeStyle = '#ec4899';
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.roundRect(point.x - 18, point.y - 14, 36, 28, 7);
+      ctx.fill();
+      ctx.stroke();
+      ctx.fillStyle = '#fbcfe8';
+      ctx.font = '900 9px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('REF', point.x, point.y + 3);
+      ctx.textAlign = 'left';
+    }
+  }
+
+  function drawAIRoutes(ctx,floor){
+    ctx.strokeStyle='#22d3ee';ctx.lineWidth=3;ctx.setLineDash([10,7]);
+    ctx.beginPath();ctx.moveTo(152,CORRIDOR_TOP);ctx.lineTo(968,CORRIDOR_TOP);ctx.stroke();
+    ctx.beginPath();ctx.moveTo(152,CORRIDOR_BOTTOM);ctx.lineTo(968,CORRIDOR_BOTTOM);ctx.stroke();
+    ctx.beginPath();ctx.moveTo(CORRIDOR_CENTER_X,CORRIDOR_TOP);ctx.lineTo(CORRIDOR_CENTER_X,CORRIDOR_BOTTOM);ctx.stroke();ctx.setLineDash([]);
+    ctx.fillStyle='#67e8f9';ctx.font='bold 11px sans-serif';
+    ctx.fillText(floor===20?'19F 진입 금지 · H복도 4개 끝단 분산':'19F 회피 · H복도 4개 끝단 분산',418,196);
+  }
+
+  function drawPerson(ctx,p){
+    const type=TYPE_DEFS[p.typeKey];
+    let alpha=p.opacity;
+    if(p.evacuated) alpha=Math.max(0,1-(state.elapsed-p.evacuatedAt)/1.5);
+    ctx.globalAlpha=alpha;
+    ctx.fillStyle=p.evacuated?'#22c55e':p.casualty?'#991b1b':type.color;
+    ctx.beginPath();ctx.arc(p.x,p.y,p.priority<4?5.2:4.2,0,Math.PI*2);ctx.fill();
+    if(p.priority<4&&!p.evacuated){ctx.strokeStyle='#fff';ctx.lineWidth=1.2;ctx.beginPath();ctx.arc(p.x,p.y,7,0,Math.PI*2);ctx.stroke()}
+    if(type.mark&&!p.evacuated){ctx.fillStyle='#fff';ctx.font='bold 6px sans-serif';ctx.textAlign='center';ctx.fillText(type.mark,p.x,p.y+2);ctx.textAlign='left'}
+    ctx.globalAlpha=1;
+  }
+
+  function moveToward(p,target,dt,factor=1){
+    const dx=target.x-p.x,dy=target.y-p.y,dist=Math.max(.001,Math.hypot(dx,dy));
+    const step=Math.min(dist,p.speed*72*dt*factor);
+    p.x+=dx/dist*step;p.y+=dy/dist*step;
+    return dist<7;
+  }
+
+  function hasHigherPriorityNearby(p) {
+    if(state.mode!=='ai') return false;
+    return state.people.some(o=>o!==p&&!o.evacuated&&!o.casualty&&o.floor===p.floor&&o.priority<p.priority&&o.stair===p.stair&&Math.hypot(o.x-p.x,o.y-p.y)<55);
+  }
+
+  function stairLoad(p) {
+    return state.people.filter(o =>
+      o !== p && !o.evacuated && !o.casualty && o.floor === p.floor && o.stair === p.stair &&
+      ['inStair','refugeWait'].includes(o.phase)
+    ).length;
+  }
+
+  function transferFloor(p) {
+    const entry = stairEntry(p.stair);
+    if(p.targetFloor===19) {
+      p.floor=19;p.wrongEntry=true;p.phase='wanderFire';
+      p.x=entry.x;p.y=entry.y;
+      p.target={x:FIRE.x+(Math.random()-.5)*170,y:FIRE.y+(Math.random()-.5)*80};
+      return;
+    }
+    if((p.floor===19&&p.targetFloor===18)||(p.floor===20&&p.targetFloor===19)||(p.floor===18&&p.targetFloor===19)){
+      p.floor=p.targetFloor;p.x=entry.x;p.y=entry.y;
+      if(state.mode==='panic'&&p.floor===19){p.wrongEntry=true;p.phase='wanderFire';p.target={x:FIRE.x+(Math.random()-.5)*170,y:FIRE.y+(Math.random()-.5)*80}}
+      else {p.phase='exitFloor';p.targetFloor=p.floor<19?17:21;p.target={x:p.stair.x+p.stair.w/2,y:p.stair.y+p.stair.h/2}}
+      return;
+    }
+    completeEvacuation(p);
+  }
+
+  function completeEvacuation(p){
+    if(p.evacuated||p.casualty)return;
+    p.evacuated=true;p.evacuatedAt=state.elapsed;state.completionTimes.push(state.elapsed);
+  }
+
+  function updatePerson(p,dt){
+    if(p.evacuated||p.casualty||state.elapsed<p.releaseTime)return;
+    if(p.floor===19){
+      const distFire=Math.hypot(p.x-FIRE.x,p.y-FIRE.y);
+      const smoke=Math.max(0,1-distFire/210);
+      const exposureRate = state.mode==='panic' ? (.22+smoke*1.8) : (.035+smoke*.12);
+      p.exposure+=dt*exposureRate;
+      if(p.exposure>(state.mode==='panic'?5.8:18)){p.casualty=true;return}
+    }
+    if(p.phase==='followRoute'){
+      if(!p.target)p.target=p.route[0];
+      if(hasHigherPriorityNearby(p))return;
+      if(moveToward(p,p.target,dt,state.mode==='ai'?1.08:1)) {
+        p.route.shift();
+        p.target=p.route[0]||null;
+        if(!p.target) {
+          if (state.mode === 'ai' && p.refuge && isVulnerable(p) && !p.refugeEnteredAt) {
+            p.phase='refugeWait';
+            p.refugeEnteredAt=state.elapsed;
+            p.target=p.refuge;
+          } else {
+            p.phase='inStair';
+            p.target={x:p.stair.x+p.stair.w/2,y:p.stair.y+p.stair.h/2};
+          }
+        }
+      }
+    } else if(p.phase==='refugeWait'){
+      if(hasHigherPriorityNearby(p))return;
+      if(state.elapsed >= p.assistedReadyAt){
+        p.phase='inStair';
+        p.target={x:p.stair.x+p.stair.w/2,y:p.stair.y+p.stair.h/2};
+      }
+    } else if(p.phase==='toStair'){
+      if(hasHigherPriorityNearby(p))return;
+      if(moveToward(p,p.target,dt,state.mode==='ai'?1.08:1)){
+        p.phase='inStair';p.target={x:p.stair.x+p.stair.w/2,y:p.stair.y+p.stair.h/2}
+      }
+    } else if(p.phase==='inStair'){
+      if(hasHigherPriorityNearby(p))return;
+      const load = stairLoad(p);
+      if(state.mode === 'ai' && !isVulnerable(p) && load >= 7) return;
+      const capacityFactor = state.mode === 'ai' ? Math.max(.42, 1 - load * .055) : 1;
+      const stairSpeed = (state.mode === 'ai' && isVulnerable(p) ? .58 : .75) * capacityFactor;
+      if(moveToward(p,p.target,dt,stairSpeed))transferFloor(p);
+    } else if(p.phase==='exitFloor'){
+      if(moveToward(p,p.target,dt,.82))completeEvacuation(p);
+    } else if(p.phase==='wanderFire'){
+      if(moveToward(p,p.target,dt,.7)){p.target={x:330+Math.random()*460,y:145+Math.random()*65}}
+      if(p.exposure>2.5&&Math.random()<dt*.12){
+        p.stair=STAIRS[Math.floor(Math.random()*STAIRS.length)];
+        p.targetFloor=Math.random()<.5?18:20;
+        p.corridorY=Math.abs(p.y-CORRIDOR_TOP)<Math.abs(p.y-CORRIDOR_BOTTOM)?CORRIDOR_TOP:CORRIDOR_BOTTOM;
+        p.route=buildHRoute(p,stairEntry(p.stair));p.phase='followRoute';p.target=p.route[0];
+      }
+    }
+  }
+
+  function applyPanicCrush(dt){
+    if(state.mode!=='panic')return;
+    for(const p of state.people){
+      if(p.evacuated||p.casualty||!['followRoute','toStair'].includes(p.phase))continue;
+      const nearby=state.people.filter(o=>o!==p&&!o.evacuated&&!o.casualty&&o.floor===p.floor&&Math.hypot(o.x-p.x,o.y-p.y)<28).length;
+      if(nearby>=7)p.crushExposure+=dt*(nearby-5)*.35;else p.crushExposure=Math.max(0,p.crushExposure-dt*.2);
+      if(p.crushExposure>5.5)p.casualty=true;
+    }
+  }
+
+  function updateAllStats(){
+    const total=state.people.length||state.population;
+    const done=state.people.filter(p=>p.evacuated).length;
+    const casualties=state.people.filter(p=>p.casualty).length;
+    const wrong=state.people.filter(p=>p.wrongEntry).length;
+    const priorityPeople=state.people.filter(p=>p.priority<4);
+    const priorityDone=priorityPeople.filter(p=>p.evacuated).length;
+    document.getElementById('elapsedStat').textContent=formatTime(state.elapsed);
+    document.getElementById('totalStat').textContent=total.toLocaleString();
+    document.getElementById('doneStat').textContent=done.toLocaleString();
+    document.getElementById('activeStat').textContent=Math.max(0,total-done-casualties).toLocaleString();
+    document.getElementById('wrongStat').textContent=wrong.toLocaleString();
+    document.getElementById('casualtyStat').textContent=casualties.toLocaleString();
+    document.getElementById('priorityStat').textContent=priorityDone+'/'+priorityPeople.length;
+    document.getElementById('averageStat').textContent=state.completionTimes.length?formatTime(state.completionTimes.reduce((a,b)=>a+b,0)/state.completionTimes.length):'--';
+    updateTypeTable();updateFloorStats();
+  }
+
+  function updateTypeTable(){
+    for(const floor of FLOOR_IDS){
+      const floorPeople=state.people.filter(p=>p.originFloor===floor);
+      document.getElementById('typeTotal'+floor).textContent=`총 ${floorPeople.length}명`;
+      document.getElementById('typeTableBody'+floor).innerHTML=Object.entries(TYPE_DEFS).map(([key,t])=>{
+        const all=floorPeople.filter(p=>p.typeKey===key);
+        const done=all.filter(p=>p.evacuated).length;
+        const loss=all.filter(p=>p.casualty).length;
+        return `<tr><td><i class="type-dot" style="background:${t.color}"></i>${t.label}</td><td>${all.length}</td><td style="color:#059669">${done}</td><td>${all.length-done-loss}</td><td style="color:#dc2626">${loss}</td></tr>`;
+      }).join('');
+    }
+  }
+
+  function updateFloorStats(){
+    for(const floor of FLOOR_IDS){
+      const original=state.people.filter(p=>p.originFloor===floor);
+      const active=state.people.filter(p=>p.floor===floor&&!p.evacuated&&!p.casualty);
+      const done=original.filter(p=>p.evacuated).length;
+      const loss=original.filter(p=>p.casualty).length;
+      document.querySelector('#floorStat'+floor+' div').textContent=`배치 ${original.length}명 · 현재 ${active.length}명 · 완료 ${done}명 · 피해 ${loss}명`;
+      document.getElementById('summary'+floor).textContent=`현재 ${active.length}명 / 완료 ${done}명`;
+    }
+  }
+
+  function addLog(text,type=''){
+    const panel=document.getElementById('logPanel');
+    const line=document.createElement('div');line.className='log-line '+type;
+    line.textContent=`[${formatTime(state.elapsed)}] ${text}`;panel.appendChild(line);panel.scrollTop=panel.scrollHeight;
+  }
+
+  function tick(timestamp){
+    if(!state.running)return;
+    if(!state.lastTime)state.lastTime=timestamp;
+    const dt=Math.min(.05,(timestamp-state.lastTime)/1000)*state.speed;state.lastTime=timestamp;
+    if(!state.paused){
+      state.elapsed+=dt;
+      for(const p of state.people)updatePerson(p,dt);
+      applyPanicCrush(dt);
+      if(Math.floor(state.elapsed/5)!==state.logClock){
+        state.logClock=Math.floor(state.elapsed/5);
+        const wrong=state.people.filter(p=>p.wrongEntry).length;
+        if(state.mode==='ai')addLog(`19F 회피 안내 유지 · 안전 계단 분산 · 취약자 우선 통과`,'safe');
+        else if(wrong)addLog(`경고: 18F·20F 재실자 ${wrong}명 19F 오진입`,'panic');
+      }
+      updateAllStats();FLOOR_IDS.forEach(drawFloor);
+      const remaining=state.people.filter(p=>!p.evacuated&&!p.casualty).length;
+      if(remaining===0){finish();return}
+    }
+    state.raf=requestAnimationFrame(tick);
+  }
+
+  function start(){
+    if(state.running)return;
+    state.mode=document.getElementById('modeSelect').value;
+    state.population=Math.max(30,Math.min(1800,parseInt(document.getElementById('populationInput').value)||600));
+    state.speed=parseInt(document.getElementById('speedInput').value);
+    state.elapsed=0;state.completionTimes=[];state.logClock=-1;spawnPeople();prepareRoutes();
+    state.running=true;state.paused=false;state.lastTime=0;
+    document.getElementById('startBtn').disabled=true;document.getElementById('pauseBtn').disabled=false;
+    document.querySelectorAll('.engine').forEach(e=>e.classList.toggle('active',state.mode==='ai'));
+    document.getElementById('engineStatus').textContent=state.mode==='ai'?'Emergency Mode · 19F 회피 안내 가동':'패닉 모드 · AI 안내 없음';
+    addLog('19층 중앙 업무구역 화재 발생','fire');
+    if(state.mode==='ai'){
+      addLog('Prediction AI: 상층 연기 확산 및 계단 A/B 위험도 분석','safe');
+      addLog('Decision AI: 20F→21F, 19F·18F→17F. 화재층 우회 적용','safe');
+      addLog('취약자 우선대피 순서 활성화','safe');
+    }else{
+      addLog('AI 안내 없음. 재실자 자유의지 이동 시작','panic');
+      addLog('18F·20F 일부가 화재 발생층 19F 방향을 선택','panic');
+    }
+    state.raf=requestAnimationFrame(tick);
+  }
+
+  function finish(){
+    state.running=false;cancelAnimationFrame(state.raf);
+    document.getElementById('pauseBtn').disabled=true;document.getElementById('startBtn').textContent='시뮬레이션 완료';
+    addLog(`대피 종료 · 피해 ${state.people.filter(p=>p.casualty).length}명`,'safe');
+  }
+
+  function reset(){
+    state.running=false;state.paused=false;cancelAnimationFrame(state.raf);
+    state.population=Math.max(30,Math.min(1800,parseInt(document.getElementById('populationInput').value)||600));
+    state.elapsed=0;state.completionTimes=[];state.lastTime=0;state.logClock=-1;
+    document.getElementById('startBtn').disabled=false;document.getElementById('startBtn').textContent='화재 발생';
+    document.getElementById('pauseBtn').disabled=true;document.getElementById('pauseBtn').textContent='일시정지';
+    document.querySelectorAll('.engine').forEach(e=>e.classList.remove('active'));
+    document.getElementById('engineStatus').textContent='대기 중 · WiFi 위치추적 정상';
+    document.getElementById('logPanel').innerHTML='';
+    spawnPeople();FLOOR_IDS.forEach(drawFloor);addLog('50층 빌딩 18F·19F·20F 도면 및 재실자 위치 로딩 완료');
+  }
+
+  function selectMode(mode){
+    if(state.running)return;
+    state.mode=mode;document.getElementById('modeSelect').value=mode;
+    document.querySelectorAll('.mode-card').forEach(card=>card.classList.toggle('selected',card.dataset.mode===mode));
+    FLOOR_IDS.forEach(drawFloor);
+  }
+
+  function formatTime(seconds){const m=Math.floor(seconds/60),s=Math.floor(seconds%60);return String(m).padStart(2,'0')+':'+String(s).padStart(2,'0')}
+  document.getElementById('startBtn').addEventListener('click',start);
+  document.getElementById('resetBtn').addEventListener('click',reset);
+  document.getElementById('pauseBtn').addEventListener('click',()=>{state.paused=!state.paused;state.lastTime=0;document.getElementById('pauseBtn').textContent=state.paused?'재개':'일시정지'});
+  document.getElementById('populationInput').addEventListener('change',reset);
+  document.getElementById('speedInput').addEventListener('input',e=>{
+    state.speed=parseInt(e.target.value);
+    document.getElementById('speedValue').textContent=state.speed+'×';
+    document.getElementById('speedLabel').textContent=state.speed+'×';
+  });
+  document.getElementById('modeSelect').addEventListener('change',e=>selectMode(e.target.value));
+  document.querySelectorAll('.mode-card').forEach(card=>card.addEventListener('click',()=>selectMode(card.dataset.mode)));
+  reset();
+})();
+</script>
+</body>
+</html>

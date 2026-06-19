@@ -1,0 +1,280 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1800">
+  <!-- 도 1. 전체 시스템 구성도 (v2 - Patent Standard) -->
+
+  <!-- 제목 -->
+  <text x="600" y="40" text-anchor="middle" font-family="Malgun Gothic" font-size="28" font-weight="bold" fill="black">
+    도 1. 전체 시스템 구성도
+  </text>
+
+  <!-- 전체 외곽 박스 -->
+  <rect x="50" y="80" width="1100" height="1600" fill="none" stroke="black" stroke-width="3"/>
+
+  <!-- 서버 레이어 (200) -->
+  <rect x="100" y="120" width="1000" height="700" fill="none" stroke="black" stroke-width="2"/>
+  <text x="600" y="150" text-anchor="middle" font-family="Malgun Gothic" font-size="18" font-weight="bold">
+    서버 레이어 (200)
+  </text>
+
+  <!-- 온톨로지 관리부 (210) -->
+  <rect x="150" y="180" width="200" height="80" fill="none" stroke="black" stroke-width="2"/>
+  <text x="250" y="210" text-anchor="middle" font-family="Malgun Gothic" font-size="14" font-weight="bold">
+    온톨로지
+  </text>
+  <text x="250" y="230" text-anchor="middle" font-family="Malgun Gothic" font-size="14" font-weight="bold">
+    관리부
+  </text>
+  <text x="250" y="250" text-anchor="middle" font-family="Malgun Gothic" font-size="12">
+    (210)
+  </text>
+
+  <!-- 신뢰도 점수 산출부 (220) -->
+  <rect x="400" y="180" width="200" height="80" fill="none" stroke="black" stroke-width="2"/>
+  <text x="500" y="210" text-anchor="middle" font-family="Malgun Gothic" font-size="14" font-weight="bold">
+    신뢰도 점수
+  </text>
+  <text x="500" y="230" text-anchor="middle" font-family="Malgun Gothic" font-size="14" font-weight="bold">
+    산출부
+  </text>
+  <text x="500" y="250" text-anchor="middle" font-family="Malgun Gothic" font-size="12">
+    (220)
+  </text>
+
+  <!-- 위험지도 생성부 (230) -->
+  <rect x="650" y="180" width="200" height="80" fill="none" stroke="black" stroke-width="2"/>
+  <text x="750" y="210" text-anchor="middle" font-family="Malgun Gothic" font-size="14" font-weight="bold">
+    위험지도
+  </text>
+  <text x="750" y="230" text-anchor="middle" font-family="Malgun Gothic" font-size="14" font-weight="bold">
+    생성부
+  </text>
+  <text x="750" y="250" text-anchor="middle" font-family="Malgun Gothic" font-size="12">
+    (230)
+  </text>
+
+  <!-- 화살표: 210 → 220 -->
+  <line x1="350" y1="220" x2="400" y2="220" stroke="black" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+
+  <!-- 화살표: 220 → 230 -->
+  <line x1="600" y1="220" x2="650" y2="220" stroke="black" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+
+  <!-- 경로 추천부 (240) -->
+  <rect x="150" y="300" width="200" height="80" fill="none" stroke="black" stroke-width="2"/>
+  <text x="250" y="330" text-anchor="middle" font-family="Malgun Gothic" font-size="14" font-weight="bold">
+    경로
+  </text>
+  <text x="250" y="350" text-anchor="middle" font-family="Malgun Gothic" font-size="14" font-weight="bold">
+    추천부
+  </text>
+  <text x="250" y="370" text-anchor="middle" font-family="Malgun Gothic" font-size="12">
+    (240)
+  </text>
+
+  <!-- 역할 관리부 (250) -->
+  <rect x="400" y="300" width="200" height="80" fill="none" stroke="black" stroke-width="2"/>
+  <text x="500" y="330" text-anchor="middle" font-family="Malgun Gothic" font-size="14" font-weight="bold">
+    역할
+  </text>
+  <text x="500" y="350" text-anchor="middle" font-family="Malgun Gothic" font-size="14" font-weight="bold">
+    관리부
+  </text>
+  <text x="500" y="370" text-anchor="middle" font-family="Malgun Gothic" font-size="12">
+    (250)
+  </text>
+
+  <!-- 그룹 관리부 (260) -->
+  <rect x="650" y="300" width="200" height="80" fill="none" stroke="black" stroke-width="2"/>
+  <text x="750" y="330" text-anchor="middle" font-family="Malgun Gothic" font-size="14" font-weight="bold">
+    그룹
+  </text>
+  <text x="750" y="350" text-anchor="middle" font-family="Malgun Gothic" font-size="14" font-weight="bold">
+    관리부
+  </text>
+  <text x="750" y="370" text-anchor="middle" font-family="Malgun Gothic" font-size="12">
+    (260)
+  </text>
+
+  <!-- 화살표: 210 → 240 -->
+  <line x1="250" y1="260" x2="250" y2="300" stroke="black" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+
+  <!-- 화살표: 220 → 240 -->
+  <line x1="500" y1="260" x2="500" y2="280" stroke="black" stroke-width="1"/>
+  <line x1="500" y1="280" x2="250" y2="280" stroke="black" stroke-width="1"/>
+  <line x1="250" y1="280" x2="250" y2="300" stroke="black" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+
+  <!-- 화살표: 230 → 240 -->
+  <line x1="750" y1="260" x2="750" y2="280" stroke="black" stroke-width="1"/>
+  <line x1="750" y1="280" x2="250" y2="280" stroke="black" stroke-width="1"/>
+
+  <!-- 관제센터 연동부 (270) -->
+  <rect x="150" y="420" width="200" height="80" fill="none" stroke="black" stroke-width="2"/>
+  <text x="250" y="450" text-anchor="middle" font-family="Malgun Gothic" font-size="14" font-weight="bold">
+    관제센터
+  </text>
+  <text x="250" y="470" text-anchor="middle" font-family="Malgun Gothic" font-size="14" font-weight="bold">
+    연동부
+  </text>
+  <text x="250" y="490" text-anchor="middle" font-family="Malgun Gothic" font-size="12">
+    (270)
+  </text>
+
+  <!-- 구조대 연계부 (280) -->
+  <rect x="400" y="420" width="200" height="80" fill="none" stroke="black" stroke-width="2"/>
+  <text x="500" y="450" text-anchor="middle" font-family="Malgun Gothic" font-size="14" font-weight="bold">
+    구조대
+  </text>
+  <text x="500" y="470" text-anchor="middle" font-family="Malgun Gothic" font-size="14" font-weight="bold">
+    연계부
+  </text>
+  <text x="500" y="490" text-anchor="middle" font-family="Malgun Gothic" font-size="12">
+    (280)
+  </text>
+
+  <!-- API 연동부 (290) -->
+  <rect x="650" y="420" width="200" height="80" fill="none" stroke="black" stroke-width="2"/>
+  <text x="750" y="450" text-anchor="middle" font-family="Malgun Gothic" font-size="14" font-weight="bold">
+    API
+  </text>
+  <text x="750" y="470" text-anchor="middle" font-family="Malgun Gothic" font-size="14" font-weight="bold">
+    연동부
+  </text>
+  <text x="750" y="490" text-anchor="middle" font-family="Malgun Gothic" font-size="12">
+    (290)
+  </text>
+
+  <!-- 화살표: 240 → 270 -->
+  <line x1="250" y1="380" x2="250" y2="420" stroke="black" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+
+  <!-- 화살표: 240 → 280 -->
+  <line x1="250" y1="400" x2="280" y2="400" stroke="black" stroke-width="1"/>
+  <line x1="280" y1="400" x2="280" y2="460" stroke="black" stroke-width="1"/>
+  <line x1="280" y1="460" x2="400" y2="460" stroke="black" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+
+  <!-- 네트워크 (300) -->
+  <rect x="100" y="860" width="1000" height="60" fill="none" stroke="black" stroke-width="2"/>
+  <text x="600" y="895" text-anchor="middle" font-family="Malgun Gothic" font-size="16" font-weight="bold">
+    네트워크 (300)
+  </text>
+
+  <!-- 양방향 화살표: 서버 ↔ 네트워크 -->
+  <line x1="600" y1="820" x2="600" y2="860" stroke="black" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+  <line x1="620" y1="860" x2="620" y2="820" stroke="black" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+
+  <!-- 엣지 레이어 (100) -->
+  <rect x="100" y="960" width="1000" height="700" fill="none" stroke="black" stroke-width="2"/>
+  <text x="600" y="990" text-anchor="middle" font-family="Malgun Gothic" font-size="18" font-weight="bold">
+    엣지 레이어 (100)
+  </text>
+
+  <!-- 외부 자극 수집부 (110) -->
+  <rect x="150" y="1020" width="200" height="80" fill="none" stroke="black" stroke-width="2"/>
+  <text x="250" y="1050" text-anchor="middle" font-family="Malgun Gothic" font-size="14" font-weight="bold">
+    외부 자극
+  </text>
+  <text x="250" y="1070" text-anchor="middle" font-family="Malgun Gothic" font-size="14" font-weight="bold">
+    수집부
+  </text>
+  <text x="250" y="1090" text-anchor="middle" font-family="Malgun Gothic" font-size="12">
+    (110)
+  </text>
+
+  <!-- 로컬 전처리부 (120) -->
+  <rect x="400" y="1020" width="200" height="80" fill="none" stroke="black" stroke-width="2"/>
+  <text x="500" y="1050" text-anchor="middle" font-family="Malgun Gothic" font-size="14" font-weight="bold">
+    로컬
+  </text>
+  <text x="500" y="1070" text-anchor="middle" font-family="Malgun Gothic" font-size="14" font-weight="bold">
+    전처리부
+  </text>
+  <text x="500" y="1090" text-anchor="middle" font-family="Malgun Gothic" font-size="12">
+    (120)
+  </text>
+
+  <!-- 캐싱부 (130) -->
+  <rect x="650" y="1020" width="200" height="80" fill="none" stroke="black" stroke-width="2"/>
+  <text x="750" y="1050" text-anchor="middle" font-family="Malgun Gothic" font-size="14" font-weight="bold">
+    캐싱부
+  </text>
+  <text x="750" y="1090" text-anchor="middle" font-family="Malgun Gothic" font-size="12">
+    (130)
+  </text>
+
+  <!-- 화살표: 110 → 120 -->
+  <line x1="350" y1="1060" x2="400" y2="1060" stroke="black" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+
+  <!-- 화살표: 120 → 130 -->
+  <line x1="600" y1="1060" x2="650" y2="1060" stroke="black" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+
+  <!-- 양방향 화살표: 엣지 ↔ 네트워크 -->
+  <line x1="600" y1="960" x2="600" y2="920" stroke="black" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+  <line x1="620" y1="920" x2="620" y2="960" stroke="black" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+
+  <!-- 사용자 단말 (140) -->
+  <rect x="150" y="1140" width="700" height="180" fill="none" stroke="black" stroke-width="2"/>
+  <text x="500" y="1170" text-anchor="middle" font-family="Malgun Gothic" font-size="16" font-weight="bold">
+    사용자 단말 (140)
+  </text>
+
+  <!-- 센서 모듈 (141) -->
+  <rect x="180" y="1200" width="300" height="100" fill="none" stroke="black" stroke-width="1"/>
+  <text x="330" y="1225" text-anchor="middle" font-family="Malgun Gothic" font-size="13" font-weight="bold">
+    센서 모듈 (141)
+  </text>
+  <text x="200" y="1250" font-family="Malgun Gothic" font-size="11">
+    • 마이크
+  </text>
+  <text x="200" y="1268" font-family="Malgun Gothic" font-size="11">
+    • 가속도계
+  </text>
+  <text x="200" y="1286" font-family="Malgun Gothic" font-size="11">
+    • 조도센서
+  </text>
+  <text x="350" y="1250" font-family="Malgun Gothic" font-size="11">
+    • WiFi/BLE
+  </text>
+  <text x="350" y="1268" font-family="Malgun Gothic" font-size="11">
+    • IMU/기압계
+  </text>
+
+  <!-- 출력부 (142) -->
+  <rect x="520" y="1200" width="300" height="100" fill="none" stroke="black" stroke-width="1"/>
+  <text x="670" y="1225" text-anchor="middle" font-family="Malgun Gothic" font-size="13" font-weight="bold">
+    출력부 (142)
+  </text>
+  <text x="540" y="1250" font-family="Malgun Gothic" font-size="11">
+    • 화면
+  </text>
+  <text x="540" y="1268" font-family="Malgun Gothic" font-size="11">
+    • 스피커
+  </text>
+  <text x="540" y="1286" font-family="Malgun Gothic" font-size="11">
+    • 진동
+  </text>
+
+  <!-- 화살표: 141 → 110 -->
+  <line x1="250" y1="1200" x2="250" y2="1100" stroke="black" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+
+  <!-- 부호 설명 박스 -->
+  <rect x="100" y="1400" width="1000" height="260" fill="none" stroke="black" stroke-width="1" stroke-dasharray="8,5"/>
+  <text x="600" y="1430" text-anchor="middle" font-family="Malgun Gothic" font-size="14" font-weight="bold">
+    부호 설명
+  </text>
+
+  <text x="120" y="1460" font-family="Malgun Gothic" font-size="12" font-weight="bold">100: 엣지 레이어</text>
+  <text x="120" y="1480" font-family="Malgun Gothic" font-size="11">     110: 외부 자극 수집부, 120: 로컬 전처리부, 130: 캐싱부</text>
+  <text x="120" y="1500" font-family="Malgun Gothic" font-size="11">     140: 사용자 단말, 141: 센서 모듈, 142: 출력부</text>
+
+  <text x="120" y="1530" font-family="Malgun Gothic" font-size="12" font-weight="bold">200: 서버 레이어</text>
+  <text x="120" y="1550" font-family="Malgun Gothic" font-size="11">     210: 온톨로지 관리부, 220: 신뢰도 점수 산출부, 230: 위험지도 생성부</text>
+  <text x="120" y="1570" font-family="Malgun Gothic" font-size="11">     240: 경로 추천부, 250: 역할 관리부, 260: 그룹 관리부</text>
+  <text x="120" y="1590" font-family="Malgun Gothic" font-size="11">     270: 관제센터 연동부, 280: 구조대 연계부, 290: API 연동부</text>
+
+  <text x="120" y="1620" font-family="Malgun Gothic" font-size="12" font-weight="bold">300: 네트워크</text>
+  <text x="120" y="1640" font-family="Malgun Gothic" font-size="11">     엣지 레이어(100)와 서버 레이어(200)를 연결</text>
+
+  <!-- 화살표 마커 정의 -->
+  <defs>
+    <marker id="arrowhead" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+      <polygon points="0 0, 10 3, 0 6" fill="black"/>
+    </marker>
+  </defs>
+</svg>

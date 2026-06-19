@@ -1,0 +1,247 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1300 1400">
+  <!-- 도 6. 취약계층 안전 마진 적용 매트릭스 (v2 - Patent Standard) -->
+
+  <!-- 제목 -->
+  <text x="650" y="40" text-anchor="middle" font-family="Malgun Gothic" font-size="28" font-weight="bold" fill="black">
+    도 6. 취약계층 안전 마진 적용 매트릭스
+  </text>
+
+  <!-- 전체 테이블 외곽 -->
+  <rect x="50" y="80" width="1200" height="960" fill="none" stroke="black" stroke-width="3"/>
+
+  <!-- 제목 행 -->
+  <rect x="50" y="80" width="1200" height="50" fill="none" stroke="black" stroke-width="2"/>
+  <text x="650" y="110" text-anchor="middle" font-family="Malgun Gothic" font-size="16" font-weight="bold">
+    취약계층 안전 마진 적용 매트릭스 (260)
+  </text>
+
+  <!-- 헤더 행 -->
+  <rect x="50" y="130" width="180" height="70" fill="none" stroke="black" stroke-width="2"/>
+  <text x="140" y="170" text-anchor="middle" font-family="Malgun Gothic" font-size="13" font-weight="bold">취약계층 유형</text>
+
+  <rect x="230" y="130" width="150" height="70" fill="none" stroke="black" stroke-width="2"/>
+  <text x="305" y="160" text-anchor="middle" font-family="Malgun Gothic" font-size="12" font-weight="bold">연기</text>
+  <text x="305" y="180" text-anchor="middle" font-family="Malgun Gothic" font-size="12" font-weight="bold">가중치</text>
+
+  <rect x="380" y="130" width="150" height="70" fill="none" stroke="black" stroke-width="2"/>
+  <text x="455" y="160" text-anchor="middle" font-family="Malgun Gothic" font-size="12" font-weight="bold">계단</text>
+  <text x="455" y="180" text-anchor="middle" font-family="Malgun Gothic" font-size="12" font-weight="bold">사용</text>
+
+  <rect x="530" y="130" width="150" height="70" fill="none" stroke="black" stroke-width="2"/>
+  <text x="605" y="160" text-anchor="middle" font-family="Malgun Gothic" font-size="12" font-weight="bold">혼잡</text>
+  <text x="605" y="180" text-anchor="middle" font-family="Malgun Gothic" font-size="12" font-weight="bold">가중치</text>
+
+  <rect x="680" y="130" width="150" height="70" fill="none" stroke="black" stroke-width="2"/>
+  <text x="755" y="160" text-anchor="middle" font-family="Malgun Gothic" font-size="12" font-weight="bold">이동</text>
+  <text x="755" y="180" text-anchor="middle" font-family="Malgun Gothic" font-size="12" font-weight="bold">속도</text>
+
+  <rect x="830" y="130" width="420" height="70" fill="none" stroke="black" stroke-width="2"/>
+  <text x="1040" y="170" text-anchor="middle" font-family="Malgun Gothic" font-size="12" font-weight="bold">안내 채널</text>
+
+  <!-- 행 1: 일반 사용자 -->
+  <rect x="50" y="200" width="180" height="70" fill="none" stroke="black" stroke-width="1"/>
+  <text x="140" y="240" text-anchor="middle" font-family="Malgun Gothic" font-size="12">일반 사용자</text>
+
+  <rect x="230" y="200" width="150" height="70" fill="none" stroke="black" stroke-width="1"/>
+  <text x="305" y="240" text-anchor="middle" font-family="Malgun Gothic" font-size="12">1.0</text>
+
+  <rect x="380" y="200" width="150" height="70" fill="none" stroke="black" stroke-width="1"/>
+  <text x="455" y="240" text-anchor="middle" font-family="Malgun Gothic" font-size="12">O</text>
+
+  <rect x="530" y="200" width="150" height="70" fill="none" stroke="black" stroke-width="1"/>
+  <text x="605" y="240" text-anchor="middle" font-family="Malgun Gothic" font-size="12">1.0</text>
+
+  <rect x="680" y="200" width="150" height="70" fill="none" stroke="black" stroke-width="1"/>
+  <text x="755" y="240" text-anchor="middle" font-family="Malgun Gothic" font-size="12">1.4m/s</text>
+
+  <rect x="830" y="200" width="420" height="70" fill="none" stroke="black" stroke-width="1"/>
+  <text x="1040" y="240" text-anchor="middle" font-family="Malgun Gothic" font-size="11">시각 + 음성</text>
+
+  <!-- 행 2: 고령자 -->
+  <rect x="50" y="270" width="180" height="70" fill="none" stroke="black" stroke-width="1"/>
+  <text x="140" y="310" text-anchor="middle" font-family="Malgun Gothic" font-size="12">고령자</text>
+
+  <rect x="230" y="270" width="150" height="70" fill="none" stroke="black" stroke-width="1"/>
+  <text x="305" y="310" text-anchor="middle" font-family="Malgun Gothic" font-size="12">1.5</text>
+
+  <rect x="380" y="270" width="150" height="70" fill="none" stroke="black" stroke-width="1"/>
+  <text x="455" y="310" text-anchor="middle" font-family="Malgun Gothic" font-size="12">△</text>
+
+  <rect x="530" y="270" width="150" height="70" fill="none" stroke="black" stroke-width="1"/>
+  <text x="605" y="310" text-anchor="middle" font-family="Malgun Gothic" font-size="12">1.5</text>
+
+  <rect x="680" y="270" width="150" height="70" fill="none" stroke="black" stroke-width="1"/>
+  <text x="755" y="310" text-anchor="middle" font-family="Malgun Gothic" font-size="12">0.8m/s</text>
+
+  <rect x="830" y="270" width="420" height="70" fill="none" stroke="black" stroke-width="1"/>
+  <text x="1040" y="310" text-anchor="middle" font-family="Malgun Gothic" font-size="11">시각 + 음성</text>
+
+  <!-- 행 3: 어린이 -->
+  <rect x="50" y="340" width="180" height="80" fill="none" stroke="black" stroke-width="1"/>
+  <text x="140" y="385" text-anchor="middle" font-family="Malgun Gothic" font-size="12">어린이</text>
+
+  <rect x="230" y="340" width="150" height="80" fill="none" stroke="black" stroke-width="1"/>
+  <text x="305" y="385" text-anchor="middle" font-family="Malgun Gothic" font-size="12">1.5</text>
+
+  <rect x="380" y="340" width="150" height="80" fill="none" stroke="black" stroke-width="1"/>
+  <text x="455" y="385" text-anchor="middle" font-family="Malgun Gothic" font-size="12">△</text>
+
+  <rect x="530" y="340" width="150" height="80" fill="none" stroke="black" stroke-width="1"/>
+  <text x="605" y="385" text-anchor="middle" font-family="Malgun Gothic" font-size="12">2.0</text>
+
+  <rect x="680" y="340" width="150" height="80" fill="none" stroke="black" stroke-width="1"/>
+  <text x="755" y="385" text-anchor="middle" font-family="Malgun Gothic" font-size="12">0.9m/s</text>
+
+  <rect x="830" y="340" width="420" height="80" fill="none" stroke="black" stroke-width="1"/>
+  <text x="1040" y="375" text-anchor="middle" font-family="Malgun Gothic" font-size="11">시각 + 음성</text>
+  <text x="1040" y="395" text-anchor="middle" font-family="Malgun Gothic" font-size="11">+ 보호자 동기</text>
+
+  <!-- 행 4: 휠체어 사용자 -->
+  <rect x="50" y="420" width="180" height="70" fill="none" stroke="black" stroke-width="1"/>
+  <text x="140" y="460" text-anchor="middle" font-family="Malgun Gothic" font-size="12">휠체어 사용자</text>
+
+  <rect x="230" y="420" width="150" height="70" fill="none" stroke="black" stroke-width="1"/>
+  <text x="305" y="460" text-anchor="middle" font-family="Malgun Gothic" font-size="12">1.0</text>
+
+  <rect x="380" y="420" width="150" height="70" fill="none" stroke="black" stroke-width="1"/>
+  <text x="455" y="460" text-anchor="middle" font-family="Malgun Gothic" font-size="12">X</text>
+
+  <rect x="530" y="420" width="150" height="70" fill="none" stroke="black" stroke-width="1"/>
+  <text x="605" y="460" text-anchor="middle" font-family="Malgun Gothic" font-size="12">2.0</text>
+
+  <rect x="680" y="420" width="150" height="70" fill="none" stroke="black" stroke-width="1"/>
+  <text x="755" y="460" text-anchor="middle" font-family="Malgun Gothic" font-size="12">0.6m/s</text>
+
+  <rect x="830" y="420" width="420" height="70" fill="none" stroke="black" stroke-width="1"/>
+  <text x="1040" y="460" text-anchor="middle" font-family="Malgun Gothic" font-size="11">시각 + 음성</text>
+
+  <!-- 행 5: 시각장애인 -->
+  <rect x="50" y="490" width="180" height="70" fill="none" stroke="black" stroke-width="1"/>
+  <text x="140" y="530" text-anchor="middle" font-family="Malgun Gothic" font-size="12">시각장애인</text>
+
+  <rect x="230" y="490" width="150" height="70" fill="none" stroke="black" stroke-width="1"/>
+  <text x="305" y="530" text-anchor="middle" font-family="Malgun Gothic" font-size="12">1.5</text>
+
+  <rect x="380" y="490" width="150" height="70" fill="none" stroke="black" stroke-width="1"/>
+  <text x="455" y="530" text-anchor="middle" font-family="Malgun Gothic" font-size="12">△</text>
+
+  <rect x="530" y="490" width="150" height="70" fill="none" stroke="black" stroke-width="1"/>
+  <text x="605" y="530" text-anchor="middle" font-family="Malgun Gothic" font-size="12">1.5</text>
+
+  <rect x="680" y="490" width="150" height="70" fill="none" stroke="black" stroke-width="1"/>
+  <text x="755" y="530" text-anchor="middle" font-family="Malgun Gothic" font-size="12">0.7m/s</text>
+
+  <rect x="830" y="490" width="420" height="70" fill="none" stroke="black" stroke-width="1"/>
+  <text x="1040" y="530" text-anchor="middle" font-family="Malgun Gothic" font-size="11">음성 + 진동</text>
+
+  <!-- 행 6: 청각장애인 -->
+  <rect x="50" y="560" width="180" height="70" fill="none" stroke="black" stroke-width="1"/>
+  <text x="140" y="600" text-anchor="middle" font-family="Malgun Gothic" font-size="12">청각장애인</text>
+
+  <rect x="230" y="560" width="150" height="70" fill="none" stroke="black" stroke-width="1"/>
+  <text x="305" y="600" text-anchor="middle" font-family="Malgun Gothic" font-size="12">1.0</text>
+
+  <rect x="380" y="560" width="150" height="70" fill="none" stroke="black" stroke-width="1"/>
+  <text x="455" y="600" text-anchor="middle" font-family="Malgun Gothic" font-size="12">O</text>
+
+  <rect x="530" y="560" width="150" height="70" fill="none" stroke="black" stroke-width="1"/>
+  <text x="605" y="600" text-anchor="middle" font-family="Malgun Gothic" font-size="12">1.5</text>
+
+  <rect x="680" y="560" width="150" height="70" fill="none" stroke="black" stroke-width="1"/>
+  <text x="755" y="600" text-anchor="middle" font-family="Malgun Gothic" font-size="12">1.2m/s</text>
+
+  <rect x="830" y="560" width="420" height="70" fill="none" stroke="black" stroke-width="1"/>
+  <text x="1040" y="600" text-anchor="middle" font-family="Malgun Gothic" font-size="11">시각 + 진동</text>
+
+  <!-- 행 7: 호흡기 환자 -->
+  <rect x="50" y="630" width="180" height="70" fill="none" stroke="black" stroke-width="1"/>
+  <text x="140" y="670" text-anchor="middle" font-family="Malgun Gothic" font-size="12">호흡기 환자</text>
+
+  <rect x="230" y="630" width="150" height="70" fill="none" stroke="black" stroke-width="1"/>
+  <text x="305" y="670" text-anchor="middle" font-family="Malgun Gothic" font-size="12" font-weight="bold">3.0</text>
+
+  <rect x="380" y="630" width="150" height="70" fill="none" stroke="black" stroke-width="1"/>
+  <text x="455" y="670" text-anchor="middle" font-family="Malgun Gothic" font-size="12">O</text>
+
+  <rect x="530" y="630" width="150" height="70" fill="none" stroke="black" stroke-width="1"/>
+  <text x="605" y="670" text-anchor="middle" font-family="Malgun Gothic" font-size="12">1.5</text>
+
+  <rect x="680" y="630" width="150" height="70" fill="none" stroke="black" stroke-width="1"/>
+  <text x="755" y="670" text-anchor="middle" font-family="Malgun Gothic" font-size="12">0.8m/s</text>
+
+  <rect x="830" y="630" width="420" height="70" fill="none" stroke="black" stroke-width="1"/>
+  <text x="1040" y="670" text-anchor="middle" font-family="Malgun Gothic" font-size="11">시각 + 음성</text>
+
+  <!-- 행 8: 임산부 -->
+  <rect x="50" y="700" width="180" height="70" fill="none" stroke="black" stroke-width="1"/>
+  <text x="140" y="740" text-anchor="middle" font-family="Malgun Gothic" font-size="12">임산부</text>
+
+  <rect x="230" y="700" width="150" height="70" fill="none" stroke="black" stroke-width="1"/>
+  <text x="305" y="740" text-anchor="middle" font-family="Malgun Gothic" font-size="12">1.5</text>
+
+  <rect x="380" y="700" width="150" height="70" fill="none" stroke="black" stroke-width="1"/>
+  <text x="455" y="740" text-anchor="middle" font-family="Malgun Gothic" font-size="12">△</text>
+
+  <rect x="530" y="700" width="150" height="70" fill="none" stroke="black" stroke-width="1"/>
+  <text x="605" y="740" text-anchor="middle" font-family="Malgun Gothic" font-size="12">2.0</text>
+
+  <rect x="680" y="700" width="150" height="70" fill="none" stroke="black" stroke-width="1"/>
+  <text x="755" y="740" text-anchor="middle" font-family="Malgun Gothic" font-size="12">0.9m/s</text>
+
+  <rect x="830" y="700" width="420" height="70" fill="none" stroke="black" stroke-width="1"/>
+  <text x="1040" y="740" text-anchor="middle" font-family="Malgun Gothic" font-size="11">시각 + 음성</text>
+
+  <!-- 행 9: 부상자 -->
+  <rect x="50" y="770" width="180" height="80" fill="none" stroke="black" stroke-width="1"/>
+  <text x="140" y="815" text-anchor="middle" font-family="Malgun Gothic" font-size="12">부상자</text>
+
+  <rect x="230" y="770" width="150" height="80" fill="none" stroke="black" stroke-width="1"/>
+  <text x="305" y="815" text-anchor="middle" font-family="Malgun Gothic" font-size="12">1.5</text>
+
+  <rect x="380" y="770" width="150" height="80" fill="none" stroke="black" stroke-width="1"/>
+  <text x="455" y="815" text-anchor="middle" font-family="Malgun Gothic" font-size="12">X</text>
+
+  <rect x="530" y="770" width="150" height="80" fill="none" stroke="black" stroke-width="1"/>
+  <text x="605" y="815" text-anchor="middle" font-family="Malgun Gothic" font-size="12">2.0</text>
+
+  <rect x="680" y="770" width="150" height="80" fill="none" stroke="black" stroke-width="1"/>
+  <text x="755" y="815" text-anchor="middle" font-family="Malgun Gothic" font-size="12">0.5m/s</text>
+
+  <rect x="830" y="770" width="420" height="80" fill="none" stroke="black" stroke-width="1"/>
+  <text x="1040" y="805" text-anchor="middle" font-family="Malgun Gothic" font-size="11">시각 + 음성</text>
+  <text x="1040" y="825" text-anchor="middle" font-family="Malgun Gothic" font-size="11">+ 구조 우선</text>
+
+  <!-- 행 10: 미응답자 -->
+  <rect x="50" y="850" width="180" height="80" fill="none" stroke="black" stroke-width="1"/>
+  <text x="140" y="895" text-anchor="middle" font-family="Malgun Gothic" font-size="12">미응답자</text>
+
+  <rect x="230" y="850" width="150" height="80" fill="none" stroke="black" stroke-width="1"/>
+  <text x="305" y="895" text-anchor="middle" font-family="Malgun Gothic" font-size="12">2.0</text>
+
+  <rect x="380" y="850" width="150" height="80" fill="none" stroke="black" stroke-width="1"/>
+  <text x="455" y="895" text-anchor="middle" font-family="Malgun Gothic" font-size="12">?</text>
+
+  <rect x="530" y="850" width="150" height="80" fill="none" stroke="black" stroke-width="1"/>
+  <text x="605" y="895" text-anchor="middle" font-family="Malgun Gothic" font-size="12">3.0</text>
+
+  <rect x="680" y="850" width="150" height="80" fill="none" stroke="black" stroke-width="1"/>
+  <text x="755" y="895" text-anchor="middle" font-family="Malgun Gothic" font-size="12">0.0m/s</text>
+
+  <rect x="830" y="850" width="420" height="80" fill="none" stroke="black" stroke-width="1"/>
+  <text x="1040" y="885" text-anchor="middle" font-family="Malgun Gothic" font-size="11">관제센터</text>
+  <text x="1040" y="905" text-anchor="middle" font-family="Malgun Gothic" font-size="11">확인 요청</text>
+
+  <!-- 범례 박스 -->
+  <rect x="50" y="960" width="1200" height="100" fill="none" stroke="black" stroke-width="1" stroke-dasharray="8,5"/>
+  <text x="650" y="990" text-anchor="middle" font-family="Malgun Gothic" font-size="14" font-weight="bold">
+    범례
+  </text>
+
+  <text x="70" y="1020" font-family="Malgun Gothic" font-size="12">O: 사용 가능</text>
+  <text x="250" y="1020" font-family="Malgun Gothic" font-size="12">△: 제한적 사용</text>
+  <text x="450" y="1020" font-family="Malgun Gothic" font-size="12">X: 사용 불가</text>
+  <text x="650" y="1020" font-family="Malgun Gothic" font-size="12">?: 상태 확인 필요</text>
+
+  <text x="70" y="1045" font-family="Malgun Gothic" font-size="11" font-weight="bold">(260): 그룹 관리부 참조, 안전 마진 매트릭스는 경로 비용 함수 (S310)에 반영됨</text>
+
+</svg>

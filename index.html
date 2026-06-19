@@ -191,11 +191,13 @@
           <li><a href="pages/b-industrial-architecture.html">B. 산업 아키텍처</a></li>
           <li><a href="pages/c-shipyard-proposal.html">C. 조선소 제안</a></li>
           <li><a href="pages/d-insurance-risk-model.html">D. 보험 리스크</a></li>
-          <li><a href="pages/simulation.html">시뮬레이션</a></li>
+          <li><a href="./pages/simulation-menu.html" onclick="window.location.assign('./pages/simulation-menu.html'); return false;">시뮬레이션</a></li>
           <li><a href="pages/risk-map.html">위험지도</a></li>
+          <li><a href="pages/evacuation-time-optimizer.html">군중분산최적화</a></li>
           <li><a href="pages/route-optimizer.html">경로최적화</a></li>
           <li><a href="manual.html" style="color:#DB2777;">매뉴얼</a></li>
           <li><a href="docs/diagrams/architecture.svg" style="color:#7C3AED;">구조도</a></li>
+          <li><a href="Mobile/smartphone-poc.html" style="color:#10B981;font-weight:700;">v3.0 PoC ★</a></li>
         </ul>
         <button class="nav-mobile-toggle">&#9776;</button>
       </div>
@@ -273,9 +275,8 @@
                 <a href="pptx_images/FireNavi__생존을_설계하는_AI.mp4" style="color:#fbbf24;">영상 다운로드</a>
               </video>
             </div>
-            <div style="margin-top:10px;font-size:0.72rem;color:#64748B;text-align:right;">
-              ※ YouTube 원본은 임베드 차단(오류 153) ·
-              <a href="https://youtu.be/DRqr6JlSFbA" target="_blank" rel="noopener" style="color:#B91C1C;text-decoration:underline;font-weight:600;">YouTube에서 직접 보기 ↗</a>
+            <div style="margin-top:10px;font-size:0.72rem;color:#94A3B8;text-align:right;">
+              <a href="https://youtu.be/DRqr6JlSFbA" target="_blank" rel="noopener" style="color:#F8E7B0;text-decoration:none;font-weight:700;">원본 영상 보기 ↗</a>
             </div>
           </div>
         </div>
@@ -859,14 +860,14 @@
       </div>
 
       <div class="card-grid">
-        <div class="card card--sim animate-in">
-          <div class="card-icon card-icon--sim">&#x1F3AE;</div>
-          <h3 class="card-title">실시간 시뮬레이션</h3>
-          <p class="card-desc">
-            유람선 내 화재 발생부터 전원 대피까지의 전 과정을 실시간 시뮬레이션으로 확인
-          </p>
-          <a href="pages/simulation.html" class="card-link card-link--B">시뮬레이션 실행 &rarr;</a>
-        </div>
+        <div class="card card--sim animate-in" role="link" tabindex="0" onclick="window.location.assign('./pages/simulation-menu.html')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();window.location.assign('./pages/simulation-menu.html')}" style="cursor:pointer;">
+        <div class="card-icon card-icon--sim">&#x1F3AE;</div>
+        <h3 class="card-title">실시간 시뮬레이션</h3>
+        <p class="card-desc">
+            크루즈선, 초고층빌딩, BTS 공연장 화재 발생부터 전원 대피까지의 과정을 상황별 시뮬레이션으로 확인
+        </p>
+        <a href="./pages/simulation-menu.html" class="card-link card-link--B" onclick="window.location.assign('./pages/simulation-menu.html'); return false;">시뮬레이션 메뉴 &rarr;</a>
+      </div>
 
         <div class="card card--sim animate-in">
           <div class="card-icon" style="background:rgba(229,62,62,0.15);color:var(--danger);">&#x1F5FA;&#xFE0F;</div>
@@ -875,6 +876,15 @@
             다중 위험요소 가중합 기반 실시간 위험지도 생성 및 시각화
           </p>
           <a href="pages/risk-map.html" class="card-link card-link--A">위험지도 보기 &rarr;</a>
+        </div>
+
+        <div class="card card--sim animate-in">
+          <div class="card-icon" style="background:rgba(201,169,97,0.16);color:var(--warning);">&#x23F1;&#xFE0F;</div>
+          <h3 class="card-title">군중분산최적화</h3>
+          <p class="card-desc">
+            출구별 부하와 통로 밀집도를 균등화해 병목을 줄이고 평균 대피시간을 최소화
+          </p>
+          <a href="pages/evacuation-time-optimizer.html" class="card-link card-link--B">분산 최적화 &rarr;</a>
         </div>
 
         <div class="card card--sim animate-in">
@@ -1025,8 +1035,9 @@
           <div class="footer-col">
             <h4 class="footer-col-title">Interactive</h4>
             <ul class="footer-links">
-              <li><a href="pages/simulation.html">실시간 시뮬레이션</a></li>
+              <li><a href="./pages/simulation-menu.html" onclick="window.location.assign('./pages/simulation-menu.html'); return false;">시뮬레이션 메뉴</a></li>
               <li><a href="pages/risk-map.html">동적 위험지도</a></li>
+              <li><a href="pages/evacuation-time-optimizer.html">군중분산최적화</a></li>
               <li><a href="pages/route-optimizer.html">경로 최적화</a></li>
             </ul>
           </div>
@@ -1037,6 +1048,9 @@
             <ul class="footer-links">
               <li><a href="manual.html">매뉴얼 페이지</a></li>
               <li><a href="docs/diagrams/architecture.svg">아키텍처 구조도</a></li>
+              <li><a href="Mobile/smartphone-poc.html" style="color:#10B981;">v3.0 PoC 데모 ★</a></li>
+              <li><a href="Mobile/smartphone_first_architecture.md">v3.0 아키텍처</a></li>
+              <li><a href="Mobile/PIVOT_v2_to_v3.md">v2→v3 피벗 정리서</a></li>
             </ul>
             <h4 class="footer-col-title" style="margin-top:20px;">Contact</h4>
             <ul class="footer-links">

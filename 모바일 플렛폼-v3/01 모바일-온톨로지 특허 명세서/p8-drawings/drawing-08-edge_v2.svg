@@ -1,0 +1,141 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 1700">
+  <!-- 도 8. 엣지-서버 분리 아키텍처 상세도 (v2 - Patent Standard) -->
+
+  <!-- 제목 -->
+  <text x="550" y="40" text-anchor="middle" font-family="Malgun Gothic" font-size="28" font-weight="bold" fill="black">
+    도 8. 엣지-서버 분리 아키텍처 상세도
+  </text>
+
+  <!-- 사용자 단말 (엣지 레이어) (100) -->
+  <rect x="100" y="80" width="900" height="650" fill="none" stroke="black" stroke-width="3"/>
+  <text x="550" y="110" text-anchor="middle" font-family="Malgun Gothic" font-size="16" font-weight="bold">
+    사용자 단말 (엣지 레이어) (100)
+  </text>
+
+  <!-- 센서 데이터 수집 (111) -->
+  <rect x="150" y="140" width="800" height="100" fill="none" stroke="black" stroke-width="2"/>
+  <text x="550" y="165" text-anchor="middle" font-family="Malgun Gothic" font-size="14" font-weight="bold">
+    센서 데이터 수집 (111)
+  </text>
+  <text x="170" y="190" font-family="Malgun Gothic" font-size="11">• 마이크 → 음성 녹음 (화재경보음, 비상 키워드)</text>
+  <text x="170" y="210" font-family="Malgun Gothic" font-size="11">• 가속도계 → 진동 패턴 (낙상, 급진동)</text>
+  <text x="580" y="190" font-family="Malgun Gothic" font-size="11">• 조도센서 → 밝기 변화 (정전, 연기)</text>
+  <text x="580" y="210" font-family="Malgun Gothic" font-size="11">• WiFi/BLE → 신호 강도 (위치 추정)</text>
+
+  <!-- 화살표 1 -->
+  <line x1="550" y1="240" x2="550" y2="270" stroke="black" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+
+  <!-- 로컬 전처리 (112) -->
+  <rect x="150" y="270" width="800" height="110" fill="none" stroke="black" stroke-width="2"/>
+  <text x="550" y="295" text-anchor="middle" font-family="Malgun Gothic" font-size="14" font-weight="bold">
+    로컬 전처리 (112)
+  </text>
+  <text x="170" y="320" font-family="Malgun Gothic" font-size="11">• 음성 키워드 감지 ("불", "도와줘", "연기") → 텍스트 변환</text>
+  <text x="170" y="340" font-family="Malgun Gothic" font-size="11">• 낙상 패턴 인식 (급격한 가속도 변화 > 2G) → 낙상 이벤트</text>
+  <text x="170" y="360" font-family="Malgun Gothic" font-size="11">• WiFi 신호 기반 위치 추정 (3개 AP 기반 삼각측량)</text>
+
+  <!-- 화살표 2 -->
+  <line x1="550" y1="380" x2="550" y2="410" stroke="black" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+
+  <!-- 캐싱부 (113) -->
+  <rect x="150" y="410" width="800" height="110" fill="none" stroke="black" stroke-width="2"/>
+  <text x="550" y="435" text-anchor="middle" font-family="Malgun Gothic" font-size="14" font-weight="bold">
+    캐싱부 (113)
+  </text>
+  <text x="170" y="460" font-family="Malgun Gothic" font-size="11">• 공간 온톨로지 일부 (객실~비상구 경로 그래프)</text>
+  <text x="170" y="480" font-family="Malgun Gothic" font-size="11">• 대피 경로 최근 버전 (타임스탬프: 2분 이내)</text>
+  <text x="170" y="500" font-family="Malgun Gothic" font-size="11">• 위험지도 스냅샷 (최근 10초)</text>
+
+  <!-- 화살표 3 -->
+  <line x1="550" y1="520" x2="550" y2="550" stroke="black" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+
+  <!-- 오프라인 대피 경로 표시 (114) -->
+  <rect x="150" y="550" width="800" height="140" fill="none" stroke="black" stroke-width="2"/>
+  <text x="550" y="575" text-anchor="middle" font-family="Malgun Gothic" font-size="14" font-weight="bold">
+    오프라인 대피 경로 표시 (114)
+  </text>
+  <text x="170" y="605" font-family="Consolas" font-size="12">IF 네트워크 단절 THEN</text>
+  <text x="190" y="630" font-family="Malgun Gothic" font-size="11">경로 = 캐시된 최근 경로 (타임스탬프 표시)</text>
+  <text x="190" y="650" font-family="Malgun Gothic" font-size="11">경고 메시지 = "오프라인 모드 (최종 갱신: 2분 전)"</text>
+  <text x="190" y="670" font-family="Malgun Gothic" font-size="11">출력부 (142) → 화면 + 진동 경고</text>
+
+  <!-- 네트워크 (300) -->
+  <rect x="100" y="770" width="900" height="60" fill="none" stroke="black" stroke-width="2"/>
+  <text x="550" y="805" text-anchor="middle" font-family="Malgun Gothic" font-size="16" font-weight="bold">
+    네트워크 (300)
+  </text>
+
+  <!-- 양방향 화살표: 엣지 ↔ 네트워크 -->
+  <line x1="550" y1="730" x2="550" y2="770" stroke="black" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+  <line x1="570" y1="770" x2="570" y2="730" stroke="black" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+
+  <!-- 서버 레이어 (200) -->
+  <rect x="100" y="870" width="900" height="650" fill="none" stroke="black" stroke-width="3"/>
+  <text x="550" y="900" text-anchor="middle" font-family="Malgun Gothic" font-size="16" font-weight="bold">
+    서버 레이어 (200)
+  </text>
+
+  <!-- 다중 단말 신호 융합 (221) -->
+  <rect x="150" y="930" width="800" height="100" fill="none" stroke="black" stroke-width="2"/>
+  <text x="550" y="955" text-anchor="middle" font-family="Malgun Gothic" font-size="14" font-weight="bold">
+    다중 단말 신호 융합 (221)
+  </text>
+  <text x="170" y="980" font-family="Malgun Gothic" font-size="11">• 100+ 단말로부터 신호 수신</text>
+  <text x="170" y="1000" font-family="Malgun Gothic" font-size="11">• 동일 구역 내 신호 집계 (공간 온톨로지 212 기반)</text>
+
+  <!-- 화살표 4 -->
+  <line x1="550" y1="1030" x2="550" y2="1060" stroke="black" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+
+  <!-- 신뢰도 점수 산출 (222) -->
+  <rect x="150" y="1060" width="800" height="80" fill="none" stroke="black" stroke-width="2"/>
+  <text x="550" y="1085" text-anchor="middle" font-family="Malgun Gothic" font-size="14" font-weight="bold">
+    신뢰도 점수 산출 (222)
+  </text>
+  <text x="170" y="1110" font-family="Malgun Gothic" font-size="11">• 다수 단말 일치성 검증 (n ≥ 3 → +25%)</text>
+  <text x="170" y="1130" font-family="Malgun Gothic" font-size="11">• 설비 신호 교차 검증 (설비 신호 있음 → ×1.5)</text>
+
+  <!-- 화살표 5 -->
+  <line x1="550" y1="1140" x2="550" y2="1170" stroke="black" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+
+  <!-- 위험지도 생성 (223) -->
+  <rect x="150" y="1170" width="800" height="80" fill="none" stroke="black" stroke-width="2"/>
+  <text x="550" y="1195" text-anchor="middle" font-family="Malgun Gothic" font-size="14" font-weight="bold">
+    위험지도 생성 (223)
+  </text>
+  <text x="170" y="1220" font-family="Malgun Gothic" font-size="11">• 화재 확산 시뮬레이션 (위험 온톨로지 213 기반)</text>
+  <text x="170" y="1240" font-family="Malgun Gothic" font-size="11">• 미래 위험 예측 (30초~5분 후 위험도)</text>
+
+  <!-- 화살표 6 -->
+  <line x1="550" y1="1250" x2="550" y2="1280" stroke="black" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+
+  <!-- 개인별 경로 산출 (224) -->
+  <rect x="150" y="1280" width="800" height="100" fill="none" stroke="black" stroke-width="2"/>
+  <text x="550" y="1305" text-anchor="middle" font-family="Malgun Gothic" font-size="14" font-weight="bold">
+    개인별 경로 산출 (224)
+  </text>
+  <text x="170" y="1330" font-family="Malgun Gothic" font-size="11">• A* 알고리즘 실행 (경로 추천부 240)</text>
+  <text x="170" y="1350" font-family="Malgun Gothic" font-size="11">• 취약계층 안전 마진 적용 (그룹 관리부 260)</text>
+  <text x="170" y="1370" font-family="Malgun Gothic" font-size="11">• 대피 그룹 고려</text>
+
+  <!-- 화살표 7 -->
+  <line x1="550" y1="1380" x2="550" y2="1410" stroke="black" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+
+  <!-- 관제센터 연동 (225) -->
+  <rect x="150" y="1410" width="800" height="80" fill="none" stroke="black" stroke-width="2"/>
+  <text x="550" y="1435" text-anchor="middle" font-family="Malgun Gothic" font-size="14" font-weight="bold">
+    관제센터 연동 (225)
+  </text>
+  <text x="170" y="1460" font-family="Malgun Gothic" font-size="11">• 전체 위험지도 제공 (관제센터 연동부 270)</text>
+  <text x="170" y="1480" font-family="Malgun Gothic" font-size="11">• 구조 우선순위 제공 (구조대 연계부 280)</text>
+
+  <!-- 양방향 화살표: 서버 ↔ 네트워크 -->
+  <line x1="550" y1="870" x2="550" y2="830" stroke="black" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+  <line x1="570" y1="830" x2="570" y2="870" stroke="black" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+
+  <!-- 화살표 마커 정의 -->
+  <defs>
+    <marker id="arrowhead" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+      <polygon points="0 0, 10 3, 0 6" fill="black"/>
+    </marker>
+  </defs>
+</svg>

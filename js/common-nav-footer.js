@@ -21,13 +21,16 @@
           <li><a href="${pre}pages/c-shipyard-proposal.html"${act('c-shipyard-proposal.html')}>C. 조선소 제안</a></li>
           <li><a href="${pre}pages/d-insurance-risk-model.html"${act('d-insurance-risk-model.html')}>D. 보험 리스크</a></li>
           <li class="nav-dropdown">
-            <a href="#" class="nav-dropdown-toggle" onclick="event.preventDefault();this.parentElement.classList.toggle('open')">시뮬레이션 ▾</a>
+            <a href="${pre}pages/simulation-menu.html"${act('simulation-menu.html')}>시뮬레이션</a>
             <ul class="nav-sub">
+              <li><a href="${pre}pages/simulation-menu.html"${act('simulation-menu.html')}>전체 메뉴</a></li>
               <li><a href="${pre}pages/simulation.html"${act('simulation.html')}>🚢 크루즈</a></li>
               <li><a href="${pre}pages/simulation-building.html"${act('simulation-building.html')}>🏙️ 초고층 빌딩</a></li>
+              <li><a href="${pre}pages/simulation-concert.html"${act('simulation-concert.html')}>🎵 BTS 공연장</a></li>
             </ul>
           </li>
           <li><a href="${pre}pages/risk-map.html"${act('risk-map.html')}>위험지도</a></li>
+          <li><a href="${pre}pages/evacuation-time-optimizer.html"${act('evacuation-time-optimizer.html')}>군중분산최적화</a></li>
           <li><a href="${pre}pages/route-optimizer.html"${act('route-optimizer.html')}>경로최적화</a></li>
           <li><a href="${pre}pages/team.html" style="color:#C9A961;font-weight:700;"${act('team.html')}>팀</a></li>
         </ul>
@@ -62,8 +65,11 @@
           <div class="footer-col">
             <h4 class="footer-col-title">Interactive</h4>
             <ul class="footer-links">
+              <li><a href="${pre}pages/simulation-menu.html">시뮬레이션 메뉴</a></li>
               <li><a href="${pre}pages/simulation.html">🚢 크루즈 시뮬레이션</a></li>
               <li><a href="${pre}pages/simulation-building.html">🏙️ 빌딩 시뮬레이션</a></li>
+              <li><a href="${pre}pages/simulation-concert.html">🎵 BTS 공연장 시뮬레이션</a></li>
+              <li><a href="${pre}pages/evacuation-time-optimizer.html">⏱ 대피시간 최소화</a></li>
               <li><a href="${pre}pages/risk-map.html">동적 위험지도</a></li>
               <li><a href="${pre}pages/route-optimizer.html">경로 최적화</a></li>
               <li><a href="${pre}pages/team.html">👥 팀 소개</a></li>

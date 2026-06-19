@@ -1,0 +1,631 @@
+{
+  "ontology": {
+    "name": "FireNavi_v4.0_Evacuation_Ontology",
+    "version": "4.0",
+    "domain": "Disaster_Safety_AI_Evacuation",
+    "description": "온톨로지 기반 개인별 맞춤식 화재 대피 경로 추천 시스템",
+    "created_at": "2026-05-30",
+    "status": "design_complete",
+    "nodes": [
+      {
+        "id": "Person_General",
+        "type": "Actor",
+        "label": "일반 성인",
+        "properties": {
+          "mobility_speed": 1.4,
+          "stairs_allowed": true,
+          "safe_carry_weight": 0,
+          "safety_margin_alpha": 1.0,
+          "guidance_channels": ["visual", "voice"],
+          "requires_guardian": false,
+          "hearing_impaired": false,
+          "vision_impaired": false
+        }
+      },
+      {
+        "id": "Person_Elderly",
+        "type": "Actor",
+        "label": "고령자 (70세+)",
+        "properties": {
+          "mobility_speed": 0.6,
+          "stairs_allowed": true,
+          "stairs_difficulty": "high",
+          "safety_margin_alpha": 1.5,
+          "guidance_channels": ["visual", "voice", "vibration"],
+          "cognitive_impairment_risk": 0.3,
+          "fall_risk": "high"
+        }
+      },
+      {
+        "id": "Person_Child",
+        "type": "Actor",
+        "label": "어린이 (3~12세)",
+        "properties": {
+          "mobility_speed": 0.8,
+          "stairs_allowed": true,
+          "stairs_difficulty": "medium",
+          "safety_margin_alpha": 2.0,
+          "guidance_channels": ["visual", "voice", "vibration"],
+          "requires_guardian": true,
+          "panic_risk": "high",
+          "comprehension_level": "low"
+        }
+      },
+      {
+        "id": "Person_Wheelchair",
+        "type": "Actor",
+        "label": "휠체어 사용자",
+        "properties": {
+          "mobility_speed": 0.8,
+          "stairs_allowed": false,
+          "stairs_penalty": "infinite",
+          "elevator_required": true,
+          "ramp_required": true,
+          "safety_margin_alpha": 2.0,
+          "guidance_channels": ["visual", "voice", "vibration"],
+          "requires_guardian": false,
+          "door_width_min": 0.85
+        },
+        "constraints": [
+          { "rule": "EXCLUDE_STAIRS", "weight": "INF", "reason": "신체적으로 불가능" },
+          { "rule": "PREFER_ELEVATOR_OR_RAMP", "weight": 10 },
+          { "rule": "APPLY_ALPHA_2.0", "weight": 8 }
+        ]
+      },
+      {
+        "id": "Person_Respiratory_Disease",
+        "type": "Actor",
+        "label": "호흡기질환자",
+        "properties": {
+          "mobility_speed": 1.0,
+          "safety_margin_alpha": 3.0,
+          "smoke_sensitivity_multiplier": 3.0,
+          "oxygen_dependency": true,
+          "guidance_channels": ["voice", "vibration"],
+          "requires_oxygen_support": true
+        },
+        "constraints": [
+          { "rule": "AVOID_SMOKE_ZONES", "weight": "INF" },
+          { "rule": "PRIORITIZE_CLEAN_AIR_ROUTES", "weight": 15 }
+        ]
+      },
+      {
+        "id": "Person_Hearing_Impaired",
+        "type": "Actor",
+        "label": "청각장애인",
+        "properties": {
+          "mobility_speed": 1.0,
+          "safety_margin_alpha": 1.8,
+          "hearing_level": "deaf",
+          "guidance_channels": ["visual", "vibration", "text"],
+          "sign_language_trained": true
+        },
+        "constraints": [
+          { "rule": "EXCLUDE_AUDIO_ONLY_GUIDANCE", "weight": "INF" },
+          { "rule": "REQUIRE_VISUAL_FLASHING", "weight": 12 },
+          { "rule": "REQUIRE_VIBRATION_PATTERN", "weight": 10 }
+        ]
+      },
+      {
+        "id": "Person_Vision_Impaired",
+        "type": "Actor",
+        "label": "시각장애인",
+        "properties": {
+          "mobility_speed": 0.6,
+          "safety_margin_alpha": 2.0,
+          "vision_level": "blind",
+          "guidance_channels": ["voice", "vibration", "tactile"],
+          "guide_dog_presence": false,
+          "spatial_memory_trained": true
+        },
+        "constraints": [
+          { "rule": "EXCLUDE_VISUAL_ONLY_GUIDANCE", "weight": "INF" },
+          { "rule": "REQUIRE_VOICE_GUIDANCE", "weight": 12 },
+          { "rule": "PROVIDE_TACTILE_LANDMARKS", "weight": 10 }
+        ]
+      },
+      {
+        "id": "Person_Bedridden_Patient",
+        "type": "Actor",
+        "label": "침상환자 (거동불능)",
+        "properties": {
+          "mobility_speed": 0.0,
+          "self_evacuation_possible": false,
+          "safety_margin_alpha": 3.0,
+          "requires_rescue": true,
+          "requires_guardian": true,
+          "requires_stretcher": true
+        },
+        "constraints": [
+          { "rule": "REQUIRE_RESPONDER_RESCUE", "weight": "INF" },
+          { "rule": "PRIORITIZE_ACCESSIBILITY", "weight": "INF" }
+        ]
+      },
+      {
+        "id": "Responder_Firefighter",
+        "type": "Actor",
+        "label": "소방관",
+        "properties": {
+          "role": "rescue",
+          "priority_type": "rescue_personnel",
+          "can_carry_weight": 50,
+          "protection_equipment": "full_gear",
+          "training_level": "professional"
+        }
+      },
+      {
+        "id": "User_Profile",
+        "type": "Data",
+        "label": "사용자 프로필",
+        "properties": {
+          "fields": ["person_type", "location", "mobility_status", "guardian_id", "language", "sensor_data"]
+        }
+      },
+      {
+        "id": "Sensor_Data",
+        "type": "Data",
+        "label": "7종 센서 데이터",
+        "properties": {
+          "sensor_types": [
+            "accelerometer (움직임/호흡/넘어짐)",
+            "microphone (경보음/비명/음성명령)",
+            "barometer (층 변화 감지)",
+            "light_sensor (정전/연기 감지)",
+            "magnetometer (방향)",
+            "wifi_rssi (측위)",
+            "camera (불꽃/연기 시각 감지)"
+          ],
+          "update_frequency": "0.5s",
+          "data_retention": "24h"
+        }
+      },
+      {
+        "id": "Hazard_Map",
+        "type": "Data",
+        "label": "실시간 위험지도",
+        "properties": {
+          "dimensions": ["fire_intensity", "smoke_concentration", "crowd_density", "structural_damage", "electrical_hazard"],
+          "spatial_resolution": "room-level",
+          "temporal_resolution": "1s",
+          "update_method": "bayesian_fusion",
+          "cache_ttl": "5s"
+        }
+      },
+      {
+        "id": "Space_Graph",
+        "type": "Data",
+        "label": "공간 그래프",
+        "properties": {
+          "space_types": [
+            "corridor",
+            "room",
+            "staircase",
+            "elevator",
+            "emergency_exit",
+            "safe_zone",
+            "ramp",
+            "firebreak_door"
+          ],
+          "attributes": ["floor", "capacity", "connected_spaces", "accessibility_features"]
+        }
+      },
+      {
+        "id": "Route_Candidates",
+        "type": "Data",
+        "label": "경로 후보",
+        "properties": {
+          "route_types": ["primary", "alternative", "vulnerable_priority", "responder_approach"],
+          "fields": ["path_nodes", "risk_score", "eta_seconds", "constraints_applied"]
+        }
+      },
+      {
+        "id": "Decision_Rationale",
+        "type": "Data",
+        "label": "의사결정 근거",
+        "properties": {
+          "fields": ["explanation", "decision_factors", "confidence_score", "alternative_routes_rejected_reason"]
+        }
+      },
+      {
+        "id": "Regulation_Baseline",
+        "type": "Data",
+        "label": "법규 기준",
+        "properties": {
+          "regulations": [
+            "SOLAS_maritime_law",
+            "Building_Code_Evacuation",
+            "Disability_Accessibility_Act",
+            "GDPR_Privacy",
+            "HIPAA_Healthcare",
+            "Insurance_Liability"
+          ]
+        }
+      },
+      {
+        "id": "Trigger_Acoustic",
+        "type": "Process",
+        "label": "Stage 1: 음향 트리거",
+        "properties": {
+          "input": "SOLAS_alarm_pattern",
+          "output": "FIRE_ALERT_ACTIVATION",
+          "execution_time": "0.1s",
+          "activation_scope": "all_phones_in_facility"
+        }
+      },
+      {
+        "id": "Localization_WiFi_IMU",
+        "type": "Process",
+        "label": "Stage 2: 측위 (WiFi+IMU)",
+        "properties": {
+          "input": ["wifi_rssi", "accelerometer", "barometer"],
+          "output": "user_location_3d",
+          "accuracy": "1~3m",
+          "execution_time": "0.2s"
+        }
+      },
+      {
+        "id": "Survey_Micro",
+        "type": "Process",
+        "label": "Stage 3: 마이크로 설문",
+        "properties": {
+          "questions": 3,
+          "time_limit": "3s",
+          "response_rate": 0.7,
+          "fallback_estimation": 0.3,
+          "output": "user_status_vector"
+        }
+      },
+      {
+        "id": "Sensor_Fusion",
+        "type": "Process",
+        "label": "Stage 4: 센서 융합",
+        "properties": {
+          "input": ["accelerometer", "microphone", "barometer", "light", "magnetometer", "wifi", "camera"],
+          "processing": "parallel_7_channels",
+          "data_points_per_user": "4000+",
+          "execution_time": "0.3s"
+        }
+      },
+      {
+        "id": "Fire_Map_Generation",
+        "type": "Process",
+        "label": "Stage 4.5: Bayesian 화재맵",
+        "properties": {
+          "input": "sensor_fusion_output + hazard_log",
+          "method": "bayesian_network",
+          "output": "hazard_map_snapshot",
+          "channels": ["fire", "smoke", "crowd", "structural", "electrical"],
+          "execution_time": "0.4s",
+          "update_interval": "1s"
+        }
+      },
+      {
+        "id": "Route_Calculation",
+        "type": "Process",
+        "label": "Stage 5: 경로 계산",
+        "properties": {
+          "algorithm": "A* + personal_constraints + future_hazard_prediction",
+          "inputs": ["user_profile", "current_location", "hazard_map", "space_graph", "regulations"],
+          "outputs": ["primary_route", "alternative_route", "risk_score", "eta"],
+          "execution_time": "0.5s",
+          "recalculation_interval": "5s or event-driven"
+        }
+      },
+      {
+        "id": "Path_Explanation_Generation",
+        "type": "Process",
+        "label": "경로 설명 생성 (LLM)",
+        "properties": {
+          "input": "decision_rationale + ontology_trace",
+          "llm_model": "Claude_API",
+          "output": "personalized_explanation_natural_language",
+          "execution_time": "1~2s",
+          "includes": ["why_this_route", "why_not_others", "confidence", "uncertainty"]
+        }
+      },
+      {
+        "id": "Real_time_Recalculation",
+        "type": "Process",
+        "label": "실시간 재계산",
+        "properties": {
+          "trigger": "hazard_change OR sensor_delta OR user_location_change",
+          "recalculation_interval": "5s",
+          "event_driven_latency": "<100ms",
+          "update_method": "delta_only_if_path_changed"
+        }
+      },
+      {
+        "id": "System_WiFi",
+        "type": "System",
+        "label": "WiFi 네트워크",
+        "properties": {
+          "purpose": "localization_and_communication",
+          "coverage": "facility_wide",
+          "rssi_data_collection": "enabled"
+        }
+      },
+      {
+        "id": "System_Database",
+        "type": "System",
+        "label": "메타데이터 DB",
+        "properties": {
+          "engine": "PostgreSQL",
+          "tables": ["users", "user_profiles", "facilities", "spaces", "hazard_log", "routes", "decisions"],
+          "retention": "7days_active, 30days_archive"
+        }
+      },
+      {
+        "id": "System_Knowledge_Graph",
+        "type": "System",
+        "label": "지식그래프 (Neo4j)",
+        "properties": {
+          "purpose": "ontology_storage_and_reasoning",
+          "nodes": 27,
+          "relationships": 35,
+          "query_examples": ["all_routes_for_wheelchair_user", "contraindications_for_smoke"]
+        }
+      },
+      {
+        "id": "Decision_Route_Selection",
+        "type": "Decision",
+        "label": "경로 선택 의사결정",
+        "properties": {
+          "rules": [
+            "IF wheelchair THEN EXCLUDE stairs",
+            "IF respiratory_disease THEN PREFER clean_air_routes",
+            "IF elderly THEN APPLY alpha=1.5",
+            "IF crowd_density > 0.8 THEN ACTIVATE alternative_route"
+          ]
+        }
+      },
+      {
+        "id": "Decision_Hazard_Update",
+        "type": "Decision",
+        "label": "위험지도 갱신 판단",
+        "properties": {
+          "trigger_conditions": [
+            "sensor_change_exceeds_threshold",
+            "fire_event_detected",
+            "crowd_density_shift",
+            "exit_blocked"
+          ],
+          "update_probability": 0.8
+        }
+      },
+      {
+        "id": "Artifact_Personalized_Route",
+        "type": "Artifact",
+        "label": "개인맞춤 대피 경로",
+        "properties": {
+          "includes": ["primary_route_nodes", "alternative_route", "eta", "risk_score", "explanation", "guidance_channel"]
+        }
+      }
+    ],
+    "relationships": [
+      {
+        "id": "rel_01",
+        "from": "Trigger_Acoustic",
+        "to": "Localization_WiFi_IMU",
+        "type": "FLOW",
+        "label": "단계 순서"
+      },
+      {
+        "id": "rel_02",
+        "from": "Localization_WiFi_IMU",
+        "to": "Survey_Micro",
+        "type": "FLOW"
+      },
+      {
+        "id": "rel_03",
+        "from": "Survey_Micro",
+        "to": "Sensor_Fusion",
+        "type": "FLOW"
+      },
+      {
+        "id": "rel_04",
+        "from": "Sensor_Fusion",
+        "to": "Fire_Map_Generation",
+        "type": "FLOW"
+      },
+      {
+        "id": "rel_05",
+        "from": "Fire_Map_Generation",
+        "to": "Route_Calculation",
+        "type": "FLOW"
+      },
+      {
+        "id": "rel_06",
+        "from": "Route_Calculation",
+        "to": "Path_Explanation_Generation",
+        "type": "FLOW"
+      },
+      {
+        "id": "rel_07",
+        "from": "Path_Explanation_Generation",
+        "to": "Artifact_Personalized_Route",
+        "type": "FLOW"
+      },
+      {
+        "id": "rel_08",
+        "from": "Person_Wheelchair",
+        "to": "Decision_Route_Selection",
+        "type": "CAUSES",
+        "rule": "wheelchair → EXCLUDE_STAIRS with weight=INF"
+      },
+      {
+        "id": "rel_09",
+        "from": "Person_Wheelchair",
+        "to": "User_Profile",
+        "type": "INPUT",
+        "field": "person_type = wheelchair"
+      },
+      {
+        "id": "rel_10",
+        "from": "User_Profile",
+        "to": "Route_Calculation",
+        "type": "INPUT"
+      },
+      {
+        "id": "rel_11",
+        "from": "Hazard_Map",
+        "to": "Route_Calculation",
+        "type": "INPUT"
+      },
+      {
+        "id": "rel_12",
+        "from": "Space_Graph",
+        "to": "Route_Calculation",
+        "type": "INPUT"
+      },
+      {
+        "id": "rel_13",
+        "from": "Regulation_Baseline",
+        "to": "Decision_Route_Selection",
+        "type": "INPUT"
+      },
+      {
+        "id": "rel_14",
+        "from": "Route_Calculation",
+        "to": "Route_Candidates",
+        "type": "CREATES"
+      },
+      {
+        "id": "rel_15",
+        "from": "Route_Calculation",
+        "to": "Decision_Rationale",
+        "type": "CREATES"
+      },
+      {
+        "id": "rel_16",
+        "from": "Sensor_Fusion",
+        "to": "Sensor_Data",
+        "type": "CREATES"
+      },
+      {
+        "id": "rel_17",
+        "from": "Fire_Map_Generation",
+        "to": "Hazard_Map",
+        "type": "CREATES"
+      },
+      {
+        "id": "rel_18",
+        "from": "Person_Respiratory_Disease",
+        "to": "Route_Calculation",
+        "type": "CAUSES",
+        "effect": "smoke_sensitivity_multiplier = 3.0"
+      },
+      {
+        "id": "rel_19",
+        "from": "Localization_WiFi_IMU",
+        "to": "System_WiFi",
+        "type": "USES"
+      },
+      {
+        "id": "rel_20",
+        "from": "Route_Calculation",
+        "to": "System_Database",
+        "type": "USES"
+      },
+      {
+        "id": "rel_21",
+        "from": "Decision_Route_Selection",
+        "to": "System_Knowledge_Graph",
+        "type": "USES"
+      },
+      {
+        "id": "rel_22",
+        "from": "Trigger_Acoustic",
+        "to": "Event_FIRE_ALERT",
+        "type": "TRIGGERS"
+      },
+      {
+        "id": "rel_23",
+        "from": "Real_time_Recalculation",
+        "to": "Route_Calculation",
+        "type": "TRIGGERS"
+      },
+      {
+        "id": "rel_24",
+        "from": "Decision_Hazard_Update",
+        "to": "Fire_Map_Generation",
+        "type": "TRIGGERS"
+      },
+      {
+        "id": "rel_25",
+        "from": "Person_Child",
+        "to": "Decision_Route_Selection",
+        "type": "CAUSES",
+        "rule": "child → REQUIRE_GUARDIAN_SYNC"
+      },
+      {
+        "id": "rel_26",
+        "from": "Person_Hearing_Impaired",
+        "to": "Path_Explanation_Generation",
+        "type": "CAUSES",
+        "rule": "hearing_impaired → OUTPUT vibration+visual"
+      },
+      {
+        "id": "rel_27",
+        "from": "Person_Vision_Impaired",
+        "to": "Path_Explanation_Generation",
+        "type": "CAUSES",
+        "rule": "vision_impaired → OUTPUT voice+vibration"
+      },
+      {
+        "id": "rel_28",
+        "from": "Hazard_Map",
+        "to": "Fire_Map_Generation",
+        "type": "INPUT"
+      },
+      {
+        "id": "rel_29",
+        "from": "Sensor_Data",
+        "to": "Fire_Map_Generation",
+        "type": "INPUT"
+      },
+      {
+        "id": "rel_30",
+        "from": "Survey_Micro",
+        "to": "User_Profile",
+        "type": "CREATES"
+      },
+      {
+        "id": "rel_31",
+        "from": "Path_Explanation_Generation",
+        "to": "Decision_Rationale",
+        "type": "INPUT"
+      },
+      {
+        "id": "rel_32",
+        "from": "Hazard_Map",
+        "to": "Real_time_Recalculation",
+        "type": "TRIGGERS"
+      },
+      {
+        "id": "rel_33",
+        "from": "User_Profile",
+        "to": "Path_Explanation_Generation",
+        "type": "INPUT"
+      },
+      {
+        "id": "rel_34",
+        "from": "Route_Candidates",
+        "to": "Artifact_Personalized_Route",
+        "type": "INPUT"
+      },
+      {
+        "id": "rel_35",
+        "from": "Decision_Rationale",
+        "to": "Artifact_Personalized_Route",
+        "type": "INPUT"
+      }
+    ],
+    "validation": {
+      "total_nodes": 27,
+      "total_relationships": 35,
+      "isolated_nodes": 0,
+      "circular_dependencies": 0,
+      "status": "VALID"
+    }
+  }
+}

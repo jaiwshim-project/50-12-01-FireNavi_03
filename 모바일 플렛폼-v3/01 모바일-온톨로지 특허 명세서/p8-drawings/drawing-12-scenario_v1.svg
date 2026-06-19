@@ -1,0 +1,168 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 2800">
+  <!-- 도 12. 크루즈선 화재 시나리오 실시예 -->
+
+  <!-- 제목 -->
+  <text x="550" y="40" text-anchor="middle" font-family="Malgun Gothic" font-size="28" font-weight="bold" fill="black">
+    도 12. 크루즈선 화재 시나리오 실시예
+  </text>
+
+  <!-- 전체 외곽 박스 -->
+  <rect x="50" y="80" width="1000" height="2600" fill="none" stroke="black" stroke-width="3"/>
+
+  <!-- 제목 -->
+  <text x="550" y="115" text-anchor="middle" font-family="Malgun Gothic" font-size="16" font-weight="bold">
+    크루즈선 3층 A복도 화재 시나리오 (500)
+  </text>
+
+  <!-- 1단계 -->
+  <rect x="100" y="150" width="900" height="80" fill="none" stroke="black" stroke-width="2"/>
+  <text x="120" y="175" font-family="Malgun Gothic" font-size="13" font-weight="bold">[1단계] 복도 중간 객실(3A-210)에서 화재 발생 (S510)</text>
+  <text x="120" y="195" font-family="Malgun Gothic" font-size="12">🔥 ← 화재 발생</text>
+  <text x="120" y="213" font-family="Malgun Gothic" font-size="12">시간: T+0초</text>
+
+  <!-- 구분선 -->
+  <line x1="100" y1="240" x2="1000" y2="240" stroke="black" stroke-width="1" stroke-dasharray="5,3"/>
+
+  <!-- 2단계 -->
+  <rect x="100" y="250" width="900" height="120" fill="none" stroke="black" stroke-width="2"/>
+  <text x="120" y="275" font-family="Malgun Gothic" font-size="13" font-weight="bold">[2단계] 화재경보음 + 사용자 감지 신고 (S520)</text>
+  <text x="120" y="295" font-family="Malgun Gothic" font-size="12">• 스마트폰 마이크: 화재경보음 감지 (3대)</text>
+  <text x="120" y="313" font-family="Malgun Gothic" font-size="12">• 사용자 보고: "연기가 난다" (2명)</text>
+  <text x="120" y="331" font-family="Malgun Gothic" font-size="12">• 설비 신호: 연기감지기 작동</text>
+  <text x="120" y="349" font-family="Malgun Gothic" font-size="12">시간: T+15초</text>
+
+  <line x1="100" y1="380" x2="1000" y2="380" stroke="black" stroke-width="1" stroke-dasharray="5,3"/>
+
+  <!-- 3단계 -->
+  <rect x="100" y="390" width="900" height="160" fill="none" stroke="black" stroke-width="2"/>
+  <text x="120" y="415" font-family="Malgun Gothic" font-size="13" font-weight="bold">[3단계] FireNavi 트리거 신뢰도 92% → 대피 모드 진입 (S530)</text>
+  <text x="120" y="435" font-family="Malgun Gothic" font-size="12">신뢰도 점수 산출:</text>
+  <text x="140" y="455" font-family="Malgun Gothic" font-size="12">• 설비 신호: 0.9 × 1.0 = 0.9</text>
+  <text x="140" y="473" font-family="Malgun Gothic" font-size="12">• 사용자 보고 2건: 0.7 × 0.8 = 0.56</text>
+  <text x="140" y="491" font-family="Malgun Gothic" font-size="12">• 스마트폰 센서 3대: 0.6 × 0.6 = 0.36</text>
+  <text x="120" y="513" font-family="Malgun Gothic" font-size="12" font-weight="bold">→ 총 신뢰도: 92% → 대피 모드 활성화</text>
+  <text x="120" y="531" font-family="Malgun Gothic" font-size="12">시간: T+20초</text>
+
+  <line x1="100" y1="560" x2="1000" y2="560" stroke="black" stroke-width="1" stroke-dasharray="5,3"/>
+
+  <!-- 4단계 -->
+  <rect x="100" y="570" width="900" height="200" fill="none" stroke="black" stroke-width="2"/>
+  <text x="120" y="595" font-family="Malgun Gothic" font-size="13" font-weight="bold">[4단계] 스마트폰 WiFi 기반 승객 위치 파악 (S540)</text>
+
+  <rect x="200" y="610" width="600" height="130" fill="none" stroke="black" stroke-width="1"/>
+  <text x="250" y="635" font-family="Malgun Gothic" font-size="11">AP1        AP2        AP3</text>
+  <text x="250" y="655" font-family="Malgun Gothic" font-size="11">│          │          │</text>
+  <text x="250" y="675" font-family="Malgun Gothic" font-size="11">└─────┬────┴────┬─────┘</text>
+  <text x="280" y="700" font-family="Malgun Gothic" font-size="12">😊1      😊2  😊3</text>
+  <text x="250" y="720" font-family="Malgun Gothic" font-size="11">3A-205  3A-210  3A-215</text>
+  <text x="365" y="735" font-family="Malgun Gothic" font-size="12">🔥</text>
+
+  <text x="120" y="755" font-family="Malgun Gothic" font-size="12">시간: T+25초</text>
+
+  <line x1="100" y1="780" x2="1000" y2="780" stroke="black" stroke-width="1" stroke-dasharray="5,3"/>
+
+  <!-- 5단계 -->
+  <rect x="100" y="790" width="900" height="140" fill="none" stroke="black" stroke-width="2"/>
+  <text x="120" y="815" font-family="Malgun Gothic" font-size="13" font-weight="bold">[5단계] 연기 확산 방향 반영 → 오른쪽 복도 위험도 상승 (S550)</text>
+  <text x="120" y="835" font-family="Malgun Gothic" font-size="12">위험지도 생성:</text>
+  <text x="140" y="855" font-family="Malgun Gothic" font-size="12">• 3A-210 (화재 발생): 위험도 10</text>
+  <text x="140" y="873" font-family="Malgun Gothic" font-size="12">• 3A-215~220 (우측): 위험도 8 (연기 확산)</text>
+  <text x="140" y="891" font-family="Malgun Gothic" font-size="12">• 3A-200~205 (좌측): 위험도 3 (안전)</text>
+  <text x="120" y="911" font-family="Malgun Gothic" font-size="12">시간: T+30초</text>
+
+  <line x1="100" y1="940" x2="1000" y2="940" stroke="black" stroke-width="1" stroke-dasharray="5,3"/>
+
+  <!-- 6단계 -->
+  <rect x="100" y="950" width="900" height="120" fill="none" stroke="black" stroke-width="2"/>
+  <text x="120" y="975" font-family="Malgun Gothic" font-size="13" font-weight="bold">[6단계] 일반 승객 → 왼쪽 비상구 안내 (S560)</text>
+  <text x="120" y="995" font-family="Malgun Gothic" font-size="12">일반 승객 (3A-205, 3A-215):</text>
+  <text x="140" y="1015" font-family="Malgun Gothic" font-size="12">• 주경로: 좌측 비상구 → 3층 데크</text>
+  <text x="140" y="1033" font-family="Malgun Gothic" font-size="12">• 대체경로: 중앙 계단 → 4층 피난구역</text>
+  <text x="120" y="1053" font-family="Malgun Gothic" font-size="12">시간: T+35초</text>
+
+  <line x1="100" y1="1080" x2="1000" y2="1080" stroke="black" stroke-width="1" stroke-dasharray="5,3"/>
+
+  <!-- 7단계 -->
+  <rect x="100" y="1090" width="900" height="140" fill="none" stroke="black" stroke-width="2"/>
+  <text x="120" y="1115" font-family="Malgun Gothic" font-size="13" font-weight="bold">[7단계] 휠체어 사용자 → 계단 제외 후 피난구역 안내 (S570)</text>
+  <text x="120" y="1135" font-family="Malgun Gothic" font-size="12">휠체어 사용자 (3A-220):</text>
+  <text x="140" y="1155" font-family="Malgun Gothic" font-size="12">• 제약조건: 계단 사용 불가 (Cost = ∞)</text>
+  <text x="140" y="1173" font-family="Malgun Gothic" font-size="12">• 주경로: 좌측 비상구 → 엘리베이터 홀 → 피난구역</text>
+  <text x="140" y="1191" font-family="Malgun Gothic" font-size="12">• 승무원 호출 자동 전송</text>
+  <text x="120" y="1211" font-family="Malgun Gothic" font-size="12">시간: T+40초</text>
+
+  <line x1="100" y1="1240" x2="1000" y2="1240" stroke="black" stroke-width="1" stroke-dasharray="5,3"/>
+
+  <!-- 8단계 -->
+  <rect x="100" y="1250" width="900" height="140" fill="none" stroke="black" stroke-width="2"/>
+  <text x="120" y="1275" font-family="Malgun Gothic" font-size="13" font-weight="bold">[8단계] 호흡기 환자 → 연기 위험 가중치 3배 적용 (S580)</text>
+  <text x="120" y="1295" font-family="Malgun Gothic" font-size="12">호흡기 환자 (3A-225):</text>
+  <text x="140" y="1315" font-family="Malgun Gothic" font-size="12">• 연기 가중치: 3.0배</text>
+  <text x="140" y="1333" font-family="Malgun Gothic" font-size="12">• 주경로: 최단 거리가 아닌 연기 회피 경로</text>
+  <text x="140" y="1351" font-family="Malgun Gothic" font-size="12">• 추천 이유: "호흡기 환자로 분류되어 연기가 없는 경로 추천"</text>
+  <text x="120" y="1371" font-family="Malgun Gothic" font-size="12">시간: T+45초</text>
+
+  <line x1="100" y1="1400" x2="1000" y2="1400" stroke="black" stroke-width="1" stroke-dasharray="5,3"/>
+
+  <!-- 9단계 -->
+  <rect x="100" y="1410" width="900" height="140" fill="none" stroke="black" stroke-width="2"/>
+  <text x="120" y="1435" font-family="Malgun Gothic" font-size="13" font-weight="bold">[9단계] 미응답 객실(3A-230) → 구조 우선순위 관제센터 표시 (S590)</text>
+  <text x="120" y="1455" font-family="Malgun Gothic" font-size="12">미응답자 감지:</text>
+  <text x="140" y="1475" font-family="Malgun Gothic" font-size="12">• 3A-230호: 마지막 신호 10분 전</text>
+  <text x="140" y="1493" font-family="Malgun Gothic" font-size="12">• 관제센터 화면에 🚨 표시</text>
+  <text x="140" y="1511" font-family="Malgun Gothic" font-size="12">• 승무원 확인 요청 자동 전송</text>
+  <text x="120" y="1531" font-family="Malgun Gothic" font-size="12">시간: T+50초</text>
+
+  <line x1="100" y1="1560" x2="1000" y2="1560" stroke="black" stroke-width="1" stroke-dasharray="5,3"/>
+
+  <!-- 10단계 -->
+  <rect x="100" y="1570" width="900" height="140" fill="none" stroke="black" stroke-width="2"/>
+  <text x="120" y="1595" font-family="Malgun Gothic" font-size="13" font-weight="bold">[10단계] 관제센터 → 구조대 접근 경로 확인 (S600)</text>
+  <text x="120" y="1615" font-family="Malgun Gothic" font-size="12">구조대 파견:</text>
+  <text x="140" y="1635" font-family="Malgun Gothic" font-size="12">• 대상: 3A-230호 미응답자</text>
+  <text x="140" y="1653" font-family="Malgun Gothic" font-size="12">• 접근 경로: 2층 계단 → 3A 좌측 복도 → 230호</text>
+  <text x="140" y="1671" font-family="Malgun Gothic" font-size="12">• 필요 장비: 들것, 산소 호흡기, 방화복</text>
+  <text x="120" y="1691" font-family="Malgun Gothic" font-size="12">시간: T+2분</text>
+
+  <!-- 부호 설명 박스 -->
+  <rect x="100" y="1760" width="900" height="850" fill="none" stroke="black" stroke-width="1" stroke-dasharray="8,5"/>
+  <text x="550" y="1795" text-anchor="middle" font-family="Malgun Gothic" font-size="14" font-weight="bold">
+    부호 설명
+  </text>
+
+  <text x="120" y="1830" font-family="Malgun Gothic" font-size="12" font-weight="bold">(500): 크루즈선 3층 A복도 화재 시나리오</text>
+
+  <text x="120" y="1860" font-family="Malgun Gothic" font-size="12">S510: 화재 발생</text>
+  <text x="140" y="1880" font-family="Malgun Gothic" font-size="11">     - 3A-210호 객실에서 화재 발생 (T+0초)</text>
+
+  <text x="120" y="1910" font-family="Malgun Gothic" font-size="12">S520: 화재경보음 및 사용자 감지 신고</text>
+  <text x="140" y="1930" font-family="Malgun Gothic" font-size="11">     - 스마트폰 마이크 3대, 사용자 보고 2명, 설비 신호 (T+15초)</text>
+
+  <text x="120" y="1960" font-family="Malgun Gothic" font-size="12">S530: 트리거 신뢰도 92% 산출 및 대피 모드 진입</text>
+  <text x="140" y="1980" font-family="Malgun Gothic" font-size="11">     - 설비 0.9 + 사용자 0.56 + 스마트폰 0.36 = 92% (T+20초)</text>
+
+  <text x="120" y="2010" font-family="Malgun Gothic" font-size="12">S540: 스마트폰 WiFi 기반 승객 위치 파악</text>
+  <text x="140" y="2030" font-family="Malgun Gothic" font-size="11">     - AP1/AP2/AP3 신호 강도로 실내 측위 (T+25초)</text>
+
+  <text x="120" y="2060" font-family="Malgun Gothic" font-size="12">S550: 연기 확산 방향 반영 및 위험도 갱신</text>
+  <text x="140" y="2080" font-family="Malgun Gothic" font-size="11">     - 화재 발생 객실 10, 우측 8, 좌측 3 (T+30초)</text>
+
+  <text x="120" y="2110" font-family="Malgun Gothic" font-size="12">S560: 일반 승객 경로 안내</text>
+  <text x="140" y="2130" font-family="Malgun Gothic" font-size="11">     - 주경로: 좌측 비상구 → 3층 데크 (T+35초)</text>
+
+  <text x="120" y="2160" font-family="Malgun Gothic" font-size="12">S570: 휠체어 사용자 경로 안내</text>
+  <text x="140" y="2180" font-family="Malgun Gothic" font-size="11">     - 계단 제외, 엘리베이터 홀 → 피난구역, 승무원 호출 (T+40초)</text>
+
+  <text x="120" y="2210" font-family="Malgun Gothic" font-size="12">S580: 호흡기 환자 경로 안내</text>
+  <text x="140" y="2230" font-family="Malgun Gothic" font-size="11">     - 연기 가중치 3.0배, 연기 회피 경로 (T+45초)</text>
+
+  <text x="120" y="2260" font-family="Malgun Gothic" font-size="12">S590: 미응답 객실 관제센터 표시</text>
+  <text x="140" y="2280" font-family="Malgun Gothic" font-size="11">     - 3A-230호 미응답 → 관제센터 알림 (T+50초)</text>
+
+  <text x="120" y="2310" font-family="Malgun Gothic" font-size="12">S600: 구조대 접근 경로 제공</text>
+  <text x="140" y="2330" font-family="Malgun Gothic" font-size="11">     - 2층 계단 → 3A 좌측 복도 → 230호 (T+2분)</text>
+
+  <text x="120" y="2365" font-family="Malgun Gothic" font-size="11" font-weight="bold">본 도면은 청구항 1~10의 전체 기능이 통합 작동하는 실제 시나리오를 나타낸다.</text>
+  <text x="120" y="2385" font-family="Malgun Gothic" font-size="11">- 청구항 2 (12종 트리거), 청구항 4 (신뢰도 점수), 청구항 5~6 (개인별 경로 + 안전 마진),</text>
+  <text x="120" y="2405" font-family="Malgun Gothic" font-size="11">  청구항 7 (이원 경로), 청구항 8 (실내 측위), 청구항 10 (관제센터 연계)</text>
+</svg>

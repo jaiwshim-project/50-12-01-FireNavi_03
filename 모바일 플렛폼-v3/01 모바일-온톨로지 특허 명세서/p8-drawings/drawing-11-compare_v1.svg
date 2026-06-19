@@ -1,0 +1,156 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1400">
+  <!-- 도 11. 종래 기술과의 비교도 -->
+
+  <!-- 제목 -->
+  <text x="600" y="40" text-anchor="middle" font-family="Malgun Gothic" font-size="28" font-weight="bold" fill="black">
+    도 11. 종래 기술과의 비교도
+  </text>
+
+  <!-- 전체 테이블 외곽 -->
+  <rect x="50" y="80" width="1100" height="1120" fill="none" stroke="black" stroke-width="3"/>
+
+  <!-- 제목 행 -->
+  <rect x="50" y="80" width="1100" height="50" fill="none" stroke="black" stroke-width="2"/>
+  <text x="600" y="110" text-anchor="middle" font-family="Malgun Gothic" font-size="16" font-weight="bold">
+    종래 기술 vs 본 발명 비교 (400)
+  </text>
+
+  <!-- 헤더 행 -->
+  <rect x="50" y="130" width="200" height="50" fill="#e0e0e0" stroke="black" stroke-width="2"/>
+  <rect x="250" y="130" width="450" height="50" fill="#e0e0e0" stroke="black" stroke-width="2"/>
+  <rect x="700" y="130" width="450" height="50" fill="#e0e0e0" stroke="black" stroke-width="2"/>
+
+  <text x="150" y="160" text-anchor="middle" font-family="Malgun Gothic" font-size="14" font-weight="bold">비교 항목</text>
+  <text x="475" y="160" text-anchor="middle" font-family="Malgun Gothic" font-size="14" font-weight="bold">종래 기술 (410)</text>
+  <text x="925" y="160" text-anchor="middle" font-family="Malgun Gothic" font-size="14" font-weight="bold">본 발명 (420)</text>
+
+  <!-- 행 1: 재난 감지 -->
+  <rect x="50" y="180" width="200" height="80" fill="none" stroke="black" stroke-width="1"/>
+  <rect x="250" y="180" width="450" height="80" fill="none" stroke="black" stroke-width="1"/>
+  <rect x="700" y="180" width="450" height="80" fill="none" stroke="black" stroke-width="1"/>
+
+  <text x="150" y="225" text-anchor="middle" font-family="Malgun Gothic" font-size="13" font-weight="bold">재난 감지</text>
+  <text x="475" y="210" text-anchor="middle" font-family="Malgun Gothic" font-size="12">시설 감지기만</text>
+  <text x="475" y="230" text-anchor="middle" font-family="Malgun Gothic" font-size="12">(화재감지기,</text>
+  <text x="475" y="248" text-anchor="middle" font-family="Malgun Gothic" font-size="12">연기감지기)</text>
+  <text x="925" y="210" text-anchor="middle" font-family="Malgun Gothic" font-size="12">스마트폰 센서 +</text>
+  <text x="925" y="230" text-anchor="middle" font-family="Malgun Gothic" font-size="12">사용자 보고 +</text>
+  <text x="925" y="248" text-anchor="middle" font-family="Malgun Gothic" font-size="12">설비 신호 융합</text>
+
+  <!-- 행 2: 신호 처리 -->
+  <rect x="50" y="260" width="200" height="70" fill="none" stroke="black" stroke-width="1"/>
+  <rect x="250" y="260" width="450" height="70" fill="none" stroke="black" stroke-width="1"/>
+  <rect x="700" y="260" width="450" height="70" fill="none" stroke="black" stroke-width="1"/>
+
+  <text x="150" y="300" text-anchor="middle" font-family="Malgun Gothic" font-size="13" font-weight="bold">신호 처리</text>
+  <text x="475" y="300" text-anchor="middle" font-family="Malgun Gothic" font-size="12">단일 신호 기반</text>
+  <text x="925" y="290" text-anchor="middle" font-family="Malgun Gothic" font-size="12">다중 신호 온톨로지 기반</text>
+  <text x="925" y="308" text-anchor="middle" font-family="Malgun Gothic" font-size="12">신뢰도 점수 산출</text>
+
+  <!-- 행 3: 위치 추적 -->
+  <rect x="50" y="330" width="200" height="70" fill="none" stroke="black" stroke-width="1"/>
+  <rect x="250" y="330" width="450" height="70" fill="none" stroke="black" stroke-width="1"/>
+  <rect x="700" y="330" width="450" height="70" fill="none" stroke="black" stroke-width="1"/>
+
+  <text x="150" y="370" text-anchor="middle" font-family="Malgun Gothic" font-size="13" font-weight="bold">위치 추적</text>
+  <text x="475" y="360" text-anchor="middle" font-family="Malgun Gothic" font-size="12">GPS (실내 불가능)</text>
+  <text x="475" y="378" text-anchor="middle" font-family="Malgun Gothic" font-size="12">또는 BLE 비콘</text>
+  <text x="925" y="360" text-anchor="middle" font-family="Malgun Gothic" font-size="12">WiFi/IMU/기압계 융합</text>
+  <text x="925" y="378" text-anchor="middle" font-family="Malgun Gothic" font-size="12">실내 정밀 측위</text>
+
+  <!-- 행 4: 대피 경로 -->
+  <rect x="50" y="400" width="200" height="70" fill="none" stroke="black" stroke-width="1"/>
+  <rect x="250" y="400" width="450" height="70" fill="none" stroke="black" stroke-width="1"/>
+  <rect x="700" y="400" width="450" height="70" fill="none" stroke="black" stroke-width="1"/>
+
+  <text x="150" y="440" text-anchor="middle" font-family="Malgun Gothic" font-size="13" font-weight="bold">대피 경로</text>
+  <text x="475" y="430" text-anchor="middle" font-family="Malgun Gothic" font-size="12">정적 피난 안내도</text>
+  <text x="475" y="448" text-anchor="middle" font-family="Malgun Gothic" font-size="12">(고정)</text>
+  <text x="925" y="430" text-anchor="middle" font-family="Malgun Gothic" font-size="12">실시간 동적 위험지도</text>
+  <text x="925" y="448" text-anchor="middle" font-family="Malgun Gothic" font-size="12">기반 경로 생성</text>
+
+  <!-- 행 5: 개인화 -->
+  <rect x="50" y="470" width="200" height="70" fill="none" stroke="black" stroke-width="1"/>
+  <rect x="250" y="470" width="450" height="70" fill="none" stroke="black" stroke-width="1"/>
+  <rect x="700" y="470" width="450" height="70" fill="none" stroke="black" stroke-width="1"/>
+
+  <text x="150" y="510" text-anchor="middle" font-family="Malgun Gothic" font-size="13" font-weight="bold">개인화</text>
+  <text x="475" y="500" text-anchor="middle" font-family="Malgun Gothic" font-size="12">모든 사용자</text>
+  <text x="475" y="518" text-anchor="middle" font-family="Malgun Gothic" font-size="12">동일 경로</text>
+  <text x="925" y="500" text-anchor="middle" font-family="Malgun Gothic" font-size="12">사용자별 제약조건 반영</text>
+  <text x="925" y="518" text-anchor="middle" font-family="Malgun Gothic" font-size="12">(휠체어, 시각장애 등)</text>
+
+  <!-- 행 6: 취약계층 -->
+  <rect x="50" y="540" width="200" height="70" fill="none" stroke="black" stroke-width="1"/>
+  <rect x="250" y="540" width="450" height="70" fill="none" stroke="black" stroke-width="1"/>
+  <rect x="700" y="540" width="450" height="70" fill="none" stroke="black" stroke-width="1"/>
+
+  <text x="150" y="580" text-anchor="middle" font-family="Malgun Gothic" font-size="13" font-weight="bold">취약계층</text>
+  <text x="475" y="580" text-anchor="middle" font-family="Malgun Gothic" font-size="12">별도 고려 없음</text>
+  <text x="925" y="570" text-anchor="middle" font-family="Malgun Gothic" font-size="12">안전 마진 자동 적용</text>
+  <text x="925" y="588" text-anchor="middle" font-family="Malgun Gothic" font-size="12">우선 구조 지원</text>
+
+  <!-- 행 7: 그룹 대피 -->
+  <rect x="50" y="610" width="200" height="70" fill="none" stroke="black" stroke-width="1"/>
+  <rect x="250" y="610" width="450" height="70" fill="none" stroke="black" stroke-width="1"/>
+  <rect x="700" y="610" width="450" height="70" fill="none" stroke="black" stroke-width="1"/>
+
+  <text x="150" y="650" text-anchor="middle" font-family="Malgun Gothic" font-size="13" font-weight="bold">그룹 대피</text>
+  <text x="475" y="650" text-anchor="middle" font-family="Malgun Gothic" font-size="12">지원 안 함</text>
+  <text x="925" y="640" text-anchor="middle" font-family="Malgun Gothic" font-size="12">가족/보호자 그룹 편성</text>
+  <text x="925" y="658" text-anchor="middle" font-family="Malgun Gothic" font-size="12">그룹 응집성 유지</text>
+
+  <!-- 행 8: 권한 관리 -->
+  <rect x="50" y="680" width="200" height="90" fill="none" stroke="black" stroke-width="1"/>
+  <rect x="250" y="680" width="450" height="90" fill="none" stroke="black" stroke-width="1"/>
+  <rect x="700" y="680" width="450" height="90" fill="none" stroke="black" stroke-width="1"/>
+
+  <text x="150" y="730" text-anchor="middle" font-family="Malgun Gothic" font-size="13" font-weight="bold">권한 관리</text>
+  <text x="475" y="730" text-anchor="middle" font-family="Malgun Gothic" font-size="12">구분 없음</text>
+  <text x="925" y="710" text-anchor="middle" font-family="Malgun Gothic" font-size="12">5종 역할별 권한 차등</text>
+  <text x="925" y="730" text-anchor="middle" font-family="Malgun Gothic" font-size="12">(사용자/보호자/승무원/</text>
+  <text x="925" y="748" text-anchor="middle" font-family="Malgun Gothic" font-size="12">관제센터/구조대)</text>
+
+  <!-- 행 9: 오프라인 대응 -->
+  <rect x="50" y="770" width="200" height="70" fill="none" stroke="black" stroke-width="1"/>
+  <rect x="250" y="770" width="450" height="70" fill="none" stroke="black" stroke-width="1"/>
+  <rect x="700" y="770" width="450" height="70" fill="none" stroke="black" stroke-width="1"/>
+
+  <text x="150" y="805" text-anchor="middle" font-family="Malgun Gothic" font-size="13" font-weight="bold">오프라인<tspan x="150" dy="18">대응</tspan></text>
+  <text x="475" y="810" text-anchor="middle" font-family="Malgun Gothic" font-size="12">불가능</text>
+  <text x="925" y="800" text-anchor="middle" font-family="Malgun Gothic" font-size="12">캐시된 경로 표시</text>
+  <text x="925" y="818" text-anchor="middle" font-family="Malgun Gothic" font-size="12">(엣지-서버 분리)</text>
+
+  <!-- 행 10: 설명 가능성 -->
+  <rect x="50" y="840" width="200" height="70" fill="none" stroke="black" stroke-width="1"/>
+  <rect x="250" y="840" width="450" height="70" fill="none" stroke="black" stroke-width="1"/>
+  <rect x="700" y="840" width="450" height="70" fill="none" stroke="black" stroke-width="1"/>
+
+  <text x="150" y="875" text-anchor="middle" font-family="Malgun Gothic" font-size="13" font-weight="bold">설명<tspan x="150" dy="18">가능성</tspan></text>
+  <text x="475" y="870" text-anchor="middle" font-family="Malgun Gothic" font-size="12">없음</text>
+  <text x="475" y="888" text-anchor="middle" font-family="Malgun Gothic" font-size="12">(경로만 제시)</text>
+  <text x="925" y="870" text-anchor="middle" font-family="Malgun Gothic" font-size="12">온톨로지 기반</text>
+  <text x="925" y="888" text-anchor="middle" font-family="Malgun Gothic" font-size="12">추천 이유 생성</text>
+
+  <!-- 행 11: 관제센터 연동 -->
+  <rect x="50" y="910" width="200" height="70" fill="none" stroke="black" stroke-width="1"/>
+  <rect x="250" y="910" width="450" height="70" fill="none" stroke="black" stroke-width="1"/>
+  <rect x="700" y="910" width="450" height="70" fill="none" stroke="black" stroke-width="1"/>
+
+  <text x="150" y="945" text-anchor="middle" font-family="Malgun Gothic" font-size="13" font-weight="bold">관제센터<tspan x="150" dy="18">연동</tspan></text>
+  <text x="475" y="950" text-anchor="middle" font-family="Malgun Gothic" font-size="12">CCTV 육안 확인</text>
+  <text x="925" y="940" text-anchor="middle" font-family="Malgun Gothic" font-size="12">실시간 위험지도,</text>
+  <text x="925" y="958" text-anchor="middle" font-family="Malgun Gothic" font-size="12">구조 우선순위 자동 제공</text>
+
+  <!-- 부호 설명 박스 -->
+  <rect x="50" y="1020" width="1100" height="160" fill="none" stroke="black" stroke-width="1" stroke-dasharray="8,5"/>
+  <text x="600" y="1050" text-anchor="middle" font-family="Malgun Gothic" font-size="14" font-weight="bold">
+    부호 설명
+  </text>
+
+  <text x="70" y="1080" font-family="Malgun Gothic" font-size="12">(400): 종래 기술 vs 본 발명 비교표</text>
+  <text x="70" y="1105" font-family="Malgun Gothic" font-size="12">(410): 종래 기술</text>
+  <text x="70" y="1130" font-family="Malgun Gothic" font-size="12">       - 시설 감지기만, 정적 피난 안내도, 개인화 없음, 취약계층 미고려</text>
+  <text x="70" y="1155" font-family="Malgun Gothic" font-size="12">(420): 본 발명</text>
+  <text x="70" y="1180" font-family="Malgun Gothic" font-size="12">       - 스마트폰+온톨로지+AI, 동적 위험지도, 개인별 제약 반영, 취약계층 안전 마진</text>
+</svg>

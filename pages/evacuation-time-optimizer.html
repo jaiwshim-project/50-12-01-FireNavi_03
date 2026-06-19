@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FireNavi - 군중 분산 기반 평균 대피시간 최소화</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <style>
+    .time-opt-hero {
+      padding: 62px 0 34px;
+      background: linear-gradient(135deg, rgba(15,23,42,0.98), rgba(185,28,28,0.9));
+      color: white;
+    }
+
+    .time-opt-label {
+      display: inline-flex;
+      padding: 6px 14px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.12);
+      border: 1px solid rgba(255,255,255,0.22);
+      color: #F8E7B0;
+      font-size: 0.78rem;
+      font-weight: 900;
+    }
+
+    .time-opt-title {
+      margin-top: 18px;
+      max-width: 940px;
+      color: white;
+      font-size: clamp(2rem, 4vw, 3.8rem);
+      line-height: 1.08;
+      letter-spacing: 0;
+    }
+
+    .time-opt-copy {
+      max-width: 780px;
+      margin-top: 16px;
+      color: rgba(255,255,255,0.78);
+      font-size: 1rem;
+      line-height: 1.75;
+    }
+
+    .time-opt-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1.4fr) minmax(320px, 0.8fr);
+      gap: 20px;
+      padding: 34px 0 70px;
+    }
+
+    .time-opt-panel {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-card);
+      padding: 22px;
+    }
+
+    .time-opt-toolbar {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .time-opt-control label {
+      display: block;
+      margin-bottom: 6px;
+      color: var(--text-muted);
+      font-size: 0.78rem;
+      font-weight: 800;
+    }
+
+    .time-opt-control input,
+    .time-opt-control select {
+      width: 100%;
+      height: 38px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 0 10px;
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+      font-weight: 800;
+    }
+
+    #timeOptCanvas {
+      width: 100%;
+      height: auto;
+      display: block;
+      border-radius: var(--radius-md);
+      background: #07111f;
+      border: 1px solid rgba(15,23,42,0.2);
+    }
+
+    .metric-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .metric {
+      padding: 14px;
+      border-radius: var(--radius-md);
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+    }
+
+    .metric span {
+      display: block;
+      color: var(--text-muted);
+      font-size: 0.72rem;
+      font-weight: 800;
+      margin-bottom: 6px;
+    }
+
+    .metric strong {
+      color: var(--navy);
+      font-size: 1.25rem;
+    }
+
+    .patent-box {
+      margin-top: 14px;
+      padding: 16px;
+      border-radius: var(--radius-md);
+      background: var(--gradient-glass-gold);
+      border: 1px solid var(--border-gold);
+      color: var(--text-secondary);
+      line-height: 1.65;
+      font-size: 0.9rem;
+    }
+
+    .time-opt-legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 12px;
+      color: var(--text-muted);
+      font-size: 0.78rem;
+    }
+
+    .legend-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .legend-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      display: inline-block;
+    }
+
+    @media (max-width: 980px) {
+      .time-opt-layout {
+        grid-template-columns: 1fr;
+      }
+
+      .time-opt-toolbar {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page-wrapper">
+    <nav class="top-nav"></nav>
+
+    <section class="time-opt-hero">
+      <div class="container">
+        <div class="time-opt-label">PAT-04 · Crowd Distribution</div>
+        <h1 class="time-opt-title">군중 분산 기반 평균 대피시간 최소화</h1>
+        <p class="time-opt-copy">
+          특정 출구로 사람이 몰리면 최단 경로가 오히려 가장 위험한 경로가 됩니다.
+          FireNavi는 출구별 부하와 통로 밀집도를 동시에 계산해 군중을 분산시키고,
+          전체 평균 대피시간과 병목 위험을 함께 낮춥니다.
+        </p>
+      </div>
+    </section>
+
+    <main class="container">
+      <section class="time-opt-layout">
+        <div class="time-opt-panel">
+          <div class="time-opt-toolbar">
+            <div class="time-opt-control">
+              <label for="populationInput">대피 인원</label>
+              <input id="populationInput" type="number" min="300" max="9000" step="300" value="6000">
+            </div>
+            <div class="time-opt-control">
+              <label for="exitInput">사용 가능 출구</label>
+              <input id="exitInput" type="number" min="3" max="12" step="1" value="8">
+            </div>
+            <div class="time-opt-control">
+              <label for="modeInput">대피 전략</label>
+              <select id="modeInput">
+                <option value="ai">FireNavi 분산 최적화</option>
+                <option value="naive">최단거리 집중 대피</option>
+              </select>
+            </div>
+          </div>
+
+          <canvas id="timeOptCanvas" width="1120" height="560" aria-label="군중 분산 대피시간 최소화 시각화"></canvas>
+          <div class="time-opt-legend">
+            <span class="legend-chip"><i class="legend-dot" style="background:#60A5FA;"></i>분산 이동 흐름</span>
+            <span class="legend-chip"><i class="legend-dot" style="background:#F59E0B;"></i>주의 밀집 구간</span>
+            <span class="legend-chip"><i class="legend-dot" style="background:#EF4444;"></i>병목 위험</span>
+            <span class="legend-chip"><i class="legend-dot" style="background:#22C55E;"></i>출구 처리량</span>
+          </div>
+        </div>
+
+        <aside class="time-opt-panel">
+          <div class="metric-grid">
+            <div class="metric">
+              <span>예상 평균 대피시간</span>
+              <strong id="avgTime">--</strong>
+            </div>
+            <div class="metric">
+              <span>최대 출구 부하</span>
+              <strong id="maxLoad">--</strong>
+            </div>
+            <div class="metric">
+              <span>병목 위험 지수</span>
+              <strong id="bottleneck">--</strong>
+            </div>
+            <div class="metric">
+              <span>분산 효율</span>
+              <strong id="efficiency">--</strong>
+            </div>
+          </div>
+
+          <div class="patent-box">
+            <strong>PAT-04 핵심:</strong>
+            개별 최단 경로가 아니라 전체 군중의 출구 배분, 통로 용량, 시간대별 밀집도를 동시에 최적화합니다.
+            이를 통해 단일 출구 집중, 압박 위험, 평균 대피시간 증가를 사전에 억제합니다.
+          </div>
+        </aside>
+      </section>
+    </main>
+  </div>
+
+  <script src="../js/common-nav-footer.js"></script>
+  <script>
+    (function () {
+      const canvas = document.getElementById('timeOptCanvas');
+      const ctx = canvas.getContext('2d');
+      const populationInput = document.getElementById('populationInput');
+      const exitInput = document.getElementById('exitInput');
+      const modeInput = document.getElementById('modeInput');
+      const avgTime = document.getElementById('avgTime');
+      const maxLoad = document.getElementById('maxLoad');
+      const bottleneck = document.getElementById('bottleneck');
+      const efficiency = document.getElementById('efficiency');
+
+      function clamp(value, min, max) {
+        return Math.max(min, Math.min(max, value));
+      }
+
+      function calculate() {
+        const population = clamp(Number(populationInput.value) || 6000, 300, 9000);
+        const exits = clamp(Number(exitInput.value) || 8, 3, 12);
+        const mode = modeInput.value;
+        const loads = [];
+        let total = 0;
+
+        for (let i = 0; i < exits; i++) {
+          const centerBias = 1 - Math.abs(i - (exits - 1) / 2) / ((exits - 1) / 2 || 1);
+          const naiveWeight = 0.55 + centerBias * 2.5;
+          const aiWeight = 0.92 + Math.sin(i * 1.7) * 0.08;
+          const weight = mode === 'ai' ? aiWeight : naiveWeight;
+          loads.push(weight);
+          total += weight;
+        }
+
+        const assigned = loads.map(weight => Math.round(population * weight / total));
+        const maxAssigned = Math.max(...assigned);
+        const ideal = population / exits;
+        const overload = maxAssigned / ideal;
+        const baseFlowPerExit = 72;
+        const avgMinutes = mode === 'ai'
+          ? population / (exits * baseFlowPerExit) * 1.08
+          : population / (exits * baseFlowPerExit) * (1.2 + overload * 0.55);
+        const risk = clamp(Math.round((overload - 1) * 70 + (mode === 'naive' ? 28 : 8)), 4, 100);
+        const eff = clamp(Math.round(100 - Math.abs(overload - 1) * 55 - (mode === 'naive' ? 18 : 0)), 1, 99);
+
+        return { population, exits, mode, assigned, maxAssigned, ideal, overload, avgMinutes, risk, eff };
+      }
+
+      function draw() {
+        const data = calculate();
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = '#07111f';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        ctx.fillStyle = '#E2E8F0';
+        ctx.font = '800 26px Arial';
+        ctx.fillText(data.mode === 'ai' ? 'FireNavi 분산 최적화' : '최단거리 집중 대피', 36, 46);
+        ctx.font = '600 14px Arial';
+        ctx.fillStyle = '#94A3B8';
+        ctx.fillText('출구별 부하를 균등화하여 병목과 평균 대피시간을 낮추는 PAT-04 시각화', 36, 72);
+
+        const hall = { x: 78, y: 150, w: 964, h: 250 };
+        ctx.strokeStyle = '#334155';
+        ctx.lineWidth = 3;
+        ctx.strokeRect(hall.x, hall.y, hall.w, hall.h);
+        ctx.fillStyle = 'rgba(15,23,42,0.72)';
+        ctx.fillRect(hall.x, hall.y, hall.w, hall.h);
+
+        const entryY = hall.y + hall.h / 2;
+        const exitGap = hall.w / data.exits;
+
+        for (let i = 0; i < data.exits; i++) {
+          const x = hall.x + exitGap * i + exitGap / 2;
+          const loadRatio = data.assigned[i] / data.ideal;
+          const color = loadRatio > 1.55 ? '#EF4444' : loadRatio > 1.18 ? '#F59E0B' : '#22C55E';
+          const lineWidth = clamp(4 + loadRatio * 7, 5, 18);
+
+          ctx.beginPath();
+          ctx.moveTo(hall.x + hall.w / 2, entryY);
+          ctx.bezierCurveTo(hall.x + hall.w / 2, entryY - 95, x, entryY - 95, x, hall.y);
+          ctx.strokeStyle = data.mode === 'ai' ? '#60A5FA' : color;
+          ctx.globalAlpha = 0.72;
+          ctx.lineWidth = lineWidth;
+          ctx.stroke();
+          ctx.globalAlpha = 1;
+
+          ctx.fillStyle = color;
+          ctx.fillRect(x - 25, hall.y - 24, 50, 18);
+          ctx.fillStyle = '#E2E8F0';
+          ctx.font = '800 12px Arial';
+          ctx.textAlign = 'center';
+          ctx.fillText('E' + (i + 1), x, hall.y - 32);
+          ctx.fillStyle = color;
+          ctx.font = '800 13px Arial';
+          ctx.fillText(data.assigned[i].toLocaleString() + '명', x, hall.y - 52);
+        }
+
+        ctx.textAlign = 'left';
+        ctx.fillStyle = '#F8FAFC';
+        ctx.beginPath();
+        ctx.arc(hall.x + hall.w / 2, entryY, 42, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.fillStyle = '#0F172A';
+        ctx.font = '900 15px Arial';
+        ctx.textAlign = 'center';
+        ctx.fillText('군중', hall.x + hall.w / 2, entryY - 4);
+        ctx.fillText(data.population.toLocaleString() + '명', hall.x + hall.w / 2, entryY + 15);
+
+        ctx.textAlign = 'left';
+        ctx.fillStyle = '#CBD5E1';
+        ctx.font = '700 14px Arial';
+        ctx.fillText('위쪽 막대: 출구별 배정 인원 / 선 두께: 해당 동선 부하', 36, 500);
+
+        avgTime.textContent = data.avgMinutes.toFixed(1) + '분';
+        maxLoad.textContent = Math.round(data.overload * 100) + '%';
+        bottleneck.textContent = data.risk + '/100';
+        efficiency.textContent = data.eff + '%';
+      }
+
+      [populationInput, exitInput, modeInput].forEach(input => {
+        input.addEventListener('input', draw);
+        input.addEventListener('change', draw);
+      });
+
+      draw();
+    })();
+  </script>
+</body>
+</html>

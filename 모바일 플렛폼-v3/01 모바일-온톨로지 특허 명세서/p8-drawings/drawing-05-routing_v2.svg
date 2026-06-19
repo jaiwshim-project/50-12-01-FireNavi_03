@@ -1,0 +1,129 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 1900">
+  <!-- 도 5. 개인별 경로 산출 알고리즘 상세도 (v2 - Patent Standard) -->
+
+  <!-- 제목 -->
+  <text x="550" y="40" text-anchor="middle" font-family="Malgun Gothic" font-size="28" font-weight="bold" fill="black">
+    도 5. 개인별 경로 산출 알고리즘 상세도
+  </text>
+
+  <!-- 시작: 입력 데이터 -->
+  <rect x="425" y="80" width="250" height="50" fill="none" stroke="black" stroke-width="2" rx="10"/>
+  <text x="550" y="110" text-anchor="middle" font-family="Malgun Gothic" font-size="14" font-weight="bold">
+    입력 데이터
+  </text>
+
+  <!-- 화살표 1 -->
+  <line x1="550" y1="130" x2="550" y2="170" stroke="black" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+
+  <!-- S310: 경로 비용 함수 정의 -->
+  <rect x="100" y="170" width="900" height="240" fill="none" stroke="black" stroke-width="2"/>
+  <text x="550" y="195" text-anchor="middle" font-family="Malgun Gothic" font-size="14" font-weight="bold">
+    S310: 경로 비용 함수 정의
+  </text>
+
+  <text x="120" y="225" font-family="Consolas" font-size="14" font-weight="bold">
+    Cost(u,v) = BaseDistance(u,v) × W_factors
+  </text>
+
+  <text x="120" y="255" font-family="Consolas" font-size="13">
+    W_factors = W_risk × W_congestion × W_constraint × W_margin
+  </text>
+
+  <text x="120" y="290" font-family="Malgun Gothic" font-size="12">가중치 종류:</text>
+  <text x="140" y="315" font-family="Malgun Gothic" font-size="11">• W_risk: 위험도 가중치 (1.0 ~ 10.0)</text>
+  <text x="140" y="335" font-family="Malgun Gothic" font-size="11">• W_congestion: 혼잡도 가중치 (1.0 ~ 5.0)</text>
+  <text x="140" y="355" font-family="Malgun Gothic" font-size="11">• W_constraint: 제약조건 (1.0 또는 ∞)</text>
+  <text x="140" y="375" font-family="Malgun Gothic" font-size="11">• W_margin: 안전 마진 계수 (1.2 ~ 3.0)</text>
+
+  <text x="120" y="400" font-family="Malgun Gothic" font-size="11" font-weight="bold">→ 경로 추천부 (240)</text>
+
+  <!-- 화살표 2 -->
+  <line x1="550" y1="410" x2="550" y2="450" stroke="black" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+
+  <!-- S320: 사용자별 제약조건 적용 -->
+  <rect x="150" y="450" width="800" height="200" fill="none" stroke="black" stroke-width="2"/>
+  <text x="550" y="475" text-anchor="middle" font-family="Malgun Gothic" font-size="14" font-weight="bold">
+    S320: 사용자별 제약조건 적용
+  </text>
+
+  <text x="170" y="505" font-family="Consolas" font-size="12">IF 사용자 = 휠체어 사용자 THEN</text>
+  <text x="190" y="525" font-family="Consolas" font-size="12">    Cost(계단) = ∞</text>
+
+  <text x="170" y="555" font-family="Consolas" font-size="12">IF 사용자 = 호흡기 환자 THEN</text>
+  <text x="190" y="575" font-family="Consolas" font-size="12">    W_risk(연기) × 3.0</text>
+
+  <text x="170" y="605" font-family="Consolas" font-size="12">IF 사용자 = 어린이 THEN</text>
+  <text x="190" y="625" font-family="Consolas" font-size="12">    Distance(보호자) &lt; 10m</text>
+
+  <!-- 화살표 3 -->
+  <line x1="550" y1="650" x2="550" y2="690" stroke="black" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+
+  <!-- S330: A* 알고리즘 실행 -->
+  <rect x="150" y="690" width="800" height="240" fill="none" stroke="black" stroke-width="2"/>
+  <text x="550" y="715" text-anchor="middle" font-family="Malgun Gothic" font-size="14" font-weight="bold">
+    S330: A* 알고리즘 실행
+  </text>
+
+  <text x="170" y="745" font-family="Consolas" font-size="14" font-weight="bold">
+    F(n) = G(n) + H(n)
+  </text>
+
+  <text x="170" y="780" font-family="Malgun Gothic" font-size="12">• G(n): 시작점부터 n까지의 실제 비용</text>
+  <text x="190" y="800" font-family="Malgun Gothic" font-size="11">     = ∑ Cost(u,v) along path</text>
+
+  <text x="170" y="830" font-family="Malgun Gothic" font-size="12">• H(n): n부터 목표점까지의 추정 비용</text>
+  <text x="190" y="850" font-family="Malgun Gothic" font-size="11">     = Euclidean Distance × min(W_factors)</text>
+
+  <text x="170" y="880" font-family="Malgun Gothic" font-size="12">우선순위 큐:</text>
+  <text x="190" y="900" font-family="Malgun Gothic" font-size="11">     [F값이 작은 노드 우선 탐색]</text>
+
+  <!-- 화살표 4 -->
+  <line x1="550" y1="930" x2="550" y2="970" stroke="black" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+
+  <!-- S340: 주경로 및 대체경로 생성 -->
+  <rect x="150" y="970" width="800" height="180" fill="none" stroke="black" stroke-width="2"/>
+  <text x="550" y="995" text-anchor="middle" font-family="Malgun Gothic" font-size="14" font-weight="bold">
+    S340: 주경로 및 대체경로 생성
+  </text>
+
+  <text x="170" y="1025" font-family="Malgun Gothic" font-size="12">• 주경로: F값이 최소인 경로</text>
+  <text x="190" y="1045" font-family="Malgun Gothic" font-size="11">     최단 시간 + 최저 위험도 + 제약조건 만족</text>
+
+  <text x="170" y="1075" font-family="Malgun Gothic" font-size="12">• 대체경로: F값이 2번째로 작고,</text>
+  <text x="190" y="1095" font-family="Malgun Gothic" font-size="11">     주경로와 겹치지 않는 경로 (Overlap &lt; 30%)</text>
+
+  <text x="170" y="1125" font-family="Malgun Gothic" font-size="11" font-weight="bold">→ 경로 추천부 (240) → 출력부 (142)</text>
+
+  <!-- 화살표 5 -->
+  <line x1="550" y1="1150" x2="550" y2="1190" stroke="black" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+
+  <!-- 종료: 경로 추천 이유 생성 및 출력 -->
+  <rect x="300" y="1190" width="500" height="50" fill="none" stroke="black" stroke-width="2" rx="10"/>
+  <text x="550" y="1220" text-anchor="middle" font-family="Malgun Gothic" font-size="14" font-weight="bold">
+    경로 추천 이유 생성 및 출력
+  </text>
+
+  <!-- 부호 설명 박스 -->
+  <rect x="100" y="1300" width="900" height="240" fill="none" stroke="black" stroke-width="1" stroke-dasharray="8,5"/>
+  <text x="550" y="1330" text-anchor="middle" font-family="Malgun Gothic" font-size="14" font-weight="bold">
+    부호 설명
+  </text>
+
+  <text x="120" y="1360" font-family="Malgun Gothic" font-size="12">S310: 경로 비용 함수 정의 (경로 추천부 240)</text>
+  <text x="140" y="1380" font-family="Malgun Gothic" font-size="11">     - 위험도, 혼잡도, 제약조건, 안전 마진 반영</text>
+
+  <text x="120" y="1410" font-family="Malgun Gothic" font-size="12">S320: 사용자별 제약조건 적용 (사용자 온톨로지 211)</text>
+  <text x="140" y="1430" font-family="Malgun Gothic" font-size="11">     - 휠체어: 계단 비용 무한대, 호흡기: 연기 가중치 x3.0, 어린이: 보호자 거리 10m 이내</text>
+
+  <text x="120" y="1460" font-family="Malgun Gothic" font-size="12">S330: A* 알고리즘 실행 (F = G + H)</text>
+  <text x="140" y="1480" font-family="Malgun Gothic" font-size="11">     - G: 실제 비용, H: 휴리스틱 추정 비용</text>
+
+  <text x="120" y="1510" font-family="Malgun Gothic" font-size="12">S340: 주경로 및 대체경로 생성 (경로 온톨로지 215)</text>
+
+  <!-- 화살표 마커 정의 -->
+  <defs>
+    <marker id="arrowhead" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+      <polygon points="0 0, 10 3, 0 6" fill="black"/>
+    </marker>
+  </defs>
+</svg>

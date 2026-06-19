@@ -1,0 +1,362 @@
+<svg width="1600" height="2000" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="gradHeader2" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#7c2d12;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#ea580c;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="gradCore" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#dbeafe;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#3b82f6;stop-opacity:1" />
+    </linearGradient>
+    <filter id="shadow2">
+      <feDropShadow dx="0" dy="3" stdDeviation="4" flood-opacity="0.4"/>
+    </filter>
+    <marker id="arroworange" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L9,3 z" fill="#ea580c" />
+    </marker>
+    <marker id="arrowblue2" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L9,3 z" fill="#2563eb" />
+    </marker>
+  </defs>
+
+  <!-- 배경 -->
+  <rect width="1600" height="2000" fill="#fafaf9"/>
+
+  <!-- 헤더 -->
+  <rect width="1600" height="110" fill="url(#gradHeader2)"/>
+  <text x="800" y="45" font-family="Arial, sans-serif" font-size="36" font-weight="bold" fill="white" text-anchor="middle">
+    FireNavi v3.0 Architecture v2
+  </text>
+  <text x="800" y="80" font-family="Arial, sans-serif" font-size="18" fill="#fed7aa" text-anchor="middle">
+    경쟁사 차별화 전략 반영 - 온톨로지 기반 통합 플랫폼
+  </text>
+
+  <!-- 경쟁사 vs FireNavi -->
+  <text x="50" y="150" font-family="Arial, sans-serif" font-size="24" font-weight="bold" fill="#7c2d12">
+    경쟁사 대비 7대 차별점
+  </text>
+
+  <rect x="50" y="170" width="1500" height="280" rx="10" fill="white" stroke="#ea580c" stroke-width="3" filter="url(#shadow2)"/>
+
+  <!-- 차별점 그리드 -->
+  <text x="80" y="210" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#7c2d12">
+    1️⃣ Google 대비: 고정 센서 → 스마트폰 로컬 감지 (0.3초 자동 활성화)
+  </text>
+  <text x="100" y="235" font-family="Arial, sans-serif" font-size="12" fill="#78350f">
+    • Nest 하드웨어 판매 의존 → FireNavi 소프트웨어 구독 ($4.99/월)
+  </text>
+
+  <text x="80" y="270" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#7c2d12">
+    2️⃣ Apple 대비: 좌표 → 공간 온톨로지 노드 ("4층 동쪽 복도")
+  </text>
+  <text x="100" y="295" font-family="Arial, sans-serif" font-size="12" fill="#78350f">
+    • UWB 비콘 필요 → FireNavi 기존 WiFi만 사용 (신규 설치 불필요)
+  </text>
+
+  <text x="80" y="330" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#7c2d12">
+    3️⃣ IBM 대비: 기업용 → 개인 사용자 중심 (B2C + B2B)
+  </text>
+  <text x="100" y="355" font-family="Arial, sans-serif" font-size="12" fill="#78350f">
+    • 최소 계약 $100K → FireNavi 무료 체험 + 개인 구독
+  </text>
+
+  <text x="850" y="210" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#7c2d12">
+    4️⃣ Samsung 대비: 범용 기능 → 재난 대피 전문 온톨로지
+  </text>
+  <text x="870" y="235" font-family="Arial, sans-serif" font-size="12" fill="#78350f">
+    • Bixby 범용 AI → FireNavi 재난 특화 삼중 엔진
+  </text>
+
+  <text x="850" y="270" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#7c2d12">
+    5️⃣ Microsoft 대비: 인프라 제공 → 완제품 소유
+  </text>
+  <text x="870" y="295" font-family="Arial, sans-serif" font-size="12" fill="#78350f">
+    • Azure API만 → FireNavi 사용자 데이터 + 온톨로지 지속 개선
+  </text>
+
+  <text x="850" y="330" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#7c2d12">
+    6️⃣ 중국 대비: 내수 중심 → 글로벌 다국어 (30개 언어)
+  </text>
+  <text x="870" y="355" font-family="Arial, sans-serif" font-size="12" fill="#78350f">
+    • 중국어만 → FireNavi 온톨로지 기반 다국어 자동 감지
+  </text>
+
+  <text x="80" y="390" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#7c2d12">
+    7️⃣ 일본 대비: 완벽주의 → 애자일 MVP (v1.0 → v2.0 → v3.0 빠른 개선)
+  </text>
+  <text x="100" y="415" font-family="Arial, sans-serif" font-size="12" fill="#78350f">
+    • 5년 R&D → FireNavi 3개월 MVP + 사용자 피드백 기반 개선
+  </text>
+
+  <!-- 핵심 차별점 강조 -->
+  <rect x="50" y="480" width="1500" height="80" rx="8" fill="#fef3c7" stroke="#f59e0b" stroke-width="2"/>
+  <text x="800" y="515" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#78350f" text-anchor="middle">
+    💡 핵심: 경쟁사는 "기존 비즈니스 모델 보호", FireNavi는 "새로운 시장 창출"
+  </text>
+  <text x="800" y="545" font-family="Arial, sans-serif" font-size="14" fill="#92400e" text-anchor="middle">
+    → 하드웨어 판매·프리미엄 전략·기업 솔루션에 갇히지 않은 자유로운 혁신
+  </text>
+
+  <!-- FireNavi 통합 아키텍처 -->
+  <text x="50" y="610" font-family="Arial, sans-serif" font-size="24" font-weight="bold" fill="#1e3a8a">
+    FireNavi 온톨로지 기반 통합 아키텍처
+  </text>
+
+  <!-- 중앙 온톨로지 허브 -->
+  <ellipse cx="800" cy="850" rx="220" ry="150" fill="url(#gradCore)" stroke="#1e40af" stroke-width="4" filter="url(#shadow2)"/>
+  <text x="800" y="810" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="#1e3a8a" text-anchor="middle">
+    재난대피 온톨로지
+  </text>
+  <text x="800" y="840" font-family="Arial, sans-serif" font-size="16" fill="#1e40af" text-anchor="middle">
+    지식그래프 (RDF/OWL)
+  </text>
+  <text x="800" y="870" font-family="Arial, sans-serif" font-size="13" fill="#1e40af" text-anchor="middle">
+    Person · Location · Hazard
+  </text>
+  <text x="800" y="895" font-family="Arial, sans-serif" font-size="13" fill="#1e40af" text-anchor="middle">
+    Route · Sensor · Regulation
+  </text>
+  <text x="800" y="920" font-family="Arial, sans-serif" font-size="13" fill="#1e40af" text-anchor="middle">
+    Responder · Decision · Instruction
+  </text>
+
+  <!-- 입력 레이어 (상단) -->
+  <text x="50" y="660" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#0c4a6e">
+    입력 레이어 (5채널)
+  </text>
+
+  <!-- 채널 1: 음향 -->
+  <rect x="50" y="680" width="260" height="90" rx="8" fill="#fecaca" stroke="#dc2626" stroke-width="2" filter="url(#shadow2)"/>
+  <text x="180" y="710" font-family="Arial, sans-serif" font-size="13" font-weight="bold" fill="#7f1d1d" text-anchor="middle">
+    1️⃣ 음향 자동 트리거
+  </text>
+  <text x="70" y="735" font-family="Arial, sans-serif" font-size="11" fill="#7f1d1d">
+    🔊 스마트폰 마이크 로컬 감지
+  </text>
+  <text x="70" y="755" font-family="Arial, sans-serif" font-size="11" fill="#7f1d1d">
+    → FireAlarmSound 노드 매핑
+  </text>
+
+  <!-- 채널 2: 측위 -->
+  <rect x="340" y="680" width="260" height="90" rx="8" fill="#fed7aa" stroke="#ea580c" stroke-width="2" filter="url(#shadow2)"/>
+  <text x="470" y="710" font-family="Arial, sans-serif" font-size="13" font-weight="bold" fill="#7c2d12" text-anchor="middle">
+    2️⃣ 인프라프리 측위
+  </text>
+  <text x="360" y="735" font-family="Arial, sans-serif" font-size="11" fill="#7c2d12">
+    📍 WiFi + IMU + 기압계
+  </text>
+  <text x="360" y="755" font-family="Arial, sans-serif" font-size="11" fill="#7c2d12">
+    → "4층 복도" 온톨로지 노드
+  </text>
+
+  <!-- 채널 3: 설문 -->
+  <rect x="630" y="680" width="260" height="90" rx="8" fill="#fef3c7" stroke="#f59e0b" stroke-width="2" filter="url(#shadow2)"/>
+  <text x="760" y="710" font-family="Arial, sans-serif" font-size="13" font-weight="bold" fill="#78350f" text-anchor="middle">
+    3️⃣ 마이크로 설문
+  </text>
+  <text x="650" y="735" font-family="Arial, sans-serif" font-size="11" fill="#78350f">
+    💬 취약계층 맞춤 질문
+  </text>
+  <text x="650" y="755" font-family="Arial, sans-serif" font-size="11" fill="#78350f">
+    → 상태 온톨로지 노드 갱신
+  </text>
+
+  <!-- 채널 4: 센서 -->
+  <rect x="920" y="680" width="260" height="90" rx="8" fill="#ddd6fe" stroke="#7c3aed" stroke-width="2" filter="url(#shadow2)"/>
+  <text x="1050" y="710" font-family="Arial, sans-serif" font-size="13" font-weight="bold" fill="#5b21b6" text-anchor="middle">
+    4️⃣ 패시브 센서 융합
+  </text>
+  <text x="940" y="735" font-family="Arial, sans-serif" font-size="11" fill="#5b21b6">
+    📊 조도·기압·IMU·마이크
+  </text>
+  <text x="940" y="755" font-family="Arial, sans-serif" font-size="11" fill="#5b21b6">
+    → 위험 온톨로지 노드 갱신
+  </text>
+
+  <!-- 채널 5: 크라우드소싱 -->
+  <rect x="1210" y="680" width="340" height="90" rx="8" fill="#e0f2fe" stroke="#0369a1" stroke-width="2" filter="url(#shadow2)"/>
+  <text x="1380" y="710" font-family="Arial, sans-serif" font-size="13" font-weight="bold" fill="#0c4a6e" text-anchor="middle">
+    5️⃣ 인간보고 정규화
+  </text>
+  <text x="1230" y="735" font-family="Arial, sans-serif" font-size="11" fill="#0c4a6e">
+    🗣️ "연기 냄새" → SmokeOdor 노드
+  </text>
+  <text x="1230" y="755" font-family="Arial, sans-serif" font-size="11" fill="#0c4a6e">
+    → 베이지안 융합 신뢰도 평가
+  </text>
+
+  <!-- 입력 → 온톨로지 연결선 -->
+  <path d="M 180 770 L 650 800" stroke="#ea580c" stroke-width="2" fill="none" marker-end="url(#arroworange)"/>
+  <path d="M 470 770 L 700 800" stroke="#ea580c" stroke-width="2" fill="none" marker-end="url(#arroworange)"/>
+  <path d="M 760 770 L 800 800" stroke="#ea580c" stroke-width="2" fill="none" marker-end="url(#arroworange)"/>
+  <path d="M 1050 770 L 900 800" stroke="#ea580c" stroke-width="2" fill="none" marker-end="url(#arroworange)"/>
+  <path d="M 1380 770 L 950 800" stroke="#ea580c" stroke-width="2" fill="none" marker-end="url(#arroworange)"/>
+
+  <!-- AI 엔진 레이어 -->
+  <text x="50" y="1050" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#0c4a6e">
+    AI 엔진 레이어 (삼중 동기화)
+  </text>
+
+  <!-- Prediction Engine -->
+  <rect x="200" y="1070" width="300" height="100" rx="8" fill="#fecaca" stroke="#dc2626" stroke-width="2" filter="url(#shadow2)"/>
+  <text x="350" y="1100" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#7f1d1d" text-anchor="middle">
+    Prediction Engine
+  </text>
+  <text x="220" y="1125" font-family="Arial, sans-serif" font-size="12" fill="#7f1d1d">
+    화재·연기 확산 예측
+  </text>
+  <text x="220" y="1145" font-family="Arial, sans-serif" font-size="12" fill="#7f1d1d">
+    → FireSpreadZone 노드 갱신
+  </text>
+
+  <!-- Behavior Engine -->
+  <rect x="650" y="1070" width="300" height="100" rx="8" fill="#fed7aa" stroke="#ea580c" stroke-width="2" filter="url(#shadow2)"/>
+  <text x="800" y="1100" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#7c2d12" text-anchor="middle">
+    Behavior Engine
+  </text>
+  <text x="670" y="1125" font-family="Arial, sans-serif" font-size="12" fill="#7c2d12">
+    군중 행동·병목 예측
+  </text>
+  <text x="670" y="1145" font-family="Arial, sans-serif" font-size="12" fill="#7c2d12">
+    → Bottleneck 노드 갱신
+  </text>
+
+  <!-- Decision Engine -->
+  <rect x="1100" y="1070" width="300" height="100" rx="8" fill="#bbf7d0" stroke="#16a34a" stroke-width="2" filter="url(#shadow2)"/>
+  <text x="1250" y="1100" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#14532d" text-anchor="middle">
+    Decision Engine
+  </text>
+  <text x="1120" y="1125" font-family="Arial, sans-serif" font-size="12" fill="#14532d">
+    개인별 경로 결정
+  </text>
+  <text x="1120" y="1145" font-family="Arial, sans-serif" font-size="12" fill="#14532d">
+    → Route 추천 + 사유 생성
+  </text>
+
+  <!-- 온톨로지 ↔ 엔진 양방향 -->
+  <path d="M 650 900 L 400 1070" stroke="#2563eb" stroke-width="2" fill="none" stroke-dasharray="5,5"/>
+  <path d="M 750 900 L 800 1070" stroke="#2563eb" stroke-width="2" fill="none" stroke-dasharray="5,5"/>
+  <path d="M 950 900 L 1200 1070" stroke="#2563eb" stroke-width="2" fill="none" stroke-dasharray="5,5"/>
+
+  <!-- 출력 레이어 -->
+  <text x="50" y="1230" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#0c4a6e">
+    출력 레이어 (3채널 + 설명 가능성)
+  </text>
+
+  <!-- 사용자 앱 -->
+  <rect x="50" y="1250" width="450" height="140" rx="8" fill="#dbeafe" stroke="#2563eb" stroke-width="3" filter="url(#shadow2)"/>
+  <text x="275" y="1285" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#1e40af" text-anchor="middle">
+    📱 사용자 앱 (개인별 맞춤)
+  </text>
+  <text x="70" y="1315" font-family="Arial, sans-serif" font-size="12" fill="#1e40af">
+    • 주경로 + 대체경로 (실시간 갱신)
+  </text>
+  <text x="70" y="1340" font-family="Arial, sans-serif" font-size="12" fill="#1e40af">
+    • 다국어 안내 (30개 언어)
+  </text>
+  <text x="70" y="1365" font-family="Arial, sans-serif" font-size="12" fill="#1e40af">
+    • ✨ 설명 가능한 추천 사유 생성
+  </text>
+
+  <!-- 관제센터 -->
+  <rect x="575" y="1250" width="450" height="140" rx="8" fill="#fef3c7" stroke="#f59e0b" stroke-width="3" filter="url(#shadow2)"/>
+  <text x="800" y="1285" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#78350f" text-anchor="middle">
+    🎛️ 관제센터 (전체 상황)
+  </text>
+  <text x="595" y="1315" font-family="Arial, sans-serif" font-size="12" fill="#78350f">
+    • 4채널 화재맵 (화재·연기·군중·출구)
+  </text>
+  <text x="595" y="1340" font-family="Arial, sans-serif" font-size="12" fill="#78350f">
+    • 취약계층 위치 + 구조 우선순위
+  </text>
+  <text x="595" y="1365" font-family="Arial, sans-serif" font-size="12" fill="#78350f">
+    • ✨ AI 판단 근거 설명 제공
+  </text>
+
+  <!-- 구조대 -->
+  <rect x="1100" y="1250" width="450" height="140" rx="8" fill="#fee2e2" stroke="#ef4444" stroke-width="3" filter="url(#shadow2)"/>
+  <text x="1325" y="1285" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#7f1d1d" text-anchor="middle">
+    🚒 구조대 (구조 자원 배분)
+  </text>
+  <text x="1120" y="1315" font-family="Arial, sans-serif" font-size="12" fill="#7f1d1d">
+    • 미응답자·낙상자 위치
+  </text>
+  <text x="1120" y="1340" font-family="Arial, sans-serif" font-size="12" fill="#7f1d1d">
+    • 취약계층 우선순위 + 접근 경로
+  </text>
+  <text x="1120" y="1365" font-family="Arial, sans-serif" font-size="12" fill="#7f1d1d">
+    • ✨ 온톨로지 기반 구조 전략 제공
+  </text>
+
+  <!-- 엔진 → 출력 연결 -->
+  <path d="M 350 1170 L 275 1250" stroke="#2563eb" stroke-width="3" fill="none" marker-end="url(#arrowblue2)"/>
+  <path d="M 800 1170 L 800 1250" stroke="#2563eb" stroke-width="3" fill="none" marker-end="url(#arrowblue2)"/>
+  <path d="M 1250 1170 L 1325 1250" stroke="#2563eb" stroke-width="3" fill="none" marker-end="url(#arrowblue2)"/>
+
+  <!-- 차별화 전략 요약 -->
+  <rect x="50" y="1450" width="1500" height="500" rx="10" fill="#f0fdf4" stroke="#22c55e" stroke-width="3" filter="url(#shadow2)"/>
+  <text x="800" y="1490" font-family="Arial, sans-serif" font-size="22" font-weight="bold" fill="#14532d" text-anchor="middle">
+    🎯 경쟁사 대비 FireNavi 차별화 전략 (특허 청구 방향)
+  </text>
+
+  <!-- 전략 1 -->
+  <text x="80" y="1540" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#166534">
+    전략 1: 비즈니스 모델 차별화
+  </text>
+  <text x="100" y="1565" font-family="Arial, sans-serif" font-size="12" fill="#15803d">
+    • 하드웨어 판매 의존 없음 → 소프트웨어 구독 모델 ($4.99/월)
+  </text>
+  <text x="100" y="1585" font-family="Arial, sans-serif" font-size="12" fill="#15803d">
+    • 신규 인프라 설치 불필요 → 기존 스마트폰·WiFi 활용
+  </text>
+  <text x="100" y="1605" font-family="Arial, sans-serif" font-size="12" fill="#15803d">
+    • B2C + B2B 동시 공략 → 개인 사용자 + 공연장·병원·학교 라이선스
+  </text>
+
+  <!-- 전략 2 -->
+  <text x="80" y="1650" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#166534">
+    전략 2: 기술 패러다임 차별화 (온톨로지 기반)
+  </text>
+  <text x="100" y="1675" font-family="Arial, sans-serif" font-size="12" fill="#15803d">
+    • 데이터 처리 → 의미 이해 (온톨로지 지식그래프)
+  </text>
+  <text x="100" y="1695" font-family="Arial, sans-serif" font-size="12" fill="#15803d">
+    • 좌표 → 대피 의미 공간 ("4층 복도" → 계단 A 연결 → 연기 위험)
+  </text>
+  <text x="100" y="1715" font-family="Arial, sans-serif" font-size="12" fill="#15803d">
+    • 블랙박스 AI → 설명 가능한 AI (추천 사유 자연어 생성)
+  </text>
+
+  <!-- 전략 3 -->
+  <text x="80" y="1760" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#166534">
+    전략 3: 시장 전략 차별화
+  </text>
+  <text x="100" y="1785" font-family="Arial, sans-serif" font-size="12" fill="#15803d">
+    • 완벽주의 → 애자일 MVP (v1.0 출시 → 사용자 피드백 → v2.0, v3.0 빠른 개선)
+  </text>
+  <text x="100" y="1805" font-family="Arial, sans-serif" font-size="12" fill="#15803d">
+    • 내수 시장 → 글로벌 다국어 (30개 언어 온톨로지)
+  </text>
+  <text x="100" y="1825" font-family="Arial, sans-serif" font-size="12" fill="#15803d">
+    • 범용 기능 → 재난 대피 전문 (버티컬 통합, 규제 인증 획득)
+  </text>
+
+  <!-- 전략 4 -->
+  <text x="80" y="1870" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#166534">
+    전략 4: 특허 방어 전략
+  </text>
+  <text x="100" y="1895" font-family="Arial, sans-serif" font-size="12" fill="#15803d">
+    • 청구항 핵심: "재난대피 온톨로지 지식그래프를 이용한..." (경쟁사 특허 회피)
+  </text>
+  <text x="100" y="1915" font-family="Arial, sans-serif" font-size="12" fill="#15803d">
+    • PCT 국제 출원: 미국·유럽·중국·일본 동시 출원 (글로벌 시장 선점)
+  </text>
+  <text x="100" y="1935" font-family="Arial, sans-serif" font-size="12" fill="#15803d">
+    • 표준 특허: ISO/IEEE 표준에 FireNavi 온톨로지 반영 (생태계 주도권)
+  </text>
+
+  <!-- 푸터 -->
+  <text x="800" y="1990" font-family="Arial, sans-serif" font-size="13" fill="#78716c" text-anchor="middle">
+    FireNavi v3.0 Architecture v2 | 2026-06-02 | 경쟁사 차별화 반영
+  </text>
+</svg>
